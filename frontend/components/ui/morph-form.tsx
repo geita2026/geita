@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { motion } from "motion/react";
 
 import type { MutationSpec } from "@/server/actions";
 
@@ -18,6 +19,47 @@ import {
 import { ActionForm } from "@/components/ui/action-form";
 
 const transition = { type: "spring", stiffness: 220, damping: 26 } as const;
+
+/**
+ * The open dialog, in the portal's notched card shape (globals.css: .notch-shell,
+ * .notch-tr, .notch-panel, .notch-tr-close — the same shape as the HeroUI
+ * dialogs in the Project Tracking Portal).
+ *
+ * - The morphing element is a transparent shell, so nothing clips the close
+ *   button sitting in the bite; the notched panel inside carries the surface.
+ * - Two sheets peek out underneath (daisyUI `stack`, as in DialogStack). They
+ *   fade in once the card has finished growing out of its trigger — shown at
+ *   once, they would sit full-size behind a card that is still small.
+ */
+export function MorphPanel({ width, children }: { width: string; children: React.ReactNode }) {
+  const sheet = (depth: number) => (
+    <motion.div
+      aria-hidden
+      animate={{ opacity: depth ? 0.7 : 0.9, transition: { delay: 0.18, duration: 0.2 } }}
+      className="notch-tr pointer-events-none border border-separator"
+      exit={{ opacity: 0, transition: { duration: 0.05 } }}
+      initial={{ opacity: 0 }}
+      style={{
+        background: `color-mix(in oklab, var(--overlay) ${88 - depth * 8}%, var(--foreground))`,
+        boxShadow: "var(--overlay-shadow)",
+      }}
+    />
+  );
+
+  return (
+    <div className={clsx("stack w-full", width)}>
+      <MorphingDialogContent className="notch-shell relative w-full" style={{ borderRadius: 26 }}>
+        {/* max-height inline: .notch-panel's own max-height is unlayered and would beat a utility. */}
+        <div className="notch-tr notch-panel" style={{ maxHeight: "90vh" }}>
+          <div className="-me-2 min-h-0 overflow-y-auto pe-2">{children}</div>
+        </div>
+        <MorphingDialogClose className="notch-tr-close" />
+      </MorphingDialogContent>
+      {sheet(0)}
+      {sheet(1)}
+    </div>
+  );
+}
 
 const TRIGGER = {
   primary: "bg-brand text-brand-foreground hover:brightness-105",
@@ -78,17 +120,13 @@ export function MorphForm({
         <MorphingDialogTitle>{label}</MorphingDialogTitle>
       </MorphingDialogTrigger>
       <MorphingDialogContainer>
-        <MorphingDialogContent
-          className={clsx(
-            "relative flex max-h-[90vh] w-full flex-col overflow-y-auto border border-separator bg-overlay p-6 shadow-2xl",
-            width,
-          )}
-          style={{ borderRadius: 20 }}
-        >
-          <MorphingDialogTitle className="pe-10 font-display text-xl font-bold leading-tight">
+        <MorphPanel width={width}>
+          <MorphingDialogTitle className="pe-14 font-display text-xl font-bold leading-tight">
             {title}
           </MorphingDialogTitle>
-          {subtitle && <MorphingDialogSubtitle className="mt-1 text-sm text-muted">{subtitle}</MorphingDialogSubtitle>}
+          {subtitle && (
+            <MorphingDialogSubtitle className="mt-1 pe-14 text-sm text-muted">{subtitle}</MorphingDialogSubtitle>
+          )}
           <MorphingDialogDescription disableLayoutAnimation className="mt-5">
             <Body
               formVariant={formVariant ?? (variant === "danger" ? "danger" : "primary")}
@@ -99,8 +137,7 @@ export function MorphForm({
               {children}
             </Body>
           </MorphingDialogDescription>
-          <MorphingDialogClose />
-        </MorphingDialogContent>
+        </MorphPanel>
       </MorphingDialogContainer>
     </MorphingDialog>
   );
@@ -178,16 +215,10 @@ export function MorphCard({
         })}
       </MorphingDialogTrigger>
       <MorphingDialogContainer>
-        <MorphingDialogContent
-          className={clsx(
-            "relative flex max-h-[90vh] w-full flex-col overflow-y-auto border border-separator bg-overlay p-6 shadow-2xl",
-            width,
-          )}
-          style={{ borderRadius: 20 }}
-        >
-          {header && <div className="flex flex-wrap items-center gap-2 pe-10">{header}</div>}
+        <MorphPanel width={width}>
+          {header && <div className="flex flex-wrap items-center gap-2 pe-14">{header}</div>}
           <MorphingDialogTitle
-            className={clsx("pe-10 font-display text-2xl font-semibold leading-tight", header && "mt-3")}
+            className={clsx("pe-14 font-display text-2xl font-semibold leading-tight", header && "mt-3")}
           >
             {title}
           </MorphingDialogTitle>
@@ -195,8 +226,7 @@ export function MorphCard({
           <MorphingDialogDescription disableLayoutAnimation className="mt-5 grid gap-5">
             {children}
           </MorphingDialogDescription>
-          <MorphingDialogClose />
-        </MorphingDialogContent>
+        </MorphPanel>
       </MorphingDialogContainer>
     </MorphingDialog>
   );

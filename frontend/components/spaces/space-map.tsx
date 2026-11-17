@@ -8,9 +8,7 @@ import type { Hall, Space } from "@/lib/types";
 
 import {
   MorphingDialog,
-  MorphingDialogClose,
   MorphingDialogContainer,
-  MorphingDialogContent,
   MorphingDialogDescription,
   MorphingDialogSubtitle,
   MorphingDialogTitle,
@@ -21,6 +19,7 @@ import { SPACE_STATUS, humanize } from "@/lib/domain/labels";
 import { CategoryChip, Fact, StatusChip } from "@/components/ui/chips";
 import { ActionForm, SelectF, TextF } from "@/components/ui/action-form";
 import { ActionButton } from "@/components/ui/action-button";
+import { MorphPanel } from "@/components/ui/morph-form";
 
 const transition = { type: "spring", stiffness: 240, damping: 28 } as const;
 
@@ -141,11 +140,8 @@ function Cell({ space: s, hall, ctx, dimmed }: { space: Space; hall: Hall; ctx: 
       </MorphingDialogTrigger>
 
       <MorphingDialogContainer>
-        <MorphingDialogContent
-          className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto border border-separator bg-overlay p-6 shadow-2xl"
-          style={{ borderRadius: 20 }}
-        >
-          <div className="flex flex-wrap items-center gap-2 pe-10">
+        <MorphPanel width="max-w-lg">
+          <div className="flex flex-wrap items-center gap-2 pe-14">
             <StatusChip map={SPACE_STATUS} value={s.status} />
             {s.category && <CategoryChip color={s.category.color} name={s.category.name} />}
           </div>
@@ -286,8 +282,7 @@ function Cell({ space: s, hall, ctx, dimmed }: { space: Space; hall: Hall; ctx: 
               </div>
             )}
           </MorphingDialogDescription>
-          <MorphingDialogClose />
-        </MorphingDialogContent>
+        </MorphPanel>
       </MorphingDialogContainer>
     </MorphingDialog>
   );
