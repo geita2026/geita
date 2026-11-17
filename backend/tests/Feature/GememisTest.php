@@ -261,6 +261,16 @@ class GememisTest extends TestCase
         $this->assertSame('confirmed', $application->fresh()->status); // BR-008
     }
 
+    public function test_tc011_registration_accepts_only_a_listed_country(): void
+    {
+        $form = ['organization_name' => 'Typo Mining', 'contact_person' => 'Asha', 'phone' => '+255700000001', 'email' => 'asha@typo.tz',
+            'password' => 'Secret#12345', 'password_confirmation' => 'Secret#12345'];
+
+        $this->postJson('/api/v1/auth/register', $form + ['country' => 'Tanzana'])->assertStatus(422)->assertJsonValidationErrors('country');
+        $this->postJson('/api/v1/auth/register', $form + ['country' => 'Tanzania'])->assertCreated()->assertJsonPath('user.exhibitor.country', 'Tanzania');
+        $this->getJson('/api/v1/meta')->assertOk()->assertJsonFragment(['Tanzania']);
+    }
+
     public function test_tc012_account_locks_after_repeated_failed_sign_ins(): void
     {
         $user = $this->staff('auditor');

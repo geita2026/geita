@@ -8,7 +8,7 @@ import type { ActionResult } from "@/server/action-result";
 import { mutate, type MutationSpec } from "@/server/actions";
 import { FormAlert } from "@/components/ui/form-alert";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { FormSelect, FormText, FormTextArea } from "@/components/ui/form-fields";
+import { FormCombo, FormSelect, FormText, FormTextArea } from "@/components/ui/form-fields";
 
 type Errors = Record<string, string[]> | undefined;
 const ErrorsContext = createContext<Errors>(undefined);
@@ -80,6 +80,10 @@ export function AreaF(props: Omit<React.ComponentProps<typeof FormTextArea>, "er
 
 export function SelectF(props: Omit<React.ComponentProps<typeof FormSelect>, "errors">) {
   return <FormSelect {...props} errors={useContext(ErrorsContext)} />;
+}
+
+export function ComboF(props: Omit<React.ComponentProps<typeof FormCombo>, "errors">) {
+  return <FormCombo {...props} errors={useContext(ErrorsContext)} />;
 }
 
 /** Plain file input in the app's field style (HeroUI has no file field). */

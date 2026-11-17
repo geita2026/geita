@@ -7,7 +7,7 @@ import { Form } from "@heroui/react";
 import { loginAction, registerAction } from "@/server/actions";
 import { initialActionState } from "@/server/action-result";
 import { EXHIBITOR_TYPES, options } from "@/lib/domain/labels";
-import { FormSelect, FormText, FormTextArea } from "@/components/ui/form-fields";
+import { FormCombo, FormSelect, FormText, FormTextArea } from "@/components/ui/form-fields";
 import { FormAlert } from "@/components/ui/form-alert";
 import { SubmitButton } from "@/components/ui/submit-button";
 
@@ -36,7 +36,7 @@ export function LoginForm({ next }: { next?: string }) {
 }
 
 /** FR-011: organisation profile and its first user, in one step. */
-export function RegisterForm() {
+export function RegisterForm({ countries }: { countries: string[] }) {
   const [state, action] = useActionState(registerAction, initialActionState);
   const errors = !state.ok ? state.fieldErrors : undefined;
 
@@ -54,7 +54,14 @@ export function RegisterForm() {
       <FormText isRequired errors={errors} label="Contact person" name="contact_person" />
       <FormText isRequired errors={errors} label="Phone" name="phone" placeholder="+255…" />
       <FormText isRequired errors={errors} label="Email (your sign-in)" name="email" type="email" />
-      <FormText isRequired defaultValue="Tanzania" errors={errors} label="Country" name="country" />
+      <FormCombo
+        isRequired
+        defaultValue="Tanzania"
+        errors={errors}
+        label="Country"
+        name="country"
+        options={countries.map((c) => ({ id: c, label: c }))}
+      />
       <FormSelect
         defaultValue="local"
         errors={errors}

@@ -33,7 +33,7 @@ erDiagram
 | phone | string(30) | |
 | email | string | |
 | physical_address | string, null | |
-| country | string(80) | Default `Tanzania` |
+| country | string(80) | One of the names in `backend/config/countries.php` (validated); default `Tanzania` |
 | business_sector | string, null | |
 | business_activity | text, null | |
 | exhibitor_type | string(30) | `local`, `international`, `government`, `sme` |

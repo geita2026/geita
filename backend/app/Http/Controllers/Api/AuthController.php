@@ -10,6 +10,7 @@ use App\Services\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -67,7 +68,7 @@ class AuthController extends Controller
             'phone' => 'required|string|max:30',
             'email' => 'required|email|unique:users,email',
             'physical_address' => 'nullable|string|max:255',
-            'country' => 'required|string|max:80',
+            'country' => ['required', Rule::in(config('countries'))],
             'business_sector' => 'nullable|string|max:255',
             'business_activity' => 'nullable|string|max:2000',
             'exhibitor_type' => 'nullable|in:local,international,government,sme',
@@ -131,7 +132,7 @@ class AuthController extends Controller
             'contact_person' => 'required|string|max:255',
             'phone' => 'required|string|max:30',
             'physical_address' => 'nullable|string|max:255',
-            'country' => 'required|string|max:80',
+            'country' => ['required', Rule::in(config('countries'))],
             'business_sector' => 'nullable|string|max:255',
             'business_activity' => 'nullable|string|max:2000',
         ]);

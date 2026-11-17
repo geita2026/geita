@@ -1,7 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Description, FieldError, Input, InputGroup, Label, ListBox, Select, TextArea, TextField } from "@heroui/react";
+import {
+  ComboBox,
+  Description,
+  FieldError,
+  Input,
+  InputGroup,
+  Label,
+  ListBox,
+  Select,
+  TextArea,
+  TextField,
+} from "@heroui/react";
 import { Eye, EyeSlash } from "@gravity-ui/icons";
 
 /**
@@ -224,5 +235,64 @@ export function FormSelect({
         </ListBox>
       </Select.Popover>
     </Select>
+  );
+}
+
+/**
+ * A select you can type into, for long lists (countries). Typing filters the
+ * options, but only a listed option can be chosen — free text is not accepted,
+ * which is the point: no misspelt values reach the database.
+ */
+export function FormCombo({
+  name,
+  label,
+  options,
+  errors,
+  description,
+  defaultValue,
+  placeholder = "Type to search…",
+  isRequired,
+  className = "",
+}: {
+  name: string;
+  label: string;
+  options: Option[];
+  errors?: Errors;
+  description?: string;
+  defaultValue?: string | null;
+  placeholder?: string;
+  isRequired?: boolean;
+  className?: string;
+}) {
+  const error = firstError(errors, name);
+
+  return (
+    <ComboBox
+      className={`w-full ${className}`}
+      defaultSelectedKey={defaultValue ?? undefined}
+      formValue="key"
+      isInvalid={!!error}
+      isRequired={isRequired}
+      menuTrigger="focus"
+      name={name}
+    >
+      <Label>{label}</Label>
+      <ComboBox.InputGroup>
+        <Input placeholder={placeholder} />
+        <ComboBox.Trigger />
+      </ComboBox.InputGroup>
+      {description && !error && <Description>{description}</Description>}
+      {error && <FieldError>{error}</FieldError>}
+      <ComboBox.Popover>
+        <ListBox>
+          {options.map((o) => (
+            <ListBox.Item key={o.id} id={o.id} textValue={o.label}>
+              {o.label}
+              <ListBox.ItemIndicator />
+            </ListBox.Item>
+          ))}
+        </ListBox>
+      </ComboBox.Popover>
+    </ComboBox>
   );
 }

@@ -23,7 +23,7 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/health` | Liveness |
-| GET | `/meta` | Role and status vocabularies |
+| GET | `/meta` | Role and status vocabularies, and the country list registration accepts |
 | POST | `/auth/login` | `{email, password}` → `{token, user, permissions}`. 10/min |
 | POST | `/auth/register` | Exhibitor self-registration (FR-011) → `{token, user, permissions}` |
 | POST | `/integrations/payments/callback` | Payment platform callback (FR-059), see below |

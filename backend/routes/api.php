@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function () {
         'manual_space_statuses' => config('gememis.manual_space_statuses'),
         'application_statuses' => config('gememis.application_statuses'),
         'invoice_statuses' => config('gememis.invoice_statuses'),
+        'countries' => config('countries'),
     ]);
 
     // FR-059: called by the payment platform, authenticated by HMAC signature.
