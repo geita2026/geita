@@ -61,18 +61,27 @@ cd frontend && npm run check && npm run build
 
 ## Documentation
 
-| # | Document | What it answers |
-|---|---|---|
-| 01 | [Concept note](docs/01-concept-note.md) | Why the system exists, scope, stakeholders |
-| 02 | [Software requirements specification](docs/02-srs.md) | What it must do; status of every FRD requirement |
-| 03 | [Software design document](docs/03-sdd.md) | Architecture, state machines, key design decisions |
-| 04 | [Data dictionary](docs/04-data-dictionary.md) | Every table and column |
-| 05 | [API reference](docs/05-api.md) | Every endpoint |
-| 06 | [Roles and permissions](docs/06-rbac.md) | Who may do what |
-| 07 | [Test plan and UAT](docs/07-test-plan.md) | Automated tests, UAT scripts, traceability |
-| 08 | [User manual](docs/08-user-manual.md) | Step-by-step for each role |
-| 09 | [Operations manual](docs/09-operations.md) | Deployment, configuration, backup, security |
-| 10 | [Release notes](docs/10-release-notes.md) | What version 1.0.0 contains and what it does not |
+Every document is in Markdown (to edit) and PDF (to read and share).
+
+| # | Document | What it answers | PDF |
+|---|---|---|---|
+| 00 | This README | Overview, setup, demo accounts | [PDF](docs/pdf/00-readme.pdf) |
+| 01 | [Concept note](docs/01-concept-note.md) | Why the system exists, scope, stakeholders | [PDF](docs/pdf/01-concept-note.pdf) |
+| 02 | [Software requirements specification](docs/02-srs.md) | What it must do; status of every FRD requirement | [PDF](docs/pdf/02-srs.pdf) |
+| 03 | [Software design document](docs/03-sdd.md) | Architecture, state machines, key design decisions | [PDF](docs/pdf/03-sdd.pdf) |
+| 04 | [Data dictionary](docs/04-data-dictionary.md) | Every table and column | [PDF](docs/pdf/04-data-dictionary.pdf) |
+| 05 | [API reference](docs/05-api.md) | Every endpoint | [PDF](docs/pdf/05-api.pdf) |
+| 06 | [Roles and permissions](docs/06-rbac.md) | Who may do what | [PDF](docs/pdf/06-rbac.pdf) |
+| 07 | [Test plan and UAT](docs/07-test-plan.md) | Automated tests, UAT scripts, traceability | [PDF](docs/pdf/07-test-plan.pdf) |
+| 08 | [User manual](docs/08-user-manual.md) | Step-by-step for each role | [PDF](docs/pdf/08-user-manual.pdf) |
+| 09 | [Operations manual](docs/09-operations.md) | Deployment, configuration, backup, security | [PDF](docs/pdf/09-operations.pdf) |
+| 10 | [Release notes](docs/10-release-notes.md) | What version 1.0.0 contains and what it does not | [PDF](docs/pdf/10-release-notes.pdf) |
+
+The PDFs are generated from the Markdown. After changing a document, rebuild them (needs Google Chrome):
+
+```bash
+cd docs/tools && npm install && npm run pdf
+```
 
 ## Known limits of version 1.0.0
 
