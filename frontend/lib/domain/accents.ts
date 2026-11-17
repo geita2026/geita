@@ -31,11 +31,15 @@ export const ACCENTS: Accent[] = [
   { key: "coral", name: "Coral", rgb: "255 122 92", bright: "255 173 152", deep: "199 74 48", on: "17 17 20" },
 ];
 
-// Gold, for a mineral exhibition. Users can change it in Settings.
+/** Gold on black is the brand. Users can still pick another accent in Settings. */
 export const DEFAULT_ACCENT = "yellow";
 
-/** Cookie the chosen accent is stored in. */
-export const ACCENT_COOKIE = "accent";
+/**
+ * Cookie the chosen accent is stored in. Prefixed because browsers share
+ * cookies between ports on one host: an unprefixed `accent` set by another app
+ * on localhost (the Project Tracker uses that name) would recolour GeMEMIS.
+ */
+export const ACCENT_COOKIE = "gememis_accent";
 
 export function isAccent(value: string | undefined): value is string {
   return !!value && ACCENTS.some((a) => a.key === value);

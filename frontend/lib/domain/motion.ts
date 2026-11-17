@@ -4,7 +4,8 @@
  * says. Stored in a cookie and read in app/layout.tsx, like the accent, so the
  * first paint is already right.
  */
-export const MOTION_COOKIE = "motion";
+/** Prefixed for the same reason as ACCENT_COOKIE in accents.ts. */
+export const MOTION_COOKIE = "gememis_motion";
 
 export type MotionPref = "system" | "reduce";
 

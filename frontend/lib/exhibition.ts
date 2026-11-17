@@ -7,7 +7,7 @@ import type { Exhibition } from "@/lib/types";
 
 import { api } from "@/lib/api";
 
-export const EXHIBITION_COOKIE = "exhibition";
+export const EXHIBITION_COOKIE = "gememis_exhibition";
 
 export const listExhibitions = cache(() => api<Exhibition[]>("/exhibitions"));
 
