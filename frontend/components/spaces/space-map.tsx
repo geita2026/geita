@@ -80,7 +80,10 @@ export function SpaceMap({ halls, spaces, ctx }: { halls: Hall[]; spaces: Space[
                 {hall.name}
               </h2>
               <span className="text-xs text-muted">
-                {humanize(hall.kind)} · {mine.filter((s) => s.status === "available").length} of {mine.length} available
+                {humanize(hall.kind)} ·{" "}
+                {only
+                  ? `${mine.filter((s) => s.status === only).length} ${SPACE_STATUS[only].label.toLowerCase()} of ${mine.length}`
+                  : `${mine.filter((s) => s.status === "available").length} of ${mine.length} available`}
               </span>
             </div>
             {mine.length === 0 ? (
@@ -114,176 +117,184 @@ function Cell({ space: s, hall, ctx, dimmed }: { space: Space; hall: Hall; ctx: 
   const free = s.status === "available" || (s.status === "reserved" && ctx.canAllocate);
 
   return (
-    <MorphingDialog transition={transition}>
-      <MorphingDialogTrigger
-        className={clsx(
-          "relative flex flex-col items-center justify-center overflow-hidden border text-center leading-none transition-[opacity,box-shadow] hover:shadow-[0_0_0_2px_var(--foreground)]",
-          dimmed && "opacity-25",
-          (s.mine || ctx.highlight === s.id) && "shadow-[0_0_0_2px_var(--brand),0_0_0_4px_var(--surface)]",
-        )}
-        style={{
-          gridColumn: `${s.map_col} / span ${s.map_w}`,
-          gridRow: `${s.map_row} / span ${s.map_h}`,
-          borderRadius: 10,
-          background: `color-mix(in oklab, ${meta.fill} ${s.status === "available" ? 16 : 34}%, var(--surface))`,
-          borderColor: `color-mix(in oklab, ${meta.fill} 55%, transparent)`,
-        }}
-      >
-        {/* Category stripe. A child, not a border: the button's border colour is the status. */}
-        <span
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-1"
-          style={{ background: s.category?.color ?? meta.fill }}
-        />
-        <MorphingDialogTitle className="text-xs font-extrabold tabular">{s.number}</MorphingDialogTitle>
-        <span className="mt-1 text-[10px] font-semibold text-muted">{s.mine ? "Yours" : `${s.area_sqm} m²`}</span>
-      </MorphingDialogTrigger>
+    /* The status filter dims this wrapper, not the button: the button is the
+       morph's shared-layout element, and Motion keeps an inline `opacity: 1`
+       on it that would beat any opacity class. */
+    <div
+      className={clsx(
+        "transition-[opacity,filter] duration-200 motion-reduce:transition-none",
+        dimmed && "opacity-20 grayscale",
+      )}
+      style={{ gridColumn: `${s.map_col} / span ${s.map_w}`, gridRow: `${s.map_row} / span ${s.map_h}` }}
+    >
+      <MorphingDialog transition={transition}>
+        <MorphingDialogTrigger
+          className={clsx(
+            "relative flex size-full flex-col items-center justify-center overflow-hidden border text-center leading-none transition-shadow hover:shadow-[0_0_0_2px_var(--foreground)]",
+            (s.mine || ctx.highlight === s.id) && "shadow-[0_0_0_2px_var(--brand),0_0_0_4px_var(--surface)]",
+          )}
+          style={{
+            borderRadius: 10,
+            background: `color-mix(in oklab, ${meta.fill} ${s.status === "available" ? 16 : 34}%, var(--surface))`,
+            borderColor: `color-mix(in oklab, ${meta.fill} 55%, transparent)`,
+          }}
+        >
+          {/* Category stripe. A child, not a border: the button's border colour is the status. */}
+          <span
+            aria-hidden
+            className="absolute inset-y-0 left-0 w-1"
+            style={{ background: s.category?.color ?? meta.fill }}
+          />
+          <MorphingDialogTitle className="text-xs font-extrabold tabular">{s.number}</MorphingDialogTitle>
+          <span className="mt-1 text-[10px] font-semibold text-muted">{s.mine ? "Yours" : `${s.area_sqm} m²`}</span>
+        </MorphingDialogTrigger>
 
-      <MorphingDialogContainer>
-        <MorphPanel width="max-w-lg">
-          <div className="flex flex-wrap items-center gap-2 pe-14">
-            <StatusChip map={SPACE_STATUS} value={s.status} />
-            {s.category && <CategoryChip color={s.category.color} name={s.category.name} />}
-          </div>
-          <MorphingDialogTitle className="mt-3 font-display text-3xl font-extrabold leading-tight">
-            {s.number}
-          </MorphingDialogTitle>
-          <MorphingDialogSubtitle className="mt-1 text-sm text-muted">
-            {hall.name} · row {s.map_row}, position {s.map_col}
-          </MorphingDialogSubtitle>
+        <MorphingDialogContainer>
+          <MorphPanel width="max-w-lg">
+            <div className="flex flex-wrap items-center gap-2 pe-14">
+              <StatusChip map={SPACE_STATUS} value={s.status} />
+              {s.category && <CategoryChip color={s.category.color} name={s.category.name} />}
+            </div>
+            <MorphingDialogTitle className="mt-3 font-display text-3xl font-extrabold leading-tight">
+              {s.number}
+            </MorphingDialogTitle>
+            <MorphingDialogSubtitle className="mt-1 text-sm text-muted">
+              {hall.name} · row {s.map_row}, position {s.map_col}
+            </MorphingDialogSubtitle>
 
-          <MorphingDialogDescription disableLayoutAnimation className="mt-5 grid gap-5">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-              <Fact label="Size">
-                {s.size_label} ({s.area_sqm} m²)
-              </Fact>
-              <Fact label="Price (excl. VAT)">{tzs(s.price)}</Fact>
-              {s.location_note && (
-                <Fact className="col-span-2" label="Location">
-                  {s.location_note}
+            <MorphingDialogDescription disableLayoutAnimation className="mt-5 grid gap-5">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+                <Fact label="Size">
+                  {s.size_label} ({s.area_sqm} m²)
                 </Fact>
-              )}
-              {s.special_conditions && (
-                <Fact className="col-span-2" label="Special conditions">
-                  {s.special_conditions}
-                </Fact>
-              )}
-            </dl>
-            {(s.facilities?.length ?? 0) > 0 && (
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Facilities</p>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {s.facilities!.map((f) => (
-                    <span key={f} className="rounded-full bg-default px-2.5 py-1 text-xs font-semibold">
-                      {f}
-                    </span>
-                  ))}
+                <Fact label="Price (excl. VAT)">{tzs(s.price)}</Fact>
+                {s.location_note && (
+                  <Fact className="col-span-2" label="Location">
+                    {s.location_note}
+                  </Fact>
+                )}
+                {s.special_conditions && (
+                  <Fact className="col-span-2" label="Special conditions">
+                    {s.special_conditions}
+                  </Fact>
+                )}
+              </dl>
+              {(s.facilities?.length ?? 0) > 0 && (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">Facilities</p>
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {s.facilities!.map((f) => (
+                      <span key={f} className="rounded-full bg-default px-2.5 py-1 text-xs font-semibold">
+                        {f}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {held && (
-              <div className="rounded-xl bg-surface-secondary p-4 text-sm">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  {held.status === "pending" ? "Selected by" : "Allocated to"}
+              {held && (
+                <div className="rounded-xl bg-surface-secondary p-4 text-sm">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                    {held.status === "pending" ? "Selected by" : "Allocated to"}
+                  </p>
+                  <p className="mt-1 font-semibold">{held.exhibitor?.organization_name}</p>
+                  <Link
+                    className="mt-2 inline-block text-xs font-semibold text-brand-ink hover:underline"
+                    href={`/applications/${held.application_id}`}
+                  >
+                    Open application · {held.reference}
+                  </Link>
+                </div>
+              )}
+
+              {s.mine && (
+                <p className="rounded-xl bg-brand-soft/60 p-4 text-sm font-semibold">
+                  {s.mine === "pending"
+                    ? "You selected this space. It is awaiting confirmation by the Space Allocation Officer."
+                    : "This space is allocated to you."}
                 </p>
-                <p className="mt-1 font-semibold">{held.exhibitor?.organization_name}</p>
-                <Link
-                  className="mt-2 inline-block text-xs font-semibold text-brand-ink hover:underline"
-                  href={`/applications/${held.application_id}`}
-                >
-                  Open application · {held.reference}
-                </Link>
-              </div>
-            )}
+              )}
 
-            {s.mine && (
-              <p className="rounded-xl bg-brand-soft/60 p-4 text-sm font-semibold">
-                {s.mine === "pending"
-                  ? "You selected this space. It is awaiting confirmation by the Space Allocation Officer."
-                  : "This space is allocated to you."}
-              </p>
-            )}
-
-            {/* FR-023 */}
-            {ctx.myApplicationId && s.status === "available" && (
-              <div className="flex items-center justify-between gap-3 rounded-xl border border-brand/40 bg-brand-soft/50 p-4">
-                <p className="text-sm">An officer confirms your selection, then your invoice is issued.</p>
-                <ActionButton
-                  pendingLabel="Selecting…"
-                  spec={{
-                    method: "POST",
-                    path: "/allocations",
-                    extra: { application_id: ctx.myApplicationId, space_id: s.id },
-                    success: `Space ${s.number} selected`,
-                  }}
-                  successLabel="Selected"
-                >
-                  Select this space
-                </ActionButton>
-              </div>
-            )}
-
-            {/* FR-024 */}
-            {ctx.canAllocate && free && !held && (
-              <div className="rounded-xl border border-separator p-4">
-                <p className="mb-3 text-sm font-semibold">Allocate this space</p>
-                {ctx.applications?.length ? (
-                  <ActionForm
-                    pendingLabel="Allocating…"
+              {/* FR-023 */}
+              {ctx.myApplicationId && s.status === "available" && (
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-brand/40 bg-brand-soft/50 p-4">
+                  <p className="text-sm">An officer confirms your selection, then your invoice is issued.</p>
+                  <ActionButton
+                    pendingLabel="Selecting…"
                     spec={{
                       method: "POST",
                       path: "/allocations",
-                      extra: { space_id: s.id },
-                      success: `Space ${s.number} allocated`,
+                      extra: { application_id: ctx.myApplicationId, space_id: s.id },
+                      success: `Space ${s.number} selected`,
                     }}
-                    submitLabel="Allocate"
+                    successLabel="Selected"
+                  >
+                    Select this space
+                  </ActionButton>
+                </div>
+              )}
+
+              {/* FR-024 */}
+              {ctx.canAllocate && free && !held && (
+                <div className="rounded-xl border border-separator p-4">
+                  <p className="mb-3 text-sm font-semibold">Allocate this space</p>
+                  {ctx.applications?.length ? (
+                    <ActionForm
+                      pendingLabel="Allocating…"
+                      spec={{
+                        method: "POST",
+                        path: "/allocations",
+                        extra: { space_id: s.id },
+                        success: `Space ${s.number} allocated`,
+                      }}
+                      submitLabel="Allocate"
+                    >
+                      <SelectF
+                        isRequired
+                        label="Approved application"
+                        name="application_id"
+                        options={ctx.applications}
+                        placeholder="Choose an exhibitor…"
+                      />
+                    </ActionForm>
+                  ) : (
+                    <p className="text-sm text-muted">No approved application is waiting for space.</p>
+                  )}
+                </div>
+              )}
+
+              {/* FR-009 */}
+              {ctx.canManage && !held && (
+                <div className="rounded-xl border border-separator p-4">
+                  <p className="mb-3 text-sm font-semibold">Change status</p>
+                  <ActionForm
+                    className="grid gap-3 sm:grid-cols-2"
+                    spec={{ method: "POST", path: `/spaces/${s.id}/status`, success: `Space ${s.number} updated` }}
+                    submitLabel="Update status"
+                    variant="secondary"
                   >
                     <SelectF
                       isRequired
-                      label="Approved application"
-                      name="application_id"
-                      options={ctx.applications}
-                      placeholder="Choose an exhibitor…"
+                      defaultValue={
+                        ["available", "reserved", "blocked", "maintenance", "cancelled"].includes(s.status)
+                          ? s.status
+                          : "available"
+                      }
+                      label="Status"
+                      name="status"
+                      options={["available", "reserved", "blocked", "maintenance", "cancelled"].map((k) => ({
+                        id: k,
+                        label: SPACE_STATUS[k].label,
+                      }))}
                     />
+                    <TextF label="Reason" name="reason" placeholder="Optional" />
                   </ActionForm>
-                ) : (
-                  <p className="text-sm text-muted">No approved application is waiting for space.</p>
-                )}
-              </div>
-            )}
-
-            {/* FR-009 */}
-            {ctx.canManage && !held && (
-              <div className="rounded-xl border border-separator p-4">
-                <p className="mb-3 text-sm font-semibold">Change status</p>
-                <ActionForm
-                  className="grid gap-3 sm:grid-cols-2"
-                  spec={{ method: "POST", path: `/spaces/${s.id}/status`, success: `Space ${s.number} updated` }}
-                  submitLabel="Update status"
-                  variant="secondary"
-                >
-                  <SelectF
-                    isRequired
-                    defaultValue={
-                      ["available", "reserved", "blocked", "maintenance", "cancelled"].includes(s.status)
-                        ? s.status
-                        : "available"
-                    }
-                    label="Status"
-                    name="status"
-                    options={["available", "reserved", "blocked", "maintenance", "cancelled"].map((k) => ({
-                      id: k,
-                      label: SPACE_STATUS[k].label,
-                    }))}
-                  />
-                  <TextF label="Reason" name="reason" placeholder="Optional" />
-                </ActionForm>
-              </div>
-            )}
-          </MorphingDialogDescription>
-        </MorphPanel>
-      </MorphingDialogContainer>
-    </MorphingDialog>
+                </div>
+              )}
+            </MorphingDialogDescription>
+          </MorphPanel>
+        </MorphingDialogContainer>
+      </MorphingDialog>
+    </div>
   );
 }
