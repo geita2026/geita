@@ -6,7 +6,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { can, requireSession } from "@/lib/auth/session";
 import { currentExhibition } from "@/lib/exhibition";
-import { fmtDate, fmtDateTime, pct, tzs, tzsCompact } from "@/lib/domain/format";
+import { fmtControl, fmtDate, fmtDateTime, pct, tzs, tzsCompact } from "@/lib/domain/format";
 import { APPLICATION_STATUS, EXHIBITION_STATUS, INVOICE_STATUS, SPACE_STATUS } from "@/lib/domain/labels";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiRow } from "@/components/ui/kpi";
@@ -69,6 +69,23 @@ function StaffHome({ data }: { data: StaffDashboard }) {
         eyebrow={e.code}
         title={e.name}
       />
+
+      {/* An empty exhibition otherwise reads as a dashboard that failed to load. */}
+      {k.total_spaces === 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-brand/40 bg-brand-soft/60 p-5">
+          <div className="min-w-0">
+            <p className="font-display text-base font-bold">
+              {e.code} has no spaces yet, so there is nothing to count.
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              Lay out its halls and spaces, or use the {e.code} button in the top bar to switch to another exhibition.
+            </p>
+          </div>
+          <Link className="button button--primary button--md" href={`/exhibitions/${e.id}`}>
+            Set up {e.code}
+          </Link>
+        </div>
+      )}
 
       {/* FR-055 */}
       <KpiRow
@@ -210,6 +227,11 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
             ? 4
             : 5;
 
+  // The invoice still being paid, and its GePG control number once issued.
+  const owing = data.invoices.find((i) => ["unpaid", "partially_paid", "overdue"].includes(i.status));
+  const control = owing?.gepg_status === "issued" ? owing.control_number : null;
+  const outstanding = data.billed - data.paid;
+
   const next = !a
     ? e.registration_open
       ? {
@@ -254,8 +276,27 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
                 }
           : a.status === "pending_payment"
             ? {
-                text: `Pay ${tzs(data.billed - data.paid)} by ${fmtDate(e.payment_deadline)} to confirm your participation.`,
-                href: "/invoices",
+                text: (
+                  <>
+                    Pay <span className="text-brand-ink tabular">{tzs(outstanding)}</span> by{" "}
+                    <span className="text-sky-700 dark:text-sky-300">
+                      {fmtDate(owing?.due_on ?? e.payment_deadline)}
+                    </span>
+                    {control ? (
+                      <>
+                        {" "}
+                        with control number <ControlChip value={control} />
+                      </>
+                    ) : null}{" "}
+                    to confirm your participation.
+                    {!control && owing?.gepg_status === "requesting" && (
+                      <span className="mt-1 block text-sm font-semibold text-muted">
+                        Your GePG control number is on its way by SMS and email.
+                      </span>
+                    )}
+                  </>
+                ),
+                href: owing ? `/invoices/${owing.id}` : "/invoices",
                 cta: "Pay invoice",
               }
             : {
@@ -326,10 +367,15 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
         <Panel action={{ label: "Invoices", href: "/invoices" }} title="Payments">
           {data.invoices.length ? (
             <div className="grid gap-2 text-sm">
-              <p className="font-display text-2xl font-extrabold tabular">{tzs(data.billed - data.paid)}</p>
+              <p className="font-display text-2xl font-extrabold tabular">{tzs(outstanding)}</p>
               <p className="text-xs text-muted">
-                outstanding of {tzs(data.billed)} · due {fmtDate(e.payment_deadline)}
+                outstanding of {tzs(data.billed)} · due {fmtDate(owing?.due_on ?? e.payment_deadline)}
               </p>
+              {control && (
+                <p className="text-xs text-muted">
+                  Control number <ControlChip value={control} />
+                </p>
+              )}
               <div className="flex flex-wrap gap-1.5">
                 {data.invoices.map((i) => (
                   <StatusChip key={i.id} map={INVOICE_STATUS} value={i.status} />
@@ -342,5 +388,14 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
         </Panel>
       </div>
     </div>
+  );
+}
+
+/** A GePG control number, gold on black like the card on the invoice, grouped for reading aloud. */
+function ControlChip({ value }: { value: string }) {
+  return (
+    <span className="inline-block rounded-lg bg-[#111114] px-2 py-0.5 font-mono font-extrabold tracking-[0.04em] whitespace-nowrap text-brand tabular">
+      {fmtControl(value)}
+    </span>
   );
 }

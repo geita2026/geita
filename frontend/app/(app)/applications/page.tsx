@@ -44,7 +44,7 @@ export default async function ApplicationsPage({
         }
         description={
           staff
-            ? `${list.total} applications · review, approve, return or reject`
+            ? `${list.total} applications · open one to approve, return or reject it`
             : "Track the status of your applications."
         }
         eyebrow={staff ? exhibition?.code : undefined}
@@ -86,7 +86,13 @@ export default async function ApplicationsPage({
                     label: "Exhibitor",
                     render: (a: Application) => (
                       <span>
-                        <span className="font-semibold">{a.exhibitor?.organization_name}</span>
+                        <PendingLink
+                          className="font-semibold hover:underline"
+                          href={`/applications/${a.id}`}
+                          label={`Opening ${a.reference}…`}
+                        >
+                          {a.exhibitor?.organization_name}
+                        </PendingLink>
                         <span className="block text-xs text-muted">{a.exhibitor?.country}</span>
                       </span>
                     ),

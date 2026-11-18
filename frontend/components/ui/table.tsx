@@ -58,5 +58,9 @@ export function DataTable<T extends { id: number | string }>({
 }
 
 export function Surface({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`soft-shadow rounded-[20px] bg-surface p-2 sm:p-3 ${className}`}>{children}</section>;
+  // min-w-0: a grid item will not shrink below its content otherwise, and a wide
+  // table would stretch the whole page instead of scrolling inside its card.
+  return (
+    <section className={`soft-shadow min-w-0 rounded-[20px] bg-surface p-2 sm:p-3 ${className}`}>{children}</section>
+  );
 }
