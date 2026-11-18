@@ -22,6 +22,11 @@ class Payment extends Model
         return $this->belongsTo(Invoice::class);
     }
 
+    public function gepgBill()
+    {
+        return $this->belongsTo(GepgBill::class);
+    }
+
     public function verifier()
     {
         return $this->belongsTo(User::class, 'verified_by');

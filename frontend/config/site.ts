@@ -19,6 +19,7 @@ export type NavItem = {
     | "allocations"
     | "invoices"
     | "payments"
+    | "gateway"
     | "checkin"
     | "exhibitors"
     | "reports"
@@ -41,6 +42,7 @@ export const navItems: NavItem[] = [
   { label: "Allocations", href: "/allocations", icon: "allocations", needs: ["staff"] },
   { label: "Invoices", href: "/invoices", icon: "invoices" },
   { label: "Payments", href: "/payments", icon: "payments", needs: ["finance.view"] },
+  { label: "Payment gateway", href: "/payments/gateway", icon: "gateway", needs: ["finance.view"] },
   { label: "Check-in", href: "/checkin", icon: "checkin", needs: ["checkin.manage"] },
   { label: "Exhibitors", href: "/exhibitors", icon: "exhibitors", needs: ["exhibitors.view"] },
   { label: "Reports", href: "/reports", icon: "reports", needs: ["reports.view"] },

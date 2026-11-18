@@ -39,6 +39,23 @@ export const PAYMENT_STATUS: Record<string, Meta> = {
   rejected: { label: "Rejected", color: "danger" },
 };
 
+/** GePG bill (control number) statuses. */
+export const GEPG_BILL_STATUS: Record<string, Meta> = {
+  requesting: { label: "Requesting control number", color: "warning" },
+  issued: { label: "Control number issued", color: "success" },
+  failed: { label: "Not issued", color: "danger" },
+  cancelled: { label: "Cancelled", color: "default" },
+  superseded: { label: "Replaced", color: "default" },
+  paid: { label: "Paid", color: "success" },
+  expired: { label: "Expired", color: "warning" },
+};
+
+export const GEPG_MODE: Record<string, Meta> = {
+  off: { label: "Off", color: "default" },
+  simulator: { label: "Simulator", color: "warning" },
+  live: { label: "Live", color: "success" },
+};
+
 export const ALLOCATION_STATUS: Record<string, Meta> = {
   pending: { label: "Awaiting confirmation", color: "warning" },
   allocated: { label: "Allocated", color: "success" },

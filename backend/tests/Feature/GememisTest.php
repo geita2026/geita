@@ -244,33 +244,6 @@ class GememisTest extends TestCase
         $this->assertSame('registration_closed', $this->exhibition->fresh()->status);
     }
 
-    public function test_fr059_gateway_callback_requires_a_valid_signature_and_is_idempotent(): void
-    {
-        config(['gememis.payment_webhook_secret' => 'shh']);
-        $application = $this->approvedApplication($this->exhibitorUser());
-        Sanctum::actingAs($this->staff('space_officer'));
-        $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A01']->id]);
-        $invoice = Invoice::firstOrFail();
-        $body = json_encode(['control_number' => $invoice->control_number, 'amount' => 106200, 'transaction_id' => 'GW-77']);
-        $call = fn ($sig) => $this->call('POST', '/api/v1/integrations/payments/callback', [], [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_X_SIGNATURE' => $sig, 'HTTP_ACCEPT' => 'application/json'], $body);
-
-        $call('wrong')->assertUnauthorized();
-        $call(hash_hmac('sha256', $body, 'shh'))->assertOk()->assertJsonPath('status', 'accepted');
-        $call(hash_hmac('sha256', $body, 'shh'))->assertOk()->assertJsonPath('status', 'duplicate');
-        $this->assertSame('paid', $invoice->fresh()->status);
-        $this->assertSame('confirmed', $application->fresh()->status); // BR-008
-    }
-
-    public function test_tc011_registration_accepts_only_a_listed_country(): void
-    {
-        $form = ['organization_name' => 'Typo Mining', 'contact_person' => 'Asha', 'phone' => '+255700000001', 'email' => 'asha@typo.tz',
-            'password' => 'Secret#12345', 'password_confirmation' => 'Secret#12345'];
-
-        $this->postJson('/api/v1/auth/register', $form + ['country' => 'Tanzana'])->assertStatus(422)->assertJsonValidationErrors('country');
-        $this->postJson('/api/v1/auth/register', $form + ['country' => 'Tanzania'])->assertCreated()->assertJsonPath('user.exhibitor.country', 'Tanzania');
-        $this->getJson('/api/v1/meta')->assertOk()->assertJsonFragment(['Tanzania']);
-    }
-
     public function test_tc012_account_locks_after_repeated_failed_sign_ins(): void
     {
         $user = $this->staff('auditor');

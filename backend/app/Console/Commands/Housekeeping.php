@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SyncGepgBill;
 use App\Models\Application;
 use App\Models\Exhibition;
 use App\Models\Invoice;
@@ -56,6 +57,14 @@ class Housekeeping extends Command
         Application::where('status', 'confirmed')->whereHas('exhibition', fn ($e) => $e->whereDate('start_date', $today->copy()->addDay()))
             ->with('exhibitor', 'exhibition')->each(fn ($a) => Notifier::exhibitor($a->exhibitor, 'reminder', 'Check-in opens tomorrow',
                 "{$a->exhibition->name} starts tomorrow at {$a->exhibition->venue}. Bring your allocation letter for check-in.", "/applications/{$a->id}"));
+
+        // FR-059: bills GePG did not issue are requested again; expired control numbers are extended.
+        if (config('gepg.mode') !== 'off') {
+            Invoice::whereIn('status', ['unpaid', 'partially_paid', 'overdue'])
+                ->where(fn ($q) => $q->whereIn('gepg_status', ['failed'])->orWhereNull('gepg_status')
+                    ->orWhereHas('gepgBills', fn ($b) => $b->where('status', 'issued')->where('expires_at', '<', now())))
+                ->pluck('id')->each(fn ($id) => SyncGepgBill::dispatch($id));
+        }
 
         $this->info('Housekeeping complete.');
 

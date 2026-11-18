@@ -48,8 +48,6 @@ return [
         'token_idle_minutes' => 60,
     ],
 
-    // FR-059: shared secret the payment gateway signs its callbacks with.
-    'payment_webhook_secret' => env('PAYMENT_WEBHOOK_SECRET'),
     'sms' => ['driver' => env('SMS_DRIVER', 'log'), 'sender' => env('SMS_SENDER', 'GeMEMIS')],
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
 ];

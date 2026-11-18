@@ -38,13 +38,26 @@ Test names carry the FRD's test-case numbers (FRD §25: TC-nnn proves FR-nnn).
 | TC-047 | FR-047, BR-009 | An exhibitor cannot read another's application, the audit trail or the user list |
 | TC-048 | FR-048 | Status change is logged with the old value; the entry cannot be modified |
 | BR-010 | FR-004, BR-010 | After the closing date an application is refused; the housekeeping job sets `registration_closed` |
-| FR-059 | FR-059, BR-008 | Bad signature refused; valid callback settles the invoice and confirms participation; a repeat is a no-op |
 
-Current result: **13 tests, 115 assertions, all passing.**
+GePG tests (`backend/tests/Feature/GepgTest.php`, against the simulator):
+
+| Test | Proves |
+|---|---|
+| Allocation sends a signed bill | Bill amount incl. VAT, GFS code, our RSA signature over the exact content; control number reaches the invoice and the exhibitor |
+| GePG payment | Payment verified, receipt, invoice paid, participation confirmed; GePG's retry of the same notification is acknowledged and not recorded twice |
+| Unsigned message | A message not signed by GePG is refused (`7303`) and changes nothing |
+| Part payment | The control number stays open for the rest; never re-billed |
+| Amount change | Reallocation to a dearer space cancels the bill at GePG and issues a new control number with the new GFS code |
+| Settled outside GePG | A cash payment cancels the open control number |
+| Reconciliation | A payment whose notification was lost is recovered; a "GePG" payment unknown to GePG is flagged |
+| Live mode | Signed XML posted to the configured URL with `Gepg-Com` / `Gepg-Code` headers; a refusal code marks the bill failed and tells Finance |
+| Off mode | No bill, no control number |
+
+Current result: **21 tests, 167 assertions, all passing.**
 
 ### Not covered by automated tests
 
-Stated so the gaps are tested by hand: transfer between exhibitors (FR-027); automatic allocation (FR-025); check-in (FR-040..042); reports and CSV (FR-050..054); search (FR-056); user administration (FR-043..046); PDFs other than the receipt; email and SMS delivery; the web client's pages (no browser test suite).
+Stated so the gaps are tested by hand: GePG's real test environment (only the simulator is automated — see UAT-19); transfer between exhibitors (FR-027); automatic allocation (FR-025); check-in (FR-040..042); reports and CSV (FR-050..054); search (FR-056); user administration (FR-043..046); PDFs other than the receipt; email and SMS delivery; the web client's pages (no browser test suite).
 
 ## 3. Test environment
 
@@ -107,6 +120,8 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 
 **UAT-17 User administration** — *System Administrator.* Create a user (one-time password shown); sign in as them and be forced to change it; change their role; deactivate (they are signed out); reset password; unlock a locked account.
 
+**UAT-19 GePG (in GePG's test environment)** — *Finance Officer, Exhibitor.* With `GEPG_MODE=live` against GePG's test environment: allocate a space → a control number arrives within minutes and reaches the exhibitor by SMS. Pay part of it through GePG's test channel → payment, receipt and *Partially paid*; pay the rest → *Paid*, participation confirmed. Reallocate a confirmed exhibitor to a dearer space → the old control number is cancelled at GePG and a new one issued. Run **Reconcile a day** → *All matched*. In the message log every message from GePG shows *Signature valid*.
+
 **UAT-18 Notifications** — *Exhibitor and officers.* Confirm the bell shows a notice for each of: application submitted, approved/rejected, invoice issued, payment verified, space allocated. Where email/SMS providers are configured, confirm delivery.
 
 ## 6. Acceptance criteria traceability (FRD §27)
@@ -121,7 +136,7 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 | 6 | Duplicate allocation prevented | FR-010 | TC-010 | UAT-09 |
 | 7 | Allocated spaces reflected in real time | FR-009, FR-022 | TC-024, TC-026 | UAT-08 |
 | 8 | Invoices generated accurately | FR-031 | TC-024 | UAT-10 |
-| 9 | Payments recorded and verified | FR-033, FR-034 | TC-034, FR-059 | UAT-11 |
+| 9 | Payments recorded and verified | FR-033, FR-034, FR-059 | TC-034, GePG tests | UAT-11, UAT-19 |
 | 10 | Notifications generated | FR-035..039 | — | UAT-18 |
 | 11 | Reports generated | FR-050..055 | — | UAT-14 |
 | 12 | Activities recorded in the audit trail | FR-048 | TC-048 | UAT-16 |

@@ -26,7 +26,7 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | GET | `/meta` | Role and status vocabularies, and the country list registration accepts |
 | POST | `/auth/login` | `{email, password}` → `{token, user, permissions}`. 10/min |
 | POST | `/auth/register` | Exhibitor self-registration (FR-011) → `{token, user, permissions}` |
-| POST | `/integrations/payments/callback` | Payment platform callback (FR-059), see below |
+| POST | `/integrations/gepg` (also `/control-number`, `/payment`, `/reconciliation`) | GePG callbacks (FR-059), see below |
 
 ## Session
 
@@ -128,17 +128,37 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | POST | `/users/{id}/reset-password` | `users.manage` | → `{temporary_password}` |
 | GET | `/audit-logs` | `audit.view` | *Paginated.* `?q`, `?action` (prefix), `?user_id`, `?from`, `?to` |
 
-## Payment platform callback (FR-059)
+## GePG (FR-059)
 
-`POST /integrations/payments/callback`, called by the payment platform when a control number is paid.
+### Callbacks from GePG
 
-```json
-{ "control_number": "991400000003", "amount": 1911600, "transaction_id": "GW-778812", "paid_on": "2027-01-14" }
-```
+`POST /integrations/gepg` — or `/integrations/gepg/control-number`, `/payment`, `/reconciliation` if GePG registers one address per message type; all go to the same handler, which reads the type from the message.
 
-- Header `X-Signature`: hex HMAC-SHA256 of the **raw request body** using `PAYMENT_WEBHOOK_SECRET`.
-- A new transaction is recorded as a verified payment, the receipt is issued, and the invoice and participation are settled (BR-008). Response: `{"status": "accepted", "receipt_number": "…"}`.
-- A repeated `transaction_id` for the same invoice changes nothing. Response: `{"status": "duplicate", "receipt_number": "…"}`.
-- 401 on a bad signature; 503 when no secret is configured; 404 for an unknown control number.
+- Body: GePG XML, `<Gepg><content/><gepgSignature/></Gepg>`. The signature (RSA over the content element's exact text, base64) must verify against GePG's certificate.
+- Reply: our signed acknowledgement, `application/xml`, e.g. `<Gepg><gepgPmtSpInfoAck><TrxStsCode>7101</TrxStsCode></gepgPmtSpInfoAck><gepgSignature>…</gepgSignature></Gepg>`.
+- `7101` = processed (also for a repeated payment, which is not recorded twice); the failure and bad-signature codes are set in `config/gepg.php`.
+- No bearer token: GePG's signature is the authentication. 503 when `GEPG_MODE=off`.
 
-Before connecting a real provider, adapt the field names and signature scheme to that provider's specification.
+| Message received | Effect |
+|---|---|
+| `gepgBillSubResp` | Control number saved on the bill and invoice; exhibitor notified by SMS and email |
+| `gepgPmtSpInfo` | Payment recorded and verified, receipt issued, invoice settled, participation confirmed when paid in full |
+| `gepgSpReconcResp` | Day's payments compared; missing ones recorded, differences flagged to Finance |
+
+### Requests GeMEMIS sends
+
+To `GEPG_BASE_URL` + the paths in `config/gepg.php`, with the `Gepg-Com` and `Gepg-Code` headers: `gepgBillSubReq` (bill, and control-number reuse), `gepgBillCanclReq`, `gepgSpReconcReq`. Element names follow the published GePG Service Provider API; check them against the Ministry of Finance's specification during onboarding — they are all in `app/Services/Gepg/GepgXml.php`.
+
+### Staff endpoints
+
+| Method | Path | Permission | Purpose |
+|---|---|---|---|
+| GET | `/gepg/status` | `finance.view` | Mode, SP identity, callback address, bill counts, last problem |
+| GET | `/gepg/messages` | `finance.view` | *Paginated* message log, verbatim XML. `?q` (reference), `?errors=1` |
+| GET | `/gepg/messages/{id}` | `finance.view` | One message |
+| GET | `/gepg/reconciliations` | `finance.view` | Last 30 runs |
+| POST | `/gepg/reconciliations` | `finance.manage` | `{date}` — reconcile that day now |
+| POST | `/invoices/{id}/gepg/retry` | `finance.manage` | Ask GePG again (after a failure) |
+| POST | `/invoices/{id}/gepg/simulate-payment` | `finance.manage` | Simulator only: `{amount, silent?}` pays the control number; `silent` loses the notification for reconciliation to recover |
+
+Invoices returned by `GET /invoices/{id}` include `gepg_status` and `gepg_bills` (newest first).

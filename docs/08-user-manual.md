@@ -29,11 +29,12 @@ You will be notified when it is approved, rejected, or returned for correction. 
 Once approved (and if the organisers allow it): **Space map** → press a green (available) space to see its size, price and facilities → **Select this space**. It shows as "Yours" and waits for an officer to confirm. You can withdraw it from your application page until then. If selection is switched off, an officer allocates your space.
 
 ### 4. Pay
-When your space is confirmed you receive an invoice. **Invoices** → open it:
-- The **control number** and amount are at the top. **Invoice PDF** downloads it.
-- After paying at the bank or by mobile money, press **Record a payment**, enter the amount, date and transaction reference, and attach the slip.
+When your space is confirmed you receive an invoice, and a moment later a **GePG control number** by SMS and email. It is also on the invoice (**Invoices** → open it), in the black card.
 
-Finance checks it. You are notified when it is verified, and the receipt appears on the invoice. You may pay in parts; participation is confirmed when the invoice is fully paid.
+- Pay with the control number at any bank, by mobile money or online banking, before the date shown.
+- That's all: GePG tells GeMEMIS, the receipt appears on the invoice, and you are notified. You may pay in parts; the same control number stays open for the rest. Participation is confirmed when the invoice is fully paid.
+- If your space changes to one with a different price, the old control number is cancelled and you receive a new one. Always pay the number currently shown on the invoice.
+- Only if you paid some other way (a direct transfer to the account, or cash), press **Record a payment**, enter the details and attach the slip; Finance checks it.
 
 ### 5. Before the exhibition
 When your application says **Confirmed**, download the **Allocation letter** from the application page and bring it to check-in.
@@ -96,11 +97,19 @@ On the map, press a space with no holder → **Change status** → Blocked, Unde
 
 ## For Finance Officers
 
-**Payments** is your verification queue (**Verification → Awaiting verification**). For each payment: open the **Evidence**, match it to the bank statement, then:
+Payments made with a **GePG control number** need nothing from you: they arrive, are verified and receipted automatically. **Payments** is your queue for the rest — bank transfers and cash recorded by hand (**Verification → Awaiting verification**). For each payment: open the **Evidence**, match it to the bank statement, then:
 - **Verify** — issues a numbered receipt, updates the invoice, and confirms the exhibitor's participation once the invoice is fully paid.
 - **Reject** — give the reason; the exhibitor is told.
 
-You can also **Record a payment** on an invoice for an exhibitor who paid at the counter. **Reports → Payments** shows paid, unpaid, partially paid and overdue invoices and revenue; **Download CSV** for your records.
+You can also **Record a payment** on an invoice for an exhibitor who paid at the counter.
+
+**Payment gateway** shows how GeMEMIS is talking to GePG:
+- whether it is **live** or the **simulator**, and the Service Provider settings;
+- bills by status, and the last problem, if any;
+- **Reconciliation** — it runs every morning for the day before. A card that says *to check* lists payments GePG reported that had not reached GeMEMIS (now recorded), payments GePG does not know, and amounts that differ. **Reconcile a day** runs it on demand.
+- the **message log**: every message to and from GePG, verbatim. Open one to see the XML — what GePG support will ask for.
+
+If GePG does not issue a control number, the invoice says so and Finance is notified; it is retried every morning, or press **Retry now** on the invoice. In simulator mode the invoice also has **Simulate a GePG payment**, for demonstrations and training. **Reports → Payments** shows paid, unpaid, partially paid and overdue invoices and revenue; **Download CSV** for your records.
 
 ---
 

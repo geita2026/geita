@@ -67,7 +67,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 ### Billing
 | ID | Requirement | Status | Notes |
 |---|---|---|---|
-| FR-031 | Generate invoice automatically | ✅ | On allocation (or on confirmation of a self-selection). One open invoice per application; each space is a line |
+| FR-031 | Generate invoice automatically | ✅ | On allocation (or on confirmation of a self-selection). One open invoice per application; each space is a line. A GePG bill for the balance follows automatically (FR-059) |
 | FR-032 | Payment status | ✅ | All six FRD statuses. `refunded` exists as a status but there is no refund workflow |
 | FR-033 | Payment verification | ✅ | |
 | FR-034 | Payment receipt | ✅ | Numbered receipt and PDF on verification |
@@ -104,7 +104,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 ### Integration
 | ID | Requirement | Status | Notes |
 |---|---|---|---|
-| FR-059 | Payment platform | 🟡 | Signed callback endpoint, tested with a simulated gateway only |
+| FR-059 | Payment platform | 🟡 | Direct GePG integration: bills, control numbers, payment notifications, cancellation, control-number reuse, daily reconciliation, all signed. Runs against a built-in GePG simulator until the institution is registered with the Ministry of Finance; the message format must then be checked against MoF's specification |
 | FR-060 | SMS / email | 🟡 | Driver seams in place; log by default |
 | FR-061 | Financial system | ⬜ | CSV export only |
 | FR-062 | Secure APIs | ✅ | Versioned REST API with bearer tokens; see `05-api.md` |
@@ -120,7 +120,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 | BR-005 | Allocation subject to availability | `AllocationService::guardSpace` |
 | BR-006 | Changes to confirmed allocations need authorisation | `allocations.authorize` permission |
 | BR-007 | Every allocation, reallocation, cancellation audited | `Audit::log` in the same transaction |
-| BR-008 | Payment status updated by the integrated mechanism | Gateway callback verifies automatically; manual verification by Finance |
+| BR-008 | Payment status updated by the integrated mechanism | A signed GePG payment notification records and verifies the payment, issues the receipt and confirms participation; reconciliation recovers lost notifications. Payments outside GePG are verified by Finance |
 | BR-009 | Access by role only | `User::allowed` in every controller |
 | BR-010 | Registration closes automatically after the deadline unless extended | `registration_open` is computed from the dates; housekeeping job changes the status |
 

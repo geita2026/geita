@@ -19,6 +19,8 @@ erDiagram
   INVOICE ||--o{ INVOICE_ITEM : lines
   ALLOCATION ||--o| INVOICE_ITEM : "billed as"
   INVOICE ||--o{ PAYMENT : receives
+  INVOICE ||--o{ GEPG_BILL : "billed through GePG"
+  GEPG_BILL ||--o{ PAYMENT : "paid by"
   USER ||--o{ APP_NOTIFICATION : receives
   USER ||--o{ AUDIT_LOG : performs
 ```
@@ -90,6 +92,7 @@ erDiagram
 | name, description | | |
 | price_per_sqm | decimal(14,2) | FR-008 |
 | color | string(9) | Hex colour for the map |
+| gfs_code | string(20), null | GePG revenue (GFS) code this category's fees are booked under |
 
 ## spaces
 | Column | Type | Notes |
@@ -147,7 +150,8 @@ erDiagram
 | Column | Type | Notes |
 |---|---|---|
 | number | string(40) | Unique, `INV-<exhibition>-00001` |
-| control_number | string(20), null | Unique; quoted by the payment platform |
+| control_number | string(20), null | Unique; the open GePG bill's control number |
+| gepg_status | string(20), null | Mirrors the open bill: `requesting`, `issued`, `failed`, `cancelled`, `paid`; null when GePG is off |
 | exhibition_id, exhibitor_id, application_id | FK | |
 | subtotal, vat_rate, vat_amount, total | decimal | Recomputed from lines |
 | amount_paid | decimal | Sum of verified payments |
@@ -160,7 +164,7 @@ erDiagram
 |---|---|---|
 | invoice_id | FK | |
 | allocation_id | FK, null | |
-| description, space_number, space_size, space_category | | Copied at billing time so the invoice does not change if the space is edited |
+| description, space_number, space_size, space_category, gfs_code | | Copied at billing time so the invoice does not change if the space is edited |
 | unit_price, quantity, amount | decimal | |
 
 ## payments
@@ -177,6 +181,50 @@ erDiagram
 | channel | string(20) | `manual`, `gateway` |
 | receipt_number | string(40), null | Unique, `RCT-<yy>-000001`, set on verification |
 | submitted_by, verified_by, verified_at, verification_notes | | |
+| gepg_trx_id | string(60), null, unique | GePG transaction id: a GePG payment is recorded once |
+| gepg_bill_id | FK gepg_bills, null | The bill (control number) it paid |
+| psp_name, psp_receipt, payment_channel, collection_account, payer_name, payer_phone | | As reported by GePG |
+
+## gepg_bills
+| Column | Type | Notes |
+|---|---|---|
+| invoice_id | FK | |
+| bill_id | string(40) | Unique, `GMS0000000001`; GePG quotes it back |
+| amount, paid_amount | decimal(16,2) | Amount billed (the balance at the time, VAT included) and paid against it |
+| currency | string(3) | |
+| expires_at | timestamp | The invoice's payment deadline, or a week ahead once that has passed |
+| status | string(20) | `requesting`, `issued`, `failed`, `cancelled`, `superseded`, `paid`, `expired` |
+| control_number | string(20), null | Indexed |
+| status_code | string(10), null | Last GePG `TrxStsCode` |
+| error | string, null | Why GePG refused, or could not be reached |
+| attempts | tinyint | |
+| requested_at, issued_at, ended_at | timestamp, null | |
+
+## gepg_messages (append-only)
+| Column | Type | Notes |
+|---|---|---|
+| direction | string(3) | `out` (to GePG) or `in` (from GePG) |
+| type | string(40) | Root element, e.g. `gepgBillSubReq`, `gepgPmtSpInfo` |
+| gepg_bill_id | FK, null | |
+| reference | string(60), null | Bill id, control number or reconciliation id |
+| payload | longtext | The message, verbatim |
+| signature_valid | boolean, null | For messages from GePG |
+| status_code | string(10), null | `TrxStsCode` |
+| http_status | smallint, null | |
+| error | string, null | |
+
+## gepg_reconciliations
+| Column | Type | Notes |
+|---|---|---|
+| request_id | string(40) | Unique `SpReconcReqId` |
+| transaction_date | date | The day reconciled |
+| status | string(20) | `requested`, `received`, `failed` |
+| gepg_count, gepg_total | | What GePG reported |
+| matched | int | Payments that agree |
+| recovered | json | Paid at GePG, notification never received — recorded during reconciliation |
+| missing_at_gepg | json | Recorded here as GePG payments but unknown to GePG |
+| amount_mismatches | json | |
+| error, requested_by, received_at | | |
 
 ## app_notifications
 | Column | Type | Notes |

@@ -180,6 +180,7 @@ class ExhibitionController extends Controller
             'description' => 'nullable|string|max:255',
             'price_per_sqm' => 'required|numeric|min:0',
             'color' => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'gfs_code' => ['nullable', 'regex:/^[0-9]{4,20}$/'], // GePG revenue code (FR-059)
         ];
     }
 

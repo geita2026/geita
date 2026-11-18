@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\ExhibitionController;
 use App\Http\Controllers\Api\FinanceController;
+use App\Http\Controllers\Api\GepgController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SpaceController;
 use Illuminate\Support\Facades\Route;
@@ -32,8 +33,15 @@ Route::prefix('v1')->group(function () {
         'countries' => config('countries'),
     ]);
 
-    // FR-059: called by the payment platform, authenticated by HMAC signature.
-    Route::post('integrations/payments/callback', [FinanceController::class, 'gatewayCallback'])->middleware('throttle:120,1');
+    // FR-059: GePG posts control numbers, payments and reconciliation results here,
+    // each signed with GePG's key. One address, or one per message type if GePG
+    // registers them separately — all three go to the same handler.
+    Route::middleware('throttle:600,1')->group(function () {
+        Route::post('integrations/gepg', [GepgController::class, 'receive']);
+        Route::post('integrations/gepg/control-number', [GepgController::class, 'receive']);
+        Route::post('integrations/gepg/payment', [GepgController::class, 'receive']);
+        Route::post('integrations/gepg/reconciliation', [GepgController::class, 'receive']);
+    });
 
     Route::middleware(['auth:sanctum', 'account'])->group(function () {
         Route::get('auth/me', [AuthController::class, 'me']);
@@ -99,6 +107,15 @@ Route::prefix('v1')->group(function () {
         Route::post('payments/{payment}/verify', [FinanceController::class, 'verify']);
         Route::get('payments/{payment}/evidence', [FinanceController::class, 'evidence']);
         Route::get('payments/{payment}/receipt', [DocumentController::class, 'receipt']);
+
+        // GePG gateway (FR-059)
+        Route::get('gepg/status', [GepgController::class, 'status']);
+        Route::get('gepg/messages', [GepgController::class, 'messages']);
+        Route::get('gepg/messages/{message}', [GepgController::class, 'message']);
+        Route::get('gepg/reconciliations', [GepgController::class, 'reconciliations']);
+        Route::post('gepg/reconciliations', [GepgController::class, 'reconcile']);
+        Route::post('invoices/{invoice}/gepg/retry', [GepgController::class, 'retry']);
+        Route::post('invoices/{invoice}/gepg/simulate-payment', [GepgController::class, 'simulatePayment']);
 
         // Dashboard and reports
         Route::get('exhibitions/{exhibition}/dashboard', [ReportController::class, 'dashboard']);

@@ -10,7 +10,7 @@ flowchart LR
   L --> F[(File storage<br/>documents, evidence)]
   L -. mail .-> M[SMTP]
   L -. sms .-> S[SMS gateway]
-  P[Payment platform] -- signed callback --> L
+  L <-- signed XML: bills, control numbers,<br/>payments, reconciliation --> G[GePG]
 ```
 
 Two deployable parts:
@@ -88,6 +88,43 @@ Allocation changes, billing and their audit entries commit or roll back together
 ### 4.5 Registration window is computed, not stored (BR-010)
 
 `registration_open` is derived from the status and the two dates on every read, so an application is refused the day after the deadline even if the daily job has not run yet. The job only moves the status label.
+
+### 4.6 GePG: bills are separate from invoices (FR-059)
+
+GePG collects public money against a **control number**, and a control number collects a **fixed amount**. An invoice's total, though, changes as spaces are added, moved or cancelled. So GeMEMIS keeps GePG bills as their own records (`gepg_bills`): an invoice has at most one open bill, and keeps the history of the ones it replaced.
+
+After every change to an invoice is committed, `SyncGepgBill` runs `GepgService::sync()`, which compares the open bill's outstanding amount with the invoice balance:
+
+| Situation | What happens |
+|---|---|
+| No open bill, balance due | A bill for the balance is submitted; the control number arrives by callback |
+| Open bill matches the balance | Nothing; if its control number has expired, it is **reused** with a new expiry date |
+| Balance changed (space added, moved, cancelled) | The open bill is **cancelled** at GePG (`superseded`) and a new one submitted |
+| A payment reduced the balance | Nothing — a part-paid bill keeps its control number for the rest |
+| Invoice paid by other means, or cancelled | The open bill is **cancelled** at GePG so it cannot be paid twice |
+
+Bill lines are grouped by **GFS code** (set per space category) and scaled so they add up exactly to the amount billed, VAT included.
+
+All of GePG's XML is built and read in one class, `GepgXml`. Sending goes through a `GepgTransport`: `LiveTransport` (HTTPS, certificate checking on) or `SimulatorTransport`, an in-process stand-in that signs as GePG, issues control numbers, takes simulated payments and answers reconciliation from its own ledger. Messages GePG sends back later (control numbers, reconciliation results) are delivered through the same `receive()` path as real callbacks. Every message in either direction is stored verbatim in `gepg_messages`.
+
+```mermaid
+sequenceDiagram
+  participant G as GeMEMIS
+  participant P as GePG
+  actor X as Exhibitor
+  G->>P: gepgBillSubReq (signed)
+  P-->>G: gepgBillSubReqAck 7101
+  P->>G: gepgBillSubResp: control number
+  G-->>P: gepgBillSubRespAck 7101
+  G-->>X: SMS + email: control number
+  X->>P: pays at bank / mobile money
+  P->>G: gepgPmtSpInfo (signed)
+  G-->>P: gepgPmtSpInfoAck 7101
+  Note over G: payment recorded once per TrxId,<br/>receipt issued, participation confirmed
+  G->>P: gepgSpReconcReq (daily, for yesterday)
+  P->>G: gepgSpReconcResp: the day's payments
+  Note over G: missing payments recorded,<br/>differences flagged to Finance
+```
 
 ## 5. State machines
 
@@ -173,7 +210,7 @@ sequenceDiagram
 | Acting outside one's role | Permission check in every controller; UI hiding is a courtesy only |
 | Exhibitor reading another's records | `ownOrStaff()` on every record read; list queries scoped to the exhibitor |
 | Password guessing | Lock after 5 failures; rate limit; audit of failed sign-ins |
-| Forged payment callback | HMAC-SHA256 of the raw body with a shared secret; idempotent on transaction id |
+| Forged GePG message | Every message from GePG must carry GePG's RSA signature, checked against its certificate; unsigned or mis-signed messages are logged and refused. Payments are idempotent on GePG's transaction id |
 | Tampering with history | Append-only audit log |
 | Malicious upload | Type and size validation; files stored outside the web root; served only through authorised endpoints |
 | Open redirect after sign-in | `next` accepted only if it is a same-site path |

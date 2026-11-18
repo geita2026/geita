@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { Invoice } from "@/lib/types";
+import type { GepgStatus, Invoice } from "@/lib/types";
 
 import Link from "next/link";
 import { Plus } from "@gravity-ui/icons";
@@ -15,6 +15,7 @@ import { MorphForm } from "@/components/ui/morph-form";
 import { ActionButton } from "@/components/ui/action-button";
 import { DownloadLink } from "@/components/ui/download-link";
 import { AreaF, FileF, SelectF, TextF } from "@/components/ui/action-form";
+import { GepgPanel } from "@/components/finance/gepg-panel";
 
 export const metadata: Metadata = { title: "Invoice" };
 
@@ -23,6 +24,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const session = await requireSession();
   const i = await api<Invoice>(`/invoices/${id}`);
   const finance = can(session, "finance.manage");
+  // Only Finance staff can read the gateway's settings; everyone else just sees the bill.
+  const gateway = can(session, "finance.view") ? await api<GepgStatus>("/gepg/status") : null;
   const isOwner = session.user.exhibitor_id === i.exhibitor_id;
   const payable = !["paid", "cancelled", "refunded"].includes(i.status) && (isOwner || finance);
   const money = (n: number) => n.toLocaleString("en-TZ", { minimumFractionDigits: 2 });
@@ -47,7 +50,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                   success: "Payment submitted for verification",
                 }}
                 submitLabel="Submit payment"
-                subtitle={`Pay with control number ${i.control_number}, then record it here. Finance verifies it and issues the receipt.`}
+                subtitle={
+                  i.control_number
+                    ? `Payments to control number ${i.control_number} arrive by themselves. Record one here only if it was paid another way (a direct bank transfer, cash), with its evidence; Finance verifies it.`
+                    : "Record a payment made by bank transfer or cash, with its evidence. Finance verifies it and issues the receipt."
+                }
                 title="Record a payment"
               >
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -148,6 +155,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         </Panel>
 
         <div className="grid content-start gap-4">
+          <GepgPanel canManage={finance} invoice={i} simulator={gateway?.mode === "simulator"} />
+
           <Panel title="Payment">
             <div>
               <div className="h-2.5 overflow-hidden rounded-full bg-default">
@@ -159,9 +168,6 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               <p className="mt-1.5 text-xs text-muted">{pct(i.amount_paid, i.total)}% paid</p>
             </div>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-              <Fact label="Control number">
-                <span className="font-mono">{i.control_number}</span>
-              </Fact>
               <Fact label="Payment deadline">{fmtDate(i.due_on)}</Fact>
               <Fact label="Issued">{fmtDate(i.issued_on)}</Fact>
               <Fact label="Application">
@@ -182,8 +188,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                         {p.amount.toLocaleString("en-TZ")}
                       </span>
                       <span className="block text-xs text-muted">
-                        {PAYMENT_METHODS[p.method] ?? p.method} · {fmtDate(p.paid_on)} ·{" "}
-                        <span className="font-mono">{p.payer_reference}</span>
+                        {p.psp_name ? `GePG · ${p.psp_name}` : (PAYMENT_METHODS[p.method] ?? p.method)} ·{" "}
+                        {fmtDate(p.paid_on)} · <span className="font-mono">{p.payer_reference}</span>
                       </span>
                     </span>
                     <StatusChip map={PAYMENT_STATUS} value={p.verification_status} />

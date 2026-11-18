@@ -44,3 +44,17 @@ export function daysBetween(a: Date, b: Date) {
 export function pct(part: number, total: number) {
   return total > 0 ? Math.round((part / total) * 100) : 0;
 }
+
+/** yyyy-MM-dd for yesterday — the default day to reconcile. */
+export function yesterdayIso() {
+  const d = new Date();
+
+  d.setDate(d.getDate() - 1);
+
+  return format(d, "yyyy-MM-dd");
+}
+
+/** "991400000009" → "9914 0000 0009": control numbers are read out and typed at banks. */
+export function fmtControl(n: string | null | undefined) {
+  return (n ?? "").replace(/(\d{4})(?=\d)/g, "$1 ");
+}

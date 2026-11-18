@@ -11,8 +11,8 @@ Defined in one place: `backend/config/gememis.php`. Controllers call `permit('�
 | `applications.review` | Approve, reject, return | ● | ● | | ● | | | | | |
 | `allocations.manage` | Allocate, confirm, auto-allocate, reallocate, cancel | ● | ● | ● | | | | | | |
 | `allocations.authorize` | Change confirmed allocations; transfer; allocate before approval (BR-002, BR-006) | ● | ● | | | | | | | |
-| `finance.manage` | Verify or reject payments; record a payment for an exhibitor | ● | | | | ● | | | | |
-| `finance.view` | Payments list and payments report | ● | ● | | | ● | ● | | ● | |
+| `finance.manage` | Verify or reject payments; record a payment for an exhibitor; retry a control number; run a GePG reconciliation; simulate a GePG payment (simulator only) | ● | | | | ● | | | | |
+| `finance.view` | Payments list, payments report, Payment gateway page (GePG settings, message log, reconciliation) | ● | ● | | | ● | ● | | ● | |
 | `checkin.manage` | Check-in and occupancy | ● | ● | ● | | | | ● | | |
 | `exhibitors.view` | Exhibitor directory | ● | ● | ● | ● | ● | ● | ● | ● | |
 | `exhibitors.manage` | Classify or suspend an exhibitor; apply on an exhibitor's behalf | ● | ● | | ● | | | ● | | |

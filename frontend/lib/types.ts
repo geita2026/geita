@@ -66,6 +66,7 @@ export type SpaceCategory = {
   description: string | null;
   price_per_sqm: number;
   color: string;
+  gfs_code: string | null;
   spaces_count?: number;
 };
 
@@ -216,6 +217,9 @@ export type Payment = {
   receipt_number: string | null;
   verified_at: string | null;
   verification_notes: string | null;
+  psp_name: string | null;
+  psp_receipt: string | null;
+  payment_channel: string | null;
   created_at: string;
   verifier?: { id: number; name: string } | null;
   invoice?: Invoice;
@@ -238,6 +242,9 @@ export type Invoice = {
   status: string;
   issued_on: string;
   due_on: string;
+  /** requesting | issued | failed | cancelled | paid; null when GePG is off. */
+  gepg_status: string | null;
+  gepg_bills?: GepgBill[];
   items_count?: number;
   items?: InvoiceItem[];
   payments?: Payment[];
@@ -306,4 +313,65 @@ export type ExhibitorDashboard = {
   billed: number;
   paid: number;
   available_spaces: number;
+};
+
+export type GepgBill = {
+  id: number;
+  bill_id: string;
+  amount: number;
+  paid_amount: number;
+  currency: string;
+  expires_at: string;
+  status: string;
+  control_number: string | null;
+  status_code: string | null;
+  error: string | null;
+  requested_at: string | null;
+  issued_at: string | null;
+  ended_at: string | null;
+};
+
+export type GepgStatus = {
+  mode: "off" | "simulator" | "live";
+  sp_code: string;
+  sub_sp_code: string;
+  sp_sys_id: string;
+  base_url: string | null;
+  payment_option: number;
+  default_gfs_code: string | null;
+  simulator_keys: boolean;
+  callback_url: string;
+  bills: Record<string, number>;
+  last_message_at: string | null;
+  last_failure: { id: number; type: string; reference: string | null; error: string; created_at: string } | null;
+};
+
+export type GepgMessage = {
+  id: number;
+  direction: "in" | "out";
+  type: string;
+  reference: string | null;
+  signature_valid: boolean | null;
+  status_code: string | null;
+  http_status: number | null;
+  error: string | null;
+  created_at: string;
+  payload?: string;
+};
+
+export type GepgReconciliation = {
+  id: number;
+  request_id: string;
+  transaction_date: string;
+  status: string;
+  gepg_count: number;
+  gepg_total: number;
+  matched: number;
+  recovered: { trx: string; control_number: string | null; amount: number }[] | null;
+  missing_at_gepg: { trx: string; amount: number; payment: string }[] | null;
+  amount_mismatches: { trx: string; ours: number; gepg: number; payment: string }[] | null;
+  error: string | null;
+  requester?: { id: number; name: string } | null;
+  received_at: string | null;
+  created_at: string;
 };

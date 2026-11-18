@@ -19,7 +19,8 @@ First release. Implements the GeMEMIS Functional Requirements Document.
 - PDF invoice, receipt, allocation letter and allocation schedule.
 - Nine roles; user administration; account lockout; forced change of temporary passwords.
 - Append-only audit trail with old and new values and IP address.
-- Versioned REST API and a signed payment callback.
+- Versioned REST API.
+- **GePG integration:** signed bills, control numbers by SMS and email, payment notifications that issue the receipt and confirm participation, automatic cancel-and-reissue when an amount changes, control-number reuse, daily reconciliation, and a Payment gateway page with the full message log. Runs against a built-in simulator until the institution is registered with GePG.
 
 ### Verified
 
@@ -41,7 +42,7 @@ First release. Implements the GeMEMIS Functional Requirements Document.
 | FR-035..039, FR-060 | Email and SMS go to the log until providers are configured (SMS also needs a small adapter) |
 | FR-046 | No self-service "forgot password"; administrators reset passwords |
 | FR-049 | The audit trail is a screen; it has no CSV export |
-| FR-059 | Payment callback tested with a simulated gateway only |
+| FR-059 | GePG integration tested against the built-in simulator only. The message format follows the published GePG Service Provider API and must be checked against the Ministry of Finance's specification at onboarding (`docs/09-operations.md` §9) |
 | FR-061 | No financial-system integration; CSV export only |
 | FR-029 | Floor plan is a grid per hall, not a scaled drawing |
 | FR-032 | `refunded` status exists but there is no refund workflow; overpayment after a change is held as credit |
@@ -51,7 +52,7 @@ First release. Implements the GeMEMIS Functional Requirements Document.
 
 ### Suggested for the next release
 
-1. Connect the contracted payment platform and SMS gateway.
+1. Register with GePG, check the message format against MoF's specification, and run UAT-19 in GePG's test environment; connect the SMS gateway.
 2. Self-service password reset by email.
 3. Refund and credit-note workflow.
 4. Scaled floor plan with drag-to-place editing, or import from a drawing.

@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Services\Audit;
 use App\Services\BillingService;
-use App\Services\Ref;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,7 +47,7 @@ class FinanceController extends Controller
     {
         $this->ownOrStaff($invoice->exhibitor_id);
 
-        return $invoice->load(['items', 'payments.verifier:id,name', 'exhibitor', 'exhibition:id,code,name,venue,payment_deadline,contact_email,contact_phone', 'application:id,reference,status']);
+        return $invoice->load(['items', 'gepgBills', 'payments.verifier:id,name', 'exhibitor', 'exhibition:id,code,name,venue,payment_deadline,contact_email,contact_phone', 'application:id,reference,status']);
     }
 
     public function payments(Request $request)
@@ -105,41 +103,5 @@ class FinanceController extends Controller
         abort_unless($payment->evidence_path && Storage::disk('local')->exists($payment->evidence_path), 404);
 
         return Storage::disk('local')->download($payment->evidence_path, $payment->evidence_name);
-    }
-
-    /**
-     * FR-059 / BR-008: the payment platform posts settled transactions here.
-     * Authenticated by an HMAC of the raw body with the shared secret; a
-     * transaction id is accepted once (unique per invoice).
-     */
-    public function gatewayCallback(Request $request)
-    {
-        $secret = config('gememis.payment_webhook_secret');
-        abort_unless($secret, 503, 'Payment integration is not configured.');
-        abort_unless(hash_equals(hash_hmac('sha256', $request->getContent(), $secret), (string) $request->header('X-Signature')), 401, 'Bad signature.');
-
-        $data = $request->validate([
-            'control_number' => 'required|string',
-            'amount' => 'required|numeric|min:1',
-            'transaction_id' => 'required|string|max:100',
-            'paid_on' => 'nullable|date',
-            'channel' => 'nullable|string|max:30',
-        ]);
-        $invoice = Invoice::where('control_number', $data['control_number'])->firstOrFail();
-
-        if ($existing = $invoice->payments()->where('payer_reference', $data['transaction_id'])->first()) {
-            return ['status' => 'duplicate', 'receipt_number' => $existing->receipt_number];
-        }
-
-        $payment = Payment::create([
-            'reference' => Ref::temp(), 'invoice_id' => $invoice->id, 'amount' => $data['amount'],
-            'paid_on' => $data['paid_on'] ?? now()->toDateString(), 'method' => 'control_number',
-            'payer_reference' => $data['transaction_id'], 'channel' => 'gateway',
-        ]);
-        Ref::assign($payment, 'reference', 'PAY');
-        Audit::log('payment.gateway', "Gateway payment {$payment->reference} received for {$invoice->number}", $payment);
-        $this->billing->verify($payment, null, 'Verified by payment gateway', 'gateway');
-
-        return ['status' => 'accepted', 'receipt_number' => $payment->fresh()->receipt_number];
     }
 }

@@ -43,6 +43,17 @@ class Invoice extends Model
         return $this->belongsTo(Application::class);
     }
 
+    public function gepgBills()
+    {
+        return $this->hasMany(GepgBill::class)->latest('id');
+    }
+
+    /** The bill whose control number the exhibitor should pay, if any. */
+    public function activeGepgBill()
+    {
+        return $this->hasOne(GepgBill::class)->whereIn('status', GepgBill::OPEN)->latestOfMany();
+    }
+
     public function getBalanceAttribute(): float
     {
         return max(0, round($this->total - $this->amount_paid, 2));

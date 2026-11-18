@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\DomainException;
+use App\Jobs\SyncGepgBill;
 use App\Models\Allocation;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -37,8 +38,6 @@ class BillingService
                 'due_on' => max($exhibition->payment_deadline->toDateString(), now()->addDays(7)->toDateString()),
             ]);
             Ref::assign($invoice, 'number', 'INV', $exhibition->code);
-            // FR-059: a control number the payment gateway quotes back in its callback.
-            $invoice->forceFill(['control_number' => '9914'.str_pad((string) $invoice->id, 8, '0', STR_PAD_LEFT)])->saveQuietly();
         }
 
         $space = $allocation->space;
@@ -48,6 +47,7 @@ class BillingService
             'space_number' => $space->number,
             'space_size' => $space->size_label,
             'space_category' => $space->category->name,
+            'gfs_code' => $space->category->gfs_code,
             'unit_price' => $space->price,
             'quantity' => 1,
             'amount' => $space->price,
@@ -58,7 +58,8 @@ class BillingService
 
         if ($created) {
             Notifier::exhibitor($allocation->exhibitor, 'payment', 'Invoice issued',
-                "Invoice {$invoice->number} for ".number_format($invoice->total)." {$invoice->currency} is due on {$invoice->due_on->format('d M Y')}. Control number: {$invoice->control_number}.",
+                "Invoice {$invoice->number} for ".number_format($invoice->total)." {$invoice->currency} is due on {$invoice->due_on->format('d M Y')}."
+                .(config('gepg.mode') !== 'off' ? ' Your GePG control number follows in a separate message.' : ''),
                 "/invoices/{$invoice->id}");
         }
 
@@ -88,6 +89,7 @@ class BillingService
             'allocation_id' => $new->id,
             'description' => "Exhibition space {$space->number} — {$space->hall->name}",
             'space_number' => $space->number, 'space_size' => $space->size_label, 'space_category' => $space->category->name,
+            'gfs_code' => $space->category->gfs_code,
             'unit_price' => $space->price, 'amount' => $space->price,
         ]);
 
@@ -112,6 +114,9 @@ class BillingService
 
         $invoice->update(['subtotal' => $subtotal, 'vat_amount' => $vat, 'total' => $total, 'amount_paid' => $paid, 'status' => $status]);
 
+        // FR-059: once the change is committed, the GePG bill follows the new balance.
+        DB::afterCommit(fn () => SyncGepgBill::dispatch($invoice->id));
+
         return $invoice;
     }
 
@@ -120,7 +125,7 @@ class BillingService
         if (in_array($invoice->status, ['paid', 'cancelled', 'refunded'], true)) {
             throw new DomainException("Invoice {$invoice->number} is {$invoice->status}; it does not accept payments.");
         }
-        if (! empty($data['payer_reference']) && $invoice->payments()->where('payer_reference', $data['payer_reference'])->exists()) {
+        if (! empty($data['payer_reference']) && Payment::where('payer_reference', $data['payer_reference'])->where('verification_status', '!=', 'rejected')->exists()) {
             throw new DomainException('A payment with this transaction reference has already been submitted for this invoice.');
         }
 

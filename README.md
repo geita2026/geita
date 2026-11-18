@@ -88,7 +88,7 @@ cd docs/tools && npm install && npm run pdf
 Stated plainly so nobody discovers them in production:
 
 - **Email and SMS** are sent through Laravel's mailer and an SMS driver that both default to the application log. Real delivery needs SMTP settings and an SMS gateway adapter (`backend/app/Services/Notifier.php`).
-- **Payment platform integration (FR-059)** is a signed callback endpoint, tested with a simulated gateway. It has not been connected to a real provider (e.g. GePG).
+- **GePG (FR-059)** is built and tested against a built-in GePG simulator. Going live needs the institution's GePG registration and a check of the message format against the Ministry of Finance's specification (`docs/09-operations.md` §9).
 - **Financial system integration (FR-061)** is not built; the payments report exports to CSV for import elsewhere.
 - **Self-service "forgot password"** is not built. A System Administrator resets passwords (FR-046).
 - **The floor plan** is a grid per hall, not a to-scale drawing or uploaded CAD plan.

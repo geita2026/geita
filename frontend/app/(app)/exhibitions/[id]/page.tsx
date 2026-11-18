@@ -244,7 +244,12 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
                 <span className="min-w-0">
                   <CategoryChip color={c.color} name={c.name} />
                   <span className="mt-1 block text-xs text-muted">
-                    {tzs(c.price_per_sqm)} per m² · {c.spaces_count} spaces
+                    {tzs(c.price_per_sqm)} per m² · {c.spaces_count} spaces ·{" "}
+                    {c.gfs_code ? (
+                      <span className="font-mono">GFS {c.gfs_code}</span>
+                    ) : (
+                      <span className="text-warning">no GFS code</span>
+                    )}
                   </span>
                 </span>
                 {layout && (
@@ -330,7 +335,14 @@ function HallFields({
 function CategoryFields({
   c,
 }: {
-  c?: { code: string; name: string; description: string | null; price_per_sqm: number; color: string };
+  c?: {
+    code: string;
+    name: string;
+    description: string | null;
+    price_per_sqm: number;
+    color: string;
+    gfs_code: string | null;
+  };
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -353,6 +365,15 @@ function CategoryFields({
           type="color"
         />
       </label>
+      <TextF
+        mono
+        className="sm:col-span-2"
+        defaultValue={c?.gfs_code ?? ""}
+        description="The government revenue code GePG books this category's fees under. Ask the Finance Unit."
+        label="GFS code"
+        name="gfs_code"
+        placeholder="e.g. 140301"
+      />
       <TextF className="sm:col-span-2" defaultValue={c?.description ?? ""} label="Description" name="description" />
     </div>
   );
