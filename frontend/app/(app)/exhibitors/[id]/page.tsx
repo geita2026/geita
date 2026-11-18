@@ -12,6 +12,7 @@ import { Panel } from "@/components/ui/panel";
 import { Fact, StatusChip } from "@/components/ui/chips";
 import { MorphForm } from "@/components/ui/morph-form";
 import { SelectF } from "@/components/ui/action-form";
+import { RefBadge } from "@/components/ui/ref-link";
 
 export const metadata: Metadata = { title: "Exhibitor" };
 
@@ -80,7 +81,7 @@ export default async function ExhibitorPage({ params }: { params: Promise<{ id: 
                     href={`/applications/${a.id}`}
                   >
                     <span>
-                      <span className="font-mono text-xs font-semibold">{a.reference}</span>
+                      <RefBadge>{a.reference}</RefBadge>
                       <span className="block text-xs text-muted">
                         {a.exhibition?.name} · {a.active_allocations_count ?? 0} space(s)
                       </span>

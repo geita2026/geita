@@ -15,6 +15,7 @@ import { DataTable, Surface } from "@/components/ui/table";
 import { CategoryChip, StatusChip } from "@/components/ui/chips";
 import { Pagination } from "@/components/ui/pagination";
 import { PendingLink } from "@/components/ui/pending-link";
+import { RefLink } from "@/components/ui/ref-link";
 
 export const metadata: Metadata = { title: "Applications" };
 
@@ -69,15 +70,7 @@ export default async function ApplicationsPage({
             {
               key: "ref",
               label: "Reference",
-              render: (a) => (
-                <PendingLink
-                  className="font-mono text-xs font-semibold hover:underline"
-                  href={`/applications/${a.id}`}
-                  label={`Opening ${a.reference}…`}
-                >
-                  {a.reference}
-                </PendingLink>
-              ),
+              render: (a) => <RefLink href={`/applications/${a.id}`}>{a.reference}</RefLink>,
             },
             ...(staff
               ? [

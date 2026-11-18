@@ -14,6 +14,7 @@ import { Panel } from "@/components/ui/panel";
 import { HBars } from "@/components/charts/bars";
 import { StatusChip } from "@/components/ui/chips";
 import { EmptyState } from "@/components/ui/empty-state";
+import { RefLink } from "@/components/ui/ref-link";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -337,7 +338,9 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
         <Panel action={a ? { label: "Open", href: `/applications/${a.id}` } : undefined} title="Application">
           {a ? (
             <div className="grid gap-2 text-sm">
-              <span className="font-mono text-xs text-muted">{a.reference}</span>
+              <span>
+                <RefLink href={`/applications/${a.id}`}>{a.reference}</RefLink>
+              </span>
               <StatusChip map={APPLICATION_STATUS} value={a.status} />
               <span className="text-muted">
                 {a.spaces_requested} space(s) · {a.category?.name ?? "any category"}

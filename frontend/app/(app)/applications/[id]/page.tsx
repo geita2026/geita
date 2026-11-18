@@ -15,6 +15,7 @@ import { MorphForm } from "@/components/ui/morph-form";
 import { ActionButton } from "@/components/ui/action-button";
 import { DownloadLink } from "@/components/ui/download-link";
 import { AreaF, CheckF, FileF, SelectF, TextF } from "@/components/ui/action-form";
+import { RefBadge } from "@/components/ui/ref-link";
 
 export const metadata: Metadata = { title: "Application" };
 
@@ -454,7 +455,7 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
                     href={`/invoices/${i.id}`}
                   >
                     <span>
-                      <span className="font-mono text-xs font-semibold">{i.number}</span>
+                      <RefBadge>{i.number}</RefBadge>
                       <span className="block text-xs text-muted">
                         {tzs(i.total)} · due {fmtDate(i.due_on)}
                       </span>

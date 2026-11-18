@@ -12,7 +12,7 @@ import { FilterBar } from "@/components/ui/filter-bar";
 import { DataTable, Surface } from "@/components/ui/table";
 import { StatusChip } from "@/components/ui/chips";
 import { Pagination } from "@/components/ui/pagination";
-import { PendingLink } from "@/components/ui/pending-link";
+import { RefLink } from "@/components/ui/ref-link";
 
 export const metadata: Metadata = { title: "Invoices" };
 
@@ -58,15 +58,7 @@ export default async function InvoicesPage({
             {
               key: "number",
               label: "Invoice",
-              render: (i) => (
-                <PendingLink
-                  className="font-mono text-xs font-semibold hover:underline"
-                  href={`/invoices/${i.id}`}
-                  label={`Opening ${i.number}…`}
-                >
-                  {i.number}
-                </PendingLink>
-              ),
+              render: (i) => <RefLink href={`/invoices/${i.id}`}>{i.number}</RefLink>,
             },
             {
               key: "exhibitor",

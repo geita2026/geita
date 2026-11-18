@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import clsx from "clsx";
 
 import type { Hall, Space } from "@/lib/types";
@@ -20,6 +19,7 @@ import { CategoryChip, Fact, StatusChip } from "@/components/ui/chips";
 import { ActionForm, SelectF, TextF } from "@/components/ui/action-form";
 import { ActionButton } from "@/components/ui/action-button";
 import { MorphPanel } from "@/components/ui/morph-form";
+import { RefLink } from "@/components/ui/ref-link";
 
 const transition = { type: "spring", stiffness: 240, damping: 28 } as const;
 
@@ -198,12 +198,10 @@ function Cell({ space: s, hall, ctx, dimmed }: { space: Space; hall: Hall; ctx: 
                     {held.status === "pending" ? "Selected by" : "Allocated to"}
                   </p>
                   <p className="mt-1 font-semibold">{held.exhibitor?.organization_name}</p>
-                  <Link
-                    className="mt-2 inline-block text-xs font-semibold text-brand-ink hover:underline"
-                    href={`/applications/${held.application_id}`}
-                  >
-                    Open application · {held.reference}
-                  </Link>
+                  <p className="mt-2 flex items-center gap-2 text-xs text-muted">
+                    Open the application
+                    <RefLink href={`/applications/${held.application_id}`}>{held.reference}</RefLink>
+                  </p>
                 </div>
               )}
 
