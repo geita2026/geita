@@ -1,8 +1,6 @@
 import "@/styles/globals.css";
 import type { Metadata, Viewport } from "next";
 
-import clsx from "clsx";
-
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
@@ -10,6 +8,7 @@ import { cookies } from "next/headers";
 
 import { ACCENT_COOKIE, accentOr } from "@/lib/domain/accents";
 import { MOTION_COOKIE, motionOr } from "@/lib/domain/motion";
+import { WAVE_COOKIE, waveOr } from "@/lib/domain/wave";
 import { fontSans } from "@/config/fonts";
 
 export const metadata: Metadata = {
@@ -39,13 +38,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const jar = await cookies();
   const accent = accentOr(jar.get(ACCENT_COOKIE)?.value);
   const motion = motionOr(jar.get(MOTION_COOKIE)?.value);
+  const wave = waveOr(jar.get(WAVE_COOKIE)?.value);
 
   return (
-    <html suppressHydrationWarning data-accent={accent} data-motion={motion} lang="en">
-      <body
-        suppressHydrationWarning
-        className={clsx("min-h-screen bg-background font-sans text-foreground antialiased", fontSans.variable)}
-      >
+    // The font variable goes on <html>, not <body>: the theme declares
+    // `--font-sans: var(--font-manrope), …` on :root, and a custom property is
+    // resolved where it is declared — set lower down, --font-manrope did not
+    // exist at :root, --font-sans came out empty, and every page fell back to
+    // the system font.
+    <html
+      suppressHydrationWarning
+      className={fontSans.variable}
+      data-accent={accent}
+      data-motion={motion}
+      data-wave={wave}
+      lang="en"
+    >
+      <body suppressHydrationWarning className="min-h-screen bg-background font-sans text-foreground antialiased">
         <Providers
           reduceMotion={motion === "reduce"}
           themeProps={{

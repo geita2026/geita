@@ -25,7 +25,7 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | GET | `/health` | Liveness |
 | GET | `/meta` | Role and status vocabularies, and the country list registration accepts |
 | POST | `/auth/login` | `{email, password}` → `{token, user, permissions}`. 10/min |
-| POST | `/auth/register` | Exhibitor self-registration (FR-011) → `{token, user, permissions}` |
+| POST | `/auth/register` | Exhibitor sign-up (FR-011): `{first_name, last_name, phone, email, password, password_confirmation, terms}` → `{token, user, permissions}`. The exhibitor's `entity_type` is `null` until the first application |
 | POST | `/integrations/gepg` (also `/control-number`, `/payment`, `/reconciliation`) | GePG callbacks (FR-059), see below |
 
 ## Session
@@ -35,7 +35,7 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | GET | `/auth/me` | Current user, exhibitor profile, permission list |
 | POST | `/auth/logout` | Revoke the current token |
 | PUT | `/auth/password` | `{current_password, password, password_confirmation}`; revokes other sessions |
-| PUT | `/auth/profile` | Exhibitor updates their organisation (FR-013) |
+| PUT | `/auth/profile` | Exhibitor updates their profile (FR-013); same applicant fields as below |
 | GET | `/search?q=` | Global search (FR-056) |
 | GET | `/notifications` | Latest 30 |
 | POST | `/notifications/read` | `{id?}`; all when omitted |
@@ -70,7 +70,7 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | Method | Path | Permission | Purpose |
 |---|---|---|---|
 | GET | `/applications` | any | *Paginated.* Exhibitors: own. `?exhibition_id`, `?status`, `?from`, `?to`, `?q` |
-| POST | `/applications` | exhibitor, or `exhibitors.manage` with `exhibitor_id` | Draft (FR-014) |
+| POST | `/applications` | exhibitor, or `exhibitors.manage` with `exhibitor_id` | Draft (FR-014). Includes the applicant: `entity_type` (`individual`\|`business`), `phone`, `country`, optional `physical_address`, `business_sector`, `business_activity`; individuals optional `national_id`; businesses `organization_name`, `registration_number`, `contact_person`, optional `tin`. Required from an exhibitor; staff may omit it when the profile is complete |
 | GET | `/applications/{id}` | owner or staff | With documents, allocations, invoices, `missing_documents` |
 | PUT | `/applications/{id}` | owner or staff | Draft or returned only |
 | POST | `/applications/{id}/submit` | owner or staff | Refused if documents are missing or registration is closed |
@@ -101,9 +101,9 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | GET | `/invoices` | any | *Paginated.* Exhibitors: own. `?exhibition_id`, `?status`, `?from`, `?to`, `?q` |
 | GET | `/invoices/{id}` | owner or staff | With lines and payments |
 | GET | `/invoices/{id}/pdf` | owner or staff | PDF |
-| POST | `/invoices/{id}/payments` | owner, or `finance.manage` | multipart `{amount, paid_on, method, payer_reference, evidence?}` |
+| POST | `/invoices/{id}/payments` | owner (only while GePG is off), or `finance.manage` | multipart `{amount, paid_on, method: bank\|mobile_money, payer_reference, evidence, manual_reason}` — `evidence` always required; `manual_reason` (≥10 characters) required from staff. 403 with the reason when recording is not allowed (`MANUAL_PAYMENTS=off`, invoice closed, exhibitor while GePG is on). `GET /invoices/{id}` returns `can_record_payment`, `record_payment_block`, `record_payment_as` |
 | GET | `/payments` | `finance.view` | *Paginated.* `?status`, `?exhibition_id`, `?q` |
-| POST | `/payments/{id}/verify` | `finance.manage` | `{decision: verify\|reject, notes}` (FR-033, FR-034) |
+| POST | `/payments/{id}/verify` | `finance.manage` | `{decision: verify\|reject, notes}` (FR-033, FR-034). 422 `two-person rule` if the caller recorded the payment. `GET /payments?channel=manual\|gateway` filters the queue |
 | GET | `/payments/{id}/evidence` | owner or staff | Uploaded evidence |
 | GET | `/payments/{id}/receipt` | owner or staff | PDF; verified payments only |
 

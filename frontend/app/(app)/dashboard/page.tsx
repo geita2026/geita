@@ -11,10 +11,12 @@ import { APPLICATION_STATUS, EXHIBITION_STATUS, INVOICE_STATUS, SPACE_STATUS } f
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiRow } from "@/components/ui/kpi";
 import { Panel } from "@/components/ui/panel";
+import { Magnetic } from "@/components/core/magnetic";
 import { HBars } from "@/components/charts/bars";
 import { StatusChip } from "@/components/ui/chips";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RefLink } from "@/components/ui/ref-link";
+import { DeadlineCountdown } from "@/components/ui/deadline-countdown";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -131,7 +133,7 @@ function StaffHome({ data }: { data: StaffDashboard }) {
       )}
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <Panel action={{ label: "Open map", href: "/map" }} meta={`${k.total_spaces} spaces`} title="Spaces by status">
+        <Tile action={{ label: "Open map", href: "/map" }} meta={`${k.total_spaces} spaces`} title="Spaces by status">
           <HBars
             data={data.spaces_by_status
               .filter((s) => s.count > 0)
@@ -143,16 +145,16 @@ function StaffHome({ data }: { data: StaffDashboard }) {
               }))}
             empty="No spaces configured yet"
           />
-        </Panel>
-        <Panel action={{ label: "All applications", href: "/applications" }} title="Applications">
+        </Tile>
+        <Tile action={{ label: "All applications", href: "/applications" }} title="Applications">
           <HBars
             data={data.applications_by_status
               .filter((s) => s.count > 0)
               .map((s) => ({ key: s.status, label: APPLICATION_STATUS[s.status]?.label ?? s.status, value: s.count }))}
             empty="No applications yet"
           />
-        </Panel>
-        <Panel meta="spaces taken" title="Halls and areas">
+        </Tile>
+        <Tile meta="spaces taken" title="Halls and areas">
           <HBars
             data={data.by_hall.map((h) => ({
               key: h.code,
@@ -163,11 +165,11 @@ function StaffHome({ data }: { data: StaffDashboard }) {
             empty="No halls yet"
             max={Math.max(1, ...data.by_hall.map((h) => h.spaces_count))}
           />
-        </Panel>
+        </Tile>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
-        <Panel
+        <Tile
           action={{ label: "Reports", href: "/reports?type=performance" }}
           meta="billed, excl. VAT"
           title="Revenue by space category"
@@ -182,8 +184,8 @@ function StaffHome({ data }: { data: StaffDashboard }) {
               title: `${c.held} of ${c.spaces} spaces taken at ${tzs(c.price_per_sqm)}/m²`,
             }))}
           />
-        </Panel>
-        <Panel
+        </Tile>
+        <Tile
           action={data.recent_activity.length ? { label: "Audit trail", href: "/admin/audit" } : undefined}
           title="Recent activity"
         >
@@ -203,7 +205,7 @@ function StaffHome({ data }: { data: StaffDashboard }) {
               ))}
             </ul>
           )}
-        </Panel>
+        </Tile>
       </div>
     </div>
   );
@@ -231,6 +233,7 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
   // The invoice still being paid, and its GePG control number once issued.
   const owing = data.invoices.find((i) => ["unpaid", "partially_paid", "overdue"].includes(i.status));
   const control = owing?.gepg_status === "issued" ? owing.control_number : null;
+  const expires = control ? owing?.active_gepg_bill?.expires_at : null;
   const outstanding = data.billed - data.paid;
 
   const next = !a
@@ -328,14 +331,18 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted">What happens next</p>
             <p className="mt-1 max-w-2xl font-display text-lg font-bold leading-snug">{next.text}</p>
           </div>
-          <Link className="button button--primary button--md" href={next.href}>
-            {next.cta}
-          </Link>
+          {/* The countdown sits with the action it is counting down to. */}
+          <div className="flex flex-wrap items-center gap-3">
+            {a?.status === "pending_payment" && expires && <DeadlineCountdown deadline={expires} variant="badge" />}
+            <Link className="button button--primary button--md" href={next.href}>
+              {next.cta}
+            </Link>
+          </div>
         </div>
       </section>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel action={a ? { label: "Open", href: `/applications/${a.id}` } : undefined} title="Application">
+        <Tile action={a ? { label: "Open", href: `/applications/${a.id}` } : undefined} title="Application">
           {a ? (
             <div className="grid gap-2 text-sm">
               <span>
@@ -349,8 +356,8 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
           ) : (
             <p className="py-4 text-sm text-muted">You have not applied for this exhibition yet.</p>
           )}
-        </Panel>
-        <Panel action={{ label: "Floor plan", href: "/map" }} title="Your space">
+        </Tile>
+        <Tile action={{ label: "Floor plan", href: "/map" }} title="Your space">
           {held.length ? (
             <ul className="grid gap-2">
               {held.map((h) => (
@@ -366,8 +373,8 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
           ) : (
             <p className="py-4 text-sm text-muted">No space allocated yet. {data.available_spaces} available.</p>
           )}
-        </Panel>
-        <Panel action={{ label: "Invoices", href: "/invoices" }} title="Payments">
+        </Tile>
+        <Tile action={{ label: "Invoices", href: "/invoices" }} title="Payments">
           {data.invoices.length ? (
             <div className="grid gap-2 text-sm">
               <p className="font-display text-2xl font-extrabold tabular">{tzs(outstanding)}</p>
@@ -375,8 +382,9 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
                 outstanding of {tzs(data.billed)} · due {fmtDate(owing?.due_on ?? e.payment_deadline)}
               </p>
               {control && (
-                <p className="text-xs text-muted">
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
                   Control number <ControlChip value={control} />
+                  {expires && <DeadlineCountdown deadline={expires} variant="mini" />}
                 </p>
               )}
               <div className="flex flex-wrap gap-1.5">
@@ -388,7 +396,7 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
           ) : (
             <p className="py-4 text-sm text-muted">An invoice is issued when your space is allocated.</p>
           )}
-        </Panel>
+        </Tile>
       </div>
     </div>
   );
@@ -400,5 +408,19 @@ function ControlChip({ value }: { value: string }) {
     <span className="inline-block rounded-lg bg-[#111114] px-2 py-0.5 font-mono font-extrabold tracking-[0.04em] whitespace-nowrap text-brand tabular">
       {fmtControl(value)}
     </span>
+  );
+}
+
+/**
+ * A dashboard panel that leans toward the pointer (motion-primitives Magnetic).
+ * Basic's pull (0.6 within 100 px) is sized for a button; a 400 px tile with a
+ * chart in it would swing ~40 px, so tiles pull gently over a wider range.
+ * Still under reduced motion.
+ */
+function Tile({ className = "", ...props }: React.ComponentProps<typeof Panel>) {
+  return (
+    <Magnetic className="h-full" intensity={0.12} range={320}>
+      <Panel {...props} className={`h-full ${className}`} />
+    </Magnetic>
   );
 }

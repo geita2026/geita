@@ -100,11 +100,24 @@ export const EXHIBITOR_TYPES: Record<string, string> = {
   sme: "SME / small-scale miner",
 };
 
+/** Who an exhibitor is (exhibitors.entity_type). */
+export const ENTITY_TYPES: Record<string, string> = {
+  individual: "Individual",
+  business: "Registered business",
+};
+
+/** Every method a payment may carry, including older records. */
 export const PAYMENT_METHODS: Record<string, string> = {
   bank: "Bank deposit / transfer",
   mobile_money: "Mobile money",
   control_number: "Control number",
   cash: "Cash",
+};
+
+/** What may be recorded by hand: no cash (no evidence trail), no control number (GePG reports those). */
+export const MANUAL_PAYMENT_METHODS: Record<string, string> = {
+  bank: PAYMENT_METHODS.bank,
+  mobile_money: PAYMENT_METHODS.mobile_money,
 };
 
 export const humanize = (s: string) => s.replaceAll("_", " ").replace(/^./, (c) => c.toUpperCase());

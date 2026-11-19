@@ -7,7 +7,7 @@ import { Plus } from "@gravity-ui/icons";
 import { api } from "@/lib/api";
 import { can, requireSession } from "@/lib/auth/session";
 import { fmtDate, fmtDateTime, pct } from "@/lib/domain/format";
-import { INVOICE_STATUS, PAYMENT_METHODS, PAYMENT_STATUS, options } from "@/lib/domain/labels";
+import { INVOICE_STATUS, MANUAL_PAYMENT_METHODS, PAYMENT_METHODS, PAYMENT_STATUS, options } from "@/lib/domain/labels";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { Fact, StatusChip } from "@/components/ui/chips";
@@ -26,8 +26,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const finance = can(session, "finance.manage");
   // Only Finance staff can read the gateway's settings; everyone else just sees the bill.
   const gateway = can(session, "finance.view") ? await api<GepgStatus>("/gepg/status") : null;
-  const isOwner = session.user.exhibitor_id === i.exhibitor_id;
-  const payable = !["paid", "cancelled", "refunded"].includes(i.status) && (isOwner || finance);
+  const payable = i.can_record_payment === true;
+  const exception = i.record_payment_as === "exception";
+  const me = session.user.id;
   const money = (n: number) => n.toLocaleString("en-TZ", { minimumFractionDigits: 2 });
   const today = new Date().toISOString().slice(0, 10);
 
@@ -38,7 +39,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           <>
             <StatusChip map={INVOICE_STATUS} size="md" value={i.status} />
             <DownloadLink path={`invoices/${i.id}/pdf`}>Invoice PDF</DownloadLink>
-            {payable && (
+            {payable ? (
               <MorphForm
                 icon={<Plus className="size-4" />}
                 label="Record a payment"
@@ -47,15 +48,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                   method: "POST",
                   path: `/invoices/${i.id}/payments`,
                   multipart: true,
-                  success: "Payment submitted for verification",
+                  success: exception
+                    ? "Recorded — another Finance Officer must verify it"
+                    : "Payment submitted for verification",
                 }}
                 submitLabel="Submit payment"
                 subtitle={
-                  i.control_number
-                    ? `Payments to control number ${i.control_number} arrive by themselves. Record one here only if it was paid another way (a direct bank transfer, cash), with its evidence; Finance verifies it.`
-                    : "Record a payment made by bank transfer or cash, with its evidence. Finance verifies it and issues the receipt."
+                  exception
+                    ? "Only for money that reached the collection account outside GePG. Attach the bank slip and say why. A different Finance Officer must verify it, and Management and the Auditor are told when it is accepted."
+                    : "Record a payment made by bank transfer or mobile money, with its evidence. Finance verifies it and issues the receipt."
                 }
-                title="Record a payment"
+                title={exception ? "Record a payment outside GePG" : "Record a payment"}
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <TextF
@@ -72,7 +75,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                     defaultValue="bank"
                     label="Method"
                     name="method"
-                    options={options(PAYMENT_METHODS)}
+                    options={options(MANUAL_PAYMENT_METHODS)}
                   />
                   <TextF
                     isRequired
@@ -83,14 +86,31 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                   />
                   <div className="sm:col-span-2">
                     <FileF
+                      isRequired
                       accept=".pdf,.jpg,.jpeg,.png"
                       description="Bank slip or confirmation message — PDF or image, up to 10 MB."
                       label="Payment evidence"
                       name="evidence"
                     />
                   </div>
+                  {exception && (
+                    <div className="sm:col-span-2">
+                      <AreaF
+                        isRequired
+                        description="Kept with the payment and shown to whoever verifies or audits it."
+                        label="Why it did not go through GePG"
+                        name="manual_reason"
+                        rows={3}
+                      />
+                    </div>
+                  )}
                 </div>
               </MorphForm>
+            ) : (
+              i.record_payment_block &&
+              !["paid", "cancelled", "refunded"].includes(i.status) && (
+                <span className="max-w-xs text-xs text-muted">{i.record_payment_block}</span>
+              )
             )}
           </>
         }
@@ -192,8 +212,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                         {fmtDate(p.paid_on)} · <span className="font-mono">{p.payer_reference}</span>
                       </span>
                     </span>
-                    <StatusChip map={PAYMENT_STATUS} value={p.verification_status} />
+                    <span className="flex items-center gap-1.5">
+                      {p.manual_reason && <span className="badge badge-sm badge-warning badge-soft">Manual</span>}
+                      <StatusChip map={PAYMENT_STATUS} value={p.verification_status} />
+                    </span>
                   </div>
+                  {p.submitter && p.channel !== "gateway" && (
+                    <p className="text-xs text-muted">
+                      Recorded by {p.submitter.name}, {fmtDateTime(p.created_at)}
+                      {p.manual_reason ? ` — ${p.manual_reason}` : ""}
+                    </p>
+                  )}
                   {p.verified_at && (
                     <p className="text-xs text-muted">
                       {p.verification_status === "verified" ? `Receipt ${p.receipt_number} · verified` : "Rejected"} by{" "}
@@ -212,7 +241,12 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                         Receipt PDF
                       </DownloadLink>
                     )}
-                    {finance && p.verification_status === "pending" && (
+                    {finance && p.verification_status === "pending" && p.submitted_by === me && (
+                      <p className="text-xs text-warning">
+                        You recorded this payment, so another Finance Officer must verify it.
+                      </p>
+                    )}
+                    {finance && p.verification_status === "pending" && p.submitted_by !== me && (
                       <>
                         <ActionButton
                           pendingLabel="Verifying…"

@@ -7,10 +7,10 @@ use App\Models\Exhibitor;
 use App\Models\User;
 use App\Services\Audit;
 use App\Services\Notifier;
+use App\Support\ExhibitorProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -57,37 +57,44 @@ class AuthController extends Controller
         return ['token' => $user->createToken('web')->plainTextToken] + $this->session($user);
     }
 
-    /** FR-011: an exhibitor creates the organisation profile and its first user in one step. */
+    /**
+     * FR-011: the person creates an account — name, phone, email, password, as
+     * on SAMS. Whether they exhibit as an individual or a registered business,
+     * and the organisation's details, are asked when they first apply.
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
-            'organization_name' => 'required|string|max:255',
-            'registration_number' => 'nullable|string|max:100',
-            'tin' => 'nullable|string|max:50',
-            'contact_person' => 'required|string|max:255',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'phone' => 'required|string|max:30',
             'email' => 'required|email|unique:users,email',
-            'physical_address' => 'nullable|string|max:255',
-            'country' => ['required', Rule::in(config('countries'))],
-            'business_sector' => 'nullable|string|max:255',
-            'business_activity' => 'nullable|string|max:2000',
-            'exhibitor_type' => 'nullable|in:local,international,government,sme',
             'password' => ['required', 'confirmed', $this->passwordRule()],
-        ]);
+            'terms' => 'accepted',
+        ], ['terms.accepted' => 'Accept the terms to create an account.']);
         $data['email'] = strtolower($data['email']);
+        $name = trim($data['first_name'].' '.$data['last_name']);
 
-        $user = DB::transaction(function () use ($data) {
-            $exhibitor = Exhibitor::create(collect($data)->except(['password'])->all());
-
-            return User::create([
-                'name' => $data['contact_person'], 'email' => $data['email'], 'phone' => $data['phone'],
-                'password' => $data['password'], 'role' => 'exhibitor', 'exhibitor_id' => $exhibitor->id,
+        $user = DB::transaction(function () use ($data, $name) {
+            // A profile from day one, completed (individual or business) on the first application.
+            $exhibitor = Exhibitor::create([
+                'organization_name' => $name, 'contact_person' => $name, 'phone' => $data['phone'], 'email' => $data['email'],
             ]);
+
+            $user = User::create([
+                'name' => $name, 'email' => $data['email'], 'phone' => $data['phone'], 'password' => $data['password'],
+                'role' => 'exhibitor', 'exhibitor_id' => $exhibitor->id,
+            ]);
+            $user->forceFill(['terms_accepted_at' => now()])->save();
+
+            return $user;
         });
 
         auth()->setUser($user);
-        Audit::log('exhibitor.registered', "{$data['organization_name']} registered", $user->exhibitor, reference: $data['email']);
-        Notifier::user($user, 'account', 'Welcome to GeMEMIS', 'Your exhibitor account is ready. Open a published exhibition to apply for space.', '/exhibitions');
+        Audit::log('exhibitor.registered', "$name registered", $user->exhibitor, reference: $data['email']);
+        Notifier::user($user, 'account', 'Welcome to GeMEMIS',
+            'Your account is ready. Open a published exhibition to apply for space — you will say there whether you exhibit as an individual or a registered business.',
+            '/exhibitions');
 
         return response()->json(['token' => $user->createToken('web')->plainTextToken] + $this->session($user), 201);
     }
@@ -120,23 +127,13 @@ class AuthController extends Controller
         return ['message' => 'Password changed.'];
     }
 
-    /** FR-013: an exhibitor maintains their own organisation profile. */
+    /** FR-013: an exhibitor maintains their own profile, as an individual or a registered business. */
     public function updateProfile(Request $request)
     {
         $user = $this->actor();
         abort_unless($user->exhibitor, 404, 'No exhibitor profile is attached to this account.');
-        $data = $request->validate([
-            'organization_name' => 'required|string|max:255',
-            'registration_number' => 'nullable|string|max:100',
-            'tin' => 'nullable|string|max:50',
-            'contact_person' => 'required|string|max:255',
-            'phone' => 'required|string|max:30',
-            'physical_address' => 'nullable|string|max:255',
-            'country' => ['required', Rule::in(config('countries'))],
-            'business_sector' => 'nullable|string|max:255',
-            'business_activity' => 'nullable|string|max:2000',
-        ]);
-        $user->exhibitor->update($data);
+        $data = $request->validate(ExhibitorProfile::rules($request->input('entity_type')));
+        ExhibitorProfile::apply($user->exhibitor, $data, $user->name);
         [$old, $new] = Audit::diff($user->exhibitor);
         if ($new) {
             Audit::log('exhibitor.updated', "{$user->exhibitor->organization_name} updated their profile", $user->exhibitor, $old, $new);

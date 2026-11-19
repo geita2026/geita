@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { ACCENT_COOKIE, accentOr } from "@/lib/domain/accents";
 import { MOTION_COOKIE, motionOr } from "@/lib/domain/motion";
+import { WAVE_COOKIE, waveOr } from "@/lib/domain/wave";
 import { failure, type ActionResult } from "@/server/action-result";
 
 /**
@@ -35,6 +36,20 @@ export async function setMotionAction(pref: string): Promise<ActionResult> {
     const jar = await cookies();
 
     jar.set(MOTION_COOKIE, motionOr(pref), { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+    revalidatePath("/", "layout");
+
+    return { ok: true };
+  } catch (err) {
+    return failure(err);
+  }
+}
+
+/** Distortion wave on or off — a display setting like motion (lib/domain/wave.ts). */
+export async function setWaveAction(pref: string): Promise<ActionResult> {
+  try {
+    const jar = await cookies();
+
+    jar.set(WAVE_COOKIE, waveOr(pref), { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
     revalidatePath("/", "layout");
 
     return { ok: true };

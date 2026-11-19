@@ -9,6 +9,8 @@ import { MOTION_COOKIE, motionOr } from "@/lib/domain/motion";
 import { siteConfig } from "@/config/site";
 import { AccentPicker } from "@/components/settings/accent-picker";
 import { MotionPicker } from "@/components/settings/motion-picker";
+import { WavePicker } from "@/components/settings/wave-picker";
+import { WAVE_COOKIE, waveOr } from "@/lib/domain/wave";
 import { PageHeader } from "@/components/ui/page-header";
 import { Fact } from "@/components/ui/chips";
 import { ActionForm, TextF } from "@/components/ui/action-form";
@@ -40,6 +42,16 @@ export default async function SettingsPage() {
           </p>
         </div>
         <MotionPicker current={motionOr(jar.get(MOTION_COOKIE)?.value)} />
+      </Card>
+      <Card className="gap-4 p-5" data-wave-demo>
+        <div>
+          <h2 className="font-semibold">Distortion wave</h2>
+          <p className="text-sm text-muted">
+            A ripple that carries the page into its new look when you switch between light and dark or change the
+            accent. It is never shown while motion is reduced. Saved to this browser only.
+          </p>
+        </div>
+        <WavePicker current={waveOr(jar.get(WAVE_COOKIE)?.value)} />
       </Card>
       <Card className="gap-4 p-5">
         <h2 className="font-semibold">Account</h2>

@@ -4,7 +4,7 @@ import type { Exhibitor, Paginated } from "@/lib/types";
 import { api } from "@/lib/api";
 import { requirePermission } from "@/lib/auth/session";
 import { apiQuery, toParams } from "@/lib/params";
-import { EXHIBITOR_TYPES } from "@/lib/domain/labels";
+import { ENTITY_TYPES, EXHIBITOR_TYPES } from "@/lib/domain/labels";
 import { PageHeader } from "@/components/ui/page-header";
 import { FilterBar } from "@/components/ui/filter-bar";
 import { DataTable, Surface } from "@/components/ui/table";
@@ -37,6 +37,11 @@ export default async function ExhibitorsPage({
       <FilterBar
         facets={[
           {
+            key: "entity_type",
+            label: "Exhibits as",
+            options: Object.entries(ENTITY_TYPES).map(([value, label]) => ({ value, label })),
+          },
+          {
             key: "exhibitor_type",
             label: "Type",
             options: Object.entries(EXHIBITOR_TYPES).map(([value, label]) => ({ value, label })),
@@ -64,6 +69,12 @@ export default async function ExhibitorsPage({
                   {e.organization_name}
                 </PendingLink>
               ),
+            },
+            {
+              key: "as",
+              label: "Exhibits as",
+              render: (e) =>
+                e.entity_type ? ENTITY_TYPES[e.entity_type] : <span className="text-muted">Not stated yet</span>,
             },
             { key: "type", label: "Type", render: (e) => EXHIBITOR_TYPES[e.exhibitor_type] ?? e.exhibitor_type },
             { key: "country", label: "Country", render: (e) => e.country },

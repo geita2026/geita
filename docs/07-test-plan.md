@@ -30,11 +30,17 @@ Test names carry the FRD's test-case numbers (FRD §25: TC-nnn proves FR-nnn).
 | TC-005 | FR-005, FR-007, FR-008 | A 3 × 6 m space in a 10,000/m² category is priced 180,000 |
 | TC-010 | FR-010, BR-001, BR-005 | Second allocation of a held space is refused by the API; a direct database insert is refused by the unique index |
 | TC-012 | FR-012 | Five wrong passwords lock the account; the right password is then refused |
+| TC-011 | FR-011 | Sign-up needs only name, phone, email, password and the terms; the applicant type is not set yet |
 | TC-014 | FR-014, BR-003 | Submission without the mandatory document is refused, naming the document |
+| TC-014 (applicant) | FR-013, FR-014 | Applying requires saying individual or business; a business needs its name and registration number, the country must be on the list; an individual is billed in their own name with no TIN |
+| TC-014 (individual documents) | BR-003 | An individual is asked for the individuals' documents (National ID), not the business licence |
 | TC-023 | FR-023 | Exhibitor selection is pending, holds the space, raises no invoice; a second selection beyond the requested number is refused; officer confirmation invoices it |
 | TC-024 | FR-024, BR-002, FR-031, BR-004 | A draft application cannot be allocated; an approved one is, with invoice 90,000 + 18% VAT = 106,200 |
 | TC-026 | FR-026, FR-028, BR-007 | Reallocation without a reason is refused; with a reason the old space frees and the new one is held; cancellation frees the space, cancels the invoice, returns the application to approved |
 | TC-034 | FR-032, FR-033, FR-034 | Duplicate transaction reference refused; exhibitor cannot verify; part payment → partially paid; full payment → paid, receipt PDF, participation confirmed |
+| TC-033a | FR-033 | Two-person rule: the Finance Officer who recorded a payment gets 422; a second one verifies; Management and the Auditor are notified; audit `payment.verified_manual` |
+| TC-033b | FR-033 | System Administrator cannot record or verify a payment (403) |
+| TC-033c | FR-033 | GePG on: exhibitor cannot record (403); staff without evidence or reason → 422; cash → 422; `MANUAL_PAYMENTS=off` → 403 |
 | TC-047 | FR-047, BR-009 | An exhibitor cannot read another's application, the audit trail or the user list |
 | TC-048 | FR-048 | Status change is logged with the old value; the entry cannot be modified |
 | BR-010 | FR-004, BR-010 | After the closing date an application is refused; the housekeeping job sets `registration_closed` |
@@ -48,12 +54,12 @@ GePG tests (`backend/tests/Feature/GepgTest.php`, against the simulator):
 | Unsigned message | A message not signed by GePG is refused (`7303`) and changes nothing |
 | Part payment | The control number stays open for the rest; never re-billed |
 | Amount change | Reallocation to a dearer space cancels the bill at GePG and issues a new control number with the new GFS code |
-| Settled outside GePG | A cash payment cancels the open control number |
+| Settled outside GePG | A bank transfer recorded by one Finance Officer and verified by another cancels the open control number |
 | Reconciliation | A payment whose notification was lost is recovered; a "GePG" payment unknown to GePG is flagged |
 | Live mode | Signed XML posted to the configured URL with `Gepg-Com` / `Gepg-Code` headers; a refusal code marks the bill failed and tells Finance |
 | Off mode | No bill, no control number |
 
-Current result: **21 tests, 167 assertions, all passing.**
+Current result: **24 tests, 193 assertions, all passing.**
 
 ### Not covered by automated tests
 
@@ -86,7 +92,7 @@ Not exercised in this pass: the exhibitor's journey in the browser (registration
 
 Each script lists who performs it, the steps, and the expected result. Record Pass/Fail, the tester and the date. The fifteen FRD acceptance criteria (§27) map to these scripts in §6.
 
-**UAT-01 User registration** — *Exhibitor.* Open the sign-in page → Create an exhibitor account → complete the form → Create account. **Expect:** signed in on the dashboard; "Apply for space" offered.
+**UAT-01 User registration** — *Exhibitor.* Open the sign-in page → Create an exhibitor account → enter name, phone, email and password; submit once without accepting the terms (**expect** refused, nothing typed is lost), then accept → Create account. **Expect:** signed in on the dashboard; "Apply for space" offered.
 
 **UAT-02 Exhibition creation** — *Exhibition Administrator.* Exhibitions → New exhibition → complete → Create. **Expect:** exhibition page opens, status Draft; exhibitors cannot see it.
 
@@ -94,7 +100,7 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 
 **UAT-04 Publication** — *Exhibition Administrator.* Publish for registration. **Expect:** status "Open for registration"; exhibitors are notified and can see it.
 
-**UAT-05 Exhibitor application** — *Exhibitor.* Open the exhibition → Apply for space → Save. Press Submit before uploading. **Expect:** refused, naming the missing documents. Upload them → Submit. **Expect:** status Submitted; notification received.
+**UAT-05 Exhibitor application** — *Exhibitor.* Open the exhibition → Apply for space → choose **An individual** (repeat with another account as **A registered business**) → Save. **Expect:** an individual is asked for no company details and for the individuals' documents only. Press Submit before uploading. **Expect:** refused, naming the missing documents. Upload them → Submit. **Expect:** status Submitted; notification received.
 
 **UAT-06 Application approval** — *Registration Officer.* Applications → open it → Return with a reason. **Expect:** exhibitor sees the reason and can edit. After resubmission → Approve. **Expect:** status Approved; exhibitor notified. Also reject a different application; a reason is demanded.
 
@@ -106,7 +112,7 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 
 **UAT-10 Invoice generation** — *Exhibitor / Finance.* Open the invoice. **Expect:** number, exhibitor, exhibition, space number, size, category, unit price, quantity, VAT, total, payment deadline, control number. Download the PDF.
 
-**UAT-11 Payment and verification** — *Exhibitor, then Finance Officer.* Exhibitor: Record a payment with evidence. Finance: Payments → view evidence → Verify. **Expect:** invoice Paid; receipt PDF; application Confirmed; exhibitor notified. Repeat with a part payment → Partially paid, not confirmed. Reject a payment → reason reaches the exhibitor.
+**UAT-11 Payment and verification** — *Exhibitor, then Finance Officer (with `GEPG_MODE=off`).* Exhibitor: Record a payment with evidence. Finance: Payments → view evidence → Verify. **Expect:** invoice Paid; receipt PDF; application Confirmed; exhibitor notified. Repeat with a part payment → Partially paid, not confirmed. Reject a payment → reason reaches the exhibitor.
 
 **UAT-12 Allocation letter and check-in** — *Exhibitor, then Customer Service.* Exhibitor downloads the allocation letter. Check-in → Check in → Mark occupied. **Expect:** check-in reference; space shows Occupied on the map; occupancy rate changes on the dashboard. An unpaid exhibitor cannot be checked in.
 
@@ -119,6 +125,8 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 **UAT-16 Audit trail** — *Auditor.* Find the entries for UAT-08, UAT-11 and UAT-13 by reference. **Expect:** user, date and time, activity, old and new values, IP address. No edit or delete control exists.
 
 **UAT-17 User administration** — *System Administrator.* Create a user (one-time password shown); sign in as them and be forced to change it; change their role; deactivate (they are signed out); reset password; unlock a locked account.
+
+**UAT-11b Manual payment safeguards** — *Two Finance Officers, Management.* With GePG on, Finance Officer A records a payment outside GePG with a slip and reason. **Expect:** A sees *Needs another Finance Officer*, not **Verify**; the exhibitor sees no **Record a payment**. Finance Officer B verifies. **Expect:** receipt issued; Management and the Auditor notified; audit entry *payment.verified_manual*. As System Administrator, the invoice shows no **Record a payment**.
 
 **UAT-19 GePG (in GePG's test environment)** — *Finance Officer, Exhibitor.* With `GEPG_MODE=live` against GePG's test environment: allocate a space → a control number arrives within minutes and reaches the exhibitor by SMS. Pay part of it through GePG's test channel → payment, receipt and *Partially paid*; pay the rest → *Paid*, participation confirmed. Reallocate a confirmed exhibitor to a dearer space → the old control number is cancelled at GePG and a new one issued. Run **Reconcile a day** → *All matched*. In the message log every message from GePG shows *Signature valid*.
 

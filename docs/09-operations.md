@@ -180,6 +180,7 @@ openssl req -x509 -newkey rsa:2048 -keyout gememis-gepg.key -out gememis-gepg.cr
 | Key | Value |
 |---|---|
 | `GEPG_MODE` | `off`, `simulator` or `live` |
+| `MANUAL_PAYMENTS` | `exception` (default): Finance may record a payment outside GePG, with evidence and a reason, verified by a second Finance Officer. `off`: GePG only — nobody can record a payment by hand. Keep at least two active Finance Officers while it is `exception` |
 | `GEPG_SP_CODE`, `GEPG_SUB_SP_CODE`, `GEPG_SP_SYS_ID`, `GEPG_SP_NAME` | From MoF |
 | `GEPG_BASE_URL` | GePG's address (test, then production) |
 | `GEPG_PATH_BILL`, `GEPG_PATH_REUSE`, `GEPG_PATH_CANCEL`, `GEPG_PATH_RECONCILIATION` | Only if the specification's paths differ from the defaults |

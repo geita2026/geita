@@ -8,20 +8,27 @@
 - **Bell:** your notifications. A copy also goes to your email and phone where those services are switched on.
 - **Dialogs:** most buttons open out into a form and fold back when you save. Press Esc or the ✕ to close without saving.
 - **Filters:** every list has a search box and filter chips. The filtered view is in the page address, so you can bookmark or share it.
-- **Settings:** accent colour, reduced motion, and changing your password.
+- **Settings:** accent colour, reduced motion, the distortion wave (the ripple when you switch theme or accent — switch it off here), and changing your password.
 
 ---
 
 ## For exhibitors
 
 ### 1. Create your account
-On the sign-in page choose **Create an exhibitor account**. Enter your organisation's details, your email (this is what you sign in with) and a password of at least 10 characters with upper and lower case letters and a number.
+On the sign-in page choose **Create an exhibitor account**. Enter your first and last name, phone number and email (this is what you sign in with), and a password of at least 10 characters with upper and lower case letters and a number — the bar under it shows its strength, and the confirmation says when the two match. Tick **I accept the terms of use** and **Create account**.
+
+Nothing about a company is asked yet: you say how you exhibit when you apply.
 
 ### 2. Apply for space
 1. **Exhibitions** → open the exhibition → **Apply for space**.
-2. Choose your preferred category and size, the number of spaces and what you will exhibit. **Save and continue.** This is a draft.
-3. On the application page, **Upload document** for each mandatory document shown in red.
-4. **Submit application.** You cannot submit until every mandatory document is uploaded.
+2. Under **About you**, choose how you are applying:
+   - **An individual** — you exhibit in your own name, without a registered business. Give your phone and country (and your National ID number if you have one). Invoices and receipts are made out to you.
+   - **A registered business** — give the organisation's name and registration number (TIN where applicable), a contact person, phone and country.
+
+   Your choice and details are kept in **My profile**, so later applications only need confirming.
+3. Under **Your application**, choose your preferred category and size, the number of spaces and what you will exhibit. **Save and continue.** This is a draft.
+4. On the application page, **Upload document** for each mandatory document shown in red. Individuals and businesses are asked for different documents — an individual is never asked for a business licence or TIN certificate.
+5. **Submit application.** You cannot submit until every mandatory document is uploaded.
 
 You will be notified when it is approved, rejected, or returned for correction. If it is returned, read the reason at the top of the application, fix it, and submit again.
 
@@ -31,10 +38,10 @@ Once approved (and if the organisers allow it): **Space map** → press a green 
 ### 4. Pay
 When your space is confirmed you receive an invoice, and a moment later a **GePG control number** by SMS and email. It is also on the invoice (**Invoices** → open it), in the black card.
 
-- Pay with the control number at any bank, by mobile money or online banking, before the date shown.
+- Pay with the control number at any bank, by mobile money or online banking, before the date shown. A countdown beside **Pay invoice** on your dashboard, and on the invoice, shows how long the control number stays valid.
 - That's all: GePG tells GeMEMIS, the receipt appears on the invoice, and you are notified. You may pay in parts; the same control number stays open for the rest. Participation is confirmed when the invoice is fully paid.
 - If your space changes to one with a different price, the old control number is cancelled and you receive a new one. Always pay the number currently shown on the invoice.
-- Only if you paid some other way (a direct transfer to the account, or cash), press **Record a payment**, enter the details and attach the slip; Finance checks it.
+- There is no **Record a payment** button while GePG is on: the control number is the way to pay. If you paid some other way by mistake (a direct transfer to the account), contact the Finance Unit with the slip.
 
 ### 5. Before the exhibition
 When your application says **Confirmed**, download the **Allocation letter** from the application page and bring it to check-in.
@@ -47,7 +54,7 @@ The dashboard always shows which step you are on and what to do next.
 ## For Exhibition Administrators
 
 ### Create an exhibition
-**Exhibitions → New exhibition.** Fill in the dates carefully: registration must close on or before the start date, and the payment deadline is the default due date on invoices. List the **mandatory documents** one per line — exhibitors cannot submit without them. It is saved as a **Draft**, invisible to exhibitors.
+**Exhibitions → New exhibition.** Fill in the dates carefully: registration must close on or before the start date, and the payment deadline is the default due date on invoices. List the **mandatory documents** one per line, once for **businesses** and once for **individuals** (for example a National ID) — exhibitors cannot submit without them. It is saved as a **Draft**, invisible to exhibitors.
 
 ### Lay it out
 On the exhibition page:
@@ -97,11 +104,15 @@ On the map, press a space with no holder → **Change status** → Blocked, Unde
 
 ## For Finance Officers
 
-Payments made with a **GePG control number** need nothing from you: they arrive, are verified and receipted automatically. **Payments** is your queue for the rest — bank transfers and cash recorded by hand (**Verification → Awaiting verification**). For each payment: open the **Evidence**, match it to the bank statement, then:
+Payments made with a **GePG control number** need nothing from you: they arrive, are verified and receipted automatically. **Payments** is your queue for the rest — payments recorded by hand (**Verification → Awaiting verification**; **How it came in → Recorded by hand** shows only those, marked **Manual**). For each payment: open the **Evidence**, match it to the bank statement, then:
 - **Verify** — issues a numbered receipt, updates the invoice, and confirms the exhibitor's participation once the invoice is fully paid.
 - **Reject** — give the reason; the exhibitor is told.
 
-You can also **Record a payment** on an invoice for an exhibitor who paid at the counter.
+**Recording a payment outside GePG** is an exception, for money that reached the collection account without a control number (for example a direct transfer before the control number was issued). On the invoice press **Record a payment outside GePG**, attach the bank slip — it is required — and say why it did not go through GePG. Cash cannot be recorded.
+
+- You can never verify a payment you recorded: **Verify** is replaced by *Needs another Finance Officer*. A colleague checks the slip against the bank statement and verifies it.
+- When it is accepted, Management and the Auditor are notified with who recorded it, who verified it and the reason.
+- The System Administrator cannot record or verify payments.
 
 **Payment gateway** shows how GeMEMIS is talking to GePG:
 - whether it is **live** or the **simulator**, and the Service Provider settings;

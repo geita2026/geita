@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { ACCENTS } from "@/lib/domain/accents";
 import { setAccentAction } from "@/server/settings/actions";
 import { AnimatedBackground } from "@/components/core/animated-background";
+import { playWave } from "@/lib/wave-effect";
 
 /**
  * Accent picker. The swatch is applied to <html> immediately so the whole page
@@ -24,8 +25,16 @@ export function AccentPicker({ current }: { current: string }) {
     document.documentElement.dataset.accent = selected;
   }, [selected]);
 
-  function choose(key: string) {
+  function choose(key: string, from: HTMLElement, event: MouseEvent) {
     if (key === selected) return;
+    // The page ripples from the swatch into the new colour (Settings → Distortion wave).
+    void playWave(
+      document.body,
+      () => {
+        document.documentElement.dataset.accent = key;
+      },
+      { source: from, focus: event },
+    );
     startTransition(async () => {
       setSelected(key);
       const r = await setAccentAction(key);
@@ -61,7 +70,7 @@ export function AccentPicker({ current }: { current: string }) {
             )}
             data-id={a.key}
             type="button"
-            onClick={() => choose(a.key)}
+            onClick={(e) => choose(a.key, e.currentTarget, e.nativeEvent)}
           >
             <span
               aria-hidden

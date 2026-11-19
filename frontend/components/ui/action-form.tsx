@@ -11,6 +11,27 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { FormCombo, FormSelect, FormText, FormTextArea } from "@/components/ui/form-fields";
 
 type Errors = Record<string, string[]> | undefined;
+
+/**
+ * React resets a form after its action runs — even when the server refused it —
+ * and the HeroUI/React Aria fields listen for that reset and clear themselves,
+ * wiping everything the person typed. Their listener sits on the form, so the
+ * reset is stopped there first, in the capture phase. A successful submit
+ * closes its dialog or moves to another page anyway.
+ *
+ * Use as the form's ref: `<Form ref={keepInput} …>`.
+ */
+export function keepInput(form: HTMLFormElement | null) {
+  if (!form) return;
+  const stop = (e: Event) => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  };
+
+  form.addEventListener("reset", stop, { capture: true });
+
+  return () => form.removeEventListener("reset", stop, { capture: true });
+}
 const ErrorsContext = createContext<Errors>(undefined);
 
 const initial: ActionResult<unknown> = { ok: false, error: "" };
@@ -54,7 +75,7 @@ export function ActionForm({
   }, [state, onDone]);
 
   return (
-    <Form action={action} className={className} validationBehavior="aria">
+    <Form ref={keepInput} action={action} className={className} validationBehavior="aria">
       <ErrorsContext.Provider value={!state.ok ? state.fieldErrors : undefined}>{children}</ErrorsContext.Provider>
       {/* col-span-full: forms laid out as a grid keep the alert and buttons on their own row. */}
       <div className="col-span-full empty:hidden">
@@ -68,6 +89,11 @@ export function ActionForm({
       </div>
     </Form>
   );
+}
+
+/** The first error the API returned for a field of the surrounding ActionForm. */
+export function useFieldError(name: string) {
+  return useContext(ErrorsContext)?.[name]?.[0];
 }
 
 export function TextF(props: Omit<React.ComponentProps<typeof FormText>, "errors">) {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { can, requirePermission } from "@/lib/auth/session";
 import { fmtDateTime } from "@/lib/domain/format";
-import { APPLICATION_STATUS, EXHIBITOR_TYPES, options } from "@/lib/domain/labels";
+import { APPLICATION_STATUS, ENTITY_TYPES, EXHIBITOR_TYPES, options } from "@/lib/domain/labels";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { Fact, StatusChip } from "@/components/ui/chips";
@@ -55,10 +55,17 @@ export default async function ExhibitorPage({ params }: { params: Promise<{ id: 
         title={e.organization_name}
       />
       <div className="grid gap-4 xl:grid-cols-[1.3fr_1fr]">
-        <Panel title="Organisation">
+        <Panel title={e.entity_type === "individual" ? "Individual exhibitor" : "Organisation"}>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-3">
-            <Fact label="Registration no.">{e.registration_number}</Fact>
-            <Fact label="TIN">{e.tin}</Fact>
+            <Fact label="Exhibits as">{e.entity_type ? ENTITY_TYPES[e.entity_type] : "Not stated yet"}</Fact>
+            {e.entity_type === "individual" ? (
+              <Fact label="National ID">{e.national_id}</Fact>
+            ) : (
+              <>
+                <Fact label="Registration no.">{e.registration_number}</Fact>
+                <Fact label="TIN">{e.tin}</Fact>
+              </>
+            )}
             <Fact label="Business sector">{e.business_sector}</Fact>
             <Fact label="Contact person">{e.contact_person}</Fact>
             <Fact label="Phone">{e.phone}</Fact>

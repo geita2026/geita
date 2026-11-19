@@ -188,7 +188,11 @@ class GepgTest extends TestCase
     {
         $invoice = $this->allocated();
         Sanctum::actingAs($this->finance());
-        $id = $this->postJson("/api/v1/invoices/{$invoice->id}/payments", ['amount' => 106200, 'paid_on' => now()->toDateString(), 'method' => 'cash', 'payer_reference' => 'CASH-1'])->json('id');
+        $id = $this->post("/api/v1/invoices/{$invoice->id}/payments", ['amount' => 106200, 'paid_on' => now()->toDateString(), 'method' => 'bank',
+            'payer_reference' => 'TRF-1', 'manual_reason' => 'Paid by direct transfer before receiving the control number.',
+            'evidence' => \Illuminate\Http\UploadedFile::fake()->create('slip.pdf', 20, 'application/pdf')], ['Accept' => 'application/json'])->assertCreated()->json('id');
+        // A second Finance Officer accepts it (two-person rule).
+        Sanctum::actingAs(User::create(['name' => 'Finance 2', 'email' => 'finance2@test.tz', 'password' => 'Secret#12345', 'role' => 'finance_officer'])->refresh());
         $this->postJson("/api/v1/payments/$id/verify", ['decision' => 'verify'])->assertOk();
 
         $this->assertSame('cancelled', GepgBill::sole()->status);

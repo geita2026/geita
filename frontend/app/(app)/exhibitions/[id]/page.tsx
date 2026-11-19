@@ -15,6 +15,8 @@ import { MorphForm } from "@/components/ui/morph-form";
 import { ActionButton } from "@/components/ui/action-button";
 import { AreaF, SelectF, TextF } from "@/components/ui/action-form";
 import { ExhibitionFields, exhibitionSpecExtras } from "@/components/exhibitions/exhibition-fields";
+import { ApplicantFields } from "@/components/exhibitors/applicant-fields";
+import { listCountries } from "@/lib/countries";
 
 export const metadata: Metadata = { title: "Exhibition" };
 
@@ -46,6 +48,7 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
   const layout = can(session, "spaces.manage");
   const isExhibitor = session.user.role === "exhibitor";
   const editable = manage && !["completed", "cancelled"].includes(e.status);
+  const countries = isExhibitor ? await listCountries() : [];
   const mine = isExhibitor
     ? (await api<Paginated<Application>>("/applications", { query: { exhibition_id: e.id } })).data.find(
         (a) => !["cancelled", "rejected"].includes(a.status),
@@ -109,9 +112,23 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
                     }}
                     submitLabel="Save and continue"
                     subtitle="Saved as a draft. You attach the required documents and submit on the next page."
+                    width="max-w-2xl"
                     title={`Apply — ${e.name}`}
                   >
-                    <ApplicationFields e={e} />
+                    <div className="grid gap-6">
+                      <section className="grid gap-3">
+                        <h3 className="border-b border-separator pb-2 text-sm font-semibold">About you</h3>
+                        <ApplicantFields
+                          countries={countries}
+                          exhibitor={session.user.exhibitor}
+                          personName={session.user.name}
+                        />
+                      </section>
+                      <section className="grid gap-3">
+                        <h3 className="border-b border-separator pb-2 text-sm font-semibold">Your application</h3>
+                        <ApplicationFields e={e} />
+                      </section>
+                    </div>
                   </MorphForm>
                 )
               ))}
@@ -154,17 +171,10 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
         </Panel>
         <div className="grid content-start gap-4">
           <Panel title="Mandatory documents">
-            {(e.required_documents?.length ?? 0) === 0 ? (
-              <p className="text-sm text-muted">None required.</p>
-            ) : (
-              <ul className="grid gap-1.5 text-sm">
-                {e.required_documents!.map((d) => (
-                  <li key={d} className="flex items-center gap-2">
-                    <span aria-hidden className="size-1.5 rounded-full bg-brand" /> {d}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DocList docs={e.required_documents} heading="Registered businesses" />
+              <DocList docs={e.required_documents_individual} heading="Individuals" />
+            </div>
           </Panel>
           <Panel title="Exhibition categories">
             <div className="flex flex-wrap gap-1.5">
@@ -426,6 +436,26 @@ function ApplicationFields({ e }: { e: Exhibition }) {
         placeholder="Power, access, water, security…"
         rows={2}
       />
+    </div>
+  );
+}
+
+/** BR-003: one list per kind of applicant. */
+function DocList({ heading, docs }: { heading: string; docs: string[] | null }) {
+  return (
+    <div>
+      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted">{heading}</p>
+      {(docs?.length ?? 0) === 0 ? (
+        <p className="text-sm text-muted">None required.</p>
+      ) : (
+        <ul className="grid gap-1.5 text-sm">
+          {docs!.map((d) => (
+            <li key={d} className="flex items-center gap-2">
+              <span aria-hidden className="size-1.5 rounded-full bg-brand" /> {d}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

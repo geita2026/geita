@@ -68,7 +68,7 @@ class ReportController extends Controller
     {
         $application = Application::where('exhibition_id', $exhibition->id)->where('exhibitor_id', $exhibitorId)
             ->whereNotIn('status', ['cancelled', 'rejected'])->with(['activeAllocations.space.hall:id,name', 'category:id,name'])->latest()->first();
-        $invoices = Invoice::where('exhibitor_id', $exhibitorId)->where('exhibition_id', $exhibition->id)->whereNotIn('status', ['cancelled'])->get();
+        $invoices = Invoice::where('exhibitor_id', $exhibitorId)->where('exhibition_id', $exhibition->id)->whereNotIn('status', ['cancelled'])->with('activeGepgBill')->get();
 
         return [
             'exhibition' => $exhibition->only(['id', 'code', 'name', 'venue', 'theme', 'status', 'start_date', 'end_date', 'registration_closes_on', 'payment_deadline', 'registration_open', 'currency', 'allow_self_selection']),

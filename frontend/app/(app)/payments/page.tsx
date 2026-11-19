@@ -31,7 +31,7 @@ export default async function PaymentsPage({
   const exhibition = await currentExhibition();
   const finance = can(session, "finance.manage");
   const list = await api<Paginated<Payment>>("/payments", {
-    query: apiQuery(sp, ["q", "status"], { exhibition_id: exhibition?.id }),
+    query: apiQuery(sp, ["q", "status", "channel"], { exhibition_id: exhibition?.id }),
   });
 
   return (
@@ -47,6 +47,14 @@ export default async function PaymentsPage({
             key: "status",
             label: "Verification",
             options: Object.entries(PAYMENT_STATUS).map(([value, s]) => ({ value, label: s.label })),
+          },
+          {
+            key: "channel",
+            label: "How it came in",
+            options: [
+              { value: "gateway", label: "GePG" },
+              { value: "manual", label: "Recorded by hand" },
+            ],
           },
         ]}
         placeholder="Search payment, transaction, receipt, invoice…"
@@ -74,8 +82,12 @@ export default async function PaymentsPage({
               label: "Method · reference",
               render: (p) => (
                 <span>
-                  {PAYMENT_METHODS[p.method] ?? p.method}
+                  {p.psp_name ? `GePG · ${p.psp_name}` : (PAYMENT_METHODS[p.method] ?? p.method)}
+                  {p.manual_reason && <span className="badge badge-xs badge-warning badge-soft ms-1.5">Manual</span>}
                   <span className="block font-mono text-xs text-muted">{p.payer_reference}</span>
+                  {p.submitter && p.channel !== "gateway" && (
+                    <span className="block text-xs text-muted">Recorded by {p.submitter.name}</span>
+                  )}
                 </span>
               ),
             },
@@ -107,7 +119,10 @@ export default async function PaymentsPage({
                       Evidence
                     </a>
                   )}
-                  {finance && p.verification_status === "pending" && (
+                  {finance && p.verification_status === "pending" && p.submitted_by === session.user.id && (
+                    <span className="text-xs text-warning">Needs another Finance Officer</span>
+                  )}
+                  {finance && p.verification_status === "pending" && p.submitted_by !== session.user.id && (
                     <>
                       <ActionButton
                         pendingLabel="Verifying…"

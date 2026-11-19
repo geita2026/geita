@@ -47,16 +47,27 @@ class FinanceController extends Controller
     {
         $this->ownOrStaff($invoice->exhibitor_id);
 
-        return $invoice->load(['items', 'gepgBills', 'payments.verifier:id,name', 'exhibitor', 'exhibition:id,code,name,venue,payment_deadline,contact_email,contact_phone', 'application:id,reference,status']);
+        $invoice->load(['items', 'gepgBills', 'payments.verifier:id,name', 'payments.submitter:id,name', 'exhibitor', 'exhibition:id,code,name,venue,payment_deadline,contact_email,contact_phone', 'application:id,reference,status']);
+        // What the screen may offer this person: recording a payment by hand, and why not.
+        $block = $this->manualPaymentBlock($invoice);
+        $invoice->setAttribute('can_record_payment', $block === null);
+        $invoice->setAttribute('record_payment_block', $block);
+        $invoice->setAttribute('record_payment_as', $this->actor()->isStaff() ? 'exception' : 'exhibitor');
+
+        return $invoice;
     }
 
     public function payments(Request $request)
     {
         $this->permit('finance.view');
-        $query = Payment::with(['invoice:id,number,total,amount_paid,currency,exhibitor_id,exhibition_id,status', 'invoice.exhibitor:id,organization_name', 'verifier:id,name']);
+        $query = Payment::with(['invoice:id,number,total,amount_paid,currency,exhibitor_id,exhibition_id,status', 'invoice.exhibitor:id,organization_name', 'verifier:id,name', 'submitter:id,name']);
 
         if ($status = $request->query('status')) {
             $query->whereIn('verification_status', explode(',', $status));
+        }
+        // manual | gateway: recorded by hand, or reported by GePG.
+        if ($channel = $request->query('channel')) {
+            $query->whereIn('channel', explode(',', $channel));
         }
         if ($exhibition = $request->query('exhibition_id')) {
             $query->whereHas('invoice', fn ($i) => $i->where('exhibition_id', $exhibition));
@@ -70,18 +81,57 @@ class FinanceController extends Controller
     }
 
     /** The exhibitor (or Finance on their behalf) records a payment with its evidence. */
+    /**
+     * Why this person may not record a payment by hand on this invoice right now,
+     * or null when they may (FR-033 safeguards; config gememis.manual_payments).
+     */
+    private function manualPaymentBlock(Invoice $invoice): ?string
+    {
+        $user = $this->actor();
+        $gepgOn = config('gepg.mode') !== 'off';
+
+        if (in_array($invoice->status, ['paid', 'cancelled', 'refunded'], true)) {
+            return "Invoice {$invoice->number} is {$invoice->status}; it does not accept payments.";
+        }
+        if ($user->isStaff()) {
+            if (! $user->allowed('finance.manage')) {
+                return 'Only the Finance Unit records payments.';
+            }
+            if ($gepgOn && config('gememis.manual_payments') === 'off') {
+                return 'Payments are accepted through GePG only. Recording payments by hand is switched off.';
+            }
+
+            return null;
+        }
+        if ($gepgOn) {
+            return 'Pay with the GePG control number on this invoice. The payment is then recorded automatically.';
+        }
+
+        return null;
+    }
+
+    /**
+     * A payment made outside GePG, recorded by hand with its evidence. Accepted
+     * only when a second person verifies it (BillingService::verify).
+     */
     public function submitPayment(Request $request, Invoice $invoice)
     {
         $this->ownOrStaff($invoice->exhibitor_id);
-        if ($this->actor()->isStaff()) {
-            $this->permit('finance.manage');
+        if ($block = $this->manualPaymentBlock($invoice)) {
+            abort(403, $block);
         }
+        $staff = $this->actor()->isStaff();
         $data = $request->validate([
             'amount' => 'required|numeric|min:1',
             'paid_on' => 'required|date|before_or_equal:today',
-            'method' => 'required|in:bank,mobile_money,control_number,cash',
+            // No cash, and no "control number": GePG records those payments itself.
+            'method' => 'required|in:bank,mobile_money',
             'payer_reference' => 'required|string|max:100',
-            'evidence' => 'nullable|file|max:10240|mimes:pdf,jpg,jpeg,png',
+            'evidence' => 'required|file|max:10240|mimes:pdf,jpg,jpeg,png',
+            'manual_reason' => [$staff ? 'required' : 'nullable', 'string', 'min:10', 'max:1000'],
+        ], [
+            'evidence.required' => 'Attach the bank slip or payment confirmation.',
+            'manual_reason.required' => 'Say why this payment did not go through GePG.',
         ]);
 
         return response()->json($this->billing->submitPayment($invoice, $data, $request->file('evidence'), $this->actor()), 201);

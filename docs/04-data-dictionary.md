@@ -28,7 +28,9 @@ erDiagram
 ## exhibitors
 | Column | Type | Notes |
 |---|---|---|
-| organization_name | string | Indexed |
+| organization_name | string | Indexed. For an individual, the person's name |
+| entity_type | string(20), null | `individual` (no registered business) or `business`; null until the first application says which |
+| national_id | string(40), null | Individuals only, optional |
 | registration_number | string, null | Business registration |
 | tin | string, null | Tax identification number |
 | contact_person | string | |
@@ -53,6 +55,7 @@ erDiagram
 | locked_at | timestamp, null | Set at 5 failures |
 | last_login_at | timestamp, null | |
 | exhibitor_id | FK exhibitors, null | Set for exhibitor accounts |
+| terms_accepted_at | timestamp, null | When the terms of use were accepted at sign-up |
 
 ## exhibitions
 | Column | Type | Notes |
@@ -63,7 +66,8 @@ erDiagram
 | registration_opens_on, registration_closes_on | date | Closing ≤ start date |
 | payment_deadline | date | Default invoice due date |
 | categories | json | Exhibition (sector) categories |
-| required_documents | json | Mandatory document types (BR-003) |
+| required_documents | json | Mandatory document types for businesses (BR-003) |
+| required_documents_individual | json, null | Mandatory document types for individuals |
 | terms | text, null | |
 | contact_email, contact_phone | | |
 | currency | string(3) | Default `TZS` |
@@ -174,13 +178,14 @@ erDiagram
 | invoice_id | FK | |
 | amount | decimal(16,2) | |
 | paid_on | date | |
-| method | string(30) | `bank`, `mobile_money`, `control_number`, `cash` |
+| method | string(30) | `bank`, `mobile_money`, `control_number`; `cash` only on older records (no longer accepted) |
 | payer_reference | string, null | Bank slip / transaction id; unique per invoice |
 | evidence_path, evidence_name | string, null | `evidence_path` is never returned |
 | verification_status | string(20) | `pending`, `verified`, `rejected` |
 | channel | string(20) | `manual`, `gateway` |
 | receipt_number | string(40), null | Unique, `RCT-<yy>-000001`, set on verification |
-| submitted_by, verified_by, verified_at, verification_notes | | |
+| submitted_by, verified_by, verified_at, verification_notes | | `verified_by` is never `submitted_by` (two-person rule) |
+| manual_reason | text, null | Why a staff-recorded payment did not go through GePG |
 | gepg_trx_id | string(60), null, unique | GePG transaction id: a GePG payment is recorded once |
 | gepg_bill_id | FK gepg_bills, null | The bill (control number) it paid |
 | psp_name, psp_receipt, payment_channel, collection_account, payer_name, payer_phone | | As reported by GePG |

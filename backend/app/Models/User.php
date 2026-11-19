@@ -25,6 +25,7 @@ class User extends Authenticatable
             'must_change_password' => 'boolean',
             'locked_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
         ];
     }
 

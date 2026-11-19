@@ -20,6 +20,7 @@ class Exhibition extends Model
             'payment_deadline' => 'date:Y-m-d',
             'categories' => 'array',
             'required_documents' => 'array',
+            'required_documents_individual' => 'array',
             'allow_self_selection' => 'boolean',
             'vat_rate' => 'float',
             'published_at' => 'datetime',

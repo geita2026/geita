@@ -34,6 +34,8 @@ class GememisTest extends TestCase
     {
         parent::setUp();
         Storage::fake('local');
+        // These tests cover the manual payment flow; GePG has its own (GepgTest).
+        config(['gepg.mode' => 'off', 'gememis.manual_payments' => 'exception']);
 
         $this->exhibition = Exhibition::create([
             'code' => 'T27', 'name' => 'Test Expo', 'venue' => 'Geita', 'start_date' => now()->addDays(60), 'end_date' => now()->addDays(65),
@@ -55,6 +57,13 @@ class GememisTest extends TestCase
         return User::firstOrCreate(['email' => "$role@test.tz"], ['name' => ucfirst($role), 'password' => 'Secret#12345', 'role' => $role])->refresh();
     }
 
+    /** The applicant details an exhibitor gives with an application, as a registered business. */
+    private function business(): array
+    {
+        return ['entity_type' => 'business', 'organization_name' => 'Acme Mining', 'registration_number' => 'BRELA-1', 'contact_person' => 'Jane',
+            'phone' => '+255700000000', 'country' => 'Tanzania'];
+    }
+
     private function exhibitorUser(string $name = 'Acme Mining'): User
     {
         $exhibitor = Exhibitor::create(['organization_name' => $name, 'contact_person' => 'Jane', 'phone' => '+255700000000', 'email' => str($name)->slug().'@test.tz']);
@@ -66,7 +75,7 @@ class GememisTest extends TestCase
     private function approvedApplication(User $exhibitor, int $spaces = 1): Application
     {
         Sanctum::actingAs($exhibitor);
-        $id = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => $spaces, 'product_category' => 'Drills'])
+        $id = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => $spaces, 'product_category' => 'Drills'] + $this->business())
             ->assertCreated()->json('id');
         $this->post("/api/v1/applications/$id/documents", ['type' => 'Business licence', 'file' => UploadedFile::fake()->create('licence.pdf', 20, 'application/pdf')])->assertCreated();
         $this->postJson("/api/v1/applications/$id/submit")->assertOk();
@@ -102,7 +111,7 @@ class GememisTest extends TestCase
     public function test_tc014_application_cannot_be_submitted_without_mandatory_documents(): void
     {
         Sanctum::actingAs($this->exhibitorUser());
-        $id = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'])->assertCreated()->json('id');
+        $id = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'] + $this->business())->assertCreated()->json('id');
         $this->postJson("/api/v1/applications/$id/submit")->assertStatus(422)->assertJsonFragment(['message' => 'Upload the required documents before submitting: Business licence.']);
     }
 
@@ -126,7 +135,7 @@ class GememisTest extends TestCase
     {
         $exhibitor = $this->exhibitorUser();
         Sanctum::actingAs($exhibitor);
-        $draft = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'])->json('id');
+        $draft = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'] + $this->business())->json('id');
 
         Sanctum::actingAs($officer = $this->staff('space_officer'));
         $this->postJson('/api/v1/allocations', ['application_id' => $draft, 'space_id' => $this->spaces['A01']->id])->assertStatus(422)->assertJsonPath('rule', 'BR-002');
@@ -155,7 +164,8 @@ class GememisTest extends TestCase
         $invoice = Invoice::firstOrFail();
 
         Sanctum::actingAs($exhibitor);
-        $pay = fn ($amount, $ref) => $this->postJson("/api/v1/invoices/{$invoice->id}/payments", ['amount' => $amount, 'paid_on' => now()->toDateString(), 'method' => 'bank', 'payer_reference' => $ref]);
+        $pay = fn ($amount, $ref) => $this->post("/api/v1/invoices/{$invoice->id}/payments", ['amount' => $amount, 'paid_on' => now()->toDateString(), 'method' => 'bank',
+            'payer_reference' => $ref, 'evidence' => UploadedFile::fake()->create('slip.pdf', 20, 'application/pdf')], ['Accept' => 'application/json']);
         $first = $pay(50000, 'TXN-1')->assertCreated()->json('id');
         $pay(50000, 'TXN-1')->assertStatus(422); // same slip twice
         $this->postJson("/api/v1/payments/$first/verify", ['decision' => 'verify'])->assertForbidden(); // exhibitors cannot verify
@@ -238,10 +248,131 @@ class GememisTest extends TestCase
     {
         $this->exhibition->update(['registration_closes_on' => now()->subDay()]);
         Sanctum::actingAs($this->exhibitorUser());
-        $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'])->assertStatus(422);
+        $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Drills'] + $this->business())->assertStatus(422);
 
         $this->artisan('gememis:housekeeping')->assertSuccessful();
         $this->assertSame('registration_closed', $this->exhibition->fresh()->status);
+    }
+
+    public function test_tc011_sign_up_asks_only_for_the_person(): void
+    {
+        $form = ['first_name' => 'Asha', 'last_name' => 'Mrisho', 'phone' => '+255700000001', 'email' => 'Asha@Example.tz',
+            'password' => 'Secret#12345', 'password_confirmation' => 'Secret#12345'];
+
+        $this->postJson('/api/v1/auth/register', $form)->assertStatus(422)->assertJsonValidationErrors('terms');
+        $this->postJson('/api/v1/auth/register', $form + ['terms' => true])->assertCreated()
+            ->assertJsonPath('user.name', 'Asha Mrisho')
+            ->assertJsonPath('user.email', 'asha@example.tz')
+            ->assertJsonPath('user.exhibitor.entity_type', null); // said when applying
+
+        $this->assertNotNull(User::where('email', 'asha@example.tz')->value('terms_accepted_at'));
+    }
+
+    public function test_tc014_applying_says_individual_or_business_and_checks_the_details(): void
+    {
+        Sanctum::actingAs($user = $this->exhibitorUser());
+        $apply = fn (array $who) => $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Gold'] + $who);
+
+        $apply([])->assertStatus(422)->assertJsonValidationErrors('entity_type');
+        // A business needs its name and registration number; the country must be one on the list.
+        $apply(['entity_type' => 'business', 'phone' => '+255700000000', 'country' => 'Tanzana'])
+            ->assertStatus(422)->assertJsonValidationErrors(['organization_name', 'registration_number', 'contact_person', 'country']);
+        // An individual needs none of the business details, and is billed in their own name.
+        $apply(['entity_type' => 'individual', 'phone' => '+255700000000', 'country' => 'Tanzania', 'tin' => '999'])->assertCreated();
+
+        $exhibitor = $user->exhibitor->fresh();
+        $this->assertSame('individual', $exhibitor->entity_type);
+        $this->assertSame($user->name, $exhibitor->organization_name);
+        $this->assertNull($exhibitor->tin);
+    }
+
+    public function test_tc014_individuals_have_their_own_mandatory_documents(): void
+    {
+        $this->exhibition->update(['required_documents_individual' => ['National ID']]);
+        Sanctum::actingAs($this->exhibitorUser());
+        $id = $this->postJson('/api/v1/applications', ['exhibition_id' => $this->exhibition->id, 'spaces_requested' => 1, 'product_category' => 'Gold',
+            'entity_type' => 'individual', 'phone' => '+255700000000', 'country' => 'Tanzania'])->assertCreated()->json('id');
+
+        // Not the business licence: an individual has none.
+        $this->postJson("/api/v1/applications/$id/submit")->assertStatus(422)
+            ->assertJsonFragment(['message' => 'Upload the required documents before submitting: National ID.']);
+        $this->post("/api/v1/applications/$id/documents", ['type' => 'National ID', 'file' => UploadedFile::fake()->create('nida.pdf', 20, 'application/pdf')])->assertCreated();
+        $this->postJson("/api/v1/applications/$id/submit")->assertOk();
+    }
+
+    /** Records a payment by hand as $who; returns the response. */
+    private function recordManually(User $who, Invoice $invoice, array $overrides = [])
+    {
+        Sanctum::actingAs($who);
+
+        return $this->post("/api/v1/invoices/{$invoice->id}/payments", $overrides + [
+            'amount' => 106200, 'paid_on' => now()->toDateString(), 'method' => 'bank', 'payer_reference' => 'CRDB-'.uniqid(),
+            'evidence' => UploadedFile::fake()->create('slip.pdf', 20, 'application/pdf'),
+            'manual_reason' => 'Paid by direct transfer to the collection account before GePG went live.',
+        ], ['Accept' => 'application/json']);
+    }
+
+    private function invoiceForSpace(): Invoice
+    {
+        $application = $this->approvedApplication($this->exhibitorUser());
+        Sanctum::actingAs($this->staff('space_officer'));
+        $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A01']->id])->assertCreated();
+
+        return Invoice::firstOrFail();
+    }
+
+    public function test_tc033_a_payment_recorded_by_hand_needs_a_second_person_to_verify_it(): void
+    {
+        $invoice = $this->invoiceForSpace();
+        $maker = $this->staff('finance_officer');
+        $checker = User::create(['name' => 'Second Finance', 'email' => 'finance2@test.tz', 'password' => 'Secret#12345', 'role' => 'finance_officer'])->refresh();
+        $this->staff('management');
+        $this->staff('auditor');
+
+        $id = $this->recordManually($maker, $invoice)->assertCreated()->json('id');
+
+        // The person who recorded it cannot accept it.
+        $this->postJson("/api/v1/payments/$id/verify", ['decision' => 'verify'])->assertStatus(422)->assertJsonPath('rule', 'two-person rule');
+        $this->assertSame('unpaid', $invoice->fresh()->status);
+
+        Sanctum::actingAs($checker);
+        $this->postJson("/api/v1/payments/$id/verify", ['decision' => 'verify'])->assertOk();
+        $this->assertSame('paid', $invoice->fresh()->status);
+
+        // Management and the Auditor hear about every manual acceptance.
+        $this->assertSame(2, \App\Models\AppNotification::where('title', 'Manual payment accepted')->count());
+        $this->assertDatabaseHas('audit_logs', ['action' => 'payment.verified_manual']);
+    }
+
+    public function test_tc033_the_system_administrator_cannot_handle_money(): void
+    {
+        $invoice = $this->invoiceForSpace();
+        $admin = $this->staff('system_admin');
+
+        $this->recordManually($admin, $invoice)->assertForbidden();
+
+        $id = $this->recordManually($this->staff('finance_officer'), $invoice)->assertCreated()->json('id');
+        Sanctum::actingAs($admin);
+        $this->postJson("/api/v1/payments/$id/verify", ['decision' => 'verify'])->assertForbidden();
+    }
+
+    public function test_tc033_with_gepg_on_payments_go_through_the_control_number(): void
+    {
+        $invoice = $this->invoiceForSpace();
+        config(['gepg.mode' => 'simulator']);
+        $finance = $this->staff('finance_officer');
+
+        // The exhibitor pays with the control number and cannot record a payment.
+        $this->recordManually(User::where('role', 'exhibitor')->first(), $invoice, ['manual_reason' => null])->assertForbidden();
+
+        // Finance may record an exception, but only with evidence and a reason, and never cash.
+        $this->recordManually($finance, $invoice, ['manual_reason' => '', 'evidence' => null])->assertStatus(422)->assertJsonValidationErrors(['manual_reason', 'evidence']);
+        $this->recordManually($finance, $invoice, ['method' => 'cash'])->assertStatus(422)->assertJsonValidationErrors('method');
+        $this->recordManually($finance, $invoice)->assertCreated();
+
+        // MANUAL_PAYMENTS=off: GePG only.
+        config(['gememis.manual_payments' => 'off']);
+        $this->recordManually($finance, $invoice)->assertForbidden();
     }
 
     public function test_tc012_account_locks_after_repeated_failed_sign_ins(): void

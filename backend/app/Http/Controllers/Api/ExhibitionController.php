@@ -30,6 +30,8 @@ class ExhibitionController extends Controller
             'categories.*' => 'string|max:100',
             'required_documents' => 'nullable|array',
             'required_documents.*' => 'string|max:100',
+            'required_documents_individual' => 'nullable|array',
+            'required_documents_individual.*' => 'string|max:100',
             'terms' => 'nullable|string|max:20000',
             'contact_email' => 'nullable|email',
             'contact_phone' => 'nullable|string|max:30',

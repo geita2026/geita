@@ -45,7 +45,10 @@ export function Magnetic({
   const springY = useSpring(y, springOptions);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    // Listen only while the pointer is over the element (or always, for "global"):
+    // a page with a hundred magnets (the space map) would otherwise measure
+    // every one of them on every mouse move.
+    if (reduceMotion || !isHovered) return;
 
     const calculateDistance = (e: MouseEvent) => {
       if (!ref.current) return;
@@ -67,7 +70,14 @@ export function Magnetic({
 
     document.addEventListener("mousemove", calculateDistance);
 
-    return () => document.removeEventListener("mousemove", calculateDistance);
+    return () => {
+      document.removeEventListener("mousemove", calculateDistance);
+      // Back to rest whenever we stop listening. Without this, the last mousemove
+      // as the pointer slides off (handled before React re-renders, so still
+      // "hovered") leaves a small pull applied with nothing left to clear it.
+      x.set(0);
+      y.set(0);
+    };
   }, [isHovered, intensity, range, reduceMotion, x, y]);
 
   useEffect(() => {

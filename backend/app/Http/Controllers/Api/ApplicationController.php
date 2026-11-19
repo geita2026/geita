@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Exhibition;
+use App\Models\Exhibitor;
 use App\Services\Audit;
 use App\Services\Notifier;
 use App\Services\Ref;
+use App\Support\ExhibitorProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -85,6 +87,15 @@ class ApplicationController extends Controller
         }
 
         abort_unless($exhibition->registration_open, 422, "Registration for {$exhibition->name} is not open."); // BR-010
+
+        // Who is applying: an individual or a registered business, with their details.
+        // Required from the exhibitor; staff capturing on someone's behalf may leave
+        // an already-complete profile as it is.
+        $exhibitor = Exhibitor::findOrFail($exhibitorId);
+        if ($user->isExhibitor() || $request->filled('entity_type') || ! $exhibitor->entity_type) {
+            $profile = $request->validate(ExhibitorProfile::rules($request->input('entity_type')));
+            ExhibitorProfile::apply($exhibitor, $profile, $user->isExhibitor() ? $user->name : $exhibitor->contact_person);
+        }
         abort_if(Application::where('exhibition_id', $exhibition->id)->where('exhibitor_id', $exhibitorId)->whereNotIn('status', ['rejected', 'cancelled'])->exists(),
             422, 'This exhibitor already has an application for this exhibition.');
 

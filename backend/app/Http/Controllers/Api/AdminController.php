@@ -107,7 +107,7 @@ class AdminController extends Controller
             $query->where(fn ($w) => $w->where('organization_name', 'like', "%$q%")->orWhere('email', 'like', "%$q%")
                 ->orWhere('contact_person', 'like', "%$q%")->orWhere('tin', 'like', "%$q%"));
         }
-        foreach (['country', 'exhibitor_type', 'status', 'business_sector'] as $filter) {
+        foreach (['country', 'exhibitor_type', 'status', 'business_sector', 'entity_type'] as $filter) {
             if ($value = $request->query($filter)) {
                 $query->whereIn($filter, explode(',', $value));
             }

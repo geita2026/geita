@@ -31,10 +31,10 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 ### Exhibitor registration and application
 | ID | Requirement | Status | Notes |
 |---|---|---|---|
-| FR-011 | Exhibitor account creation | ✅ | |
+| FR-011 | Exhibitor account creation | ✅ | As on SAMS: first and last name, phone, email, password and acceptance of the terms. Nothing about the organisation — that is asked when applying |
 | FR-012 | Secure login | ✅ | Account locks after 5 failed attempts |
-| FR-013 | Exhibitor profile | ✅ | |
-| FR-014 | Submit space application | ✅ | One live application per exhibitor per exhibition; saved as draft, then submitted |
+| FR-013 | Exhibitor profile | ✅ | The exhibitor says whether they exhibit as an **individual** (no registered business) or a **registered business**, and gives only the details that apply. Individuals are invoiced in their own name |
+| FR-014 | Submit space application | ✅ | One live application per exhibitor per exhibition; saved as draft, then submitted. The first application collects the applicant details (individual or business); later ones confirm them |
 | FR-015 | Application tracking | ✅ | FRD statuses plus `returned` (needed by FR-021) |
 | FR-016 | Download documents | ✅ | Supporting documents, payment evidence, invoices, receipts, allocation letter |
 | FR-017 | — | — | Not defined in the FRD |
@@ -69,7 +69,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 |---|---|---|---|
 | FR-031 | Generate invoice automatically | ✅ | On allocation (or on confirmation of a self-selection). One open invoice per application; each space is a line. A GePG bill for the balance follows automatically (FR-059) |
 | FR-032 | Payment status | ✅ | All six FRD statuses. `refunded` exists as a status but there is no refund workflow |
-| FR-033 | Payment verification | ✅ | |
+| FR-033 | Payment verification | ✅ | GePG payments verify themselves. A payment recorded by hand needs evidence and (by staff) a reason, cannot be cash, and is verified by a different Finance Officer (two-person rule); Management and the Auditor are told. `MANUAL_PAYMENTS=off` disables recording by hand |
 | FR-034 | Payment receipt | ✅ | Numbered receipt and PDF on verification |
 
 ### Notifications
@@ -115,7 +115,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 |---|---|---|
 | BR-001 | One exhibitor per space per exhibition | Unique index `allocations.active_space_id` |
 | BR-002 | Only approved applications are allocated, unless authorised as an exception | `AllocationService::guardApplication` |
-| BR-003 | No confirmation with incomplete mandatory documents | Checked at submission, approval and confirmation |
+| BR-003 | No confirmation with incomplete mandatory documents | Checked at submission, approval and confirmation. Each exhibition sets one list for businesses and one for individuals (who have no business licence or TIN) |
 | BR-004 | Invoice follows category and pricing rules | `BillingService::billAllocation` |
 | BR-005 | Allocation subject to availability | `AllocationService::guardSpace` |
 | BR-006 | Changes to confirmed allocations need authorisation | `allocations.authorize` permission |

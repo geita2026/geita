@@ -483,7 +483,13 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
                 {a.exhibitor!.email}
               </Fact>
               <Fact label="Country">{a.exhibitor!.country}</Fact>
-              <Fact label="TIN">{a.exhibitor!.tin}</Fact>
+              {a.exhibitor!.entity_type === "individual" ? (
+                <Fact label="Exhibits as">
+                  Individual{a.exhibitor!.national_id ? ` · ID ${a.exhibitor!.national_id}` : ""}
+                </Fact>
+              ) : (
+                <Fact label="TIN">{a.exhibitor!.tin}</Fact>
+              )}
             </dl>
           </Panel>
         </div>

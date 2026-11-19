@@ -10,6 +10,7 @@ import { ActionButton } from "@/components/ui/action-button";
 import { MorphForm } from "@/components/ui/morph-form";
 import { CheckF, TextF } from "@/components/ui/action-form";
 import { WaveLoader } from "@/components/ui/wave-loader";
+import { DeadlineCountdown } from "@/components/ui/deadline-countdown";
 
 /**
  * FR-059: the invoice's GePG control number — the one thing an exhibitor needs
@@ -37,16 +38,25 @@ export function GepgPanel({
   return (
     <Panel meta="GePG" title="Control number">
       {current?.status === "issued" && current.control_number ? (
-        <div className="rounded-2xl border-b-4 border-brand bg-[#111114] p-5 text-white">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] opacity-70">Pay with control number</p>
-          <p className="mt-1 font-mono text-[28px] font-extrabold tracking-[0.06em] text-brand tabular">
-            {current.control_number.replace(/(\d{4})(?=\d)/g, "$1 ")}
-          </p>
-          <p className="mt-2 text-sm opacity-80">
-            {i.currency} {(current.amount - current.paid_amount).toLocaleString("en-TZ", { minimumFractionDigits: 2 })}{" "}
-            · at any bank or by mobile money · before {fmtDate(current.expires_at)}
-          </p>
-        </div>
+        <>
+          <div className="rounded-2xl border-b-4 border-brand bg-[#111114] p-5 text-white">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] opacity-70">Pay with control number</p>
+            <p className="mt-1 font-mono text-[28px] font-extrabold tracking-[0.06em] text-brand tabular">
+              {current.control_number.replace(/(\d{4})(?=\d)/g, "$1 ")}
+            </p>
+            <p className="mt-2 text-sm opacity-80">
+              {i.currency}{" "}
+              {(current.amount - current.paid_amount).toLocaleString("en-TZ", { minimumFractionDigits: 2 })} · at any
+              bank or by mobile money · before {fmtDate(current.expires_at)}
+            </p>
+          </div>
+          <DeadlineCountdown
+            className="mt-1"
+            deadline={current.expires_at}
+            label="Control number expires in"
+            variant="boxes"
+          />
+        </>
       ) : current?.status === "requesting" ? (
         <div className="flex items-center gap-3 rounded-2xl bg-warning-soft p-4 text-sm text-warning">
           <WaveLoader />

@@ -6,6 +6,14 @@ First release. Implements the GeMEMIS Functional Requirements Document.
 
 ### Included
 
+**Updates in this release candidate**
+- Sign-up as on SAMS (name, phone, email, password, terms); whether the exhibitor is an **individual** or a **registered business** is asked on the first application, and each is treated as such — individuals are invoiced in their own name and have their own mandatory documents.
+- **Payment safeguards**: with GePG on, exhibitors pay only by control number; Finance may record a payment outside GePG as an exception — slip and reason required, no cash — and a *different* Finance Officer must verify it (two-person rule). Management and the Auditor are notified of every manual acceptance. The System Administrator no longer holds `finance.manage`. `MANUAL_PAYMENTS=off` turns manual recording off entirely.
+- Countdown to the GePG control number's expiry on the invoice and beside **Pay invoice**.
+- Optional distortion-wave transition (theme and accent changes), switchable in Settings.
+- Fixes: forms no longer clear what was typed when the server refuses a submission; the Manrope typeface now loads (pages previously fell back to the system font).
+
+
 - Exhibition life cycle: draft, publish, close and reopen registration, ongoing, completed.
 - Halls, space categories with per-m² pricing, spaces, block generation, and an interactive floor plan.
 - Exhibitor self-registration and organisation profile.

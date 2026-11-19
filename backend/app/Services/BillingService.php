@@ -138,6 +138,7 @@ class BillingService
             'payer_reference' => $data['payer_reference'] ?? null,
             'evidence_path' => $evidence?->store("payments/{$invoice->id}", 'local'),
             'evidence_name' => $evidence?->getClientOriginalName(),
+            'manual_reason' => $data['manual_reason'] ?? null,
             'submitted_by' => $actor->id,
         ]);
         Ref::assign($payment, 'reference', 'PAY');
@@ -156,6 +157,10 @@ class BillingService
             if ($payment->verification_status !== 'pending') {
                 throw new DomainException("Payment {$payment->reference} has already been {$payment->verification_status}.");
             }
+            // Two-person rule: whoever recorded a payment can never be the one who accepts it.
+            if ($actor && $payment->submitted_by === $actor->id) {
+                throw new DomainException('You recorded this payment, so another Finance Officer must verify it.', 'two-person rule');
+            }
 
             $payment->update([
                 'verification_status' => 'verified', 'verified_by' => $actor?->id, 'verified_at' => now(),
@@ -164,8 +169,20 @@ class BillingService
             ]);
 
             $invoice = $this->recompute($payment->invoice);
-            Audit::log('payment.verified', "Payment {$payment->reference} verified; receipt {$payment->receipt_number}", $payment,
-                ['verification_status' => 'pending'], ['verification_status' => 'verified', 'invoice_status' => $invoice->status]);
+            $manual = $channel !== 'gateway';
+            Audit::log($manual ? 'payment.verified_manual' : 'payment.verified',
+                ($manual ? 'Manual payment ' : 'Payment ')."{$payment->reference} verified; receipt {$payment->receipt_number}", $payment,
+                ['verification_status' => 'pending'], ['verification_status' => 'verified', 'invoice_status' => $invoice->status, 'recorded_by' => $payment->submitted_by]);
+
+            // Every payment accepted by hand is reported to Management and the Auditor, to spot-check against the bank statement.
+            if ($manual) {
+                $by = $actor?->name ?? 'unknown';
+                $from = $payment->submitter?->name ?? 'unknown';
+                Notifier::roles(['management', 'auditor'], 'payment', 'Manual payment accepted',
+                    number_format($payment->amount)." {$invoice->currency} on {$invoice->number} ({$invoice->exhibitor->organization_name}) was recorded by $from and verified by $by"
+                    .($payment->payer_reference ? ", reference {$payment->payer_reference}" : '').'. Check it against the bank statement.',
+                    "/invoices/{$invoice->id}");
+            }
 
             Notifier::exhibitor($invoice->exhibitor, 'payment', 'Payment verified',
                 "Receipt {$payment->receipt_number}: ".number_format($payment->amount)." {$invoice->currency} received against {$invoice->number}. Balance: ".number_format($invoice->balance).'.',

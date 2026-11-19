@@ -55,6 +55,7 @@ class DatabaseSeeder extends Seeder
             'payment_deadline' => now()->addDays(90),
             'categories' => ['Mining equipment', 'Mineral processing', 'Gold refining & trading', 'Financial services', 'Safety & environment', 'Government & regulators', 'Small-scale miners'],
             'required_documents' => ['Business licence', 'TIN certificate'],
+            'required_documents_individual' => ['National ID'],
             'terms' => 'Spaces are allocated subject to availability and are confirmed only after full payment is verified. Allocated spaces may not be sublet or transferred without written authorisation. Exhibitors must observe site safety rules and vacate the space within 48 hours of the closing date.',
             'contact_email' => 'exhibitions@gememis.test', 'contact_phone' => '+255 28 252 0000',
             'status' => 'draft', 'created_by' => $staff['exhibition_admin']->id,
@@ -100,7 +101,7 @@ class DatabaseSeeder extends Seeder
             'code' => 'GGIF27', 'name' => 'Geita Gold Investment Forum 2027', 'theme' => 'Financing the next generation of mines',
             'venue' => 'Geita Gold Mine Conference Centre', 'start_date' => now()->addDays(240), 'end_date' => now()->addDays(242),
             'registration_opens_on' => now()->addDays(60), 'registration_closes_on' => now()->addDays(200), 'payment_deadline' => now()->addDays(215),
-            'required_documents' => ['Business licence'], 'status' => 'draft', 'created_by' => $staff['exhibition_admin']->id,
+            'required_documents' => ['Business licence'], 'required_documents_individual' => ['National ID'], 'status' => 'draft', 'created_by' => $staff['exhibition_admin']->id,
         ]);
 
         /* ---- exhibitors at each stage ---- */
@@ -109,12 +110,24 @@ class DatabaseSeeder extends Seeder
         $make = function (array $e, string $stage, string $cat, array $spaces = [], int $requested = 1, ?string $size = '3m × 3m') use ($exhibition, $cats, $staff, $password, $allocations, $billing) {
             [$org, $person, $country, $type, $sector, $product] = $e;
             $slug = strtolower(preg_replace('/[^a-z]/i', '', explode(' ', $org)[0]));
-            $exhibitor = Exhibitor::create([
-                'organization_name' => $org, 'registration_number' => 'BRELA-'.random_int(100000, 999999), 'tin' => random_int(100, 199).'-'.random_int(100, 999).'-'.random_int(100, 999),
-                'contact_person' => $person, 'phone' => '+2557'.random_int(10000000, 99999999), 'email' => "info@$slug.test",
-                'physical_address' => 'P.O. Box '.random_int(100, 9999), 'country' => $country, 'exhibitor_type' => $type,
-                'business_sector' => $sector, 'business_activity' => $product,
-            ]);
+            // "individual": exhibits without a registered business. "registered" stage: signed up, never applied,
+            // so it has only what the sign-up form asks for and has not said which it is yet.
+            $individual = $type === 'individual';
+            $signedUpOnly = $stage === 'registered';
+            $exhibitor = Exhibitor::create(($individual || $signedUpOnly)
+                ? [
+                    'organization_name' => $person, 'contact_person' => $person, 'phone' => '+2557'.random_int(10000000, 99999999),
+                    'email' => "$slug@exhibitor.test", 'country' => $country,
+                    'entity_type' => $signedUpOnly ? null : 'individual', 'exhibitor_type' => $signedUpOnly ? 'local' : 'sme',
+                    'national_id' => $individual ? '1985'.random_int(1000, 9999).'-'.random_int(10000, 99999).'-'.random_int(10000, 99999).'-'.random_int(10, 29) : null,
+                    'business_sector' => $individual ? $sector : null, 'business_activity' => $individual ? $product : null,
+                ]
+                : [
+                    'organization_name' => $org, 'registration_number' => 'BRELA-'.random_int(100000, 999999), 'tin' => random_int(100, 199).'-'.random_int(100, 999).'-'.random_int(100, 999),
+                    'contact_person' => $person, 'phone' => '+2557'.random_int(10000000, 99999999), 'email' => "info@$slug.test",
+                    'physical_address' => 'P.O. Box '.random_int(100, 9999), 'country' => $country, 'exhibitor_type' => $type,
+                    'business_sector' => $sector, 'business_activity' => $product, 'entity_type' => 'business',
+                ]);
             $user = User::create(['name' => $person, 'email' => "$slug@exhibitor.test", 'phone' => $exhibitor->phone, 'password' => $password, 'role' => 'exhibitor', 'exhibitor_id' => $exhibitor->id]);
             if ($stage === 'registered') {
                 return;
@@ -130,7 +143,7 @@ class DatabaseSeeder extends Seeder
             if ($stage === 'draft') {
                 return;
             }
-            foreach ($exhibition->required_documents as $type) {
+            foreach (($individual ? $exhibition->required_documents_individual : $exhibition->required_documents) as $type) {
                 $path = "applications/{$application->id}/".str($type)->slug().'.pdf';
                 Storage::disk('local')->put($path, "%PDF-1.4\n% Demo placeholder for $type — {$org}\n");
                 $application->documents()->create(['type' => $type, 'original_name' => str($type)->slug().'.pdf', 'path' => $path, 'mime' => 'application/pdf', 'size' => 64, 'uploaded_by' => $user->id]);
@@ -193,6 +206,7 @@ class DatabaseSeeder extends Seeder
         $make(['Bukombe Pump Services', 'Mariam Seif', 'Tanzania', 'sme', 'Mining equipment', 'Dewatering pumps and generators'], 'returned', 'SME');
         $make(['Rift Valley Solar Kits', 'John Otieno', 'Kenya', 'international', 'Safety & environment', 'Solar lighting kits'], 'rejected', 'STD');
         $make(['Chato Gemstone Dealers', 'Rose Kabati', 'Tanzania', 'sme', 'Gold refining & trading', 'Gemstone cutting and jewellery'], 'draft', 'SME');
+        $make(['Joseph Masanja', 'Joseph Masanja', 'Tanzania', 'individual', 'Gold refining & trading', 'Hand-made gold jewellery from artisanal gold'], 'submitted', 'SME');
         $make(['Ushirombo Mining Tools', 'Paulo Nkwabi', 'Tanzania', 'sme', 'Mining equipment', 'Hand tools and hoists'], 'registered', 'SME');
 
         auth()->forgetGuards();

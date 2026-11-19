@@ -23,6 +23,9 @@ export type Exhibitor = {
   business_sector: string | null;
   business_activity: string | null;
   exhibitor_type: string;
+  /** individual | business; null until the first application says which. */
+  entity_type: "individual" | "business" | null;
+  national_id: string | null;
   status: string;
   applications_count?: number;
   live_allocations_count?: number;
@@ -84,6 +87,7 @@ export type Exhibition = {
   payment_deadline: string;
   categories: string[] | null;
   required_documents: string[] | null;
+  required_documents_individual: string[] | null;
   terms: string | null;
   contact_email: string | null;
   contact_phone: string | null;
@@ -221,7 +225,11 @@ export type Payment = {
   psp_receipt: string | null;
   payment_channel: string | null;
   created_at: string;
+  submitted_by: number | null;
+  /** Staff-recorded exception: why it did not go through GePG. */
+  manual_reason: string | null;
   verifier?: { id: number; name: string } | null;
+  submitter?: { id: number; name: string } | null;
   invoice?: Invoice;
 };
 
@@ -244,7 +252,13 @@ export type Invoice = {
   due_on: string;
   /** requesting | issued | failed | cancelled | paid; null when GePG is off. */
   gepg_status: string | null;
+  /** Whether the viewer may record a payment by hand (FR-033 safeguards). */
+  can_record_payment?: boolean;
+  record_payment_block?: string | null;
+  record_payment_as?: "exception" | "exhibitor";
   gepg_bills?: GepgBill[];
+  /** The open bill, on the exhibitor dashboard. */
+  active_gepg_bill?: GepgBill | null;
   items_count?: number;
   items?: InvoiceItem[];
   payments?: Payment[];

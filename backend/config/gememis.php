@@ -25,7 +25,10 @@ return [
         'allocations.manage' => ['system_admin', 'exhibition_admin', 'space_officer'],
         // BR-006: changing an allocation that is already confirmed (paid) needs this.
         'allocations.authorize' => ['system_admin', 'exhibition_admin'],
-        'finance.manage' => ['system_admin', 'finance_officer'],
+        // Money is handled by Finance only — not by the System Administrator (IT), who
+        // must not be able to mark an invoice paid. See also the two-person rule in
+        // BillingService::verify().
+        'finance.manage' => ['finance_officer'],
         'finance.view' => ['system_admin', 'finance_officer', 'management', 'auditor', 'exhibition_admin'],
         'checkin.manage' => ['system_admin', 'exhibition_admin', 'space_officer', 'customer_service'],
         'exhibitors.view' => ['system_admin', 'exhibition_admin', 'space_officer', 'registration_officer', 'finance_officer', 'management', 'customer_service', 'auditor'],
@@ -42,6 +45,17 @@ return [
     'application_statuses' => ['draft', 'submitted', 'returned', 'approved', 'rejected', 'pending_payment', 'confirmed', 'cancelled'],
     'invoice_statuses' => ['unpaid', 'partially_paid', 'paid', 'overdue', 'cancelled', 'refunded'],
     'exhibition_statuses' => ['draft', 'published', 'registration_closed', 'ongoing', 'completed', 'cancelled'],
+
+    /*
+     | Payments recorded by hand, outside GePG (FR-033). While GePG is on, exhibitors
+     | pay with the control number and cannot record a payment themselves.
+     |   exception  Finance may record one, with evidence and a written reason; a
+     |              second Finance Officer verifies it (default)
+     |   off        no manual payments at all while GePG is on
+     | While GePG is off there is no control number, so exhibitors record their own
+     | bank payments (with evidence) and Finance verifies them.
+     */
+    'manual_payments' => env('MANUAL_PAYMENTS', 'exception'),
 
     'auth' => [
         'max_failed_logins' => 5,

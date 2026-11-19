@@ -58,6 +58,11 @@ class Application extends Model
     {
         $have = $this->documents()->pluck('type')->all();
 
-        return array_values(array_diff($this->exhibition->required_documents ?? [], $have));
+        // Individuals and businesses have their own lists (an individual has no business licence).
+        $required = $this->exhibitor?->entity_type === 'individual'
+            ? ($this->exhibition->required_documents_individual ?? [])
+            : ($this->exhibition->required_documents ?? []);
+
+        return array_values(array_diff($required, $have));
     }
 }

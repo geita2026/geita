@@ -160,7 +160,9 @@ export async function call(spec: MutationSpec) {
 export async function markNotificationsRead(id?: number): Promise<void> {
   try {
     await api("/notifications/read", { method: "POST", body: id ? { id } : {} });
+    // The bell's list comes from the layout: refresh it so the next page agrees.
+    revalidatePath("/", "layout");
   } catch {
-    // Non-critical: the badge corrects itself on the next load.
+    // Non-critical: the badge already shows it read; the server catches up next time.
   }
 }

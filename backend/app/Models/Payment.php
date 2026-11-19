@@ -27,6 +27,11 @@ class Payment extends Model
         return $this->belongsTo(GepgBill::class);
     }
 
+    public function submitter()
+    {
+        return $this->belongsTo(User::class, 'submitted_by');
+    }
+
     public function verifier()
     {
         return $this->belongsTo(User::class, 'verified_by');

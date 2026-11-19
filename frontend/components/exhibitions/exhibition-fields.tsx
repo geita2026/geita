@@ -67,8 +67,15 @@ export function ExhibitionFields({ e }: { e?: Exhibition }) {
       <AreaF
         defaultValue={(e?.required_documents ?? []).join("\n")}
         description="One per line. An application cannot be submitted or confirmed without these."
-        label="Mandatory documents"
+        label="Mandatory documents — businesses"
         name="required_documents"
+        rows={4}
+      />
+      <AreaF
+        defaultValue={(e?.required_documents_individual ?? []).join("\n")}
+        description="One per line. Asked of individuals instead — they have no business licence or TIN."
+        label="Mandatory documents — individuals"
+        name="required_documents_individual"
         rows={4}
       />
       <AreaF
@@ -92,4 +99,7 @@ export function ExhibitionFields({ e }: { e?: Exhibition }) {
   );
 }
 
-export const exhibitionSpecExtras = { lists: ["categories", "required_documents"], bools: ["allow_self_selection"] };
+export const exhibitionSpecExtras = {
+  lists: ["categories", "required_documents", "required_documents_individual"],
+  bools: ["allow_self_selection"],
+};

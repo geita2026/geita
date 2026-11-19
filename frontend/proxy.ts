@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * the session cookie. This only gates "signed in or not" — whether the token
  * is still valid, and what the role may do, is decided by the API on every call.
  */
-const PUBLIC = ["/login", "/register", "/api/session"];
+const PUBLIC = ["/login", "/register", "/terms", "/api/session"];
 const SESSION_COOKIE = "gememis_session";
 
 export function proxy(req: NextRequest) {

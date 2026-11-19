@@ -48,6 +48,6 @@ export const navItems: NavItem[] = [
   { label: "Reports", href: "/reports", icon: "reports", needs: ["reports.view"] },
   { label: "Users", href: "/admin/users", icon: "users", needs: ["users.manage"] },
   { label: "Audit trail", href: "/admin/audit", icon: "audit", needs: ["audit.view"] },
-  { label: "My organisation", href: "/profile", icon: "profile", exhibitorOnly: true },
+  { label: "My profile", href: "/profile", icon: "profile", exhibitorOnly: true },
   { label: "Settings", href: "/settings", icon: "settings" },
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useOptimistic } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button, Popover } from "@heroui/react";
 import { Bell } from "@gravity-ui/icons";
@@ -29,9 +29,25 @@ function ago(date: string) {
 
 /** FR-035..039: the in-system channel. Email and SMS copies are sent by the API. */
 export function NotificationBell({ notifications }: { notifications: AppNotification[] }) {
-  const [items, apply] = useOptimistic(notifications, (list: AppNotification[], id: number | "all") =>
-    list.map((n) => (id === "all" || n.id === id ? { ...n, read_at: n.read_at ?? new Date().toISOString() } : n)),
+  /* What this person has marked read in this browser session. Kept as local
+     state, not an optimistic update: an optimistic value is dropped the moment
+     its request finishes, and the count bounced back until the next reload.
+     "Mark all" stores the newest id it covered, so a notification arriving
+     afterwards still shows as unread. */
+  const [readIds, setReadIds] = useState<Set<number>>(() => new Set());
+  const [readUpTo, setReadUpTo] = useState(0);
+  const items = notifications.map((n) =>
+    !n.read_at && (readIds.has(n.id) || n.id <= readUpTo) ? { ...n, read_at: new Date(0).toISOString() } : n,
   );
+
+  const markOne = (id: number) => {
+    setReadIds((prev) => new Set(prev).add(id));
+    void markNotificationsRead(id);
+  };
+  const markAll = () => {
+    setReadUpTo(Math.max(0, ...notifications.map((n) => n.id)));
+    void markNotificationsRead();
+  };
   const unread = items.filter((n) => !n.read_at).length;
 
   return (
@@ -55,16 +71,7 @@ export function NotificationBell({ notifications }: { notifications: AppNotifica
         <div className="flex items-center justify-between border-b border-separator px-4 py-3">
           <p className="font-semibold">Notifications</p>
           {unread > 0 && (
-            <button
-              className="text-xs font-semibold text-brand-ink hover:underline"
-              type="button"
-              onClick={() =>
-                startTransition(async () => {
-                  apply("all");
-                  await markNotificationsRead();
-                })
-              }
-            >
+            <button className="text-xs font-semibold text-brand-ink hover:underline" type="button" onClick={markAll}>
               Mark all read
             </button>
           )}
@@ -81,12 +88,9 @@ export function NotificationBell({ notifications }: { notifications: AppNotifica
                     !n.read_at && "bg-brand-soft/40",
                   )}
                   href={n.href ?? "#"}
-                  onClick={() =>
-                    startTransition(async () => {
-                      apply(n.id);
-                      await markNotificationsRead(n.id);
-                    })
-                  }
+                  onClick={() => {
+                    if (!n.read_at) markOne(n.id);
+                  }}
                 >
                   <div className="flex items-center gap-2">
                     <span className={clsx("text-xs font-bold uppercase tracking-wider", TONE[n.kind] ?? "text-muted")}>
