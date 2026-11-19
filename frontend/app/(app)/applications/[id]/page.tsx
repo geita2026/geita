@@ -309,18 +309,18 @@ export default async function ApplicationPage({ params }: { params: Promise<{ id
                             <AreaF isRequired label="Reason for transfer" name="reason" rows={3} />
                           </MorphForm>
                         )}
-                        {(allocate || (isOwner && x.status === "pending")) && (
+                        {(allocate || (isOwner && x.can_withdraw)) && (
                           <MorphForm
-                            label={x.status === "pending" ? "Withdraw selection" : "Cancel allocation"}
+                            label={allocate ? "Cancel allocation" : "Give space back"}
                             size="sm"
                             spec={{
                               method: "POST",
                               path: `/allocations/${x.id}/cancel`,
                               success: "Allocation cancelled",
                             }}
-                            submitLabel="Cancel allocation"
-                            subtitle={`Space ${x.space?.number} becomes available again and comes off the invoice.`}
-                            title="Cancel allocation"
+                            submitLabel={allocate ? "Cancel allocation" : "Give space back"}
+                            subtitle={`Space ${x.space?.number} becomes available again and comes off the invoice.${allocate ? "" : " You can choose another space on the space map."}`}
+                            title={allocate ? "Cancel allocation" : "Give space back"}
                             variant="danger"
                           >
                             <AreaF isRequired label="Reason for cancellation" name="reason" rows={3} />

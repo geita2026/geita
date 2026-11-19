@@ -90,7 +90,7 @@ export function ExhibitionFields({ e }: { e?: Exhibition }) {
       <div className="sm:col-span-2">
         <CheckF
           defaultChecked={e?.allow_self_selection ?? true}
-          description="Approved exhibitors pick an available space on the floor plan; an officer confirms it."
+          description="Approved exhibitors pick an available space on the floor plan; it is allocated and invoiced at once."
           label="Let exhibitors select their own space"
           name="allow_self_selection"
         />

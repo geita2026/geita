@@ -34,7 +34,7 @@ Test names carry the FRD's test-case numbers (FRD §25: TC-nnn proves FR-nnn).
 | TC-014 | FR-014, BR-003 | Submission without the mandatory document is refused, naming the document |
 | TC-014 (applicant) | FR-013, FR-014 | Applying requires saying individual or business; a business needs its name and registration number, the country must be on the list; an individual is billed in their own name with no TIN |
 | TC-014 (individual documents) | BR-003 | An individual is asked for the individuals' documents (National ID), not the business licence |
-| TC-023 | FR-023 | Exhibitor selection is pending, holds the space, raises no invoice; a second selection beyond the requested number is refused; officer confirmation invoices it |
+| TC-023 | FR-023 | Exhibitor selection is allocated and invoiced at once; a second selection beyond the requested number is refused; exhibitor can give it back while unpaid, not after a payment; an officer still can |
 | TC-024 | FR-024, BR-002, FR-031, BR-004 | A draft application cannot be allocated; an approved one is, with invoice 90,000 + 18% VAT = 106,200 |
 | TC-026 | FR-026, FR-028, BR-007 | Reallocation without a reason is refused; with a reason the old space frees and the new one is held; cancellation frees the space, cancels the invoice, returns the application to approved |
 | TC-034 | FR-032, FR-033, FR-034 | Duplicate transaction reference refused; exhibitor cannot verify; part payment → partially paid; full payment → paid, receipt PDF, participation confirmed |
@@ -104,7 +104,7 @@ Each script lists who performs it, the steps, and the expected result. Record Pa
 
 **UAT-06 Application approval** — *Registration Officer.* Applications → open it → Return with a reason. **Expect:** exhibitor sees the reason and can edit. After resubmission → Approve. **Expect:** status Approved; exhibitor notified. Also reject a different application; a reason is demanded.
 
-**UAT-07 Space selection** — *Exhibitor.* Space map → press an available space → Select this space. **Expect:** cell marked "Yours"; status Pending approval; no invoice yet.
+**UAT-07 Space selection** — *Exhibitor.* Space map → press an available space → Select this space. **Expect:** cell marked "Yours"; status Allocated; invoice and control number issued at once, no officer step. **Give space back** from the application page → space available again; choose another. After a payment, **Give space back** is gone.
 
 **UAT-08 Space allocation** — *Space Allocation Officer.* Allocations → Confirm the selection. For another approved application: Space map → press a space → choose the application → Allocate. **Expect:** spaces Allocated; applications Pending payment.
 

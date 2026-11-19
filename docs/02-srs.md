@@ -51,7 +51,7 @@ Nine roles; permissions are in `06-rbac.md`. Exhibitors create their own account
 | ID | Requirement | Status | Notes |
 |---|---|---|---|
 | FR-022 | Display available spaces by exhibition, hall, category, size, location, price, status | ✅ | Floor plan and Spaces list |
-| FR-023 | Space selection by exhibitors | ✅ | Per-exhibition switch. A selection is `pending` until an officer confirms it |
+| FR-023 | Space selection by exhibitors | ✅ | Per-exhibition switch. A selection is allocated and invoiced at once, without officer confirmation; the exhibitor may give it back until something is paid |
 | FR-024 | Allocation by officers | ✅ | |
 | FR-025 | Automatic allocation | ✅ | By category, closest size, application priority then submission time, availability. Payment status is not used as a rule because payment follows allocation in this process |
 | FR-026 | Reallocation with reason | ✅ | |

@@ -23,7 +23,7 @@ Defined in one place: `backend/config/gememis.php`. Controllers call `permit('�
 
 ## What an exhibitor can do
 
-No permission in the matrix, but on **their own organisation's records only**: maintain the profile; create, edit, submit and cancel applications; upload and remove documents (while draft or returned); select an available space when the exhibition allows it; withdraw an unconfirmed selection; record payments with evidence (only while GePG is off — with GePG on they pay the control number); download their invoices, receipts and allocation letter.
+No permission in the matrix, but on **their own organisation's records only**: maintain the profile; create, edit, submit and cancel applications; upload and remove documents (while draft or returned); select an available space when the exhibition allows it; give back their own selected space until something is paid against it; record payments with evidence (only while GePG is off — with GePG on they pay the control number); download their invoices, receipts and allocation letter.
 
 ## Separation of duties
 

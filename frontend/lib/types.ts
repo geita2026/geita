@@ -144,6 +144,8 @@ export type AppDocument = {
 
 export type Allocation = {
   id: number;
+  /** Exhibitor may still give this space back themselves (own pick, nothing paid). */
+  can_withdraw?: boolean;
   reference: string;
   application_id: number;
   exhibition_id: number;

@@ -216,21 +216,39 @@ class GememisTest extends TestCase
         $this->getJson('/api/v1/users')->assertForbidden();
     }
 
-    public function test_tc023_exhibitor_self_selection_waits_for_officer_confirmation(): void
+    public function test_tc023_exhibitor_self_selection_is_allocated_and_invoiced_at_once(): void
     {
         $exhibitor = $this->exhibitorUser();
         $application = $this->approvedApplication($exhibitor);
 
         Sanctum::actingAs($exhibitor);
-        $id = $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A03']->id])->assertCreated()->assertJsonPath('status', 'pending')->json('id');
-        $this->assertSame('pending_approval', $this->spaces['A03']->fresh()->status);
-        $this->assertSame(0, Invoice::count());
-        $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A02']->id])->assertStatus(422); // asked for one space
-
-        Sanctum::actingAs($this->staff('space_officer'));
-        $this->postJson("/api/v1/allocations/$id/confirm")->assertOk();
+        $id = $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A03']->id])
+            ->assertCreated()->assertJsonPath('status', 'allocated')->json('id');
         $this->assertSame('allocated', $this->spaces['A03']->fresh()->status);
         $this->assertSame(1, Invoice::count());
+        $this->assertSame('pending_payment', $application->fresh()->status);
+        $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A02']->id])->assertStatus(422); // asked for one space
+
+        // Until anything is paid, the exhibitor may give it back and choose again.
+        $this->getJson("/api/v1/applications/{$application->id}")->assertJsonPath('allocations.0.can_withdraw', true);
+        $this->postJson("/api/v1/allocations/$id/cancel", ['reason' => 'Prefer a corner space'])->assertOk();
+        $this->assertSame('available', $this->spaces['A03']->fresh()->status);
+        $this->assertSame('approved', $application->fresh()->status);
+
+        $id = $this->postJson('/api/v1/allocations', ['application_id' => $application->id, 'space_id' => $this->spaces['A02']->id])->assertCreated()->json('id');
+        $invoice = Invoice::where('status', '!=', 'cancelled')->latest('id')->firstOrFail();
+
+        // Once money is paid against it, only an officer can change it.
+        Sanctum::actingAs($this->staff('finance_officer'));
+        $pid = $this->post("/api/v1/invoices/{$invoice->id}/payments", ['amount' => 1000, 'paid_on' => now()->toDateString(), 'method' => 'bank',
+            'payer_reference' => 'PART-1', 'manual_reason' => 'Direct transfer before the control number.',
+            'evidence' => UploadedFile::fake()->create('slip.pdf', 20, 'application/pdf')], ['Accept' => 'application/json'])->assertCreated()->json('id');
+        Sanctum::actingAs($exhibitor);
+        $this->getJson("/api/v1/applications/{$application->id}")->assertJsonPath('allocations.0.can_withdraw', false);
+        $this->postJson("/api/v1/allocations/$id/cancel", ['reason' => 'Changed my mind'])->assertForbidden();
+
+        Sanctum::actingAs($this->staff('space_officer'));
+        $this->postJson("/api/v1/allocations/$id/cancel", ['reason' => 'Exhibitor withdrew; refund to follow'])->assertOk();
     }
 
     public function test_tc048_audit_trail_is_append_only(): void

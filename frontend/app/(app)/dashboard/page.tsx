@@ -263,7 +263,7 @@ function ExhibitorHome({ data, name }: { data: ExhibitorDashboard; name: string 
         : a.status === "approved"
           ? held.length
             ? {
-                text: "Your space selection is awaiting confirmation by the Space Allocation Officer.",
+                text: "Your space selection is awaiting confirmation by the Space Allocation Officer.", // older selections only
                 href: `/applications/${a.id}`,
                 cta: "View application",
               }

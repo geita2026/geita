@@ -33,7 +33,7 @@ Nothing about a company is asked yet: you say how you exhibit when you apply.
 You will be notified when it is approved, rejected, or returned for correction. If it is returned, read the reason at the top of the application, fix it, and submit again.
 
 ### 3. Choose your space
-Once approved (and if the organisers allow it): **Space map** → press a green (available) space to see its size, price and facilities → **Select this space**. It shows as "Yours" and waits for an officer to confirm. You can withdraw it from your application page until then. If selection is switched off, an officer allocates your space.
+Once approved (and if the organisers allow it): **Space map** → press a green (available) space to see its size, price and facilities → **Select this space**. It is yours at once and your invoice and control number are issued. Changed your mind? **Give space back** on your application page, then choose another — possible until you pay. If selection is switched off, an officer allocates your space.
 
 ### 4. Pay
 When your space is confirmed you receive an invoice, and a moment later a **GePG control number** by SMS and email. It is also on the invoice (**Invoices** → open it), in the black card.
@@ -84,8 +84,8 @@ Only you (and the System Administrator) can: change or cancel the space of a **c
 ### Allocate from the map
 **Space map** → press a space → choose the approved application → **Allocate**. The invoice is created at once. Colours: green available, amber reserved, orange pending approval, blue allocated, purple occupied, grey blocked, red under maintenance. The stripe on the left of each cell is the category.
 
-### Confirm exhibitors' selections
-**Allocations → Status: Awaiting confirmation → Confirm.** This invoices the exhibitor.
+### Exhibitors' own selections
+There is nothing to confirm: a space an exhibitor picks is allocated and invoiced at once. Step in only when needed — **Reallocate**, **Transfer** or **Cancel** from the application page. (Selections made before this change may still show **Awaiting confirmation**; **Confirm** them as before.)
 
 ### Allocate automatically
 **Auto-allocate** (on the map or Allocations page) gives every approved application the first available space in its preferred category, closest to its preferred size, highest priority first. The result lists any application for which nothing matched.

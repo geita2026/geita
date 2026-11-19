@@ -77,9 +77,13 @@ When a space is allocated, a line is added to the application's open invoice, or
 - Cancellation and transfer remove the line. An invoice left with no lines and no payments becomes `cancelled`.
 - If a change leaves an invoice paid above its new total, it stays `paid` and the difference is a credit to settle outside the system. There is no refund workflow in 1.0.0.
 
-### 4.3 Self-selection is a request, not an allocation (FR-023)
+### 4.3 Self-selection allocates at once (FR-023)
 
-An exhibitor's selection creates a `pending` allocation and sets the space to `pending_approval`. That holds the space (the unique index applies) but raises no invoice. The invoice is generated when an officer confirms.
+An exhibitor's selection is an allocation: the space becomes `allocated`, the invoice is raised and the control number requested, all in one transaction — no officer confirmation. The checks an officer would make are enforced by the server instead (approved application, available space, no more spaces than requested, the unique index). Officers step in only when something needs it: reallocate, transfer or cancel.
+
+Until money is paid against it (nothing paid, nothing awaiting verification) and the application is not confirmed, the exhibitor may give the space back and choose again. After that only an officer can change it (BR-006 still applies once confirmed).
+
+`pending` allocations and the `pending_approval` space status remain only for selections made before this change; an officer can still confirm those.
 
 ### 4.4 Audit entries are written in the same transaction (BR-007)
 
@@ -164,10 +168,8 @@ stateDiagram-v2
 ### Space
 ```mermaid
 stateDiagram-v2
-  available --> pending_approval: exhibitor selects
-  pending_approval --> allocated: officer confirms
-  pending_approval --> available: withdrawn / cancelled
-  available --> allocated: officer allocates
+  available --> allocated: exhibitor selects / officer allocates
+  allocated --> available: exhibitor gives back (unpaid)
   reserved --> allocated: officer allocates
   allocated --> occupied: marked occupied
   occupied --> allocated: marked vacant

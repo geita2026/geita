@@ -54,11 +54,20 @@ class ApplicationController extends Controller
     {
         $this->ownOrStaff($application->exhibitor_id);
 
-        return $application->load([
+        $application->load([
             'exhibitor', 'exhibition', 'category', 'documents', 'reviewer:id,name',
             'allocations' => fn ($q) => $q->with('space.hall:id,name,code', 'space.category:id,name,color', 'allocator:id,name')->latest(),
             'invoices' => fn ($q) => $q->latest(),
         ])->setAttribute('missing_documents', $application->missingDocuments());
+
+        // Whether the exhibitor may still give a space back themselves (until paid).
+        $allocations = app(\App\Services\AllocationService::class);
+        foreach ($application->allocations as $allocation) {
+            $allocation->setRelation('application', $application);
+            $allocation->setAttribute('can_withdraw', $allocations->withdrawable($allocation));
+        }
+
+        return $application;
     }
 
     private function rules(Exhibition $exhibition): array

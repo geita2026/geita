@@ -85,13 +85,13 @@ Base URL: `/api/v1`. JSON in, JSON out. Route definitions: `backend/routes/api.p
 | Method | Path | Permission | Purpose |
 |---|---|---|---|
 | GET | `/allocations` | any | *Paginated.* `?exhibition_id`, `?status`, `?occupancy`, `?q` |
-| POST | `/allocations` | `allocations.manage`, or the owning exhibitor | `{application_id, space_id, exception?}`. Exhibitor → `pending` (FR-023); officer → `allocated` + invoice (FR-024) |
-| POST | `/allocations/{id}/confirm` | `allocations.manage` | Confirms a self-selection and invoices it |
+| POST | `/allocations` | `allocations.manage`, or the owning exhibitor | `{application_id, space_id, exception?}`. Exhibitor (FR-023) or officer (FR-024) → `allocated` + invoice at once |
+| POST | `/allocations/{id}/confirm` | `allocations.manage` | Confirms a `pending` self-selection made before selections were allocated at once (older data only) |
 | POST | `/applications/{id}/auto-allocate` | `allocations.manage` | FR-025, one application |
 | POST | `/exhibitions/{id}/auto-allocate` | `allocations.manage` | FR-025, all approved applications → `{allocated, skipped}` |
 | POST | `/allocations/{id}/reallocate` | `allocations.manage` | `{space_id, reason}` (FR-026) |
 | POST | `/allocations/{id}/transfer` | `allocations.manage` + `allocations.authorize` | `{application_id, reason}` (FR-027) |
-| POST | `/allocations/{id}/cancel` | `allocations.manage`, or owner for a pending selection | `{reason}` (FR-028) |
+| POST | `/allocations/{id}/cancel` | `allocations.manage`, or the owner while `can_withdraw` (own selection, nothing paid) | `{reason}` (FR-028). `GET /applications/{id}` returns `can_withdraw` on each allocation |
 | POST | `/allocations/{id}/occupancy` | `checkin.manage` | `{occupancy_status, notes?}` (FR-040..042) |
 
 ## Billing

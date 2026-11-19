@@ -215,21 +215,25 @@ function Cell({ space: s, hall, ctx, dimmed }: { space: Space; hall: Hall; ctx: 
                   <p className="rounded-xl bg-brand-soft/60 p-4 text-sm font-semibold">
                     {s.mine === "pending"
                       ? "You selected this space. It is awaiting confirmation by the Space Allocation Officer."
-                      : "This space is allocated to you."}
+                      : "This space is yours. Your invoice is on your application page."}
                   </p>
                 )}
 
                 {/* FR-023 */}
                 {ctx.myApplicationId && s.status === "available" && (
-                  <div className="flex items-center justify-between gap-3 rounded-xl border border-brand/40 bg-brand-soft/50 p-4">
-                    <p className="text-sm">An officer confirms your selection, then your invoice is issued.</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand/40 bg-brand-soft/50 p-4">
+                    <p className="min-w-0 flex-1 basis-56 text-sm">
+                      It becomes yours straight away and your invoice is issued. You can give it back from your
+                      application page until you pay.
+                    </p>
                     <ActionButton
+                      className="shrink-0"
                       pendingLabel="Selecting…"
                       spec={{
                         method: "POST",
                         path: "/allocations",
                         extra: { application_id: ctx.myApplicationId, space_id: s.id },
-                        success: `Space ${s.number} selected`,
+                        success: `Space ${s.number} is yours — invoice issued`,
                       }}
                       successLabel="Selected"
                     >

@@ -45,7 +45,7 @@ class AllocationController extends Controller
         return $query->latest('allocated_at')->paginate($this->perPage());
     }
 
-    /** FR-024 (officer) and FR-023 (exhibitor self-selection → pending confirmation). */
+    /** FR-024 (officer) and FR-023 (exhibitor self-selection, allocated and invoiced at once). */
     public function store(Request $request)
     {
         $user = $this->actor();
@@ -113,7 +113,7 @@ class AllocationController extends Controller
         $user = $this->actor();
         if ($user->isExhibitor()) {
             $this->ownOrStaff($allocation->exhibitor_id);
-            abort_unless($allocation->status === 'pending', 403, 'Only an unconfirmed selection can be withdrawn. Contact the Exhibition Management Unit.');
+            abort_unless($this->service->withdrawable($allocation), 403, 'This space can no longer be given back online (a payment has been made, or an officer allocated it). Contact the Exhibition Management Unit.');
         } else {
             $this->permit('allocations.manage');
         }

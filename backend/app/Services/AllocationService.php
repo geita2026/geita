@@ -27,27 +27,28 @@ class AllocationService
     public function allocate(Application $application, Space $space, User $actor, string $source = 'officer', bool $exception = false): Allocation
     {
         return DB::transaction(function () use ($application, $space, $actor, $source, $exception) {
-            $pending = $source === 'self';
-            $this->guardApplication($application, $actor, $exception);
+            // An exhibitor's own pick is allocated and invoiced at once — no
+            // officer confirmation. Officers step in only when something needs
+            // it (reallocate, transfer, cancel). The rules that matter are
+            // enforced here either way: approved application, free space,
+            // within the number of spaces requested (BR-001/002/005).
+            $selfService = $source === 'self';
+            $this->guardApplication($application, $actor, $exception && ! $selfService);
             $space = Space::whereKey($space->id)->lockForUpdate()->firstOrFail();
-            $this->guardSpace($space, $application, $pending);
+            $this->guardSpace($space, $application, $selfService);
 
-            $allocation = $this->open($application, $space, $actor, $source, $pending ? 'pending' : 'allocated');
-            $space->update(['status' => $pending ? 'pending_approval' : 'allocated']);
-
-            if ($pending) {
-                Audit::log('space.selected', "{$application->exhibitor->organization_name} selected space {$space->number}", $allocation);
-                Notifier::roles(['space_officer'], 'allocation', 'Space selection awaiting confirmation',
-                    "{$application->exhibitor->organization_name} selected space {$space->number} ({$application->reference}).", '/allocations?status=pending');
-            } else {
-                $this->finalise($allocation, $application);
-            }
+            $allocation = $this->open($application, $space, $actor, $source, 'allocated');
+            $space->update(['status' => 'allocated']);
+            $this->finalise($allocation, $application);
 
             return $allocation;
         });
     }
 
-    /** Officer confirms an exhibitor's self-selection. */
+    /**
+     * Officer confirms a self-selection still `pending` from before selections
+     * were allocated at once (older data only; new selections are never pending).
+     */
     public function confirm(Allocation $allocation, User $actor): Allocation
     {
         return DB::transaction(function () use ($allocation, $actor) {
@@ -172,8 +173,8 @@ class AllocationService
     public function cancel(Allocation $allocation, User $actor, string $reason): Allocation
     {
         return DB::transaction(function () use ($allocation, $actor, $reason) {
-            // An exhibitor may withdraw a selection the officer has not confirmed yet.
-            if (! ($allocation->status === 'pending' && $actor->exhibitor_id === $allocation->exhibitor_id)) {
+            // An exhibitor may withdraw their own pick until money is paid against it.
+            if (! ($actor->exhibitor_id === $allocation->exhibitor_id && $this->withdrawable($allocation))) {
                 $this->guardChange($allocation, $actor);
             }
             $space = $allocation->space;
@@ -188,6 +189,21 @@ class AllocationService
 
             return $allocation;
         });
+    }
+
+    /**
+     * An exhibitor's own selection, still live, with nothing paid or awaiting
+     * verification on its invoice: the exhibitor may give it back themselves.
+     */
+    public function withdrawable(Allocation $allocation): bool
+    {
+        if ($allocation->source !== 'self' || ! $allocation->isLive() || $allocation->application->status === 'confirmed') {
+            return false;
+        }
+        $invoices = \App\Models\Invoice::whereHas('items', fn ($q) => $q->where('allocation_id', $allocation->id))->get();
+
+        return $invoices->every(fn ($i) => (float) $i->amount_paid == 0.0
+            && ! $i->payments()->where('verification_status', 'pending')->exists());
     }
 
     /* ---------------------------------------------------------------- guards */
