@@ -171,6 +171,8 @@ export default async function PaymentsPage({
           empty="No payments"
           emptyDescription="Payments appear here when exhibitors record them."
           minWidth={980}
+          rowHref={(p) => `/invoices/${p.invoice_id}`}
+          rowLabel={(p) => `Open invoice for payment ${p.reference}`}
           rows={list.data}
         />
       </Surface>

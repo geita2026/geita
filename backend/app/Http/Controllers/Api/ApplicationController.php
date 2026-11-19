@@ -21,7 +21,13 @@ class ApplicationController extends Controller
     {
         $user = $this->actor();
         $query = Application::with(['exhibitor:id,organization_name,country,exhibitor_type', 'exhibition:id,code,name', 'category:id,name,color'])
-            ->withCount(['activeAllocations', 'documents']);
+            ->withCount(['activeAllocations', 'documents'])
+            // The list shows the space(s) held, not just the category asked for.
+            ->with(['activeAllocations' => fn ($q) => $q->select('id', 'application_id', 'space_id', 'status')
+                ->with('space:id,number,hall_id,space_category_id,width_m,length_m', 'space.hall:id,name', 'space.category:id,name,color')])
+            // For the list's control number column: the application's current invoice.
+            ->with(['invoices' => fn ($q) => $q->where('status', '!=', 'cancelled')->latest('id')
+                ->select('id', 'application_id', 'number', 'status', 'control_number', 'due_on')]);
 
         if (! $user->isStaff()) {
             $query->where('exhibitor_id', $user->exhibitor_id);

@@ -151,6 +151,8 @@ export default async function AllocationsPage({
           empty="No allocations"
           emptyDescription="Allocate space from the floor plan or from an approved application."
           minWidth={980}
+          rowHref={(a) => `/applications/${a.application_id}`}
+          rowLabel={(a) => `Open application for ${a.reference}`}
           rows={list.data}
         />
       </Surface>

@@ -95,6 +95,8 @@ export default async function ExhibitorsPage({
           ]}
           empty="No exhibitors match"
           minWidth={960}
+          rowHref={(e) => `/exhibitors/${e.id}`}
+          rowLabel={(e) => `Open ${e.organization_name}`}
           rows={list.data}
         />
       </Surface>

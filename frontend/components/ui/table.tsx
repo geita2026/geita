@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { EmptyState } from "@/components/ui/empty-state";
+import { ClickableRow } from "@/components/ui/clickable-row";
 
 export type Column<T> = {
   key: string;
@@ -17,12 +18,18 @@ export function DataTable<T extends { id: number | string }>({
   empty = "Nothing here yet",
   emptyDescription,
   minWidth = 760,
+  rowHref,
+  rowLabel,
 }: {
   columns: Column<T>[];
   rows: T[];
   empty?: string;
   emptyDescription?: string;
   minWidth?: number;
+  /** Make the whole row open this page. Links and buttons inside keep their own click. */
+  rowHref?: (row: T) => string;
+  /** What the row opens, for screen readers ("Open APP-…"). */
+  rowLabel?: (row: T) => string;
 }) {
   if (!rows.length) return <EmptyState description={emptyDescription} title={empty} />;
 
@@ -39,18 +46,26 @@ export function DataTable<T extends { id: number | string }>({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="border-t border-separator">
-              {columns.map((c) => (
-                <td
-                  key={c.key}
-                  className={`px-3 py-2.5 align-middle text-sm ${c.align === "right" ? "text-right tabular" : ""} ${c.className ?? ""}`}
-                >
-                  {c.render(row)}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {rows.map((row) => {
+            const cells = columns.map((c) => (
+              <td
+                key={c.key}
+                className={`px-3 py-2.5 align-middle text-sm ${c.align === "right" ? "text-right tabular" : ""} ${c.className ?? ""}`}
+              >
+                {c.render(row)}
+              </td>
+            ));
+
+            return rowHref ? (
+              <ClickableRow key={row.id} href={rowHref(row)} label={rowLabel?.(row) ?? "Open"}>
+                {cells}
+              </ClickableRow>
+            ) : (
+              <tr key={row.id} className="border-t border-separator">
+                {cells}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

@@ -12,7 +12,7 @@ import { APPLICATION_STATUS } from "@/lib/domain/labels";
 import { PageHeader } from "@/components/ui/page-header";
 import { FilterBar } from "@/components/ui/filter-bar";
 import { DataTable, Surface } from "@/components/ui/table";
-import { CategoryChip, StatusChip } from "@/components/ui/chips";
+import { StatusChip } from "@/components/ui/chips";
 import { Pagination } from "@/components/ui/pagination";
 import { PendingLink } from "@/components/ui/pending-link";
 import { RefLink } from "@/components/ui/ref-link";
@@ -93,14 +93,43 @@ export default async function ApplicationsPage({
                 ]
               : [{ key: "exhibition", label: "Exhibition", render: (a: Application) => a.exhibition?.name }]),
             {
-              key: "category",
-              label: "Wants",
-              render: (a) =>
-                a.category ? (
-                  <CategoryChip color={a.category.color} name={a.category.name} />
-                ) : (
-                  <span className="text-muted">Any</span>
-                ),
+              key: "space",
+              label: "Space",
+              render: (a) => {
+                const held = a.active_allocations ?? [];
+
+                // Once a space is held, show it — the category asked for no longer matters.
+                if (held.length) {
+                  return (
+                    <span className="grid gap-0.5">
+                      <span className="flex flex-wrap items-center gap-1.5">
+                        {held.map((x) => (
+                          <span key={x.id} className="font-display text-base font-extrabold">
+                            {x.space?.number}
+                          </span>
+                        ))}
+                        {held.some((x) => x.status === "pending") && (
+                          <span className="text-xs text-warning">awaiting confirmation</span>
+                        )}
+                      </span>
+                      <span className="text-xs text-muted">
+                        {[held[0].space?.hall?.name, held[0].space?.size_label].filter(Boolean).join(" · ")}
+                        {a.spaces_requested > held.length ? ` · ${held.length} of ${a.spaces_requested}` : ""}
+                      </span>
+                    </span>
+                  );
+                }
+
+                return (
+                  <span className="grid gap-0.5">
+                    <span className="text-muted">Not chosen yet</span>
+                    <span className="text-xs text-muted">
+                      {a.spaces_requested > 1 ? `${a.spaces_requested} spaces · ` : ""}
+                      {a.category ? a.category.name : "any category"}
+                    </span>
+                  </span>
+                );
+              },
             },
             {
               key: "product",
@@ -109,10 +138,26 @@ export default async function ApplicationsPage({
               render: (a) => a.product_category,
             },
             {
-              key: "spaces",
-              label: "Spaces",
-              align: "right",
-              render: (a) => `${a.active_allocations_count ?? 0}/${a.spaces_requested}`,
+              key: "control",
+              label: "Control number",
+              render: (a) => {
+                const inv = a.invoices?.[0];
+
+                if (!inv) return <span className="text-muted">—</span>;
+                if (inv.status === "paid") return <span className="text-success">Paid</span>;
+
+                return inv.control_number ? (
+                  <Link
+                    className="font-mono text-xs font-semibold tracking-wide text-brand-ink hover:underline"
+                    href={`/invoices/${inv.id}`}
+                    title={`Invoice ${inv.number}`}
+                  >
+                    {inv.control_number}
+                  </Link>
+                ) : (
+                  <span className="text-xs text-muted">Being issued…</span>
+                );
+              },
             },
             { key: "submitted", label: "Submitted", render: (a) => fmtDate(a.submitted_at) },
             { key: "status", label: "Status", render: (a) => <StatusChip map={APPLICATION_STATUS} value={a.status} /> },
@@ -121,6 +166,8 @@ export default async function ApplicationsPage({
           emptyDescription={
             staff ? "Nothing matches these filters." : "Open a published exhibition and apply for space."
           }
+          rowHref={(a) => `/applications/${a.id}`}
+          rowLabel={(a) => `Open application ${a.reference}`}
           rows={list.data}
         />
       </Surface>

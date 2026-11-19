@@ -86,6 +86,8 @@ export default async function InvoicesPage({
           empty="No invoices"
           emptyDescription="An invoice is generated when a space is allocated."
           minWidth={900}
+          rowHref={(i) => `/invoices/${i.id}`}
+          rowLabel={(i) => `Open invoice ${i.number}`}
           rows={list.data}
         />
       </Surface>
