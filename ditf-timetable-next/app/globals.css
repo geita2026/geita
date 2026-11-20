@@ -1,0 +1,362 @@
+@import url("https://fonts.cdnfonts.com/css/noto-sans-display-2");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  font-family: Montserrat, Verdana, sans-serif;
+  margin: 0;
+  color: #fff;
+  background: #070506;
+  background-image: radial-gradient(
+    1200px 480px at 50% -8%,
+    rgba(255, 191, 0, 0.22),
+    transparent 60%
+  );
+  min-height: 100vh;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Kicker font — "Dar es Salaam International Trade Fair" */
+.font-tourney {
+  font-family: "Noto Sans Display", sans-serif;
+}
+
+
+/* Gold gradient-border card (from the Uiverse "bg-yellow-box" technique) */
+.gold-card {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(71deg, #080509, #1a171c, #080509);
+  background-clip: padding-box;
+  border-radius: 28px;
+}
+.gold-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: 28px;
+  background: linear-gradient(71deg, #110e0e, #FFBF00, #110e0e);
+}
+
+/* Pill variant for small elements (countdown units).
+   Uses the EXACT amber gradient of the "Get Yield" card
+   (#110e0e -> #FFBF00 -> #110e0e), painted as a border-box background
+   layer so it can't be buried by a nested stacking context the way a
+   z-index:-1 ::after can. !important guards against HeroUI/Tailwind resets. */
+.gold-pill {
+  border: 1.5px solid transparent !important;
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 80% at 50% -5%, rgba(255, 191, 0, 0.2), transparent 58%) padding-box,
+    linear-gradient(71deg, #080509, #1a171c, #080509) padding-box,
+    linear-gradient(71deg, #110e0e, #FFBF00, #110e0e) border-box !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.06),
+    0 8px 22px -12px rgba(255, 191, 0, 0.4);
+}
+/* faint luminance on the countdown number, like the card's lit icon */
+.gold-pill .tabular {
+  text-shadow: 0 0 18px rgba(255, 191, 0, 0.35);
+}
+
+/* Compact gold-bordered chip for the per-row table countdowns.
+   Same border technique as the pills, no glow (keeps a full column calm). */
+.gold-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background:
+    linear-gradient(71deg, #0c0a0d, #161318) padding-box,
+    linear-gradient(71deg, #110e0e, #FFBF00, #110e0e) border-box;
+  color: #FFBF00;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.gold-text {
+  color: #FFBF00;
+}
+
+/* Three greyscale ambient portraits framing the page:
+   - H.E. the President  — centered, in front (highest layer)
+   - Minister (Judith Kapinga) — viewer's LEFT  (H.E.'s right, by protocol)
+   - Director General — viewer's RIGHT (H.E.'s left)
+   All anchored to the bottom and faded so they blend into the dark page. */
+
+/* H.E. President Samia Suluhu Hassan — CENTER, in front. She's a head-and-shoulders
+   portrait, so we PIN HER TO THE TOP and only fade in her shoulders: her face sits
+   in the dark band above the title, and the hero text overlays her shoulders, not
+   her face. Tune --he-shift to move her up (more negative) / down. */
+.president-bg {
+  --he-shift: -2%;
+  position: fixed;
+  left: 50%;
+  top: 0;
+  height: 70vh;
+  width: 40vw;
+  max-width: 560px;
+  z-index: 2;
+  pointer-events: none;
+  transform: translate(-50%, var(--he-shift));
+  background-image: url("/timetable/judith.kapinga.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: contain;
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+  opacity: 1;
+  /* fade her lower body so only the head-and-shoulders read at top-center */
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 92%);
+}
+/* Minister of Industry and Trade (Hon. Judith Kapinga) — viewer's LEFT. */
+.minister-bg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 46vw;
+  max-width: 640px;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("/timetable/Balozi_Waziri_Salum.png");
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: contain;
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+  opacity: 0.36;
+  -webkit-mask-image: linear-gradient(to right, #000 35%, transparent 92%);
+  mask-image: linear-gradient(to right, #000 35%, transparent 92%);
+}
+/* Director General — viewer's RIGHT. */
+.dg-bg {
+  position: fixed;
+  right: -90px;
+  top: 0;
+  bottom: 0;
+  width: 46vw;
+  max-width: 640px;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("/timetable/dg.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+  opacity: 0.36;
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 92%);
+  mask-image: linear-gradient(to left, #000 35%, transparent 92%);
+}
+/* Balozi Waziri Salum — center-right, set deepest (behind everyone). */
+.balozi-bg {
+  position: fixed;
+  left: 30%;
+  top: 0;
+  bottom: 0;
+  width: 34vw;
+  max-width: 460px;
+  z-index: 0;
+  pointer-events: none;
+  transform: translate(12%, -35%);
+  transform-origin: center bottom;
+  background-image: url("/timetable/Balozi_Waziri_Salum.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 24%, #000 76%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 24%, #000 76%, transparent);
+}
+/* Mbwasi — far RIGHT, peeking from behind Judith's right shoulder. */
+.mbwasi-bg {
+  position: fixed;
+  right: -120px;
+  top: 0;
+  bottom: 0;
+  width: 42vw;
+  max-width: 580px;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("/timetable/mbwasi.png");
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  filter: grayscale(1) contrast(1.06) brightness(1.08);
+  opacity: 0.32;
+  -webkit-mask-image: linear-gradient(to left, #000 38%, transparent 92%);
+  mask-image: linear-gradient(to left, #000 38%, transparent 92%);
+}
+@media (max-width: 768px) {
+  /* keep phones to the three centered portraits; hide the extra figures there */
+  .mbwasi-bg,
+  .balozi-bg {
+    display: none;
+  }
+  /* On phones the hero is at the top and the long table fills the rest, so a
+     bottom-anchored portrait sits off-screen behind the table. Re-anchor to
+     the top and shrink so both leaders frame the title and stay visible. */
+  .dg-bg,
+  .president-bg,
+  .minister-bg {
+    width: 40vw;
+    height: 38vh;
+    bottom: auto;
+    background-position-y: top;
+    background-size: contain;
+  }
+  .president-bg {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+  .minister-bg,
+  .dg-bg {
+    opacity: 0.26;
+  }
+  .dg-bg {
+    right: 0;
+  }
+}
+
+/* Desktop / large screens: the centered portrait collides with the centered hero
+   text, so use a side layout instead — H.E. the President anchored RIGHT and in
+   front, the Minister tucked just behind her on the right, and the DG on the LEFT.
+   (The centered arrangement above is kept for phones, where it looks great.) */
+@media (min-width: 769px) {
+  .president-bg {
+    left: -60px;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    width: 44vw;
+    max-width: 620px;
+    transform: none;
+    background-position: left bottom;
+    opacity: 0.85;
+    /* front figure: stay solid across the overlap so she reads in front of Judith;
+       only a gentle top fade so her head blends into the dark band */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%);
+    mask-image: linear-gradient(to bottom, transparent, #000 18%);
+  }
+  /* Minister — now on the RIGHT (swapped with DG), enlarged to match the others */
+  .minister-bg {
+    left: auto;
+    right: -20px;
+    top: 0;
+    bottom: 0;
+    width: 48vw;
+    max-width: 660px;
+    transform: none;
+    background-position: right bottom;
+    opacity: 0.92;
+    /* drop-shadow follows her cut-out silhouette; offset left to cast onto DG
+       behind her for a sense of depth/separation */
+    filter: grayscale(1) contrast(1.06) brightness(1.08)
+      drop-shadow(26px 0 20px rgba(0, 0, 0, 0.85))
+      drop-shadow(8px 0 5px rgba(0, 0, 0, 0.8));
+    /* front figure: stay solid across the overlap with DG; only a soft top fade */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%);
+    mask-image: linear-gradient(to bottom, transparent, #000 18%);
+  }
+  /* DG — on the RIGHT too, tucked just behind Judith (peeking to her inner side) */
+  .dg-bg {
+    left: auto;
+    right: -70px;
+    top: 0;
+    bottom: 0;
+    width: 42vw;
+    max-width: 580px;
+    transform: translate(-38%, -12%);
+    transform-origin: right bottom;
+    background-position: right bottom;
+    opacity: 0.34;
+    -webkit-mask-image: linear-gradient(to left, #000 38%, transparent 92%);
+    mask-image: linear-gradient(to left, #000 38%, transparent 92%);
+  }
+  /* Mbwasi — peeking from behind Judith's RIGHT shoulder (outer side) */
+  .mbwasi-bg {
+    left: auto;
+    right: -100px;
+    top: 0;
+    bottom: 0;
+    width: 40vw;
+    max-width: 560px;
+    transform: translate(14%, -36%);
+    transform-origin: right bottom;
+    background-position: right bottom;
+    opacity: 0.42;
+    -webkit-mask-image: linear-gradient(to left, #000 30%, transparent 90%);
+    mask-image: linear-gradient(to left, #000 30%, transparent 90%);
+  }
+}
+
+/* Semi-transparent black scrim sitting ABOVE the portrait layers (z 0–2) but
+   BELOW the page content (z 10) — darkens the portraits so the hero text reads
+   cleanly on top, especially on mobile. */
+.portrait-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Active row gold glow */
+.row-now {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 191, 0, 0.12),
+    rgba(255, 191, 0, 0.02)
+  );
+  box-shadow: inset 3px 0 0 #FFBF00;
+}
+
+/* Shimmer text — a bright band sweeps across the letters (background-clip:text),
+   adapted from jh3y's CSS text-shimmer to the gold theme. Gold base, white-gold
+   highlight, with a rest between sweeps. */
+.shimmer-text {
+  display: inline-block;
+  background-image:
+    linear-gradient(
+      100deg,
+      transparent 36%,
+      #fff7dd 47%,
+      #ffffff 50%,
+      #ffe9a8 53%,
+      transparent 64%
+    ),
+    linear-gradient(#ffbf00, #ffbf00);
+  background-size: 250% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0, 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 6.5s ease-in-out infinite;
+}
+@keyframes shimmer-text {
+  0% {
+    background-position: 150% 0, 0 0;
+  }
+  55%,
+  100% {
+    background-position: -50% 0, 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text {
+    animation: none;
+  }
+}

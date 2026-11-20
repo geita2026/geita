@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TANTRADE ID Card</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Arial", sans-serif;
+        background: #f2f2f2;
+      }
+
+      .id-card {
+        width: 56cm;
+        height: 86cm;
+        background: white;
+        margin: auto;
+        border: 0.5cm solid #1a237e;
+        padding: 3cm;
+        box-sizing: border-box;
+        position: relative;
+      }
+
+      .header {
+        display: flex;
+        justify-content: center;
+        gap: 2.5cm;
+        align-items: center;
+      }
+
+      .left-logo,
+      .right-logo {
+        /* height: 6cm; */
+      }
+
+      .title {
+        text-align: center;
+        margin-top: 2cm;
+      }
+
+      .title h2 {
+        color: #1a237e;
+        font-size: 2.0cm;
+        margin: 0.3cm 0;
+      }
+
+      .title h3 {
+        font-size: 2.0cm;
+        margin-top: 0.5cm;
+        margin-bottom: 0cm;
+      }
+
+      .dates {
+        color: green;
+        font-size: 2cm;
+        margin-top: 0cm;
+      }
+
+      .profile {
+        text-align: center;
+        margin-top: 2.5cm;
+      }
+
+      .profile-pic {
+        height: 28cm;
+        width: 28m;
+        border-radius: 50%;
+        border: 0.3cm solid #2b8e58;
+        object-fit: cover;
+      }
+
+      .profile_cycle2 {
+        margin: 0 auto;
+        width: 30cm;
+        height: 30cm;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        position: relative;
+        border-radius: 50%;
+        border: 0.3cm solid #1a237e;
+      }
+
+      /* .profile_cycle3 {
+        width: 24cm;
+        height: 24cm;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #2b8e58;
+        position: relative;
+        border-radius: 50%;
+        border: 1cm solid #ffffff;
+      } */
+
+      .info {
+        text-align: center;
+        margin-top: 0cm;
+      }
+
+      .name {
+        font-size: 4cm;
+        font-weight: bold;
+        margin-top: 1.2cm;
+        margin-bottom: 0;
+      }
+
+      .role {
+        margin-top: 0.5cm;
+        font-weight: 900;
+        font-size: 3.5cm;
+        background-color: #1a237e;
+        color: white;
+        display: inline-block;
+        padding: 0.8cm 2.5cm;
+        border-radius: 0.5cm;
+        margin-bottom: 1.7cm;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 2.5cm;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+
+      .qr {
+        height: 13cm;
+        margin-bottom: 1cm;
+        width: 12cm;
+      }
+
+      .logos img {
+        height: 5cm;
+        margin: 0 1.2cm;
+      }
+
+      .website {
+        font-size: 2cm;
+        color: #1a237e;
+        margin-top: 1.2cm;
+      }
+
+      .decor {
+        position: absolute;
+        width: 2cm;
+        height: 40%;
+        background: url("49.png") repeat-y;
+        background-size: contain;
+      }
+
+      .decor.left {
+        left: 0;
+        bottom: 0;
+      }
+
+      .decor.right {
+        right: 0;
+        bottom: 0;
+        /* transform: rotate(180deg); */
+      }
+      .bottom-curve {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        top: 41.5%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="id-card">
+      <div class="decor left"></div>
+      <div class="decor right"></div>
+      <div class="header">
+        <img
+          src="coat_of_arms.png"
+          class="left-logo"
+          alt="Tanzania Coat of Arms"/>
+        <img src="tantrade.jpg" class="right-logo" alt="TanTrade Logo" />
+      </div>
+
+      <div class="title">
+        <h2>TANZANIA TRADE DEVELOPMENT AUTHORITY<br />(TANTRADE)</h2>
+        <h3>THE 49<sup>th</sup> DAR ES SALAAM<br />INTERNATIONAL TRADE FAIR</h3>
+        <p class="dates">
+          <b>28<sup>th</sup> June – 13<sup>th</sup> July 2025</b>
+        </p>
+      </div>
+
+      <div class="profile">
+        <div class="profile_cycle2">
+          <img src="person.png" class="profile-pic" alt="Latifa Khamis" />
+        </div>
+      </div>
+      <div class="bottom-curve">
+        <img width="100%" src="ribbon.png" alt="" srcset="" />
+      </div>
+
+      <div class="info">
+        <h2 class="name">LATIFA KHAMIS</h2>
+        <h4 class="role">TANTRADE STAFF</h4>
+      </div>
+
+      <div style="position: relative">
+          <img src="qr.png" class="qr" alt="QR Code" />
+        <div class="footer">
+          <div class="logos">
+            <img src="ufi.png" alt="UFI Approved" />
+            <img src="49.png" alt="49th DITF Logo" />
+            <img src="six.png" alt="TanTrade Symbol" />
+          </div>
+          <p class="website">
+            <img
+              src="www.png"
+              style="width: 80px; height: 80px; margin-bottom: -25px"
+              alt=""
+            />
+            <a href="http://www.tantrade.go.tz" style="text-decoration: none"
+              >www.tantrade.go.tz</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

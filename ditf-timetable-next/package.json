@@ -1,0 +1,26 @@
+{
+  "name": "ditf-timetable",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@heroui/system": "2.4.15",
+    "@heroui/theme": "2.4.15",
+    "@heroui/button": "2.2.18",
+    "@heroui/chip": "2.2.14",
+    "framer-motion": "11.11.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.13",
+    "daisyui": "4.12.14"
+  }
+}
