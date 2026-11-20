@@ -13,6 +13,7 @@ import { logoutAction } from "@/server/actions";
 import { versionLabel } from "@/lib/version";
 import { Aura } from "@/components/ui/aura";
 import { NotificationBell } from "@/components/shell/notification-bell";
+import { IdleGuard } from "@/components/shell/idle-guard";
 import { SidebarNav } from "@/components/shell/sidebar-nav";
 import { NavProgress } from "@/components/shell/nav-progress";
 import { SearchBox } from "@/components/shell/search-box";
@@ -84,6 +85,7 @@ export function AppShell({
   return (
     <div className="safe-shell mx-auto flex min-h-screen w-full max-w-[1600px] gap-4 p-3 sm:p-4">
       <NavProgress />
+      <IdleGuard minutes={session.idle_minutes ?? 30} />
       <div
         aria-hidden
         className={clsx(

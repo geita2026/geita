@@ -26,6 +26,7 @@ class AuthController extends Controller
         return [
             'user' => $user->load('exhibitor'),
             'permissions' => $user->permissions(),
+            'idle_minutes' => (int) config('gememis.idle_minutes'),
         ];
     }
 
@@ -106,7 +107,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Audit::log('auth.logout', "{$this->actor()->name} signed out", $this->actor(), reference: $this->actor()->email);
+        // The browser's idle watcher signs out with reason=idle (eGA inactivity rule).
+        $idle = $request->input('reason') === 'idle';
+        Audit::log($idle ? 'auth.timeout' : 'auth.logout', $idle
+            ? "{$this->actor()->name} was signed out after ".config('gememis.idle_minutes').' minutes without activity'
+            : "{$this->actor()->name} signed out", $this->actor(), reference: $this->actor()->email);
         $this->actor()->currentAccessToken()->delete();
 
         return response()->noContent();

@@ -58,6 +58,20 @@ export async function registerAction(_prev: ActionResult, form: FormData): Promi
   redirect("/dashboard");
 }
 
+/**
+ * Called by the idle watcher (components/shell/idle-guard.tsx) after the
+ * inactivity limit: the API records it as a time-out, not a sign-out.
+ */
+export async function idleLogoutAction() {
+  try {
+    await api("/auth/logout", { method: "POST", body: { reason: "idle" } });
+  } catch {
+    // Already revoked by the API's own clock: the cookie is cleared either way.
+  }
+  (await cookies()).delete(SESSION_COOKIE);
+  redirect("/login?reason=idle");
+}
+
 export async function logoutAction() {
   try {
     await api("/auth/logout", { method: "POST" });

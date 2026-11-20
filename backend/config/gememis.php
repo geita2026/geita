@@ -55,6 +55,14 @@ return [
      | While GePG is off there is no control number, so exhibitors record their own
      | bank payments (with evidence) and Finance verifies them.
      */
+    /*
+     * eGA: "Connection sessions that are not active for more than thirty (30)
+     * minutes must automatically terminate." Enforced by the API on every
+     * request (a token unused for this long is revoked) and shown in the
+     * browser as a warning countdown. 0 turns it off.
+     */
+    'idle_minutes' => (int) env('SESSION_IDLE_MINUTES', 30),
+
     'manual_payments' => env('MANUAL_PAYMENTS', 'exception'),
 
     'auth' => [

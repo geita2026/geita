@@ -393,6 +393,33 @@ class GememisTest extends TestCase
         $this->recordManually($finance, $invoice)->assertForbidden();
     }
 
+    public function test_tc013_session_ends_after_30_minutes_without_activity(): void
+    {
+        $user = $this->staff('finance_officer');
+        $token = $user->createToken('web')->plainTextToken;
+        $auth = ['Authorization' => "Bearer $token", 'Accept' => 'application/json'];
+
+        $this->getJson('/api/v1/auth/me', $auth)->assertOk()->assertJsonPath('idle_minutes', 30);
+
+        // 29 minutes later: still signed in, and that request restarts the clock.
+        $this->travel(29)->minutes();
+        $this->app['auth']->forgetGuards();
+        $this->getJson('/api/v1/auth/me', $auth)->assertOk();
+
+        // 31 minutes without a request: the token is revoked and the time-out audited.
+        $this->travel(31)->minutes();
+        $this->app['auth']->forgetGuards();
+        $this->getJson('/api/v1/auth/me', $auth)->assertUnauthorized();
+        $this->assertSame(0, $user->tokens()->count());
+        $this->assertDatabaseHas('audit_logs', ['action' => 'auth.timeout', 'user_id' => $user->id]);
+
+        // The browser's own time-out signs out with reason=idle and is recorded as such.
+        $token = $user->createToken('web')->plainTextToken;
+        $this->app['auth']->forgetGuards();
+        $this->postJson('/api/v1/auth/logout', ['reason' => 'idle'], ['Authorization' => "Bearer $token"])->assertNoContent();
+        $this->assertSame(2, \App\Models\AuditLog::where('action', 'auth.timeout')->count());
+    }
+
     public function test_tc012_account_locks_after_repeated_failed_sign_ins(): void
     {
         $user = $this->staff('auditor');

@@ -19,7 +19,8 @@
 | `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Use a dedicated database and a dedicated database user |
 | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` | Email notifications. `log` until SMTP is available |
 | `FRONTEND_URL` | Base of links in emails |
-| `SANCTUM_TOKEN_MINUTES` | Session length; default 720 |
+| `SANCTUM_TOKEN_MINUTES` | Longest a session can last, active or not; default 720 |
+| `SESSION_IDLE_MINUTES` | eGA inactivity limit: sign out after this many minutes without activity; default 30, `0` turns it off |
 | `QUEUE_CONNECTION` | `database` in production (run a worker, §3); `sync` runs jobs inline for development |
 | `GEPG_*` | See §9 |
 | `SMS_DRIVER`, `SMS_SENDER` | `log` until a gateway adapter is written |

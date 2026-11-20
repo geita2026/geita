@@ -20,9 +20,15 @@ export default async function LoginPage({
 
   return (
     <AuthFrame lead="Staff and registered exhibitors sign in here." title="Sign in">
+      {reason === "idle" && (
+        <p className="mb-4 rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning" role="status">
+          You were signed out after a period without activity. Sign in again to continue.
+        </p>
+      )}
       {reason === "expired" && (
         <p className="mb-4 rounded-lg bg-warning-soft px-3 py-2 text-sm text-warning" role="status">
-          Your session ended. Sign in again to continue.
+          Your session ended — after a period without activity, or because you signed out elsewhere. Sign in again to
+          continue.
         </p>
       )}
       <LoginForm next={next} />

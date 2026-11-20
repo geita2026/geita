@@ -132,6 +132,7 @@ The FRD is a functional document; these are the qualities the build was held to.
 |---|---|---|
 | Security | Passwords hashed; ≥10 characters, mixed case and a digit | Laravel `Password` rule, bcrypt |
 | Security | Tokens never exposed to browser scripts | httpOnly cookie on the Next server |
+| Security | eGA inactivity rule: sessions not active for 30 minutes terminate | The API revokes a token unused for `SESSION_IDLE_MINUTES` (default 30) and audits `auth.timeout`; the browser warns 2 minutes before with a countdown and **Stay signed in**, keeps the server clock in step while the user reads, and shares activity across tabs |
 | Security | Brute-force protection | Lock after 5 failures; login rate limit 10/min |
 | Security | Content Security Policy and standard headers | `frontend/next.config.ts` |
 | Integrity | Allocation and billing are atomic | Database transactions |

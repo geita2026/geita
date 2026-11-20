@@ -48,7 +48,12 @@ export type User = {
   exhibitor?: Exhibitor | null;
 };
 
-export type Session = { user: User; permissions: string[] };
+export type Session = {
+  user: User;
+  permissions: string[];
+  /** eGA inactivity limit set by the API (SESSION_IDLE_MINUTES); 0 = off. */
+  idle_minutes?: number;
+};
 
 export type Hall = {
   id: number;

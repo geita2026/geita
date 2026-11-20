@@ -8,6 +8,8 @@ First release. Implements the GeMEMIS Functional Requirements Document.
 
 **Updates in this release candidate**
 - Sign-up as on SAMS (name, phone, email, password, terms); whether the exhibitor is an **individual** or a **registered business** is asked on the first application, and each is treated as such — individuals are invoiced in their own name and have their own mandatory documents.
+- **Inactivity sign-out (eGA)**: after 30 minutes without activity the session ends, enforced by the API and shown in the browser with a 2-minute *Still there?* countdown, as in SAMS and the Project Tracking Portal. Set with `SESSION_IDLE_MINUTES`.
+- **Clickable rows** in every list; the applications list shows the space held and the control number.
 - **No officer confirmation for space selection**: a space an exhibitor picks is allocated and invoiced at once. The exhibitor can give it back until something is paid; after that only an officer can change it.
 - **Payment safeguards**: with GePG on, exhibitors pay only by control number; Finance may record a payment outside GePG as an exception — slip and reason required, no cash — and a *different* Finance Officer must verify it (two-person rule). Management and the Auditor are notified of every manual acceptance. The System Administrator no longer holds `finance.manage`. `MANUAL_PAYMENTS=off` turns manual recording off entirely.
 - Countdown to the GePG control number's expiry on the invoice and beside **Pay invoice**.

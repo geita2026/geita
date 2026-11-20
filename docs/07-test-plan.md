@@ -29,6 +29,7 @@ Test names carry the FRD's test-case numbers (FRD §25: TC-nnn proves FR-nnn).
 | TC-001 | FR-001, BR-009 | Finance Officer is refused; Exhibition Administrator creates a draft; audit entry written |
 | TC-005 | FR-005, FR-007, FR-008 | A 3 × 6 m space in a 10,000/m² category is priced 180,000 |
 | TC-010 | FR-010, BR-001, BR-005 | Second allocation of a held space is refused by the API; a direct database insert is refused by the unique index |
+| TC-013 | NFR security | A token unused for 30 minutes is refused and revoked, audited `auth.timeout`; a request at 29 minutes restarts the clock; the browser's idle sign-out is recorded as a time-out |
 | TC-012 | FR-012 | Five wrong passwords lock the account; the right password is then refused |
 | TC-011 | FR-011 | Sign-up needs only name, phone, email, password and the terms; the applicant type is not set yet |
 | TC-014 | FR-014, BR-003 | Submission without the mandatory document is refused, naming the document |

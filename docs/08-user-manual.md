@@ -8,6 +8,7 @@
 - **Bell:** your notifications. A copy also goes to your email and phone where those services are switched on.
 - **Dialogs:** most buttons open out into a form and fold back when you save. Press Esc or the ✕ to close without saving.
 - **Filters:** every list has a search box and filter chips. The filtered view is in the page address, so you can bookmark or share it.
+- **Signing out for inactivity:** after 30 minutes without activity you are signed out (eGA rule). Two minutes before, a *Still there?* box counts down — press **Stay signed in** to carry on. Working in another GeMEMIS tab counts as activity.
 - **Settings:** accent colour, reduced motion, the distortion wave (the ripple when you switch theme or accent — switch it off here), and changing your password.
 
 ---
