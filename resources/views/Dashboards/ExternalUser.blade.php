@@ -168,23 +168,6 @@
                 </div>
                 @endcan
 
-                {{-- MY CONTRACT --}}
-                @if(Auth::user()->myCompany)
-                <div class="col-md-3">
-                    <a href="{{ route('contracts.my-contract') }}" class="text-decoration-none">
-                        <div class="service-card">
-                            <div class="service-icon">
-                                <i class="icon-file-text2"></i>
-                            </div>
-                            <div class="service-title">My Contract</div>
-                            <div class="service-desc">
-                                View and manage your signed contract.
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                @endif
-
             </div>
         </div>
 

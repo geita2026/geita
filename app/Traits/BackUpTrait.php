@@ -7,9 +7,6 @@ use App\Models\ExhibitionBadges\CompanyMember;
 use App\Models\settings\events;
 use App\Models\space\additional_services;
 use App\Models\Stickers\CarSticker;
-use App\Models\Tickets\ProducedTicket;
-use App\Models\Tickets\VipTicketBookings;
-use App\Models\Tickets\VipTicketPackage;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
@@ -177,100 +174,4 @@ trait BackUpTrait
     }
 
     #************* END STICKER BACKUP **********#
-
-
-    #************** ONLINE TICKET BACKUP ********#
-    public function onlineTicketBackUp()
-    {
-        try {
-            $url = config('global.BACKUP_BASE_URL') . date('d_m_y3');
-            $response = Http::get($url);
-            $tickets = $response['tickets'];
-
-            foreach ($tickets as  $value) {
-                $booking = VipTicketBookings::find($value['bookingId']);
-                if (!$booking) {
-                    VipTicketBookings::create([
-                        'ticket_booking_id' => $value['ticket_booking_id'],
-                        'customer_name' => $value['customer_name'],
-                        'phone_number' => $value['phone_number'],
-                        'control_number' => $value['control_number'],
-                        'payment_deadline' => $value['payment_deadline'],
-                        'amount_paid' => $value['amount_paid'],
-                        'booked_package' => $value['booked_package'],
-                        'ticket_amount' => $value['ticket_amount'],
-                        'currency' => $value['currency'],
-                        'sp_customer_no' => $value['booked_package'],
-                        'gfs_code_mapping' => $value['gfs_code_mapping'],
-                        'sp_invoice_no' => $value['sp_invoice_no'],
-                        'bookingEvent' => $value['bookingEvent'],
-                        'serviceCode'=>$value['serviceCode'],
-                    ]);
-                }
-                # add only which does not exists.
-                $ticket = ProducedTicket::find($value['ticketId']);
-                if (!$ticket) {
-                    ProducedTicket::create([
-                        'ticketId' => $value['ticketId'],
-                        'bookingId' => $value['bookingId'],
-                        'ticketNo' => $value['ticketNo'],
-                        'ticketStatus' => $value['ticketStatus'],
-                        'ticketAmount' => $value['ticketAmount'],
-                        'plateNumber' => $value['plateNumber'],
-                        'customerName' => $value['customerName'],
-                        'visitDate' => $value['visitDate'],
-                        'ticketName' => $value['ticketName'],
-                    ]);
-                    $id = $value['ticketId'];
-                    #--------------- END BACK UP ------ #
-                    $response = Http::get(config('global.BACKUP_BASE_URL') . date('d_m_y3') . '/' . $id);
-                    if ($response['status'] == 1) {
-                        return back()->with('success', $response['message']);
-                    }
-                } else {
-                    
-                    $ticket->update([
-                        'ticketStatus' => $value['ticketStatus'],
-                    ]);
-                }
-                $id = $value['ticketId'];
-                $response = Http::get(config('global.BACKUP_BASE_URL') . date('d_m_y3') . '/' . $id);
-                if ($response['status'] == 1) {
-                    return back()->with('success', $response['message']);
-                }
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Something went wrong!' . $th->getMessage(),
-            ]);
-        }
-    }
 }
-
-
- // $pakage = VipTicketPackage::find($value['booked_package']);
-                // if (!$pakage) {
-                //     VipTicketPackage::create([
-                //         'vip_package_id' => $value['booked_package'],
-                //         'package_name' => $value['ticketName'],
-                //         'package_color' => '',
-                //         'package_discriptions' => $value['ticketName'],
-                //         'package_description_sw' => $value['ticketName'],
-                //         'package_cost' => $value['ticketAmount'],
-                //         'currency' => 'TZS',
-                //         'gfs_code' => '',
-                //     ]);
-                // }
-                // $event = events::find($value['bookingEvent']);
-                // if (!$event) {
-                //     events::create([
-                //         'event_id' => $value['bookingEvent'],
-                //         'event_name' => '48th Dar es Salaam International Trade Fair',
-                //         'event_location' => 'Dar Es Salaam',
-                //         'event_start_date' => '2024-06-28',
-                //         'event_end_date' => '2024-07-13',
-                //         'event_descriptions' => 'welcome',
-                //         'event_status' => '1',
-                //     ]);
-                // }

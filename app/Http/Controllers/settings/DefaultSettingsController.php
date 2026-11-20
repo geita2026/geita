@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\settings;
 
-use App\Http\Controllers\APIs\ValidationApiController;
 use App\Http\Controllers\Controller;
 use App\Models\setting\DefaultSettings;
 use App\Models\settings\events;
@@ -32,9 +31,8 @@ class DefaultSettingsController extends Controller
         $item   = DefaultSettings::limit(1)->first();
         $events = events::orderByDesc('event_start_date')->get();
 
-        $currentAdminPin = ValidationApiController::adminPin();
 
-        return view('settings.defaultSettings', compact('item', 'events', 'currentAdminPin'));
+        return view('settings.defaultSettings', compact('item', 'events'));
     }
 
     /**
@@ -91,7 +89,6 @@ class DefaultSettingsController extends Controller
                     'exchangeRate'           => $request->exchangeRate,
                     'allowedNetworks'         => $request->allowedNetworks,
                     'badge_live_test'         => $request->boolean('badge_live_test'),
-                    'scanner_pin'             => str_pad((string) ((int) $request->input('scanner_pin', '0000')), 4, '0', STR_PAD_LEFT),
                 ]
             );
             DB::commit();

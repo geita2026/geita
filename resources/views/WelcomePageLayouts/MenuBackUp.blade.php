@@ -47,7 +47,6 @@
                      <li class="btn text-bold "><a href="{{ route('ditf_map') }}" class="text-primary" style="font-size: 1.8vmin"> DITF Map</a></li>
                      <li class=" btn text-bold "><a href="{{ route('catalogy.index') }}" class="text-primary" style="font-size: 1.8vmin"> DITF Catalogy</a></li>
                      {{-- <li class=" btn text-bold"><a href="{{ route('delegate_profiles.index') }}" target="_tab">Delegation Profiles</a></li> --}}
-                     {{-- <li class=" btn text-bold"><a href="{{ route('vip_tickets.index') }}"><i class="icon-chess-queen"></i> VIP Tickets </a></li> --}}
                      {{-- <li class=" btn text-bold text-primary" data-toggle="modal" data-target="#login"><a class="text-primary" style="font-size: 1.8vmin"> Login </a></li> --}}
                      {{-- <li class=" btn text-bold" data-toggle="modal" data-target="#NewAccount"><a><i class=" icon-user-plus"></i> REGISTER </a></li> --}}
 

@@ -38,6 +38,6 @@ Route::resource('emergency_badges',EmergenceBadgesController::class);
 
 Route::get('vip',[EmergenceBadgesController::class,'index'])->name('vip');
 
-Route::resource('badges_backup',badgesBackupController::class);
+Route::resource('badges_backup',badgesBackupController::class)->except('edit');
 
 });

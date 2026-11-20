@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Models\exhibition\exhibitors;
 use App\Models\sectors;
 use App\Models\settings\events;
-use App\Models\Tickets\VipTicketBenefit;
 use App\Traits\VistorsTrait;
 
 class PublicPagesController extends Controller
@@ -55,31 +54,6 @@ class PublicPagesController extends Controller
         return view('FrontEnd.Public_Pages.DitfMap', compact('exhibitors', 'categories','event'));
 
         return view('FrontEnd.Public_Pages.ditf_map', compact('exhibitors', 'categories'));
-    }
-
-
-    public function AboutSabaSabaTicket(Request $request)
-    {
-        $value = Null;
-        $exhibitors = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->where('companySector', 1)->get();
-
-        $vipBenefits=VipTicketBenefit::get();
-        return view('FrontEnd.Public_Pages.VipTickets.VipTicketBooking', compact('exhibitors','vipBenefits'));
-    }
-
-
-    public function carParking(Request $request){
-        $event=Null;
-        $exists=events::where('event_status',1)->first();
-        if ($exists) {
-            $event=$exists->event_id;
-        }
-        $sectors=sectors::count();
-        $exhibitedProducts=exhibition_products::count();
-        $exhibitors=exhibitors::where('exhibitor_event',$event)->count();
-
-        return view('FrontEnd.Public_Pages.VipTickets.carparking',compact('sectors','exhibitedProducts','exhibitors'));
     }
 
 

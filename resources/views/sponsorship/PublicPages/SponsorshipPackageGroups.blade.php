@@ -21,7 +21,6 @@
 
 
     <!-- Get Pro Button -->
-    @include('FrontEnd.Public_Pages.Layouts.NewsButton')
 
     <!-- Header Area -->
     <header class="header">

@@ -26,7 +26,6 @@ return[
     'APP_STATUS'=>env('APP_STATUS', 0),
     'APP_VASSION'=>env('APP_VASSION', 0),
     'BOOKING_STATUS'=>env('BOOKING_STATUS', 1),
-    'ONLINE_TICKET_BOOKING'=>env('ONLINE_TICKET_BOOKING', 0),
     'BACKUP'=>env('BACKUP', 0),
     // External API credentials & URLs
     'MARKET_INFO_TOKEN'=>env('MARKET_INFO_TOKEN', ''),
@@ -34,7 +33,6 @@ return[
     'BACKUP_BASE_URL'=>env('BACKUP_BASE_URL', ''),
     'LIVE_EVENT_ID'=>env('LIVE_EVENT_ID', null),
     'ADMIN_COMPANY_ID'=>env('ADMIN_COMPANY_ID', null),
-    'TICKET_SP_CUSTOMER_NO'=>env('TICKET_SP_CUSTOMER_NO', null),
     // ESB / NIDA integration
     'clientId'=>env('clientId', ''),
     'clientSecret'=>env('clientSecret', ''),

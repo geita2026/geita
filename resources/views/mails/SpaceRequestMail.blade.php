@@ -22,7 +22,7 @@
                         <p>
                             This is to notify you that, we have received your request for the
                             48<sup>th</sup> Dar es salaam International Trade Fair (DITF),
-                            With Request Ticket Number: <b>{{ $requestNo }}</b>.
+                            with request number <b>{{ $requestNo }}</b>.
                             <br>
                             We are working for your request in one to two working days! Then we will be back to you.
                         </p>

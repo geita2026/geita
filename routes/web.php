@@ -33,7 +33,6 @@ require __DIR__.'/frontEnd.php';
 require __DIR__.'/Advertisement.php'; 
 require __DIR__.'/Backend.php'; 
 require __DIR__.'/reports.php'; 
-require __DIR__.'/Tickets.php'; 
 require __DIR__.'/TradePromotion.php'; 
 require __DIR__.'/ePermit.php';
 require __DIR__.'/Company.php';
@@ -44,7 +43,6 @@ require __DIR__.'/SponsorshipManagement.php';
 require __DIR__.'/SystemSettings.php';
 require __DIR__.'/ExpoRoutes.php';
 require __DIR__.'/Exhibitors.php';
-require __DIR__.'/contracts.php';
 
 // Authentication routes
 Route::prefix('auth')->name('auth.')->group(function(){

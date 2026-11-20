@@ -19,8 +19,6 @@ use App\Models\Collections\PaymentDetails;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
 use App\Models\off_fair\advice_notes\off_fair_advice_notes;
-use App\Models\Tickets\TicketCollection;
-use App\Models\Tickets\VipTicketBookings;
 use App\Traits\CollectionSettingTraits;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
@@ -111,34 +109,6 @@ class IntergrationController extends Controller
             }
             #------- END OFF FAIR INVOICES POST CONTROL NUMBER API------#
 
-
-            #------- TICKET POST CONTROL NUMBER API------#
-            if (VipTicketBookings::where('ticket_booking_id', $reference)->exists()) {
-                $exist = VipTicketBookings::where('control_number', $control_no)->first();
-                if (!$exist) {
-                    VipTicketBookings::find($reference)->update(['control_number' => $control_no]); // set control no to invoice
-                    $this->SentControlNoNotification($reference); //SMS
-                    // $this->VipInvoiceEmailNotification($reference); // Email
-                }
-                // $this->SentControlNoNotification($reference);
-
-                $response = array('code' => 200, 'message' => 'Request Processed successfully!');
-                return response()->json(['response' => $response]); // return response to Service Provider
-            }
-            #------- END OFF FAIR INVOICES POST CONTROL NUMBER API------#
-
-
-
-            #--------* RECONCILIATION *-------#
-            if (TicketCollection::where('collectionId', $reference)->exists()) {
-                TicketCollection::find($reference)
-                    ->update([
-                        'controlNumber' => $control_no,
-                    ]);
-                $response = array('code' => 200, 'message' => 'Request Processed successfully!');
-                return response()->json(['response' => $response]);
-            }
-            #--------* RECONCILIATION *------#
 
             #---- e_Permit Invoices ----- #
             if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
@@ -256,28 +226,6 @@ class IntergrationController extends Controller
         #--- END UPDATE PAYMENTS IN OFF FAIR INVOICES---#
 
 
-        #************ PAYMENTS FOR ONLINE TICKET *************#
-        if (VipTicketBookings::where('ticket_booking_id', $reference)->exists()) {
-            $ticket = VipTicketBookings::find($reference);
-            $paid = $ticket->amount_paid + $amount_paid;
-            $ticket->update([
-                'amount_paid' => $paid,
-            ]);
-            return 1;
-        }
-        #************ END PAYMENTS FOR VIP TICKET *************#
-
-        #---- Reconciliation Function -----#
-        if (TicketCollection::where('collectionId', $reference)->exists()) {
-            TicketCollection::find($reference)
-                ->update([
-                    'amountPaid' => $amount_paid,
-                ]);
-            return 1;
-        }
-        #------ Reconciliation Function ----#
-
-
         if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
             $invoice=ApplicationInvoice::find($reference);
             $invoice->update([
@@ -313,9 +261,6 @@ class IntergrationController extends Controller
     // end of methode to update balance in bills table
 
 
-    #*************** CREATE TICKET FOR ONLINE TICKETS *******#
-
-    #*************** END ONLINE TICKET**************#
 
     # ******* END POST PAYMENTS FUNCTION *********#
 

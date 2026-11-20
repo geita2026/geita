@@ -102,7 +102,6 @@
                 <li class=" btn text-bold"><a href="{{ route('catalogy.index') }}">DITF Catalogue</a></li>
 
                 {{-- <li class=" btn text-bold"><a href="{{ route('discover_exhibitor.index') }}">Discover Exhibitor</a></li> --}}
-                {{-- <li class=" btn text-bold"><a href="{{ route('vip_tickets.index') }}">VIP Tickets </a></li> --}}
                 {{-- <li class=" btn text-bold" data-toggle="modal" data-target="#login"><a ><i class=" icon-lock2"></i> Login </a></li> --}}
 
                 {{-- <li class=" btn text-bold" data-toggle="modal" data-target="#NewAccount"><a><i class=" icon-user-plus"></i> REGISTER </a></li> --}}

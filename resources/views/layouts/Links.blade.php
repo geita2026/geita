@@ -45,11 +45,6 @@
                     Booking</a></li>
         </ul>
     </li> --}}
-    {{-- @if (env('ONLINE_TICKET_BOOKING') == 1)
-        <li class=" text-bold menuBtn {{ Route::is('online_tickets.index') ? 'active' : '' }}"><a
-                href="{{ route('online_tickets.index') }}">e-Ticket</a>
-        </li>
-    @endif --}}
     
     <li class="  text-bold menuBtn"><a href="{{ route('login') }}">Login</a></li>
     <li class="  text-bold menuBtn {{ Route::is('registration') ? 'active' : '' }} "><a href="{{ route('registration') }}"

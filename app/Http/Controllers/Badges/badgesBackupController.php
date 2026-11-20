@@ -8,8 +8,6 @@ use App\Models\ExhibitionBadges\CompanyMember;
 use App\Models\settings\events;
 use App\Models\space\additional_services;
 use App\Models\Stickers\CarSticker;
-use App\Models\Tickets\ProducedTicket;
-use App\Models\Tickets\VipTicketBookings;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -222,76 +220,6 @@ class badgesBackupController extends Controller
         }
         else{
             return back()->with('fail','Backup not allowed for this badges!');
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        try {
-            $url = config('global.BACKUP_BASE_URL') . date('d_m_y3');
-            $response = Http::get($url);
-            $tickets = $response['tickets'];
-            $balance=$response['pending'];
-
-
-            foreach ($tickets as  $value) {
-                $booking = VipTicketBookings::find($value['bookingId']);
-                if (!$booking) {
-                    VipTicketBookings::create([
-                        'ticket_booking_id' => $value['ticket_booking_id'],
-                        'customer_name' => $value['customer_name'],
-                        'phone_number' => $value['phone_number'],
-                        'control_number' => $value['control_number'],
-                        'payment_deadline' => $value['payment_deadline'],
-                        'amount_paid' => $value['amount_paid'],
-                        'booked_package' => $value['booked_package'],
-                        'ticket_amount' => $value['ticket_amount'],
-                        'currency' => $value['currency'],
-                        'sp_customer_no' => $value['booked_package'],
-                        'gfs_code_mapping' => $value['gfs_code_mapping'],
-                        'sp_invoice_no' => $value['sp_invoice_no'],
-                        'bookingEvent' => $value['bookingEvent']
-                    ]);
-                }
-                $id=$value['ticketId'];
-                # add only which does not exists.
-                $ticket = ProducedTicket::find($value['ticketId']);
-                if (!$ticket) {
-                    ProducedTicket::create([
-                        'ticketId' => $value['ticketId'],
-                        'bookingId' => $value['bookingId'],
-                        'ticketNo' => $value['ticketNo'],
-                        'ticketStatus' => $value['ticketStatus'],
-                        'ticketAmount' => $value['ticketAmount'],
-                        'plateNumber' => $value['plateNumber'],
-                        'customerName' => $value['customerName'],
-                        'visitDate' => $value['visitDate'],
-                        'ticketName' => $value['ticketName'],
-                    ]);
-                    $id = $value['ticketId'];
-                    #--------------- END BACK UP ------ #
-                    $response = Http::get(config('global.BACKUP_BASE_URL') . date('d_m_y3') . '/' . $id);
-                    if ($response['status'] == 1) {
-                         $response['message'];
-                    }
-                } else {
-                    $ticket->update([
-                        'ticketStatus' => $value['ticketStatus'],
-                    ]);
-                }
-              return  $response = Http::get(config('global.BACKUP_BASE_URL') . date('d_m_y3') . '/' . $id);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Something went wrong!' . $th->getMessage(),
-            ]);
         }
     }
 

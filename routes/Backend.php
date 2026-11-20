@@ -37,7 +37,6 @@ use App\Http\Controllers\off_fair\spaceControllers\bookingStatusController;
 use App\Http\Controllers\off_fair\spaceControllers\off_fair_space_categoryController;
 use App\Http\Controllers\off_fair\spaceControllers\space_size_ranges_costController;
 use App\Http\Controllers\off_fair\utilityController;
-use App\Http\Controllers\reports\ExhibitorBadgesController;
 use App\Http\Controllers\settings\eventController;
 use App\Http\Controllers\space\eventSpaceController;
 use App\Http\Controllers\Guidelines\GuidelinesController;
@@ -92,7 +91,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('system_menus_level_two',LevelTwoMenusController::class);
     Route::resource('off_fair_booking_schedule',scheduleController::class);
     Route::resource('bulk_sms',bulkSmsController::class);
-    Route::resource('exhibition_badges',ExhibitorBadgesController::class);
     Route::get('fetch-permissions',[permissionController::class,'fetchPermissions'])->name('fetchPermissions');
     Route::resource('api_requests',RegisterApiRequestController::class);
     Route::resource('api_logs',ApiLogsController::class);

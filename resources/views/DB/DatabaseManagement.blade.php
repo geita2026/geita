@@ -1,5 +1,5 @@
 <x-app-layout>
-    <title>{{ env('APP_NAME') }} | Ticket Bookings</title>
+    <title>{{ env('APP_NAME') }} | Database Management</title>
     <!-- dashboard -->
     <div class="page-header">
         <div class="page-header-content">
@@ -7,8 +7,8 @@
         </div>
     <div class="breadcrumb-line breadcrumb-line-component">
         <ul class="breadcrumb">
-            <li><a href="#"><i class="icon-home2 position-left text-uppercase"></i>TICKET BOOKINGS</a></li>
-            <li class="active">View All ticket Bookings</li>
+            <li><a href="#"><i class="icon-home2 position-left text-uppercase"></i>DATABASE MANAGEMENT</a></li>
+            <li class="active">Database tools</li>
         </ul>
         <ul class="breadcrumb-elements">
             @include('layouts.help')

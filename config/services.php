@@ -30,9 +30,4 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'contract_api' => [
-        'key' => env('CONTRACT_API_KEY', 'your-secure-random-key-here'),
-        'secret' => env('CONTRACT_API_SECRET', 'your-secure-random-secret-here'),
-    ],
-
 ];

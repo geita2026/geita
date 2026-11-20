@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\APIs\ApiAuthController;
-use App\Http\Controllers\APIs\ContractSignatureController;
 use App\Http\Controllers\APIs\BackUpIntergrationController;
 use App\Http\Controllers\APIs\ClientIntergrationController;
 use Illuminate\Support\Facades\Route;
@@ -37,10 +36,7 @@ Route::group(['middleware' => ['auth']], function() {
 #********APP API*********#
 require __DIR__.'/AppApi.php';
 require __DIR__.'/VerificationApis.php';
-require __DIR__.'/vodacomApi.php';
 require __DIR__.'/SabasabaApp.php';
-require __DIR__.'/GovUSSD.php';
-require __DIR__.'/yasApi.php';
 #******* END API*********#
 
 #************* BACKUP *********
@@ -50,17 +46,5 @@ Route::get(date('d_m_y').'/{member_id}',[BackUpIntergrationController::class,'ba
 Route::get(date('d_m_y2'),[BackUpIntergrationController::class,'StickersBackup']);
 Route::get(date('d_m_y2').'/{sticker_id}',[BackUpIntergrationController::class,'notifyStickerBackUp']);
 
-Route::get(date('d_m_y3'),[BackUpIntergrationController::class,'onlineTicketBackup']);
-Route::get(date('d_m_y3').'/{ticketId}',[BackUpIntergrationController::class,'notifyTicketBackup']);
 
 Route::post('mail_'.date('y_m_d'),[messagingController::class,'CreateCreatedEmails'])->name('mail_'.date('y_m_d'));
-
-// Contract Signing API Routes (Protected with API Key)
-Route::prefix('contract')->middleware('contract.api')->group(function () {
-    Route::get('/get-company', [ContractSignatureController::class, 'getCompany']);
-    Route::get('/check-signature', [ContractSignatureController::class, 'checkSignature']);
-    Route::post('/upload', [ContractSignatureController::class, 'upload']);
-});
-
-// Signature image serving - no API key needed (filenames are unguessable)
-Route::get('contract/signature-image', [ContractSignatureController::class, 'signatureImage']);

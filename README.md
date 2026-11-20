@@ -1,6 +1,12 @@
 # tradefair.tantrade.go.tz
 Space Allocation Management System
 
+## Initial setup
+
+Set `SUPER_ADMIN_EMAIL` and `SUPER_ADMIN_PASSWORD` in `.env` before running `php artisan migrate --seed`. Use `php artisan db:seed --class=SuperAdminSeeder` if the schema has already been migrated. If configuration is cached after changing these values, refresh the configuration cache before seeding.
+
+Sign in at `/login` with the configured email and password. Re-running the seeder preserves the account's current password.
+
 ## Deployment Notes
 
 After every deployment, run the following commands in order:
@@ -8,7 +14,6 @@ After every deployment, run the following commands in order:
 ```bash
 php artisan migrate
 php artisan config:cache
-php artisan db:seed --class=ContractsMenuSeeder
 php artisan permission:cache-reset
 ```
 

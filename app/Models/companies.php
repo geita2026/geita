@@ -25,7 +25,7 @@ class companies extends Model implements Auditable
 
     public function companyAdmins()
     {
-        return $this->hasMany(CompanyAdmin::class, 'companyID', 'companyID');
+        return $this->hasMany(CompanyAdmin::class, 'companyId', 'companyID');
     }
 
 }

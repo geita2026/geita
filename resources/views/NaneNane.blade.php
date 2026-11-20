@@ -80,14 +80,6 @@
 
                                         </div>
 
-                                        {{-- <div class=" col-md-4 p-20 text-center">
-                                            <a href="{{ route('online_tickets.index') }}" class=" "><button
-                                                    style="border:1px solid blue;" class=" btn btn-block"><img
-                                                        src="{{ asset('images/new-animated.gif') }}" height="20"
-                                                        width="20"> <b>Book Space Here(Omba Banda
-                                                        Hapa)</b></button>
-                                            </a>
-                                        </div> --}}
 
 
 

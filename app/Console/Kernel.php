@@ -28,10 +28,6 @@ class Kernel extends ConsoleKernel
         commands\BulkSmsCron::class,
         commands\PaymentBalanceNotification::class,
         commands\AutomaticActionCommand::class,
-        Commands\YasConnectivityTest::class,
-        Commands\YasPushTest::class,
-        Commands\YasSweepAbandoned::class,
-        Commands\YasReconcile::class,
     ];
 
     /**
@@ -59,15 +55,6 @@ class Kernel extends ConsoleKernel
             }
         }
         // end sending bulk sms
-
-        #*********** CONFIRM YAS PAYMENTS VIA TQS ************#
-        // YAS success callbacks are unreliable, so poll TQS every minute and
-        // issue tickets for any paid-but-unsettled transaction.
-        $schedule->command('yas:reconcile')->everyMinute()->withoutOverlapping();
-
-        #*********** SWEEP ABANDONED YAS BOOKINGS ************#
-        // Remove unpaid MIXX-YAS bookings whose USSD push was never approved.
-        $schedule->command('yas:sweep')->everyTenMinutes()->withoutOverlapping();
 
         #**************** RUN BACKUP *****************#
         $schedule->command('backup:run')->daily()->at('23:59');

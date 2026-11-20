@@ -5,7 +5,6 @@ namespace App\Http\Controllers\APIs;
 use App\Http\Controllers\Controller;
 use App\Models\setting\ApiRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -60,24 +59,6 @@ class RegisterApiRequestController extends Controller
                 'client_email' => $request->client_email,
                 'access_token' => $token,
             ]);
-
-            #*********** SEND MAIL TO USER ***************#
-            $data = [
-                'serviceProvider' => $request->request_name,
-                'access_token' => $token,
-                'client_email' => $request->client_email,
-                'subject' => 'SABASABA ONLINE TICKET APIs'
-            ];
-            // Mail::send('mails.requestRegistration', $data, function ($message) use ($data) {
-            //     $message->to(
-            //         $data['client_email'],
-            //         $data['serviceProvider']
-            //     )
-            //         ->priority(1)
-            //         ->subject(
-            //             $data['subject']
-            //         );
-            // });
 
             return back()->with('success', 'API resquest registered successfully!');
         } catch (\Throwable $th) {

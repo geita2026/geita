@@ -77,7 +77,21 @@ class userDashboardController extends Controller
     {
         try {
             session(['moduleNo' => 1]); // for SAMS;
-        $event_id = events::where('event_status', 1)->first()->event_id;
+        $activeEvent = events::where('event_status', 1)->first();
+        if (!$activeEvent) {
+            $request->session()->forget('liveEvent');
+
+            if ($request->user()->can('View Events', Role::class)) {
+                return redirect()->route('Exhibition-Events.index')
+                    ->with('info', 'Create or activate an exhibition event to open the Trade Fair dashboard.');
+            }
+
+            return redirect()->route('startApp')
+                ->with('fail', 'Ask an administrator to activate an exhibition event.');
+        }
+
+        $event_id = $activeEvent->event_id;
+        $request->session()->put('liveEvent', $event_id);
         $companies = companies::where('status', 1)->get()->count(); // return all registered companies
         $sectorCount = sectors::get()->count();
 
@@ -124,7 +138,7 @@ class userDashboardController extends Controller
             ->where('companyID', Auth::user()->user_uuid)->get();
 
         $sectors = sectors::get();
-        $eventName = events::where('event_status', 1)->first()->event_name;
+        $eventName = $activeEvent->event_name;
 
         // $judging = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
         //     ->leftJoin('judging_categories', 'exhibitors.judgingCategory', '=', 'judging_categories.categoryId')

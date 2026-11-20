@@ -59,8 +59,7 @@
 
     <div class="event-controller-desc">
         Manage all exhibition business processes including exhibitor registration,
-        space and service booking, entrance and exit permits, badge management,
-        ticket issuing, and gate control.
+        space and service booking, entrance and exit permits, badge management, and gate control.
     </div>
 
     <div class="event-controller-footer">

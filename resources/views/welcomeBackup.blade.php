@@ -211,14 +211,6 @@
                     <p>Book exhibition spaces digitally with real-time availability.</p>
                 </div>
             </a>
-            {{-- Online Ticket --}}
-            <a href="{{ route('sabasaba_tickets') }}" class="col-lg-4 text-decoration-none">
-                <div class="service-card">
-                    <i class="fa fa-link"></i>
-                    <h4>Online Ticketing</h4>
-                    <p>Purchase and manage event tickets online.</p>
-                </div>
-            </a>
             {{-- E-Permit --}}
             <a href="{{ route('/') }}" class="col-lg-4 text-decoration-none">
                 <div class="service-card">

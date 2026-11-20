@@ -27,9 +27,9 @@ trait VistorsTrait{
         }
     }
 
-    public function groundCount($ticketType){
+    public function groundCount($countType){
         $exists=GroundVisitor::where('countDate',date('d-m-Y'))
-        ->where('countType',$ticketType)->first();
+        ->where('countType',$countType)->first();
         if ($exists) {
             $exists->update([
                 'totalCount'=>$exists->totalCount+1,
@@ -38,7 +38,7 @@ trait VistorsTrait{
         else {
             GroundVisitor::create([
                 'countId'=>Str::uuid(),
-                'countType'=>$ticketType,
+                'countType'=>$countType,
                 'totalCount'=>1,
                 'countDate'=>date('d-m-Y'),
             ]);

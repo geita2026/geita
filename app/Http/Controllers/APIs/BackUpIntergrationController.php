@@ -8,8 +8,6 @@ use App\Models\ExhibitionBadges\CompanyMember;
 use App\Models\settings\events;
 use App\Models\space\additional_services;
 use App\Models\Stickers\CarSticker;
-use App\Models\Tickets\ProducedTicket;
-use App\Models\Tickets\VipTicketBookings;
 use Illuminate\Http\Request;
 
 class BackUpIntergrationController extends Controller
@@ -88,43 +86,6 @@ class BackUpIntergrationController extends Controller
          return response()->json([
             'status' => 0,
             'message' => 'Badge does not exist!',
-         ]);
-      }
-   }
-   #******* END TICKET BACKUPS ********#
-
-   public function onlineTicketBackup(){
-      try {
-         $tickets=ProducedTicket::leftJoin('vip_ticket_bookings','produced_tickets.bookingId','=','vip_ticket_bookings.ticket_booking_id')
-         ->where('backupStatus',0)->limit(1)->get();
-         $pending=ProducedTicket::where('backupStatus',0)->count();
-         return response()->json([
-            'status'=>1,
-            'tickets'=>$tickets,
-            'pending'=>$pending,
-         ]);
-         } catch (\Throwable $th) {
-            return response()->json([
-               'status'=>0,
-               'message'=>'Internal Server Error'.$th->getMessage(),
-            ]);
-         }
-   }
-
-   public function notifyTicketBackup($ticketId){
-      $exist = ProducedTicket::find($ticketId);
-      if ($exist) {
-         $exist->update([
-            'backupStatus' => 1,
-         ]);
-         return response()->json([
-            'status' => 1,
-            'message' => 'Ticket Backed up successfully!',
-         ]);
-      } else {
-         return response()->json([
-            'status' => 0,
-            'message' => 'Ticket does not exist!',
          ]);
       }
    }

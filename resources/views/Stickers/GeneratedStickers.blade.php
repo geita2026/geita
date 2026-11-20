@@ -200,7 +200,7 @@
                             <tr>
                                 <th class=" text-bold text-center">#</th>
                                 <th class=" text-bold text-center">PLATE NUMBER</th>
-                                <th class=" text-bold text-center"> TICKET COST</th>
+                                <th class=" text-bold text-center"> STICKER COST</th>
                                 <th class=" text-bold text-center">STICKER TITLE</th>
                                 <th class=" text-bold text-center">STICKER STATUS</th>
                                 <th class=" text-bold text-center">ACTIONS</th>

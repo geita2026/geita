@@ -9,8 +9,6 @@ use App\Models\off_fair\customers\off_fair_customers;
 use App\Models\companies;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\off_fair\advice_notes\off_fair_advice_notes;
-use App\Models\Tickets\TicketCollection;
-use App\Models\Tickets\VipTicketBookings;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
 use Google\Service\AndroidManagement\Application;
@@ -51,16 +49,6 @@ trait IntergrationTraits
       }
       #------ end-------#
 
-      #------- TICKETS ------#
-      if (VipTicketBookings::where('ticket_booking_id', $id)->exists()) {
-        $status = VipTicketBookings::find($id)->update(['sp_customer_no' => $customer_no]); // update VIP Ticket Users
-        if ($status == 1) {
-          return 1;
-        } else {
-          return 0;
-        }
-      }
-      #-------- END TICKES -------- #
     }
   }
   #------ register customer-------#
@@ -102,26 +90,6 @@ trait IntergrationTraits
     }
     #--- END OUT FAIR INVOICE INVOICE UPDATE ---#
 
-    #--- VIP TICKETS UPDATE---#
-    if (VipTicketBookings::where('ticket_booking_id', $id)->exists()) {
-      VipTicketBookings::find($id)->update([
-        'sp_invoice_no' => $invoice_no,
-        'control_number' => $control_no,
-      ]);
-      if (config('global.APP_STATUS') == 0) {
-        // $this->VipInvoiceEmailNotification($reference); // Email
-        // $this->SentControlNoNotification($reference); //SMS
-      }
-    }
-    #--- END  VIP TICKETS UPDATE ---#
-
-    if (TicketCollection::where('collectionId', $id)->exists()) {
-      TicketCollection::find($id)
-        ->update([
-          'sp_invoice_no' => $invoice_no,
-          'controlNumber' => $control_no,
-        ]);
-    }
     #------ e_Permit Invoices ---- #
     if (ApplicationInvoice::where('invoiceNo', $id)->exists()) {
       ApplicationInvoice::find($id)->update([

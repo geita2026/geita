@@ -30,7 +30,6 @@ class DefaultSettings extends Model implements Auditable
     'exchangeRate',
     'allowedNetworks',
     'badge_live_test',
-    'scanner_pin',
 ];
 
 }

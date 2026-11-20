@@ -6,18 +6,13 @@ use App\Models\advice_note\advice_notes;
 use App\Models\Collections\OffFairBill;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\Notifications\BulkSms;
-use App\Models\Tickets\OnlineTicket;
-use App\Models\Tickets\ProducedTicket;
-use App\Models\Tickets\VipTicketBookings;
 use App\Traits\BulkSmsTrait;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Traits\TsrnSupplier;
 
 trait NotificationTrait
 {
     use BulkSmsTrait;
-    use TsrnSupplier;
 
     function Notification($recipients, $sms_content, $datetime)
     {
@@ -139,25 +134,6 @@ Deadline: $deadline,
             #-------------- END MESSAGE ---- #
         }
         #*************** END OFF FAIR ****************#
-
-        #****************  VIP TICKETS ***************#
-        $invoices = VipTicketBookings::leftJoin('vip_ticket_packages', 'vip_ticket_bookings.booked_package', '=', 'vip_ticket_packages.vip_package_id')
-            ->where('ticket_booking_id', $reference)->first();
-        if ($invoices) {
-            $phone_number = $invoices->phone_number;
-            $customer_name = $invoices->customer_name;
-            $amount = number_format($invoices->ticket_amount, 2);
-            $control_no = $invoices->control_number;
-            $currency = $invoices->currency;
-            $deadline = date('d-m-y h:i:s', strtotime($invoices->payment_deadline));
-            $sms_content = "ONLINE SABASABA TICKETS.
-ControlNo: $control_no,
-Amount: $amount $currency,
-Expire in: 24 Hrs,
-You will get your Ticket(s) through your Phone Number once we receive your payment.
-";
-        }
-        #**********
 
         if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
             $invoice = ApplicationInvoice::leftJoin('companies', 'application_invoices.customerId', '=', 'companies.companyID')
@@ -314,42 +290,6 @@ Visit your account to download your event Permit, and view the assigned Officer 
             }
         }
 
-        #************* ONLINE TICKET PAYMENT NOTIFICATIONS ******************#
-        if (VipTicketBookings::where('ticket_booking_id', $reference)->exists()) {
-            $ticket = VipTicketBookings::find($reference);
-            $exists = ProducedTicket::where('bookingId', $reference)->first();
-            if ($ticket->amount_paid >= $ticket->ticket_amount && !$exists) {
-                $tickets = OnlineTicket::leftJoin('vip_ticket_packages', 'online_tickets.packageId', '=', 'vip_ticket_packages.vip_package_id')
-                    ->where('requestNo', $ticket->requestId)
-                    ->orderBy('package_cost','DESC')
-                    ->get();
-                #*********CREATE TICKET **********#
-                foreach ($tickets as  $value) {
-                    $i = 1;
-                    while ($i <= $value->quantity) {
-                        $ticketNo=$this->generateTicketNo();
-                        ProducedTicket::create([
-                            'ticketId' => Str::uuid(),
-                            'ticketAmount' => $value->package_cost,
-                            'bookingId' => $ticket->ticket_booking_id,
-                            'ticketNo' => $ticketNo,
-                            'ticketName' => $value->package_discriptions,
-                            'ticketStatus' => 1,
-                            'customerName' => $value->plateNumber,
-                            'packageId' => $value->packageId,
-                            'visitDate' => $value->visitDate,
-                            'plateNumber' => $value->plateNumber,
-                        ]);
-                        $i++;
-                    }
-                }
-                #******* SEND TICKET MESSAGE **********#
-               $this->sendTicketMsg($ticket->ticket_booking_id); // send ticket message to customer
-                #********* END TICKET MESSAGE ********#
-            }
-        }
-
-        #*************END VIP TICKET PAYMENT NOTIFICATIONS ******************#
     }
 
 
@@ -373,31 +313,4 @@ Visit your account to download your event Permit, and view the assigned Officer 
             $this->SaveSendSmsJobs($phone_number, $sms_content, $sent_on, $customer_name); // saving message to jobs
         }
     }
-
-    #*********** VIP INVOICE EMAIL **********
-    public function VipInvoiceEmailNotification($reference)
-    {
-        $ticket = VipTicketBookings::find($reference);
-        if ($ticket && $ticket->email != 'dumy@dumy.dumy') {
-            $email_data = [
-                'fromName' => config('app.name'),
-                'email' => $ticket->email_address,
-                'name' => $ticket->customer_name,
-                'phone_number' => $ticket->phone_number,
-                'control_number' => $ticket->control_number,
-                'ticket_amount' => $ticket->ticket_amount,
-                'ticket_booked_on' => $ticket->ticket_booked_on,
-                'payment_deadline' => $ticket->payment_deadline,
-                'ticketDescription' => $ticket->ticketDescription,
-                'subject' => 'SabaSaba Online Ticket',
-            ];
-            Mail::send('mails.VipTicketInvoice', $email_data, function ($message) use ($email_data) {
-                $message->to($email_data['email'], $email_data['name'])
-                    ->bcc('rkabandwa@gmail.com')
-                    ->priority(1)
-                    ->subject($email_data['subject']);
-            });
-        }
-    }
-    #*************ENND VIP TICKET Invoice NOTIFICATIONS ******************#
 }

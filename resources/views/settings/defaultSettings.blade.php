@@ -262,35 +262,6 @@
                 </div>
             </div>
 
-            {{-- ================= SCANNER ADMIN PIN ================= --}}
-            <div class="settings-section">
-                <div class="settings-title">Scanner Admin PIN</div>
-                <div class="settings-desc">
-                    4-digit PIN that gates access to the base-URL settings in the eTAC Scanner app.
-                    Share with supervisors only. Change it here whenever needed.
-                </div>
-                <div style="background:#13487e;color:#fff;border-radius:12px;padding:18px 22px;margin-top:10px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
-                    <div>
-                        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-bottom:6px;">Current PIN</div>
-                        <div style="font-size:44px;font-weight:700;font-family:monospace;letter-spacing:8px;">{{ $currentAdminPin }}</div>
-                    </div>
-                    <div style="border-left:1px solid rgba(255,255,255,.25);padding-left:24px;display:flex;flex-direction:column;gap:8px;">
-                        <div style="font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:1px;">Change PIN</div>
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <input type="text" name="scanner_pin"
-                                   inputmode="numeric"
-                                   pattern="[0-9]{1,4}"
-                                   value="{{ $item?->scanner_pin ?? '0000' }}"
-                                   maxlength="4"
-                                   placeholder="0000"
-                                   oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,4)"
-                                   style="width:100px;font-size:24px;font-weight:700;font-family:monospace;letter-spacing:6px;text-align:center;padding:6px 8px;border-radius:8px;border:none;outline:none;color:#13487e;background:#fff;">
-                            <span style="font-size:11px;opacity:.6;line-height:1.6;">4 digits<br>saved with the<br>"Save System Settings" button</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {{-- ================= OPTIONAL FEATURES ================= --}}
             <div class="settings-section">
                 <div class="settings-title">Optional Features</div>

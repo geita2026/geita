@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\logins;
 use Illuminate\Support\Facades\Hash;
@@ -65,6 +66,7 @@ class authController extends Controller
     public function register(RegisterUserRequest $request)
     {
         try {
+            $customerRole = Role::findByName('Customer', 'web');
             $uuid = Str::uuid();
             User::create([
                 'user_uuid' => $uuid,
@@ -74,13 +76,13 @@ class authController extends Controller
                 'email' => $request->userEmail,
                 'phone_number' => $request->phoneNumber,
                 'account_type' => 2,
-                'role' => 41,
+                'role' => $customerRole->getKey(),
                 'account_status' => 1,
                 'api_token' => Str::random(80),
                 'password' => Hash::make($request->password),
             ]);
             $user = User::where('user_uuid', $uuid)->first();
-            $user->assignRole('Customer');
+            $user->assignRole($customerRole);
 
             return redirect()->route('login')->with('success', 'Welcome to SAMS. Your account has been created successfully. Please sign in to continue.');
         } catch (\Throwable $th) {

@@ -3,16 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        // User::factory(10)->create();
+        Role::findOrCreate('Super Admin', 'web');
+        Role::findOrCreate('Customer', 'web');
+
+        $this->call([
+            LevelOneMenusSeeder::class,
+            LevelTwoMenusSeeder::class,
+            SuperAdminSeeder::class,
+        ]);
     }
 }

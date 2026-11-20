@@ -69,29 +69,6 @@
             </a>
         </div>
 
-        {{-- ETAC --}}
-        @if (Auth::user()->account_type == 1)
-            @can('view-etac-dashboard')
-                <div class="col-md-4 form-group zoom">
-                    <a href="{{ route('gate_Collections.index') }}">
-                        <button type="submit"
-                            @if (session('moduleNo') == 2) style="border-bottom: 10px solid black;" @endif
-                            class="btn btn-block btn-float btn-float-lg  text-bold border-primary bg-info"
-                            style="border-top: 10px solid green;border-radius:5%;color:black">
-                            <span class="systemName">eTAC</span>
-                            <hr>
-                            <div style="text-align: left;">
-                                <p class=" text-capitalize text-justify">
-                                    This module provides a comprehensive framework for managing all matters related to the Electronic Ticketing (eTAC) system, including ticket issuance, validation, transactions, system configuration, reporting, and operational support, ensuring secure, efficient, and reliable electronic ticketing services across all supported platforms and stakeholders.
-                                </p>
-                            </div>
-                        </button>
-                    </a>
-                </div>
-            @endcan
-        @endif
-        {{-- END ETAC --}}
-
         @if (config('global.PERMIT_STATUS') == 1)
             <div class="col-md-4 form-group zoom">
                 <a href="{{ route('permitDashboard') }}">

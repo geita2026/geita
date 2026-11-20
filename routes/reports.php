@@ -6,7 +6,6 @@ use App\Http\Controllers\ExpoControllers\ExpoBackEndController;
 use App\Http\Controllers\reports\adviceNoteReports;
 use App\Http\Controllers\reports\bookedUnbookedReportController;
 use App\Http\Controllers\reports\exhibitionCollectionController;
-use App\Http\Controllers\reports\ExhibitorBadgesController;
 use App\Http\Controllers\reports\exhibitorsReports;
 use App\Http\Controllers\reports\invoiceReportController;
 use App\Http\Controllers\reports\pavilionReportController;
@@ -47,7 +46,6 @@ Route::post('exportSponsoshipReport',[SponsorShipReportController::class,'Export
 
 Route::get('permit_reports',[permitReportController::class,'getPermitReports'])->name('permit_reports');
 Route::post('export_permit_reports',[permitReportController::class,'ExportPermitReport'])->name('export_permit_reports');
-Route::resource('generate',ExhibitorBadgesController::class);
 
 Route::get('tnblc_report',[specialWorkController::class,'getAllApplication'])->name('tnblc_report');
 
