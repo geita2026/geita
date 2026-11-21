@@ -34,7 +34,7 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/Exhibitor2.jpeg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-mine.jpg') }})">
         <div class="container">
             <div class="bread-inner">
 
@@ -62,15 +62,15 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title">
-                        <h2>The Mwl Nyerere International Trade Fair Ground (Sabasaba)</h2>
-                        <img src="{{ asset('images/logo.jpg') }}" alt="#" height="100" width="100">
+                        <h2>The Geita Mineral Exhibition Grounds</h2>
+                        <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania" height="110">
                         <p style=" text-align:left">
-                            The Mwl Nyerere International Trade Fair Ground (commonly referred to as "Sabasaba Grounds")
-                            is a large, multi-purpose facility located in Dar es Salaam, Tanzania. It serves as a venue
-                            for various functions, like International Trade Fairs, Local and Regional Exhibitions,
-                            Conferences and Workshops, Cultural and Entertainment Events,
-                            Public Events and Celebrations, Business Networking, Promotional and Marketing Activities,
-                            Exhibition of Innovations and Technology.
+                            The Geita Mineral Exhibition Grounds are a multi-purpose facility in Geita, Geita Region,
+                            on the southern shore of Lake Victoria. They host the mineral exhibitions and the events
+                            around them: trade and equipment exhibitions, buyer&ndash;seller meetings, technical
+                            demonstrations, conferences and workshops, training for small-scale miners, and the
+                            official programme. Halls, covered stands and open outdoor plots are booked through
+                            GeMEMIS, and what you see on the floor plan is what is actually free.
 
                         </p>
 

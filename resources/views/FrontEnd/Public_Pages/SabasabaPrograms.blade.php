@@ -2,7 +2,7 @@
 
 <head>
     <!-- Title -->
-    <title>Exhibition Programs</title>
+    <title>Programme | GeMEMIS</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
     <style>
         .changeColor:hover {
@@ -31,14 +31,13 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/Exhibitor2.jpeg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-mine.jpg') }})">
         <div class="container">
             <div class="bread-inner">
 
                 <div class="row">
                     <div class="col-12">
-                        <h2 class=" text-uppercase"> 49<sup>th</sup> Dar es salaam International Trade Fair (Sabasaba)
-                            Programs</h2>
+                        <h2 class=" text-uppercase">Geita Mineral Exhibition Programme</h2>
                     </div>
                 </div>
                 <br><br>

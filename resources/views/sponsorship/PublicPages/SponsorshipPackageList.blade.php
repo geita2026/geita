@@ -34,7 +34,7 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/BackGround.jpg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-town.jpg') }})">
         <div class="container">
             <div class="bread-inner">
                 <div class="row">

@@ -1,102 +1,50 @@
 <style>
-    /* .dropdown:hover .dropdown-menu {
-        display: block;
-    } */
-
-    .innerLink {
-        background-color: rgb(103, 202, 209);
-
+    .welcome-header-brand {
+        background: #070506;
+        border-bottom: 1.5px solid rgba(255, 191, 0, 0.25);
+        padding: 12px 0;
+        margin-bottom: 24px;
     }
-
-    .menuBtn:hover {
-        background-color: rgb(103, 202, 209);
-        color:black;
+    .welcome-top-bar {
+        background: rgba(255, 191, 0, 0.12);
+        border-bottom: 1px solid rgba(255, 191, 0, 0.2);
+        padding: 8px 16px;
+        color: #FFBF00;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.05em;
     }
 </style>
-<div class=" col-md-12">
-    <div class=" row bg-primary-600" style="background-color:rgb(96, 97, 96);padding:1%">
-        <div class=" col-md-10  text-bold text-uppercase ">
-            EVENT STARTS FROM: <b style="text-right" class=" text-white ">{{ date('d M, Y', strtotime('28-06-2024')) }} TO
-                {{ date('M d, Y', strtotime('13-07-2024')) }}
+
+<div class="col-md-12 p-0">
+    <div class="welcome-top-bar d-flex justify-content-between align-items-center">
+        <div>
+            <i class="icon-calendar52 position-left"></i>
+            GEITA MINERAL EXHIBITION
         </div>
-        <div class=" col-md-2" >
-            <div id="google_translate_element">
-                
+        <div id="google_translate_element"></div>
+    </div>
+
+    <div class="welcome-header-brand">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-xs-3 col-sm-2 text-left">
+                    <a href="{{ route('index') }}">
+                        <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania" height="58" width="auto">
+                    </a>
+                </div>
+                <div class="col-xs-6 col-sm-8 text-center">
+                    <span style="text-transform: uppercase; display:block;">
+                        <strong style="font-size:16px;color:#ffffff;letter-spacing:0.04em;">GeMEMIS</strong><br>
+                        <span style="font-size:13px;color:#FFBF00;font-weight:600;letter-spacing:0.08em;">Geita Mineral Exhibition Management Information System</span>
+                    </span>
+                </div>
+                <div class="col-xs-3 col-sm-2 text-right">
+                    <a href="{{ route('login') }}" class="btn-brand" style="padding:6px 16px;font-size:13px;">
+                        <i class="icon-lock"></i> Sign in
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class=" row">
-        <div class=" text-left col-xs-2"><img src="{{ asset('images/nembo.png') }}" height="60" width="70"
-                class=" img-rounded"></div>
-        <div class=" text-center col-xs-8">
-            <b style="text-transform: uppercase;" class=" text-primary">
-                <b style="font-size:3vmin;">TANZANIA TRADE DEVELOPMENT AUTHORITY</b><br>
-                {{-- <img src="{{ asset('images/new-animated.gif') }}" height="20"
-        width="20"> --}}
-                <b style="font-size:2vmin">Space Allocation Management System</b>
-            </b>
-        </div>
-        <div class=" text-right col-xs-2"><img src="{{ asset('images/Logo.png') }}" height="60" width="70"
-                class="img-rounded"></div>
-    </div>
-
-    <!-- Default navbar size -->
-    <div class="navbar navbar-inverse  navbar-component row bg-primary" id="navbar-second">
-        <div class="navbar-header ">
-            {{-- navbar-brand --}}
-            <ul class="nav navbar-nav no-border visible-xs-block">
-{{-- 
-                <li class="  text-bold menuBtn {{ Route::is('registration') ? 'active' : '' }} "><a
-                        href="{{ route('registration') }}" class="">Register</a></li> --}}
-                        
-                        <li class="  menuBtn"><a style="font-size: 2vmax"> <b>NaneNane - {{ date('Y') }}</b></a></li>
-                        <li class="  text-bold menuBtn"><a class="text-center collapsed" data-toggle="collapse"
-                        data-target="#navbar-second-toggle"><i class="icon-menu7"></i></a></li>
-            </ul>
-        </div>
-
-
-
-        <div class="navbar-collapse collapse text-bold " id="navbar-second-toggle">
-            <ul class="nav navbar-nav">
-                @include('layouts.Links')
-                
-            </ul>
-            
-        </div>
-    </div>
-    <!-- default navbar size -->
 </div>
-
-
-<script>
-    // Set the date we're counting down to
-    var countDownDate = new Date("Jun 28, 2024 00:00:00").getTime();
-
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-
-        // Get today's date and time
-        var now = new Date().getTime();
-
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
-
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Output the result in an element with id="timerClock"
-        document.getElementById("timerClock").innerHTML = days + "d " + hours + "h " +
-            minutes + "m " + seconds + "s ";
-
-        // If the count down is over, write some text 
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timerClock").innerHTML = "EVENT STARTED";
-        }
-    }, 1000);
-</script>

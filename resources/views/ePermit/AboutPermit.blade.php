@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title -->
-    <title>ePermit</title>
+    <title>Event permits | GeMEMIS</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
     <style>
         .changeColor:hover {
@@ -87,7 +87,7 @@
                         </p>
                         
                         <p class="text-justify">
-                            You are required to have Permit from TanTrade for organizing the following Trade Promotion
+                            You are required to hold a permit from the Exhibition Secretariat in order to organise the following
                             Event;
                         </p>
                     </div>

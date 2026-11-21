@@ -34,12 +34,12 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/BackGround.jpg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-town.jpg') }})">
         <div class="container">
             <div class="bread-inner">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class=" text-uppercase">SABASABA SPONSORSHIP PACKAGE GROUPS</h2>
+                        <h2 class=" text-uppercase">Sponsorship Package Groups</h2>
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@
         <div class=" card-body">
             <div class="row" style="padding: 3%">
                 <div class=" col-md-12">
-                   The 2026 edition of the Dar es Salaam International Trade Fair (DITF) marks a historic milestone—its 50th Anniversary (Golden Jubilee)- celebrating five decades of advancing trade, investment, and economic cooperation in domestic and external Markets.  We are thrilled to welcome our esteemed sponsors, your support plays a crucial role in making this prestigious event possible. As a sponsor, you will gain unparalleled exposure and the opportunity to connect with prominent leaders, innovators, and decision-makers from around the globe. This is not just an event; it’s a platform for growth, collaboration and innovation.
+                   The Geita Mineral Exhibition brings together the whole of Tanzania&rsquo;s mining value chain &mdash; small-scale miners, dealers and processors, equipment suppliers, financiers and the agencies that regulate the sector. Sponsorship is what makes the exhibition possible, and it puts your brand in front of the people who decide where minerals are bought, processed and financed. Each package group below sets out what the sponsorship covers and where your brand appears across the grounds and the programme.
                     <br> 
                     <h4> What’s in it for you?</h4>
 
