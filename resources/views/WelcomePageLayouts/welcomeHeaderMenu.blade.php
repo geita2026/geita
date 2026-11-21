@@ -34,7 +34,7 @@
                     </a>
                 </div>
                 <div class="col-xs-6 col-sm-8 text-center">
-                    <span style="text-transform: uppercase; display:block;">
+                    <span style="display:block;">
                         <strong style="font-size:16px;color:#ffffff;letter-spacing:0.04em;">GeMEMIS</strong><br>
                         <span style="font-size:13px;color:#FFBF00;font-weight:600;letter-spacing:0.08em;">Geita Mineral Exhibition Management Information System</span>
                     </span>
