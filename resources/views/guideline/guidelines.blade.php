@@ -46,7 +46,7 @@
                         <thead>
                             <tr style="background-color: rgb(219, 215, 215);">
                                 <th colspan="5" class=" text-center text-bold">
-                                    <h4>LIST OF REGISTERED DITF GUIDELINES</h4>
+                                    <h4>LIST OF REGISTERED EXHIBITION GUIDELINES</h4>
                                 </th>
                             </tr>
                             <tr>
@@ -167,7 +167,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h5 class="modal-title text-uppercase text-center text-bold"> REGISTER NEW DITF GUIDLINE </h5>
+                <h5 class="modal-title text-uppercase text-center text-bold"> REGISTER NEW EXHIBITION GUIDELINE </h5>
             </div>
             <div class="modal-body">
                 <form action="{{ route('ditf_guidelines.store') }}" method="POST">

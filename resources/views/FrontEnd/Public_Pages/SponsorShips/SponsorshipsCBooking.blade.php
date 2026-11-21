@@ -8,11 +8,10 @@
     <title>{{ env('APP_NAME') }} | Space Booking Enquiry</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     <meta name="description"
-        content="Trade Fair is the web application system wich manages and control all largest trade
-Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzania industirial exhibition, e.t.c ">
+        content="GeMEMIS — the Geita Mineral Exhibition Management Information System. Exhibitor registration, space allocation, invoicing, payment and check-in for the Geita mineral exhibitions.">
     <meta name="keywords"
-        content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, fair grounds, tradefair,Tanzania,">
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+        content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
 
     <title>{{ config('app.name', 'Login') }}</title>
     @include('WelcomePageLayouts.welcomeCss')
@@ -67,27 +66,22 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
                         <div class=" row form-group col-md-12">
                             <div class=" form-group">
                                 <p style="text-align: justify">
-                                    Sponsoring Dar es salaam International Trade Fair (DITF) event which collects, more
-                                    than 4,000
-                                    companies, 26 Countries and 400,000 visitors can offer numerous benefits for
-                                    individuals or businesses. Here
-                                    are some common reasons why you might choose to sponsor Dar es salaam International
-                                    Trade Fair
-                                    (DITF):-
-                                    <li><b>Brand Exposure and Visibility: </b> Dar es salaam International Trade Fair
-                                        (DITF) provide an excellent platform for
-                                        increased brand visibility. Sponsors often get exposure through signage, logos,
-                                        and mentions in various promotional materials.
+                                    Sponsorship is what puts the Geita Mineral Exhibition on the ground, and it puts
+                                    your name in front of everyone who comes to it &mdash; miners, dealers, processors,
+                                    equipment suppliers, financiers and the agencies that regulate the sector. Why
+                                    organisations sponsor the exhibition:
+                                    <li><b>Brand Exposure and Visibility: </b> your name appears across the grounds and
+                                        the programme &mdash; signage, logos and mentions in the exhibition's own
+                                        material.
                                     </li>
                                     <li>
-                                        <b>Marketing and Promotion: </b>Sponsorship offers opportunities for extensive
-                                        marketing and promotional efforts. Your brand can be featured in event-related
-                                        advertising, social media campaigns, press releases, and more
+                                        <b>Marketing and Promotion: </b>your brand is carried in event advertising,
+                                        social media, press releases and the exhibition catalogue.
                                     </li>
                                     <li>
-                                        <b>Community Engagement: </b> Sponsoring Dar es salaam International Trade Fair
-                                        (DITF)  demonstrates your commitment to the community and can enhance your brand's image as a
-                                        socially responsible entity.
+                                        <b>Community Engagement: </b> sponsorship backs the small-scale miners, women
+                                        entrepreneurs and local businesses of Geita who exhibit alongside the larger
+                                        operators.
                                     </li>
 
                                 </p>

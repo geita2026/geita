@@ -1,138 +1,79 @@
-<!-- ===================== Footer ===================== -->
-<footer class="bg-dark text-light mt-5 wow fadeInUp" data-wow-delay="0.1s">
-
-    <!-- Footer Top -->
-    <div class="container py-5">
-        <div class="row g-5">
+<!-- ===================== GeMEMIS GOLDEN FOOTER ===================== -->
+<footer class="gememis-footer mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row g-4 justify-content-between">
+            <!-- Brand & Mission -->
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania" style="height:56px;">
+                </div>
+                <h6 style="color:#FFBF00;font-weight:700;letter-spacing:0.04em;">Geita Mineral Exhibition Secretariat</h6>
+                <p style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:1.7;">
+                    GeMEMIS runs the Geita mineral exhibitions end to end. Registration, applications, the floor
+                    plan, invoicing, payment and check-in &mdash; one system, one record of every space on the
+                    grounds.
+                </p>
+            </div>
 
             <!-- Contact Information -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="text-uppercase text-light mb-4 border-bottom pb-2">
-                    Get in Touch
-                </h5>
-
-                <p class="mb-3 d-flex align-items-start">
-                    <i class="bi bi-geo-alt text-primary me-3 fs-5"></i>
-                    <span>P.O. Box 5402, Dar es Salaam, Tanzania</span>
-                </p>
-
-                <p class="mb-3 d-flex align-items-start">
-                    <i class="bi bi-envelope text-primary me-3 fs-5"></i>
-                    <a href="mailto:dtp@tantrade.go.tz" class="text-light text-decoration-none">
-                        dtp@tantrade.go.tz
-                    </a>
-                </p>
-
-                <p class="mb-4 d-flex align-items-start">
-                    <i class="bi bi-telephone text-primary me-3 fs-5"></i>
-                    <a href="tel:+255733-002-014" class="text-light text-decoration-none">
-                        +255 733 002 014
-                    </a>
-                </p>
-
-                <!-- Social Links -->
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" aria-label="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" aria-label="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-primary btn-sm rounded-circle" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                </div>
+            {{-- Secretariat contact details: replace the e-mail and hours with the official ones. --}}
+            <div class="col-lg-3 col-md-6">
+                <h5>Get in Touch</h5>
+                <ul class="list-unstyled" style="font-size:13.5px;line-height:2.1;color:rgba(255,255,255,0.75);">
+                    <li>
+                        <i class="fa fa-map-marker text-warning me-2"></i>
+                        <span>Geita Mineral Exhibition Grounds, Geita, Tanzania</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-envelope text-warning me-2"></i>
+                        <a href="mailto:info@gememis.go.tz">info@gememis.go.tz</a>
+                    </li>
+                    <li>
+                        <i class="fa fa-clock-o text-warning me-2"></i>
+                        <span>EAT (UTC+3) 08:00 - 18:00</span>
+                    </li>
+                </ul>
             </div>
 
             <!-- Quick Links -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="text-uppercase text-light mb-4 border-bottom pb-2">
-                    Quick Links
-                </h5>
-
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="https://www.tantrade.go.tz/"
-                           class="text-light text-decoration-none d-flex align-items-center">
-                            <i class="bi bi-chevron-right text-primary me-2"></i>
-                            TanTrade Official Website
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('index') }}"
-                           class="text-light text-decoration-none d-flex align-items-center">
-                            <i class="bi bi-chevron-right text-primary me-2"></i>
-                            Book Exhibition Space
-                        </a>
-                    </li>
+            <div class="col-lg-2 col-md-6">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled" style="font-size:13.5px;line-height:2.1;">
+                    <li><a href="{{ route('index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Home</a></li>
+                    <li><a href="{{ route('About_ditf') }}"><i class="fa fa-angle-right text-warning me-2"></i> About the exhibition</a></li>
+                    <li><a href="{{ route('ditf_map') }}"><i class="fa fa-angle-right text-warning me-2"></i> Site map</a></li>
+                    <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Book space</a></li>
+                    <li><a href="{{ route('discover_exhibitor.index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Discover exhibitors</a></li>
                 </ul>
             </div>
 
-            <!-- Popular Actions -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="text-uppercase text-light mb-4 border-bottom pb-2">
-                    Popular Links
-                </h5>
-
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="#"
-                           class="text-light text-decoration-none d-flex align-items-center">
-                            <i class="bi bi-chevron-right text-primary me-2"></i>
-                            Discover Exhibitors
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                           class="text-light text-decoration-none d-flex align-items-center">
-                            <i class="bi bi-chevron-right text-primary me-2"></i>
-                            Vote for Exhibitor
-                        </a>
-                    </li>
+            <!-- Digital Services -->
+            <div class="col-lg-3 col-md-6">
+                <h5>Digital Services</h5>
+                <ul class="list-unstyled" style="font-size:13.5px;line-height:2.1;">
+                    <li><a href="{{ route('login') }}"><i class="fa fa-lock text-warning me-2"></i> Exhibitor sign in</a></li>
+                    <li><a href="{{ route('registration') }}"><i class="fa fa-user-plus text-warning me-2"></i> Create an account</a></li>
+                    <li><a href="{{ route('/') }}"><i class="fa fa-certificate text-warning me-2"></i> Event permit application</a></li>
+                    <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy text-warning me-2"></i> Sponsorship packages</a></li>
+                    <li><a href="{{ route('terms_and_condition.index') }}"><i class="fa fa-shield text-warning me-2"></i> Terms &amp; conditions</a></li>
                 </ul>
             </div>
+        </div>
 
+        <!-- Divider with Gold Glow -->
+        <div style="height:1px;background:linear-gradient(90deg, transparent, rgba(255, 191, 0,0.35), transparent);margin:35px 0 25px;"></div>
+
+        <!-- Signature Shimmer Text Slogan & Copyright -->
+        <div class="text-center">
+            <p class="mb-2" style="font-size:15px;">
+                <span class="shimmer-text">
+                    “Every exhibition space, accounted for.”
+                </span>
+            </p>
+            <p style="font-size:12px;color:rgba(255,255,255,0.45);margin:0;">
+                &copy; {{ date('Y') }} Geita Mineral Exhibition Secretariat. All Rights Reserved.
+                Geita Mineral Exhibition Management Information System (GeMEMIS).
+            </p>
         </div>
     </div>
-
-    <!-- Footer Bottom -->
-    <div class="bg-primary-dark border-top border-secondary">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center py-3">
-                    <small class="text-light">
-                        &copy; {{ date('Y') }}
-                        <a href="https://www.tantrade.go.tz/"
-                           class="text-light text-decoration-underline">
-                            TanTrade
-                        </a>.
-                        All Rights Reserved.
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </footer>
-<!-- =================== End Footer =================== -->
-
-<!-- Back to Top -->
-<a href="#"
-   class="btn btn-primary btn-lg rounded-circle back-to-top">
-    <i class="bi bi-arrow-up"></i>
-</a>
-
-<!-- JS Libraries -->
-<script src="FrontEnd/lib/wow/wow.min.js"></script>
-<script src="FrontEnd/lib/easing/easing.min.js"></script>
-<script src="FrontEnd/lib/waypoints/waypoints.min.js"></script>
-<script src="FrontEnd/lib/counterup/counterup.min.js"></script>
-<script src="FrontEnd/lib/owlcarousel/owl.carousel.min.js"></script>
-
-<!-- Main JS -->
-<script src="FrontEnd/js/main.js"></script>

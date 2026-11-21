@@ -5,7 +5,7 @@
 
     <div class="navbar-collapse collapse" id="navbar-second">
         <div class="navbar-text">
-            Copyright  &copy; 2022 - {{ date('Y') }}. Developed and maintained by <a href="https://tantrade.go.tz" target="_blank" class=" text-primary">Tanzania Trade Development Authority.</a>
+            Copyright &copy; {{ date('Y') }}. Geita Mineral Exhibition Management Information System (GeMEMIS).
         </div>
 
         <div class="navbar-right">

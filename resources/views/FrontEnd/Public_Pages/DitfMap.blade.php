@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title -->
-    <title>DITF MAP</title>
+    <title>Site map | GeMEMIS</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
     <style>
         .changeColor:hover {
@@ -41,17 +41,17 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/Exhibitor2.jpeg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-mine.jpg') }})">
         <div class="container">
             <div class="bread-inner">
 
                 <div class="row">
                     <div class="col-12">
-                        <h2>Sabasaba Map</h2>
+                        <h2>Site map</h2>
                         <ul class="bread-list">
                             <li><a href="{{ route('index') }}">Home</a></li>
                             <li><i class="icofont-simple-right"></i></li>
-                            <li class="active">Sabasaba Map</li>
+                            <li class="active">Site map</li>
                         </ul>
                     </div>
                 </div>
@@ -70,34 +70,29 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title">
-                        <h2>{{ $event->event_name }} (SABASABA) Map</h2>
-                        <img src="{{ asset('images/ditflogo.jpg') }}" alt="#">
+                        <h2>{{ $event->event_name }} &mdash; Site Map</h2>
+                        <img src="{{ asset('images/coat-of-arms.svg') }}" alt="#">
                         <p class=" text-justify">
-                            <b>Mwl Nyerere International Fair Grounds </b> Is a large exhibition and trade fair venue
-                            located in Dar es Salaam, Tanzania. It is named after Mwalimu Julius Kambarage Nyerere, the
-                            first President of Tanzania, widely regarded as the founding father of the nation. The
-                            fairgrounds are used for hosting various local and international events, including trade
-                            fairs, exhibitions, conferences, and cultural festivals.
+                            The <b>Geita Mineral Exhibition Grounds</b> sit in Geita, in the north-west of Tanzania on
+                            the southern shore of Lake Victoria, at the centre of the Lake Victoria goldfields. The
+                            grounds are laid out as halls, covered stands and open outdoor plots, so that everything
+                            from a bench of cut and polished stones to a loader or a crushing plant can be shown in
+                            the right kind of space.
                         </p>
-                        <p><b>Key Features and Functions of Dar es salaam International Trade Fair Ground:-</b></p>
+                        <p><b>What you will find on the grounds:</b></p>
                         <p class=" text-justify">
-                            <b>Trade Exhibitions:</b> The venue is best known for hosting the annual Dar es Salaam
-                            International Trade Fair (DITF), also referred to as the Sabasaba Trade Fair. This event
-                            attracts exhibitors from Tanzania, Africa, and other international countries, showcasing a
-                            variety of products, services, and innovations.<br>
+                            <b>Exhibition halls:</b> enclosed stands for mineral dealers and processors, assay and
+                            laboratory services, banks, insurers and government agencies.<br>
 
-                            <b>Cultural and Social Events:</b> Apart from trade shows, the fairgrounds are also used for
-                            cultural exhibitions, food fairs, and social events, making it a hub for networking,
-                            business development, and cultural exchange.<br>
+                            <b>Outdoor plots:</b> open ground for mining and processing equipment, vehicles and
+                            machinery that cannot be shown indoors.<br>
 
-                            <b>Business Hub:</b> The fairgrounds provide opportunities for businesses, especially SMEs (Small
-                            and Medium-sized Enterprises), to showcase their products and connect with larger markets.
-                            It plays a crucial role in promoting commerce, tourism, and investment in Tanzania.<br>
+                            <b>Small-scale miners&rsquo; pavilion:</b> stands set aside for small-scale miners and their
+                            associations, and for the women entrepreneurs and local businesses of Geita and the
+                            neighbouring districts.<br>
 
-                            <b>Strategic Location:</b> Situated in the country's largest city and commercial capital, Dar es
-                            Salaam, the venue is easily accessible for both local and international visitors. Its
-                            location near the port and other major transport hubs makes it a strategic site for
-                            international trade activities.
+                            <b>Meeting and demonstration areas:</b> space for buyer&ndash;seller meetings, technical
+                            demonstrations, training sessions and the official programme.
                         </p>
                     </div>
                 </div>
@@ -106,17 +101,17 @@
                 <div class="col-lg-12 col-12">
                     <!-- Start Choose Left -->
                     <div class="choose-left">
-                        <h3>Mwl. Nyerere International Trade Fair Ground [Sabasaba]</h3>
+                        <h3>Finding the grounds</h3>
                         <p style="text-align: justify;font-size:2vmin">
-                            The Mwalimu J.K.Nyerere Trade Fair Grounds,It is located along Kilwa Road, 8 km
-                            south east of Dar es Salaam in Tanzania.
-                            The Trade Fair Grounds which is also known as Mwl. J.K.Nyerere Trade Fair Grounds
-                            were inaugurated in 1962, one year after Tanzania gained her independence on 9
-                            December 1961. <a href="#" class=" text-info">View in Google Map <i
+                            The exhibition grounds are in Geita, Geita Region, Tanzania. The plan below shows the
+                            halls, pavilions, outdoor plots, gates and amenities; the numbered spaces on it are the
+                            ones you choose from when you apply through GeMEMIS.
+                            <a href="#" class=" text-info">View in Google Map <i
                                     class=" icofont icofont-location-pin"></i></a>
                         </p>
                         <p style="text-align: center">
-                            <img src="{{ asset('images/DITFMAP.png') }}" style="width: 100%; height:90%; width:90%">
+                            {{-- Replace public/images/DITFMAP.png with the Geita exhibition grounds plan. --}}
+                            <img src="{{ asset('images/DITFMAP.png') }}" alt="Plan of the exhibition grounds" style="width: 100%; height:90%; width:90%">
                         </p>
                     </div>
                     <!-- End Choose Left -->

@@ -17,11 +17,11 @@
     <p >If you did'nt Request chart session, No futher action is required and we are sory for any  inconvenience.</p>
     <p>
         Regard,<br>
-        TANTRADE SUPPORT TEAM
+        GeMEMIS SUPPORT TEAM
     </p>
     </div>
 
     <div class=" footer" style="background-color: rgb(224, 228, 233); padding:4%; text-align:center;">
-        &copy;{{ date('Y') }} <a href="{{ url(env('APP_URL')) }}" style="color:blue;text-decoration: none;">Tantrade.</a>  All Rights reserved.
+        &copy;{{ date('Y') }} <a href="{{ url(env('APP_URL')) }}" style="color:blue;text-decoration: none;">GeMEMIS.</a> All Rights reserved.
     </div>
     </div>

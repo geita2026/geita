@@ -8,13 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description"
-        content="GeMEMIS - Geita Mineral Exhibition Management Information System">
+        content="GeMEMIS — the Geita Mineral Exhibition Management Information System. Exhibitor registration,
+          space allocation, invoicing, payment and check-in for the Geita mineral exhibitions.">
 
-    <meta name="keywords" content="GeMEMIS, Geita Mineral Exhibition, exhibition management, Tanzania">
+    <meta name="keywords" content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
+
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
 
     <!-- ===================== ICONS ===================== -->
-    <link rel="icon" href="{{ asset('images/nembo.png') }}" sizes="16x16">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" sizes="16x16">
+    <link rel="icon" href="{{ asset('images/coat-of-arms.svg') }}">
 
     <!-- ===================== STYLES ===================== -->
     <link rel="stylesheet" href="{{ asset('assets/css/icons/icomoon/styles.css') }}">

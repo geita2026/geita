@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Booking Countdown – 50th Dar es Salaam International Trade Fair</title>
+    <title>Booking Countdown – Geita Mineral Exhibition</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/png">
@@ -175,14 +175,9 @@
 <div class="wrapper">
     <div class="card-box">
 
-        <!-- TANTRADE LOGO -->
+        <!-- COURT OF ARMS -->
         <div class="logo">
-            <img src="{{ asset('images/logo.jpg') }}" alt="TanTrade Logo">
-        </div>
-
-        <!-- 50TH JUBILEE LOGO -->
-        <div class="jubilee-logo">
-            <img src="{{ asset('images/50.jpeg') }}" alt="50th Sabasaba Golden Jubilee">
+            <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania">
         </div>
 
         <div class="title">
@@ -190,13 +185,12 @@
         </div>
 
         <div class="subtitle">
-            50<sup>th</sup> Dar es Salaam International Trade Fair – Golden Jubilee of Sabasaba
+            Geita Mineral Exhibition
         </div>
 
         <p class="text">
-            Welcome to the official booking portal for the
-            <span class="highlight">50<sup>th</sup> Dar es Salaam International Trade Fair (DITF)</span>,
-            commemorating <strong>50 Years of Sabasaba</strong>.
+            This is the booking portal for the
+            <span class="highlight">Geita Mineral Exhibition</span>.
         </p>
 
         <p class="text">
@@ -207,7 +201,7 @@
         <div class="info-box">
             <h5>What to Expect When Booking Opens</h5>
             <ul>
-                <li>Official opening of exhibitor bookings for the 50<sup>th</sup> DITF.</li>
+                <li>Exhibitor bookings open for the next exhibition.</li>
                 <li>Enhanced space allocation and reservation controls.</li>
                 <li>Improved billing, invoicing, and payment workflows.</li>
                 <li>Optimized performance for high booking demand.</li>
@@ -240,8 +234,9 @@
 
         <div class="contact">
             <p class="text">For enquiries related to booking and registration:</p>
-            <a href="mailto:ictsupport@tantrade.go.tz">
-                <i class="icon-envelop"></i> ictsupport@tantrade.go.tz
+            {{-- Replace with the Secretariat's ICT support address. --}}
+            <a href="mailto:info@gememis.go.tz">
+                <i class="icon-envelop"></i> info@gememis.go.tz
             </a>
         </div>
     </div>

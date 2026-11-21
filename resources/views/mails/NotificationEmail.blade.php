@@ -98,19 +98,13 @@
 
         <!-- Footer -->
         <div class="email-footer">
+            {{-- Replace with the Secretariat's own address and contact details. --}}
             <p>
-                Tanzania Trade Development Authority, Kilwa Road, Dar es Salaam<br>
-                Phone: +255 733 002 014 | Email: <a href="mailto:info@tantrade.go.tz">info@tantrade.go.tz</a>
+                Geita Mineral Exhibition Secretariat, Geita, Tanzania<br>
+                Email: <a href="mailto:info@gememis.go.tz">info@gememis.go.tz</a>
             </p>
             <p>
-                Follow us on:
-                <a href="https://facebook.com/tantradetz" target="_blank">Facebook</a> | 
-                <a href="https://x.com/TanTradepage" target="_blank">Twitter</a> |
-                <a href="https://www.instagram.com/tantradetz" target="_blank">Instagram</a> | 
-                <a href="https://linkedin.com/company/tantrade" target="_blank">LinkedIn</a>
-            </p>
-            <p>
-                © 2024 Tanzania Trade Development Authority. All Rights Reserved.
+                &copy; {{ date('Y') }} Geita Mineral Exhibition Secretariat. All Rights Reserved.
             </p>
         </div>
     </div>

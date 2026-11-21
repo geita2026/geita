@@ -35,10 +35,8 @@
                         @include('layouts.ExhibitionTime')
                         <!-- == Exhibition Time Line == -->
                             <p style="font-size: 2vmin;text-align:justify">
-                                To enhance Tanzania's economic performance through trade development and promotion of
-                                goods and services for both local and foreign markets, TanTrade organizes different
-                                Exhibition events,
-                                as listed in the bellow table.
+                                The Geita Mineral Exhibition Secretariat organises the exhibitions listed below.
+                                Each entry shows when it ran and who took part.
                             </p>
                         </div>
 
@@ -59,90 +57,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{-- Past Geita exhibitions go here, one row each. --}}
                                     <tr>
-                                        <td>1</td>
-                                        <td>47th Dar es salaam International Trade Fair</td>
-                                        <td>28 Jun - 13 July 2023</td>
-                                        <td class=" text-center">{{ number_format(3200) }}</td>
-                                        <td class=" text-center">{{ number_format(213) }}</td>
-                                        <td class=" text-center">{{ number_format(30) }}</td>
-                                        <td class=" text-center">{{ number_format(26) }}</td>
-                                        <td class=" text-center">
-                                            <label class=" label label-success">COMPLETED</label>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>2</td>
-                                        <td>46th Dar es salaam International Trade Fair</td>
-                                        <td>28 Jun - 13 July 2022</td>
-                                        <td class=" text-center">{{ number_format(2710) }}</td>
-                                        <td class=" text-center">{{ number_format(104) }}</td>
-                                        <td class=" text-center">{{ number_format(26) }}</td>
-                                        <td class=" text-center">{{ number_format(17) }}</td>
-                                        <td class=" text-center">
-                                            <label class=" label label-success">COMPLETED</label>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>3</td>
-                                        <td>45th Dar es salaam International Trade Fair</td>
-                                        <td>28 Jun - 13 July 2022</td>
-                                        <td class=" text-center">{{ number_format(2031) }}</td>
-                                        <td class=" text-center">{{ number_format(72) }}</td>
-                                        <td class=" text-center">{{ number_format(19) }}</td>
-                                        <td class=" text-center">{{ number_format(14) }}</td>
-                                        <td class=" text-center">
-                                            <label class=" label label-success">COMPLETED</label>
+                                        <td colspan="8" class="text-center text-muted" style="padding:28px 0;">
+                                            Past exhibitions will be listed here.
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="row form-group">
-                            <div class=" card col-md-4 zoom">
-                                <div class=" card-body">
-                                    <iframe width="560" height="315"
-                                        src="https://www.youtube.com/embed/fOXlRGlrWfA?si=Ypt1_VIBz3ydSmiO&autoplay=1"
-                                        title="YouTube video player" frameborder="0"
-                                        allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen></iframe>
-
-
-                                </div>
-                                <div class=" card-footer" style="font-size:2vmin;text-align:justify">
-                                    The 47<sup>th</sup> Dar es salaam International Trade Fair
-                                </div>
-                            </div>
-
-                            <div class=" card col-md-4 zoom">
-                                <div class=" card-body">
-                                    <iframe width="560" height="315"
-                                        src="https://www.youtube.com/embed/DZi5thbgRh4?si=qiolI0n0GPVXqroS"
-                                        title="YouTube video player" frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen></iframe>
-                                </div>
-                                <div class=" card-footer" style="font-size:2vmin;text-align:justify">
-                                    The 46<sup>th</sup> Dar es salaam International Trade Fair
-                                </div>
-                            </div>
-
-                            <div class=" card col-md-4 zoom">
-                                <div class=" card-body">
-                                    <iframe width="560" height="315"
-                                        src="https://www.youtube.com/embed/LswD5T7FPzI?si=Sowj6dyb_4w1WT33"
-                                        title="YouTube video player" frameborder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        allowfullscreen></iframe>
-                                </div>
-                                <div class=" card-footer" style="font-size:2vmin;text-align:justify">
-                                    The 46<sup>th</sup> Dar es salaam International Trade Fair
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>

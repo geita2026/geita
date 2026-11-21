@@ -53,7 +53,7 @@
                         <div class=" col-md-12 form-group  p-5">
                            @include('layouts.ExhibitionTime')
                             <p style="font-size: 2vmin">
-                                <b>TanTrade</b> catalyses collaboration, stimulates innovation and creates tangible
+                                <b>GeMEMIS</b> brings the exhibition online: browse every product on show, and
                                 opportunities for all, Preview All products And obtain products of your interest, Then
                                 contact exhibitor for more information.
                             </p>

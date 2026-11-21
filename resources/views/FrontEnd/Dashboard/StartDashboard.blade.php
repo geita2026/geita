@@ -41,9 +41,9 @@
     <div class="content">
 
         <div class=" alert alert-info" style="font-size: 0.9vmax">
-            This system has two modules, <a href="{{ route('dashboard') }}">Trade Fair</a> and <a
+            This system has two modules, <a href="{{ route('dashboard') }}">Exhibition</a> and <a
                 href="{{ route('permitDashboard') }}">e-Permit</a>.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>Trade Fair</b> manages the Geita Mineral Exhibition.<br>
+            <i class=" icon-arrow-right13 ml-20"></i> <b>Exhibition</b> runs the Geita Mineral Exhibition.<br>
             <i class=" icon-arrow-right13 ml-20"></i> <b>e-Permit</b> involves managing the provision of Trade Promotion
             Event Permits.
         </div>
@@ -53,12 +53,15 @@
                 <div type="submit" @if (session('moduleNo') == 1) style="border-bottom: 10px solid black;" @endif
                     class="btn btn-block btn-float btn-float-lg  text-bold border-primary bg-info"
                     style="border-top: 10px solid green;border-radius:5%;color:black">
-                    <span class="systemName">TRADE FAIR</span>
+                    <span class="systemName">EXHIBITION</span>
                     <hr>
                     <div style="text-align: left; font-size:90%">
                         <p class="text-justify">
-                            GeMEMIS - Geita Mineral Exhibition Management Information System manages exhibitor registration
-                            and exhibition space allocation for the Geita Mineral Exhibition.
+                            GeMEMIS - Geita Mineral Exhibition Management Information System handles exhibitor registration,
+                            applications, space allocation on the floor plan, invoicing,
+                            payment and check-in for the Geita Mineral Exhibition &mdash; the gathering of the
+                            mining value chain in Geita: small-scale miners, dealers and processors, equipment
+                            suppliers, and the financial and technical services beside them.
                         </p>
                     </div>
                 </div>

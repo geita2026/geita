@@ -6,7 +6,7 @@
     <title>{{ $event->eventTitle }} Registration</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords"
-        content="sabasaba,Dar es salaam international Trade Fair,DITF,maonesho,Trade Fair, Tanzania Fair, Best Trade Fair">
+        content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
     <meta name="description" content="{{ $event->eventTitle }},{{ $event->eventDescription }}">
     <meta name='copyright' content='Tanzania Trade Development Authority (TanTrade)'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

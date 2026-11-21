@@ -78,7 +78,7 @@
 						<div class="single-news">
 							<div class="news-heada">
                                 @if ($item->companyLogo==Null)
-                                <img src="{{ asset('images/ditflogo.jpg') }}" alt="#" style="height: 10%; width:10%;border-radius:3%" >
+                                <img src="{{ asset('images/coat-of-arms.svg') }}" alt="#" style="height: 10%; width:10%;border-radius:3%" >
                                 @else
                                 <img src="{{ asset('profile_images/'.$item->companyLogo) }}" alt="#" style="height: 10%; width:10%;border-radius:3%">
                                 @endif

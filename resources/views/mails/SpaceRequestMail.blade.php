@@ -20,9 +20,8 @@
                                 style="color:rgb(10, 112, 228);font-size:2vmin">{{ $name }}</b>.
                         </p>
                         <p>
-                            This is to notify you that, we have received your request for the
-                            48<sup>th</sup> Dar es salaam International Trade Fair (DITF),
-                            with request number <b>{{ $requestNo }}</b>.
+                            This is to notify you that we have received your request for space at the
+                            Geita Mineral Exhibition, with request number <b>{{ $requestNo }}</b>.
                             <br>
                             We are working for your request in one to two working days! Then we will be back to you.
                         </p>
@@ -38,7 +37,7 @@
             For more information about the exhibition, visit:
             <a href="{{ env('APP_URL') }}" style="text-decoration: none;"> {{ env('APP_URL') }} </a>
             <br>
-            &copy; {{ date('Y') }} All rights reserved. <a href="www.tantrade.go.tz">TanTrade</a>.
+            &copy; {{ date('Y') }} Geita Mineral Exhibition Secretariat. All rights reserved.
         </p>
     </div>
 </div>

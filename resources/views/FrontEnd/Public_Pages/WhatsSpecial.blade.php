@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ env('APP_NAME') }} | Sabasaba Special</title>
+    <title>{{ env('APP_NAME') }} | What's special</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     <!-- Global stylesheets -->
     @include('WelcomePageLayouts.welcomeCss')
@@ -63,7 +63,7 @@
 
                             <div class=" headerBackground form-group">
                                 <p style="font-size:3vmax; text-align:center">
-                                    <b>SabaSaba Special is Here . . .! <i class=" icon-point-down"></i></b>
+                                    <b>What makes this exhibition different <i class=" icon-point-down"></i></b>
                                 </p>
                             </div>
 
@@ -78,7 +78,7 @@
                                                 style=" font-size:3.5vmin;font-family:Cambria;color:blue;">Networking.</b>
 
                                         <div style="font-size:2.5vmin;text-align:justify">
-                                            Dar es salaam International Trade Fair, provide a platform for networking
+                                            The Geita Mineral Exhibition provides a platform for networking
                                             with industry professionals,
                                             potential clients, suppliers, and partners. Building and maintaining
                                             relationships can lead to collaborations, business partnerships, and
@@ -114,7 +114,7 @@
                                             <div style="font-size:2.5vmin;text-align:justify">
                                                 Business-to-Business (B2B) meetings are crucial for fostering partnerships,
                                                 networking, and collaboration. Whether you're organizing or attending B2B
-                                                meetings, Prepare for B2B meeting during Dar es salaam International Trade
+                                                meetings, Prepare for B2B meetings during the Geita Mineral
                                                 Fair.
                                             </div>
                                             </p>
@@ -167,7 +167,7 @@
                                                 Exposure.</b>
 
                                         <div style="font-size:2.5vmin;text-align:justify;">
-                                            Dar es salaam International Trade Fair, Brings together More than 2,000
+                                            The Geita Mineral Exhibition brings together
                                             companies, 40,000 visitors at one point at a time, This allows businesses to showcase
                                             their products or services to a targeted audience. This exposure can help in
                                             building brand awareness and recognition among potential customers

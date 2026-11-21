@@ -193,10 +193,10 @@
             </div>
         </div>
         <div class=" col-md-4">
-            <label>Company Website Eg:(<i class=" text-muted">https://tantrade.go.tz</i>)</label>
+            <label>Company Website Eg:(<i class=" text-muted">https://example.co.tz</i>)</label>
             <div class="form-group">
                 <input type="url" name="website" class=" form-control input-sm"
-                    placeholder="eg: https://tantrade.go.tz" value="{{ $item->website }}">
+                    placeholder="eg: https://example.co.tz" value="{{ $item->website }}">
             </div>
         </div>
     </div>
@@ -269,7 +269,7 @@
             <div class="modal-header bg-primary">
 
                 <h4 class="modal-title text-center">
-                    <b style="font-size:2.5vmin">48<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR RULES AND
+                    <b style="font-size:2.5vmin">GEITA MINERAL EXHIBITION RULES AND
                         REGULATIONS - 2024.</b></h5>
 
             </div>

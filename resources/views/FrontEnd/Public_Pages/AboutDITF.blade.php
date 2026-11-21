@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title -->
-    <title>Exhibitor List</title>
+    <title>About the exhibition | GeMEMIS</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
     <style>
         .changeColor:hover {
@@ -40,17 +40,17 @@
     <!-- End Header Area -->
 
     <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/Exhibitor2.jpeg') }})">
+    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-mine.jpg') }})">
         <div class="container">
             <div class="bread-inner">
 
                 <div class="row">
                     <div class="col-12">
-                        <h2>About sabasaba</h2>
+                        <h2>About the exhibition</h2>
                         <ul class="bread-list">
                             <li><a href="{{ route('index') }}">Home</a></li>
                             <li><i class="icofont-simple-right"></i></li>
-                            <li class="active">About sabasaba</li>
+                            <li class="active">About the exhibition</li>
                         </ul>
                     </div>
                 </div>
@@ -69,8 +69,8 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="section-title">
-							<h2>{{ $event->event_name }} (SABASABA)</h2>
-							<img src="{{ asset('images/ditflogo.jpg') }}" alt="#">
+							<h2>{{ $event->event_name }}</h2>
+							<img src="{{ asset('images/coat-of-arms.svg') }}" alt="#">
                            
 						</div>
 					</div>
@@ -81,54 +81,35 @@
 						<div class="choose-left">
 							<h3>Who We Are</h3>
                             <p style="text-align: justify;">
-                                The Dar es Salaam International Trade Fair (DITF) also known as <q>SabaSaba</q>
-                                takes
-                                place annually on the 28<sup>th</sup> of June at the <a
-                                    href="{{ route('ditf_map') }}">Mwalimu J.K.Nyerere Trade Fair Grounds</a>.
-                                It is located along Kilwa Road, 8 km south east of Dar es Salaam in Tanzania.
-                                The Dar es Salaam International Trade Fair is an annual major promotional event
-                                organised by <a href="https://www.tantrade.go.tz/" target="_newtab">Tanzania
-                                    Trade Development Authority (TanTrade)</a>. Tanzania Trade Development
-                                Authority (TanTrade) is a
-                                government institution, which was established under the Act No. 4 of 2009 that
-                                repealed the Board of External Trade Act No. 5 of 1978 and the Board of Internal
-                                Trade Act No. 15 of 1973. The first Trade fair was held in 1963. It was organised by an expert from UKin the
-                                Ministry of Trade and Cooperative Unions by the name Mr. Lucas, with the assistance
-                                of Mr. Mashamba who was an official of the Ministry.
+                                The Geita Mineral Exhibition brings Tanzania&rsquo;s mining sector together in Geita,
+                                in the north-west of the country on the southern shore of Lake Victoria &mdash; the
+                                heart of the Lake Victoria goldfields and home to one of the largest gold mines in
+                                Africa. For several days the exhibition grounds become a single marketplace for the
+                                people who dig, process, finance, equip and regulate the minerals that come out of
+                                this ground.
                             </p>
 
-                            <p>
-                                The Tanzania Trade Development Authority (TanTrade), dedicated to establishing global business
-                                partnership through organizing and managing international and specialised trade
-                                fairs, solo exhibitions, product and market research, prospect development, Trade
-                                missions, buyer-seller meetings and contact marketing programmes. TanTrade gives out
-                                regular trade information and offers consultancy services to producers, exporters
-                                and importers to enable them to effectively participate in the global market place.
+                            <p style="text-align: justify;">
+                                Exhibitors come from every part of the value chain: small-scale miners and their
+                                associations, licensed mineral dealers and processors, equipment and consumables
+                                suppliers, assay and laboratory services, banks and financial institutions,
+                                insurers, training providers and the government agencies that license and regulate
+                                the sector. Alongside them are women entrepreneurs and local businesses from Geita
+                                and the neighbouring districts, for whom the exhibition is a chance to reach buyers
+                                they would otherwise never meet.
                             </p>
-                            <p>
-                                The Dar es Salaam International Trade Fair has established itself over the years
-                                as the
-                                shop window for Tanzanian products as well as the East, Central, and the
-                                Southern
-                                African Region. Supported by the services of the Dar es Salaam harbor which
-                                serves
-                                the region effectively, the fair acts as a one-stop center for reaching
-                                countries such
-                                as Kenya, Uganda, Rwanda, Burundi, Democratic Republic of Congo, Zambia, Malawi,
-                                Zimbabwe and Botswana.
 
-                                The fairs enjoy patronage of the Tanzanian business community both exhibit and
-                                use it as a forum for business exchange.
+                            <p style="text-align: justify;">
+                                The exhibition exists to move the sector towards value addition &mdash; keeping more
+                                of the worth of Tanzania&rsquo;s minerals in Tanzania through processing, refining and
+                                local supply &mdash; and to put technical knowledge, finance and fair prices within
+                                reach of the smallest operator on the ground.
+                            </p>
 
-                                Participation has ever been on the increase from a mere over 100 companies in
-                                the
-                                the late eighties to over 1,041 companies in 1999, In 2006 a total of 1,526
-                                exhibitors
-                                exhibited at the fair and came from overseas representing over 26 countries,
-                                Tanzania inclusive. Currently, The exhibition is the largest exhibition in
-                                Africa that collects
-                                more than 3,500 local companies, 200 foreign companies, and 26 countries have
-                                attended the 2023 exhibition.
+                            <p style="text-align: justify;">
+                                GeMEMIS, the Geita Mineral Exhibition Management Information System, is how the
+                                exhibition runs. Exhibitors register, apply, take their space on the floor plan,
+                                settle the invoice and check in. The plan you see is the grounds as they stand.
                             </p>
                             
 							
@@ -139,16 +120,7 @@
 						<!-- Start Choose Rights -->
 						<div class="choose-right">
 							<div class="video-image">
-								<!-- Video Animation -->
-								<div class="promo-video">
-									<div class="waves-block">
-										<div class="waves wave-1"></div>
-										<div class="waves wave-2"></div>
-										<div class="waves wave-3"></div>
-									</div>
-								</div>
-								<!--/ End Video Animation -->
-								<a href="https://www.youtube.com/watch?v=RFVXy6CRVR4" class="video video-popup mfp-iframe"><i class="fa fa-play"></i></a>
+								<img src="{{ asset('images/geita/geita-mine.jpg') }}" alt="The open pit at Geita, in the Lake Victoria goldfields" style="width:100%;height:auto;border-radius:12px;">
 							</div>
 						</div>
 						<!-- End Choose Rights -->

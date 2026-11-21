@@ -37,7 +37,7 @@
         <div class="heading-elements">
             <div class="heading-btn-group">
                 <a href="{{ route('preview_programs.index') }}" class="btn btn-link btn-float has-text"><i class=" icon-calendar text-primary"></i> <span>Programs</span></a>
-                <a href="{{ route('virtual_exhibition.index') }}" target="_tab" class="btn btn-link btn-float has-text"><i class=" icon-sphere3 text-primary"></i><span class=" text-bold">Virtual DITF </span></a>
+                <a href="{{ route('virtual_exhibition.index') }}" target="_tab" class="btn btn-link btn-float has-text"><i class=" icon-sphere3 text-primary"></i><span class=" text-bold">Virtual Exhibition </span></a>
             </div>
         </div>
     </div>

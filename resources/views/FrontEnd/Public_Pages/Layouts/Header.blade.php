@@ -1,38 +1,87 @@
-<!-- ================= TANTRADE RESPONSIVE HEADER ================= -->
+<!-- ================= GeMEMIS RESPONSIVE HEADER ================= -->
 <style>
-    :root {
-        --blue: #0d6efd;
-        --blue-light: #e9f4ff;
-        --text-blue: #0d6efd;
-        --text-dark: #0b1f33;
-    }
-
     body {
-        padding-top: 85px;
+        padding-top: 86px;
     }
 
-    /* ===== HEADER ===== */
-    .header-modern {
+    /* The legacy public pages wrap this header in <header class="header">, which
+       the Medipro stylesheet paints white. Keep that wrapper out of the way so
+       the GeMEMIS bar reads the same on every page. */
+    header.header {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* …and the same stylesheet paints .container white at z-index 333, which
+       would cut a white block out of the bar. */
+    .gem-header .header-inner {
+        background: transparent !important;
+        z-index: auto !important;
+    }
+
+    /* ===== GeMEMIS NAVBAR ===== */
+    .gem-header {
         position: fixed;
         top: 0;
+        left: 0;
+        right: 0;
         width: 100%;
         z-index: 3000;
-        background: #ffffff;
-        border-bottom: 1px solid #e5e7eb;
+        background: rgba(7, 5, 6, 0.90);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1.5px solid rgba(255, 191, 0, 0.22);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.65), 0 0 20px rgba(255, 191, 0, 0.08);
+        transition: all 0.3s ease;
     }
 
     .header-inner {
         padding: 12px 0;
     }
 
-    /* ===== LOGO ===== */
-    .logo img {
-        max-height: 55px;
+    /* ===== BRANDING ===== */
+    .gem-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .gem-brand img.brand-logo {
+        max-height: 52px;
         width: auto;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    }
+
+    .gem-brand img.brand-mark {
+        max-height: 48px;
+        width: auto;
+        filter: drop-shadow(0 0 8px rgba(255, 191, 0, 0.45));
+    }
+
+    .brand-text {
+        line-height: 1.2;
+    }
+
+    .brand-title {
+        font-family: "Noto Sans Display", "Montserrat", sans-serif;
+        font-weight: 700;
+        font-size: 17px;
+        color: #ffffff;
+        letter-spacing: 0.02em;
         display: block;
     }
 
-    /* ===== DESKTOP NAV (only visible on lg+) ===== */
+    .brand-subtitle {
+        font-size: 11px;
+        color: #FFBF00;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        display: block;
+    }
+
+    /* ===== DESKTOP NAV ===== */
     .nav-desktop {
         display: none;
         justify-content: flex-end;
@@ -48,7 +97,7 @@
     .nav-desktop > ul {
         list-style: none;
         display: flex;
-        gap: 26px;
+        gap: 22px;
         margin: 0;
         padding: 0;
         align-items: center;
@@ -58,300 +107,308 @@
         position: relative;
     }
 
-    .nav-desktop a {
-        color: var(--text-blue);
+    .nav-desktop a.nav-link-custom {
+        color: rgba(255, 255, 255, 0.85);
         font-weight: 600;
+        font-size: 14px;
         text-decoration: none;
-        padding: 6px 0;
+        padding: 8px 6px;
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        letter-spacing: 0.02em;
+        transition: color 0.2s ease;
     }
 
-    .nav-desktop a:hover {
-        color: #084298;
+    .nav-desktop a.nav-link-custom:hover,
+    .nav-desktop li:hover > a.nav-link-custom {
+        color: #FFBF00;
     }
 
-    .nav-desktop i {
-        transition: transform .3s ease;
+    .nav-desktop a.nav-link-custom i {
+        font-size: 11px;
+        transition: transform 0.25s ease;
     }
 
-    .nav-desktop li:hover > a i {
+    .nav-desktop li:hover > a.nav-link-custom i {
         transform: rotate(180deg);
+        color: #FFBF00;
     }
 
     /* ===== DROPDOWN ===== */
-    .dropdown {
+    .gem-dropdown {
         position: absolute;
-        top: 120%;
+        top: calc(100% + 10px);
         left: 0;
         min-width: 260px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 12px 30px rgba(13,110,253,.15);
-        padding: 6px 0;
-
+        background: #0d0a0f;
+        border: 1.5px solid rgba(255, 191, 0, 0.3);
+        border-radius: 18px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 24px rgba(255, 191, 0, 0.15);
+        padding: 8px 0;
         opacity: 0;
         visibility: hidden;
         transform: translateY(10px);
-        transition: all .25s ease;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 3200;
     }
 
-    .nav-desktop li:hover > .dropdown {
+    .nav-desktop li:hover > .gem-dropdown {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
-    .dropdown ul {
+    .gem-dropdown ul {
         list-style: none;
         margin: 0;
         padding: 0;
     }
 
-    .dropdown li {
-        width: 100%;
+    .gem-dropdown a {
+        display: flex;
+        align-items: center;
+        padding: 11px 20px;
+        color: rgba(255, 255, 255, 0.82);
+        font-weight: 500;
+        font-size: 13.5px;
+        text-decoration: none;
+        transition: all 0.18s ease;
     }
 
-    .dropdown a {
-        display: block;
-        padding: 12px 20px;
-        color: var(--text-blue);
-        font-weight: 600;
-    }
-
-    .dropdown a:hover {
-        background: var(--blue-light);
-        color: var(--blue);
+    .gem-dropdown a:hover {
+        background: rgba(255, 191, 0, 0.12);
+        color: #FFBF00;
+        padding-left: 24px;
     }
 
     /* ===== LOGIN BUTTON ===== */
-    .login-btn {
-        padding: 10px 22px;
-        border-radius: 30px;
-        border: 2px solid var(--blue);
-        color: var(--blue) !important;
-        background: transparent;
-        transition: all .25s ease;
+    .btn-header-login {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 22px;
+        border-radius: 9999px;
+        border: 1.5px solid #FFBF00;
+        color: #070506 !important;
+        background: linear-gradient(135deg, #FFBF00 0%, #E5A900 100%);
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        box-shadow: 0 4px 18px rgba(255, 191, 0, 0.35);
+        transition: all 0.25s ease;
     }
 
-    .login-btn:hover {
-        background: var(--blue);
-        color: #fff !important;
+    .btn-header-login:hover {
+        background: linear-gradient(135deg, #FFD033 0%, #FFBF00 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(255, 191, 0, 0.55);
     }
 
-    /* ===== MOBILE TOGGLE (hamburger icon) ===== */
-    .mobile-toggle {
+    /* ===== MOBILE TOGGLE ===== */
+    .mobile-toggle-btn {
+        display: none;
         font-size: 26px;
-        color: var(--blue);
+        color: #FFBF00;
         cursor: pointer;
-        display: none;
+        background: transparent;
+        border: none;
+        padding: 6px;
+        line-height: 1;
     }
 
     @media (max-width: 991px) {
-        .mobile-toggle {
-            display: block;
+        .mobile-toggle-btn {
+            display: inline-block;
         }
     }
 
-    /* ===== MOBILE SIDEBAR ===== */
-    .mobile-sidebar {
+    /* ===== MOBILE SIDEBAR DRAWER ===== */
+    .gem-sidebar-overlay {
         display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(6px);
+        z-index: 3999;
     }
 
-    @media (max-width: 991px) {
-        .mobile-sidebar {
-            display: block;
-        }
+    .gem-sidebar-overlay.active {
+        display: block;
+    }
 
-        .mobile-sidebar .sidebar-panel {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 280px;
-            height: 100%;
-            background: #ffffff;
-            z-index: 4000;
-            overflow-y: auto;
-            box-shadow: 2px 0 12px rgba(0,0,0,.15);
-            transition: left .3s ease;
-        }
+    .gem-sidebar {
+        position: fixed;
+        top: 0;
+        left: -320px;
+        width: 300px;
+        height: 100%;
+        background: #080609;
+        border-right: 1.5px solid rgba(255, 191, 0, 0.25);
+        z-index: 4000;
+        overflow-y: auto;
+        box-shadow: 6px 0 35px rgba(0, 0, 0, 0.9);
+        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-        .mobile-sidebar .sidebar-panel.open {
-            left: 0;
-        }
+    .gem-sidebar.open {
+        left: 0;
+    }
 
-        .mobile-sidebar .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid #e5e7eb;
-            background: #ffffff;
-        }
+    .gem-sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(255, 191, 0, 0.2);
+        background: #0b090d;
+    }
 
-        .mobile-sidebar .sidebar-header img {
-            max-height: 40px;
-            width: auto;
-        }
+    .gem-sidebar-close {
+        font-size: 28px;
+        color: #FFBF00;
+        cursor: pointer;
+        background: none;
+        border: none;
+        line-height: 1;
+    }
 
-        .mobile-sidebar .sidebar-close {
-            font-size: 28px;
-            color: var(--blue);
-            cursor: pointer;
-            background: none;
-            border: none;
-            line-height: 1;
-        }
+    .gem-sidebar-item {
+        display: block;
+        padding: 13px 20px;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 600;
+        font-size: 14.5px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+    }
 
-        .mobile-sidebar .sidebar-item {
-            display: block;
-            padding: 14px 20px;
-            color: var(--text-blue);
-            font-weight: 600;
-            font-size: 15px;
-            text-decoration: none;
-            border-bottom: 1px solid #f0f0f0;
-        }
+    .gem-sidebar-item:hover {
+        background: rgba(255, 191, 0, 0.1);
+        color: #FFBF00;
+        padding-left: 24px;
+    }
 
-        .mobile-sidebar .sidebar-item:hover {
-            background: var(--blue-light);
-            color: var(--blue);
-        }
+    .gem-sidebar-group {
+        padding: 13px 20px;
+        color: #FFBF00;
+        font-weight: 700;
+        font-size: 14.5px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-        .mobile-sidebar .sidebar-group-title {
-            padding: 14px 20px;
-            color: var(--text-dark);
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
+    .gem-sidebar-group i {
+        transition: transform 0.25s ease;
+    }
 
-        .mobile-sidebar .sidebar-group-title:hover {
-            background: var(--blue-light);
-        }
+    .gem-sidebar-group.open i {
+        transform: rotate(180deg);
+    }
 
-        .mobile-sidebar .sidebar-group-title i {
-            transition: transform .3s ease;
-        }
+    .gem-sidebar-sub {
+        display: none;
+        background: #050305;
+    }
 
-        .mobile-sidebar .sidebar-group-title.open i {
-            transform: rotate(180deg);
-        }
+    .gem-sidebar-sub.open {
+        display: block;
+    }
 
-        .mobile-sidebar .sidebar-submenu {
-            display: none;
-            background: #f8fafc;
-        }
+    .gem-sidebar-sub .gem-sidebar-item {
+        padding-left: 36px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+    }
 
-        .mobile-sidebar .sidebar-submenu.open {
-            display: block;
-        }
-
-        .mobile-sidebar .sidebar-submenu .sidebar-item {
-            padding-left: 36px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .mobile-sidebar .sidebar-login {
-            margin: 20px;
-            text-align: center;
-            padding: 12px 22px !important;
-            border-radius: 30px;
-            border: 2px solid var(--blue);
-            color: var(--blue) !important;
-            font-weight: 700;
-            background: transparent;
-            display: block;
-            text-decoration: none;
-            transition: all .25s ease;
-        }
-
-        .mobile-sidebar .sidebar-login:hover {
-            background: var(--blue);
-            color: #fff !important;
-        }
-
-        .mobile-sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,.4);
-            z-index: 3999 !important;
-        }
-
-        .mobile-sidebar-overlay.active {
-            display: block;
-        }
+    .gem-sidebar-sub .gem-sidebar-item:hover {
+        color: #FFBF00;
+        padding-left: 40px;
     }
 </style>
 
-
-<header class="header-modern">
+<header class="gem-header">
     <div class="container header-inner">
         <div class="row align-items-center">
-            <div class="col-6">
-                <div class="logo">
-                    <a href="{{ route('index') }}">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="TanTrade Logo">
-                    </a>
-                </div>
+            <!-- Brand / Logos -->
+            <div class="col-8 col-lg-4">
+                <a href="{{ route('index') }}" class="gem-brand">
+                    <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania" class="brand-logo">
+                    <div class="brand-text d-none d-sm-block">
+                        <span class="brand-title">GeMEMIS</span>
+                        <span class="brand-subtitle">Geita Mineral Exhibition</span>
+                    </div>
+                </a>
             </div>
 
-            <div class="col-6 text-end" style="padding: 8px 16px; right: 21px">
-                <i class="fa fa-bars mobile-toggle"></i>
+            <!-- Mobile Hamburger -->
+            <div class="col-4 d-lg-none text-end">
+                <button class="mobile-toggle-btn" onclick="openMobileSidebar()" aria-label="Toggle Navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
             </div>
 
-            <!-- DESKTOP NAV (hidden on mobile, sidebar used instead) -->
-            <div class="col-12 nav-desktop d-none d-lg-flex">
+            <!-- Desktop Nav Links -->
+            <div class="col-12 col-lg-8 nav-desktop">
                 <ul>
-                    <li><a href="{{ route('index') }}">Home</a></li>
-
                     <li>
-                        <a href="#">About SabaSaba <i class="fa fa-angle-down"></i></a>
-                        <div class="dropdown">
+                        <a href="{{ route('index') }}" class="nav-link-custom">
+                            <i class="fa fa-home"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- The Exhibition -->
+                    <li>
+                        <a href="#" class="nav-link-custom">
+                            The Exhibition <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <div class="gem-dropdown">
                             <ul>
-                                <li><a href="{{ route('About_ditf') }}">Understanding SabaSaba</a></li>
-                                <li><a href="{{ route('preview_programs.index') }}">Programs</a></li>
-                                <li><a href="{{ route('ditf_map') }}">Ground Map</a></li>
-                                <li><a href="{{ route('discover_exhibitor.index') }}">Discover Exhibitors</a></li>
-                                <li><a href="{{ route('exhibited_products.index') }}">Exhibited Products</a></li>
+                                <li><a href="{{ route('About_ditf') }}"><i class="fa fa-info-circle me-2 text-warning"></i> About the exhibition</a></li>
+                                <li><a href="{{ route('preview_programs.index') }}"><i class="fa fa-calendar me-2 text-warning"></i> Programme</a></li>
+                                <li><a href="{{ route('ditf_map') }}"><i class="fa fa-map-marker me-2 text-warning"></i> Site map</a></li>
+                                <li><a href="{{ route('discover_exhibitor.index') }}"><i class="fa fa-search me-2 text-warning"></i> Discover exhibitors</a></li>
+                                <li><a href="{{ route('exhibited_products.index') }}"><i class="fa fa-th-large me-2 text-warning"></i> Exhibited minerals</a></li>
                             </ul>
                         </div>
                     </li>
 
+                    <!-- Permits -->
                     <li>
-                        <a href="#">Trade Promotion Events <i class="fa fa-angle-down"></i></a>
-                        <div class="dropdown">
+                        <a href="#" class="nav-link-custom">
+                            Permits <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <div class="gem-dropdown">
                             <ul>
-                                <li><a href="{{ route('/') }}">Apply Event Permit</a></li>
-                                <li><a href="{{ route('approved_events') }}">Approved Events</a></li>
+                                <li><a href="{{ route('/') }}"><i class="fa fa-file-text-o me-2 text-warning"></i> Apply for an event permit</a></li>
+                                <li><a href="{{ route('approved_events') }}"><i class="fa fa-check-square-o me-2 text-warning"></i> Approved events</a></li>
                             </ul>
                         </div>
                     </li>
 
+                    <!-- Book space -->
                     <li>
-                        <a href="#">Online Booking <i class="fa fa-angle-down"></i></a>
-                        <div class="dropdown">
+                        <a href="#" class="nav-link-custom">
+                            Book space <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <div class="gem-dropdown">
                             <ul>
-                                <li><a href="{{ route('exhibition_space_booking.index') }}">Exhibition Space</a></li>
-                                <li><a href="{{ route('sponsorship_package_groups') }}">Sponsorship Packages</a></li>
-                                <li><a href="{{ route('online_booking.index') }}">Halls & Offices</a></li>
+                                <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-building-o me-2 text-warning"></i> Exhibition space</a></li>
+                                <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy me-2 text-warning"></i> Sponsorship packages</a></li>
+                                <li><a href="{{ route('online_booking.index') }}"><i class="fa fa-cubes me-2 text-warning"></i> Halls &amp; offices</a></li>
                             </ul>
                         </div>
                     </li>
 
+                    <!-- Login Button -->
                     <li>
-                        <a href="{{ route('login') }}" class="p-10">
-                            Login<i class="fa fa-unlock"></i>
+                        <a href="{{ route('login') }}" class="btn-header-login">
+                            <i class="fa fa-lock"></i> Login
                         </a>
                     </li>
                 </ul>
@@ -359,67 +416,68 @@
         </div>
     </div>
 </header>
-<!-- ================= END HEADER ================= -->
 
-<!-- ================= MOBILE SIDEBAR ================= -->
-<div class="mobile-sidebar">
-    <div class="mobile-sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+<!-- ================= MOBILE SIDEBAR DRAWER ================= -->
+<div class="gem-sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
 
-    <div class="sidebar-panel" id="mobileSidebar">
-        {{-- Sidebar Header --}}
-        <div class="sidebar-header">
-            <a href="{{ route('index') }}">
-                <img src="{{ asset('images/logo.jpg') }}" alt="TanTrade Logo">
-            </a>
-            <button class="sidebar-close" onclick="closeMobileSidebar()">&times;</button>
+<div class="gem-sidebar" id="mobileSidebar">
+    <div class="gem-sidebar-header">
+        <div class="d-flex align-items-center gap-2">
+            <img src="{{ asset('images/coat-of-arms.svg') }}" alt="Court of Arms of the United Republic of Tanzania" style="height:40px;">
+            <span style="font-weight:700;color:#FFBF00;font-size:14px;">GeMEMIS</span>
         </div>
+        <button class="gem-sidebar-close" onclick="closeMobileSidebar()" aria-label="Close">&times;</button>
+    </div>
 
-        {{-- Home --}}
-        <a href="{{ route('index') }}" class="sidebar-item">
-            <i class="fa fa-home" style="margin-right:8px;"></i> Home
+    <!-- Home -->
+    <a href="{{ route('index') }}" class="gem-sidebar-item">
+        <i class="fa fa-home me-2 text-warning"></i> Home
+    </a>
+
+    <!-- The Exhibition Dropdown -->
+    <div class="gem-sidebar-group" onclick="toggleSubmenu('subAbout')">
+        <span><i class="fa fa-bookmark-o me-2"></i> The Exhibition</span>
+        <i class="fa fa-chevron-down"></i>
+    </div>
+    <div class="gem-sidebar-sub" id="subAbout">
+        <a href="{{ route('About_ditf') }}" class="gem-sidebar-item">About the exhibition</a>
+        <a href="{{ route('preview_programs.index') }}" class="gem-sidebar-item">Programs</a>
+        <a href="{{ route('ditf_map') }}" class="gem-sidebar-item">Site map</a>
+        <a href="{{ route('discover_exhibitor.index') }}" class="gem-sidebar-item">Discover exhibitors</a>
+        <a href="{{ route('exhibited_products.index') }}" class="gem-sidebar-item">Exhibited minerals</a>
+    </div>
+
+    <!-- Permits -->
+    <div class="gem-sidebar-group" onclick="toggleSubmenu('subTrade')">
+        <span><i class="fa fa-calendar-check-o me-2"></i> Permits</span>
+        <i class="fa fa-chevron-down"></i>
+    </div>
+    <div class="gem-sidebar-sub" id="subTrade">
+        <a href="{{ route('/') }}" class="gem-sidebar-item">Apply for an event permit</a>
+        <a href="{{ route('approved_events') }}" class="gem-sidebar-item">Approved events</a>
+    </div>
+
+    <!-- Book space -->
+    <div class="gem-sidebar-group" onclick="toggleSubmenu('subBooking')">
+        <span><i class="fa fa-check-circle me-2"></i> Book space</span>
+        <i class="fa fa-chevron-down"></i>
+    </div>
+    <div class="gem-sidebar-sub" id="subBooking">
+        <a href="{{ route('exhibition_space_booking.index') }}" class="gem-sidebar-item">Exhibition Space</a>
+        <a href="{{ route('sponsorship_package_groups') }}" class="gem-sidebar-item">Sponsorship packages</a>
+        <a href="{{ route('online_booking.index') }}" class="gem-sidebar-item">Halls &amp; offices</a>
+    </div>
+
+    <!-- Login & Register in Sidebar -->
+    <div style="padding: 20px;">
+        <a href="{{ route('login') }}" class="btn-brand w-100 mb-2">
+            <i class="fa fa-lock me-1"></i> Sign in
         </a>
-
-        {{-- About SabaSaba --}}
-        <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-info-circle" style="margin-right:8px;"></i> About SabaSaba</span>
-            <i class="fa fa-angle-down"></i>
-        </div>
-        <div class="sidebar-submenu">
-            <a href="{{ route('About_ditf') }}" class="sidebar-item">Understanding SabaSaba</a>
-            <a href="{{ route('preview_programs.index') }}" class="sidebar-item">Programs</a>
-            <a href="{{ route('ditf_map') }}" class="sidebar-item">Ground Map</a>
-            <a href="{{ route('discover_exhibitor.index') }}" class="sidebar-item">Discover Exhibitors</a>
-            <a href="{{ route('exhibited_products.index') }}" class="sidebar-item">Exhibited Products</a>
-        </div>
-
-        {{-- Trade Promotion Events --}}
-        <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-calendar" style="margin-right:8px;"></i> Trade Promotion Events</span>
-            <i class="fa fa-angle-down"></i>
-        </div>
-        <div class="sidebar-submenu">
-            <a href="{{ route('/') }}" class="sidebar-item">Apply Event Permit</a>
-            <a href="{{ route('approved_events') }}" class="sidebar-item">Approved Events</a>
-        </div>
-
-        {{-- Online Booking --}}
-        <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-bookmark" style="margin-right:8px;"></i> Online Booking</span>
-            <i class="fa fa-angle-down"></i>
-        </div>
-        <div class="sidebar-submenu">
-            <a href="{{ route('exhibition_space_booking.index') }}" class="sidebar-item">Exhibition Space</a>
-            <a href="{{ route('sponsorship_package_groups') }}" class="sidebar-item">Sponsorship Packages</a>
-            <a href="{{ route('online_booking.index') }}" class="sidebar-item">Halls & Offices</a>
-        </div>
-
-        {{-- Login --}}
-        <a href="{{ route('login') }}" class="sidebar-login">
-            <i class="fa fa-unlock" style="margin-right:6px;"></i> Login
+        <a href="{{ route('registration') }}" class="btn-brand-outline w-100">
+            <i class="fa fa-user-plus me-1"></i> Create an account
         </a>
     </div>
 </div>
-<!-- ================= END MOBILE SIDEBAR ================= -->
 
 <script>
     function openMobileSidebar() {
@@ -427,22 +485,17 @@
         document.getElementById('sidebarOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
-
     function closeMobileSidebar() {
         document.getElementById('mobileSidebar').classList.remove('open');
         document.getElementById('sidebarOverlay').classList.remove('active');
         document.body.style.overflow = '';
     }
-
-    function toggleSubmenu(el) {
-        el.classList.toggle('open');
-        var submenu = el.nextElementSibling;
-        submenu.classList.toggle('open');
+    function toggleSubmenu(id) {
+        const sub = document.getElementById(id);
+        const parent = event.currentTarget;
+        if (sub) {
+            sub.classList.toggle('open');
+            parent.classList.toggle('open');
+        }
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('.mobile-toggle').addEventListener('click', function () {
-            openMobileSidebar();
-        });
-    });
 </script>
