@@ -8,16 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description"
-        content="Trade Fair is a web application that manages and controls major trade fairs in Tanzania,
-          including Dar es Salaam International Trade Fair (DITF) and other national exhibitions.">
+        content="GeMEMIS — the Geita Mineral Exhibition Management Information System. Exhibitor registration,
+          space allocation, invoicing, payment and check-in for the Geita mineral exhibitions.">
 
-    <meta name="keywords" content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, tradefair, tanzania">
+    <meta name="keywords" content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
 
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
 
     <!-- ===================== ICONS ===================== -->
-    <link rel="icon" href="{{ asset('images/nembo.png') }}" sizes="16x16">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" sizes="16x16">
+    <link rel="icon" href="{{ asset('images/coat-of-arms.svg') }}">
 
     <!-- ===================== STYLES ===================== -->
     <link rel="stylesheet" href="{{ asset('assets/css/icons/icomoon/styles.css') }}">
@@ -210,9 +209,8 @@
                 <p style="font-size:2vmax"><b>Company Registration</b></p>
                 <p style="font-size:1.8vmin">
                     <b class="text-danger">Note!</b>
-                    If your company participated in Dar es Salaam International Trade Fair
-                    between 2022 and {{ date('Y') }},
-                    register using the <b>TSRN</b> issued.
+                    If your company has exhibited at a previous Geita Mineral Exhibition,
+                    register using the Service Registration Number issued to you.
                 </p>
             </div>
             @include('company.NewCompanyRegistration')

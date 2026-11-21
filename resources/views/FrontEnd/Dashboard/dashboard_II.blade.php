@@ -1,6 +1,6 @@
 <div class="panel panel-white">
     <div class=" panel-heading text-center text-bold" style="background-color: rgb(230, 230, 236)">
-        <h1>DAR ES SALAAM INTERNATIONAL TRADE FAIR - {{ date('Y') }}</h1>
+        <h1>GEITA MINERAL EXHIBITION - {{ date('Y') }}</h1>
     </div>
     <div class=" panel-body">
 

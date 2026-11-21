@@ -8,8 +8,8 @@
     <meta name="description"
         content="Farmer’s Day dates back to the early 1980s when the Tanzanian Government initiated the celebration to recognize and appreciate the contributions of farmers to the national economy. The Nanenane exhibition is an annual event held in Tanzania to commemorate the founding of Farmers' Day, celebrating achievements in agriculture, livestock, and fisheries sectors. It takes place from August 1st to 8th each year and features displays and demonstrations from various sectors related to Agriculture, Livestock and Fisheries, including innovations, technologies, and practices aimed at improving productivity and sustainability.">
     <meta name="keywords"
-        content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, fair grounds, tradefair,Tanzania,Exhibition">
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+        content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
     <title>{{ env('APP_NAME') }} | HOME</title>
     <style>
        

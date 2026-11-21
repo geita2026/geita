@@ -8,11 +8,10 @@
     <title>{{ env('APP_NAME') }} | Space Booking Enquiry</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     <meta name="description"
-        content="Trade Fair is the web application system wich manages and control all largest trade
-Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzania industirial exhibition, e.t.c ">
+        content="GeMEMIS — the Geita Mineral Exhibition Management Information System. Exhibitor registration, space allocation, invoicing, payment and check-in for the Geita mineral exhibitions.">
     <meta name="keywords"
-        content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, fair grounds, tradefair,Tanzania,">
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+        content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
 
     <title>{{ config('app.name', 'Login') }}</title>
     @include('WelcomePageLayouts.welcomeCss')
@@ -330,7 +329,7 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
             <div class="modal-header bg-primary">
 
                 <h4 class="modal-title text-center">
-                    <b style="font-size:2.5vmin">48<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR RULES AND
+                    <b style="font-size:2.5vmin">GEITA MINERAL EXHIBITION RULES AND
                         REGULATIONS - 2024.</b></h5>
 
             </div>

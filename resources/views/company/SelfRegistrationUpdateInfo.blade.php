@@ -30,7 +30,7 @@
                     </div>
 
                     <div class=" form-group text-danger col-md-12" style="font-size: 2vmin">
-                        TanTrade Service Registration Number (TSRN): <b>{{ $item->registrationID }}</b>
+                        Service Registration Number (SRN): <b>{{ $item->registrationID }}</b>
                     </div>
 
                     <form action="{{ route('self_registration.update', ['self_registration' => $item->companyID]) }}" method="POST"

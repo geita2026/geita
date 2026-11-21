@@ -39,11 +39,11 @@
                             <b class=" text-pink">USER REGISTRATION AND AUTHENTICATION.</b><br>
                             User will be able to register his or her own by clicking the button named <a
                                 href="{{ route('registration') }}">Register <i class=" icon-user-plus"></i></a>
-                            and he or she must have <b>TanTrade Service Registration Number(TSRN) to register to the
+                            and he or she must have <b>Service Registration Number (SRN) to register to the
                                 system <i class=" text-primary icon-question3" data-popup="popover"
-                                    title="TanTrade Service Registration Number" data-trigger="hover"
-                                    data-content="This is the unique number that is given when a Company register for a service from TanTrade."></i></b>
-                            This number is at your every invoice from TanTrade at the <b>Invoice To</b> Informations. or
+                                    title="Service Registration Number" data-trigger="hover"
+                                    data-content="The number issued to your company when it first registered for an exhibition service."></i></b>
+                            This number appears on every invoice at the <b>Invoice To</b> Informations. or
                             call <a href="tel:255 733-002-014">255 733-002-014</a>
                             for help.
                         </p>
@@ -63,7 +63,7 @@
                         <li>Select <b>Exhibition Badges</b> Menu then click <b>Manage Badges</b></li>
                         <li>Click <b>Previous member</b> to reuse existing information and remove unneccessary previous badge information.</li>
                         <li>Click <b>New Member Badge</b> to add new badge informations.</li>
-                        <li>After submiting your all badge information visit TanTrade Office to acquire your badge ready for {{ date('Y') }} - Exhibition.</li>
+                        <li>After submiting your all badge information visit the Exhibition Secretariat office to collect your badge ready for {{ date('Y') }} - Exhibition.</li>
                     </ul>
 
                     <ul id="permit">

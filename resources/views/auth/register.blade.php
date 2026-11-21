@@ -5,11 +5,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description"
-        content="Trade Fair is the web application system wich manages and control all largest trade
-    Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzania industirial exhibition, e.t.c ">
+        content="GeMEMIS — the Geita Mineral Exhibition Management Information System. Exhibitor registration, space allocation, invoicing, payment and check-in for the Geita mineral exhibitions.">
     <meta name="keywords"
-        content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, fair grounds, tradefair,Tanzania,">
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+        content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
 
     <title>{{ env('APP_NAME') }} | Self Registration</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
@@ -41,7 +40,7 @@
                                     SELF REGISTRATION FORM
                                 </h4>
                                 <p class=" text-muted text-center">
-                                    <b>Note! if you don't have </b> <b class=" text-warning">TanTrade Service
+                                    <b>Note! if you don't have </b> <b class=" text-warning">Service
                                         Registration Number (TSRN)</b>. send whatsapp message / Normal Call Via <a
                                         href="tel: +255 733-002-014">+255 733 002 014</a> to provide it for you.
                                 </p>
@@ -64,16 +63,16 @@
                                                 @csrf
                                                 <div class=" row ">
                                                     <div class="form-group col-md-8 ">
-                                                        <label>TanTrade Service Registration Number (TSRN)<i
+                                                        <label>Service Registration Number (SRN)<i
                                                                 class=" text-danger">*</i>
                                                             <a href="#" data-popup="popover"
-                                                                title="TanTrade Service Registration Number (TSRN)"
+                                                                title="Service Registration Number (SRN)"
                                                                 data-trigger="hover"
-                                                                data-content="Is the Special number provided after registering to TanTrade for any service.If you don't have it communicate to TanTrade to provide it for you."><i
+                                                                data-content="The number issued after registering for an exhibition service. If you do not have it, contact the Exhibition Secretariat."><i
                                                                     class=" icon-question3"></i></a>
                                                         </label>
                                                         <input type="text" name="TSRN" class="form-control"
-                                                            placeholder="TanTrade Service Registration Number (TSRN)"
+                                                            placeholder="Service Registration Number (SRN)"
                                                             value="{{ old('TSRN') }}">
                                                         <span class=" text-danger ">
                                                             @error('TSRN')

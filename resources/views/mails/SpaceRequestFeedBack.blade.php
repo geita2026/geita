@@ -50,8 +50,7 @@
             For more information about the exhibition, visit:
             <a href="{{ env('APP_URL') }}" style="text-decoration: none;"> {{ env('APP_URL') }} </a>
             <br>
-         &copy; {{ date('Y') }} All rights reserved. <a
-                href="www.tantrade.go.tz">TanTrade</a>.
+         &copy; {{ date('Y') }} Geita Mineral Exhibition Secretariat. All rights reserved.
             </p>
     </div>
 </div>

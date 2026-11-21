@@ -61,7 +61,7 @@
                                    id="toggleIcon" style="font-size:22px"></i>
                                 <div>
                                     <div class="text-bold text-primary">
-                                        You haven’t registered your Company or Institution with TanTrade
+                                        You haven’t registered your Company or Institution yet
                                     </div>
                                     <small class="text-muted">
                                         Click to begin registration using the appropriate option below
@@ -124,7 +124,7 @@
                                 <div class="form-check">
                                     <input type="checkbox" id="TSRN" class="form-check-input control-primary">
                                     <label class="form-check-label" for="TSRN">
-                                        I already have a TanTrade Service Registration Number (TSRN)
+                                        I already have a Service Registration Number (SRN)
                                     </label>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
 
                             <div class="col-lg-12">
                                 <div class="choice-hint collapse-animate" id="localHint">
-                                    Choose <strong>TSRN</strong> if you have registered with TanTrade before.
+                                    Choose <strong>SRN</strong> if you have exhibited with us before.
                                     Choose <strong>TIN</strong> if this is your first registration.
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
                                 <input type="text"
                                        name="TSRN"
                                        class="form-control"
-                                       placeholder="Enter TanTrade Service Registration Number">
+                                       placeholder="Enter Service Registration Number">
                             </form>
                         </div>
                         <div class="col-md-2 text-center">

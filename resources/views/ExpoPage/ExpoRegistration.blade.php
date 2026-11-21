@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Tanzania Expo2025 Osaka Japan Participation registration Form">
     <meta name="keywords" content="Register, Expo, Osaka, expo2025,tantrade,maonesho">
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+    <meta name="author" content="Geita Mineral Exhibition Secretariat">
     <link rel="icon" href="{{ asset('images/nembo.png') }}" type="image/gif" sizes="16x16">
     
     <link rel="icon" href="{{ asset('ExpoFolder/ExpoIcon.png') }}" type="image/gif" sizes="16x16">

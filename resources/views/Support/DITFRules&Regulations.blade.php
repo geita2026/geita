@@ -3,7 +3,7 @@
         <b>1.0 Mode of payment:</b><br> Confirmation of participation shall be considered
         after payment of 100% of participation fee. Payment shall be made
         through government payment system (GEPG),
-        TanTrade will provide a Control Number to facilitate payment.
+        The Exhibition Secretariat will provide a Control Number to facilitate payment.
     </p>
     <p>
         <b>1.1 Ready built stand (octanorm system):</b><br> will include Two or
@@ -16,7 +16,7 @@
         an applicant cancel this Contract, penalty for cancellation
         shall be imposed in line with the Terms of Participation which
         are an integral part of this contract
-        and contained in the Exhibitors Manual published by TanTrade.
+        and contained in the Exhibitors Manual published by the Exhibition Secretariat.
     </p>
 
     <p>
@@ -29,7 +29,7 @@
         legal measures will be taken against any participant who violates this.
     </p>
     <p>
-        <b>1.5 The branding and decorations:</b><br> Shall be conducted by the service providers selected by TanTrade to
+        <b>1.5 The branding and decorations:</b><br> Shall be conducted by the service providers selected by the Exhibition Secretariat to
         ensure the standards of the fair.
     </p>
 </div>
