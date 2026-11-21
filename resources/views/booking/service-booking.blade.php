@@ -38,7 +38,7 @@
 
          <div class=" alert-success p-20" style="font-size:12px">
             <ul>
-                <li><b>Space Allocation Management system (SAMS)</b> facilitate both space and service booking, to book for service click <a href="{{ route('book-services.create') }}">Book service</a> To make booking</li>
+                <li><b>GeMEMIS - Geita Mineral Exhibition Management Information System</b> supports both space and service booking, to book for service click <a href="{{ route('book-services.create') }}">Book service</a> To make booking</li>
             </ul>
         </div>
 

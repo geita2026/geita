@@ -3,7 +3,7 @@
     <div class="content">
         <div class="panel panel-white">
             <div class="panel-heading" style="background-color: rgb(238, 238, 229);">
-                <h2 class="panel-title text-bold text-uppercase text-center">SPACE ALLOCATION MANAGEMENT SYSTEM (SAMS) TERMS AND CONDITIONS</h2>
+                <h2 class="panel-title text-bold text-center">GeMEMIS - Geita Mineral Exhibition Management Information System Terms and Conditions</h2>
                 <a href="{{ route('index') }}"><i class=" icon-arrow-left12"></i> Back to Home</a>
             </div>
 

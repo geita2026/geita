@@ -312,7 +312,7 @@ class usersController extends Controller
 
  public function SendDefaultPassSMS($recipients,$default_password,$cutomer_name){
 $sms_content="Dear , $cutomer_name
-You have been registered to SAMS, bellow is your Login Credentials.
+You have been registered to GeMEMIS, bellow is your Login Credentials.
 Username: Your registered email.
 Password: $default_password.";
 

@@ -26,7 +26,7 @@ trait AutomaticActionTraits
                 ->first();
             $customer_no = $value->sp_customer_no;
             $invoice_no = $value->sp_invoice_no;
-            $canceledby = 'SAMS SYSTEM';
+            $canceledby = 'GeMEMIS SYSTEM';
             $reference = $id;
             $data = array('customer_no' => $customer_no, 'invoice_no' => $invoice_no, 'reference' => $reference, 'cancelledby' => $canceledby, 'reason' => $reasons); // data array
             if ($value->control_number != Null) {

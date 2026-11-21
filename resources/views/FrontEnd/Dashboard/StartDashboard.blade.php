@@ -43,8 +43,7 @@
         <div class=" alert alert-info" style="font-size: 0.9vmax">
             This system has two modules, <a href="{{ route('dashboard') }}">Trade Fair</a> and <a
                 href="{{ route('permitDashboard') }}">e-Permit</a>.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>Trade Fair</b> involves the management of the Sabasaba
-            Exhibition.<br>
+            <i class=" icon-arrow-right13 ml-20"></i> <b>Trade Fair</b> manages the Geita Mineral Exhibition.<br>
             <i class=" icon-arrow-right13 ml-20"></i> <b>e-Permit</b> involves managing the provision of Trade Promotion
             Event Permits.
         </div>
@@ -57,12 +56,9 @@
                     <span class="systemName">TRADE FAIR</span>
                     <hr>
                     <div style="text-align: left; font-size:90%">
-                        <p class=" text-capitalize text-justify">
-                            The Space Allocation Management System (SAMS) used during the Sabasaba event in Tanzania is
-                            a digital platform designed to streamline the process of allocating exhibition spaces to
-                            various vendors and organizations. Sabasaba, which is conducted annually in July, is an
-                            important trade fair in Tanzania, covering various sectors including agriculture, industry,
-                            and services.
+                        <p class="text-justify">
+                            GeMEMIS - Geita Mineral Exhibition Management Information System manages exhibitor registration
+                            and exhibition space allocation for the Geita Mineral Exhibition.
                         </p>
                     </div>
                 </div>

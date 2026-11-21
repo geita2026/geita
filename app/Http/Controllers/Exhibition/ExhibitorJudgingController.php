@@ -68,7 +68,7 @@ class ExhibitorJudgingController extends Controller
             return back()->with('fail', config('Messages.401'));
         }
 
-        // Source of truth = the DITF Judging app. SAMS pulls categories from it.
+        // Source of truth = the DITF Judging app. GeMEMIS pulls categories from it.
         $url = env('JUDGING_CATEGORY_API', 'https://www.tantrade.go.tz/award/api/judgingCategoryApi');
         try {
             $response = Http::timeout(10)->get($url);

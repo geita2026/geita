@@ -44,7 +44,7 @@
                         @endif
                         
                         @if (session('moduleNo')==1)
-                        <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>SAMS Dashboard</span></a></li>
+                        <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
                         @endif
 
                         @if (session('moduleNo')==2)

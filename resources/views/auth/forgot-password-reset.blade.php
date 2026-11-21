@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Set New Password | TanTrade</title>
+    <title>Set New Password | GeMEMIS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{{ asset('images/nembo.png') }}">
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">

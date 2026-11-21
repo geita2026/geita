@@ -34,7 +34,7 @@
                 <b style="font-size:3vmin;">TANZANIA TRADE DEVELOPMENT AUTHORITY</b><br>
                 {{-- <img src="{{ asset('images/new-animated.gif') }}" height="20"
         width="20"> --}}
-                <b style="font-size:2vmin">Space Allocation Management System</b>
+                <b style="font-size:2vmin">GeMEMIS - Geita Mineral Exhibition Management Information System</b>
             </b>
         </div>
         <div class=" text-right col-xs-2"><img src="{{ asset('images/Logo.png') }}" height="60" width="70"

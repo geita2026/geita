@@ -19,7 +19,7 @@ trait IntergrationTraits
 
   /*
     |
-    |----------- SPACE ALLOCATION MANAGEMENT SYSTEM INTERGRATION FILE #####
+    |----------- GeMEMIS - Geita Mineral Exhibition Management Information System INTERGRATION FILE #####
     |----------- This file depends APITraits.php file for remote authentications #####
     */
 

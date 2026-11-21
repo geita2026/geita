@@ -9,7 +9,7 @@
 <!-- Main navbar -->
 <div class=" navbar navbar-default navbar-fixed-top header-highlight" style="background-color: rgb(16, 140, 230);">
     <div class="navbar-header" style="background-color: rgb(16, 140, 230);">
-        <a class="navbar-brand text-bold text-white" href="{{ route('startApp') }}" id="h1">SAMS</a>
+        <a class="navbar-brand text-bold text-white" href="{{ route('startApp') }}" id="h1">GeMEMIS</a>
         <ul class="nav navbar-nav visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class=" icon-user"></i></a></li>
             <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>

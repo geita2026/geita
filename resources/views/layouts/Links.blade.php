@@ -66,7 +66,7 @@
                             <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
                                     <div class=" modal-header text-center">
-                                        <b style="font-size:1.2vmax">SAMS RESERT PASSWORD PANEL</b><br>
+                                        <b style="font-size:1.2vmax">GeMEMIS Password Reset</b><br>
                                         <p class=" text-muted">Use the secure password recovery page to verify your identity and set a new password.</p>
                                     </div>
                         
@@ -92,8 +92,8 @@
                                 <div class="text-center">
                                     <div class="icon-object border-slate-300 text-slate-300"><img
                                             src="{{ asset('images/logo.jpg') }}" height="60" width="60"></div>
-                                    <h5 class="content-group"><b id="h3">SAMS LOGIN PANEL</b><small
-                                            class="display-block ">{{ __('Space Allocation  Management System (SAMS).') }}</small>
+                                    <h5 class="content-group"><b id="h3">GeMEMIS Login</b><small
+                                            class="display-block ">{{ __('Geita Mineral Exhibition Management Information System') }}</small>
                                     </h5>
                                 </div>
                                 <div class="form-group has-feedback has-feedback-left">

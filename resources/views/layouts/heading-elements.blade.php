@@ -9,7 +9,7 @@ $cat=$booths+$space+$services;
 
 <div class="page-header">
     <div class="page-title">
-        {{-- <h4 class=" text-bold text-center"> SPACE ALLOCATION MANAGEMENT SYSTEM (SAMS)</h4> --}}
+        {{-- <h4 class=" text-bold text-center"> GeMEMIS - Geita Mineral Exhibition Management Information System</h4> --}}
     </div>
     <div class="heading-elements">
         <div class="heading-btn-group">

@@ -61,10 +61,10 @@
                                    id="toggleIcon" style="font-size:22px"></i>
                                 <div>
                                     <div class="text-bold text-primary">
-                                        You haven’t registered your Company or Institution with TanTrade
+                                        Register or link your company or institution in GeMEMIS
                                     </div>
                                     <small class="text-muted">
-                                        Click to begin registration using the appropriate option below
+                                        Select your registration category to continue.
                                     </small>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                                 <div class="form-check">
                                     <input type="checkbox" id="TSRN" class="form-check-input control-primary">
                                     <label class="form-check-label" for="TSRN">
-                                        I already have a TanTrade Service Registration Number (TSRN)
+                                        I have an existing registration number (TSRN)
                                     </label>
                                 </div>
                             </div>
@@ -140,8 +140,8 @@
 
                             <div class="col-lg-12">
                                 <div class="choice-hint collapse-animate" id="localHint">
-                                    Choose <strong>TSRN</strong> if you have registered with TanTrade before.
-                                    Choose <strong>TIN</strong> if this is your first registration.
+                                    Use your existing <strong>TSRN</strong> to link your company.
+                                    Use your <strong>TIN</strong> to register a new company.
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                                 <input type="text"
                                        name="TSRN"
                                        class="form-control"
-                                       placeholder="Enter TanTrade Service Registration Number">
+                                       placeholder="Enter your registration number (TSRN)">
                             </form>
                         </div>
                         <div class="col-md-2 text-center">

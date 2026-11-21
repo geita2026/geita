@@ -1,5 +1,6 @@
-# tradefair.tantrade.go.tz
-Space Allocation Management System
+# GeMEMIS
+
+Geita Mineral Exhibition Management Information System
 
 ## Initial setup
 
@@ -8,6 +9,8 @@ Set `SUPER_ADMIN_EMAIL` and `SUPER_ADMIN_PASSWORD` in `.env` before running `php
 Sign in at `/login` with the configured email and password. Re-running the seeder preserves the account's current password.
 
 ## Deployment Notes
+
+Set `APP_NAME="GeMEMIS"` in the deployment environment before refreshing the configuration cache.
 
 After every deployment, run the following commands in order:
 

@@ -84,7 +84,7 @@ class authController extends Controller
             $user = User::where('user_uuid', $uuid)->first();
             $user->assignRole($customerRole);
 
-            return redirect()->route('login')->with('success', 'Welcome to SAMS. Your account has been created successfully. Please sign in to continue.');
+            return redirect()->route('login')->with('success', 'Welcome to GeMEMIS. Your account has been created successfully. Please sign in to continue.');
         } catch (\Throwable $th) {
             return back()->withInput()->with('fail', config('Messages.500').' CONTACT: '.config('global.CALL_CENTER').' FOR HELP');
         }
@@ -126,16 +126,16 @@ class authController extends Controller
             $emailTo = $user->email;
             $linkLable = 'Activate Account';
             $receiverName = $user->first_name . ' ' . $user->last_name;
-            $regardsName = 'Space Allocation Committee Team';
+            $regardsName = 'GeMEMIS Support Team';
             $emailSubject = 'Account Activation';
             $emailLink = env('APP_URL') . '/auth/verify_email/' . $user->api_token;
             $emailContent = '
-        Welcome to TanTrade! We’re excited to have you join our community.
+        Welcome to GeMEMIS! We’re excited to have you join our community.
 To get started, please confirm your email address by clicking the link below:
         ';
         CreatedEmails::create([
             'emailId' => Str::uuid(),
-            'createdBy' => 'SAMS',
+            'createdBy' => 'GeMEMIS',
             'emailTo' => $emailTo,
             'linkLable' => $linkLable,
             'receiverName' => $receiverName,

@@ -4,7 +4,7 @@
                 <div class="">
                     <div class="text-center">
                         <div class="icon-object border-slate-300 text-slate-300"><img src="{{ asset('images/logo.jpg') }}" height="60" width="60"></div>
-                        <h5 class="content-group"><b>SAMS LOGIN PANEL1</b><small class="display-block ">{{ __('Space Allocation  Management System (SAMS).') }}</small></h5>
+                        <h5 class="content-group"><b>GeMEMIS Login</b><small class="display-block ">{{ __('Geita Mineral Exhibition Management Information System') }}</small></h5>
                     </div>
 
                     <form  method="POST" action="{{ route('login') }}">

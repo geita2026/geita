@@ -54,7 +54,7 @@
 <div class="event-controller">
 
     <div class="event-controller-title">
-        Space Allocation Management System (SAMS)
+        GeMEMIS - Geita Mineral Exhibition Management Information System
     </div>
 
     <div class="event-controller-desc">

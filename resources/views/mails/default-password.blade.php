@@ -2,7 +2,7 @@
     <div style="background-color: rgb(224, 228, 233);text-align:center;">
         <a href="{{ url(env('APP_URL')) }}" style="text-decoration: none;">
         <div style="text-align: center; padding:1%">
-            <h3>SPACE ALLOCATION MANAGEMENT SYSTEM (SAMS)</h3>
+            <h3>GeMEMIS - Geita Mineral Exhibition Management Information System</h3>
         </div>
         </a>
 

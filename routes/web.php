@@ -7,7 +7,7 @@ use App\Http\Controllers\TestIntergrationController;
 
 /*
 |--------------------------------------------------------------------------
-| Space Allocation Management System Routing
+| GeMEMIS - Geita Mineral Exhibition Management Information System Routing
 |--------------------------------------------------------------------------
 |
 */

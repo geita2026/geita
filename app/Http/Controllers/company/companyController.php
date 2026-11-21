@@ -435,9 +435,9 @@ class companyController extends Controller
     public function registrationNotification($reg_id, $phone_number, $firstName)
     {
         if (DefaultSettings::first()->print_notification == 1) {
-            $sms_content = 'We are pleased to confirm that your registration with SAMS was successful.
+            $sms_content = 'We are pleased to confirm that your registration with GeMEMIS was successful.
 Your TSRN is:  ' . $reg_id . '
-Register your personal Account via, https://tradefair.tantrade.go.tz/registration';
+Create your GeMEMIS account at ' . route('registration');
             BulkSms::create([
                 'sms_id' => Str::uuid(),
                 'phone_number' => $phone_number,

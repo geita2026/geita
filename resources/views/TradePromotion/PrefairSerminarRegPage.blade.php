@@ -69,7 +69,7 @@
     <div class="card-body">
         <div class="col-md-12">
             <p class=" text-justify">
-                The TSRN number is generated through the Space Allocation Management System (SAMS). To find it, navigate
+                The TSRN number is generated through the GeMEMIS - Geita Mineral Exhibition Management Information System. To find it, navigate
                 to the "Companies" section, select "Company Registration," and view your list of registered companies.
                 Copy the TSRN number from the relevant company. **Note:** Only companies that have already booked space
                 are eligible to register.

@@ -4,7 +4,7 @@
     <!-- ================= META ================= -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="Tantrade,DITF,SAMS,Vibari,e-Permit,Sabasaba">
+    <meta name="keywords" content="Tantrade,DITF,GeMEMIS,Vibari,e-Permit,Sabasaba">
     <meta name="description" content="Tanzania Trade Development Authority – Digital Trade Services">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 

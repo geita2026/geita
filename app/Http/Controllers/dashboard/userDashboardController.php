@@ -76,7 +76,7 @@ class userDashboardController extends Controller
     public function index(Request $request)
     {
         try {
-            session(['moduleNo' => 1]); // for SAMS;
+            session(['moduleNo' => 1]); // for GeMEMIS;
         $activeEvent = events::where('event_status', 1)->first();
         if (!$activeEvent) {
             $request->session()->forget('liveEvent');

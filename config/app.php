@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'tradefair.tanttrade.go.tz'),
+    'name' => env('APP_NAME', 'GeMEMIS'),
 
     /*
     |--------------------------------------------------------------------------

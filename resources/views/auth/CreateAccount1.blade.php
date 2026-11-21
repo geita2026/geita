@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Create Account | TanTrade</title>
+    <title>Create Account | GeMEMIS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="{{ asset('images/nembo.png') }}">

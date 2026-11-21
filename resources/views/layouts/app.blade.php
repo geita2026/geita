@@ -8,12 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description"
-        content="Trade Fair is a web application that manages and controls major trade fairs in Tanzania,
-          including Dar es Salaam International Trade Fair (DITF) and other national exhibitions.">
+        content="GeMEMIS - Geita Mineral Exhibition Management Information System">
 
-    <meta name="keywords" content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, tradefair, tanzania">
-
-    <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
+    <meta name="keywords" content="GeMEMIS, Geita Mineral Exhibition, exhibition management, Tanzania">
 
     <!-- ===================== ICONS ===================== -->
     <link rel="icon" href="{{ asset('images/nembo.png') }}" sizes="16x16">
@@ -209,10 +206,7 @@
             <div class="modal-body">
                 <p style="font-size:2vmax"><b>Company Registration</b></p>
                 <p style="font-size:1.8vmin">
-                    <b class="text-danger">Note!</b>
-                    If your company participated in Dar es Salaam International Trade Fair
-                    between 2022 and {{ date('Y') }},
-                    register using the <b>TSRN</b> issued.
+                    GeMEMIS - Geita Mineral Exhibition Management Information System
                 </p>
             </div>
             @include('company.NewCompanyRegistration')
