@@ -46,13 +46,30 @@ class companyController extends Controller
             return back()->with('fail', config('Messages.401'));
         }
         $request->session()->forget('TSRN');
-        $companies = companies::orderBy('registrationDate', 'DESC')->where('status', 1)->paginate(config('global.DATA_LIMIT'), ['companyID', 'companyName', 'companyEmail', 'companyPhone', 'registrationID', 'lastUpdatedOn']);
-        if (Auth::user()->account_type == 2) {
-            $companies = companies::orderBy('registrationDate', 'DESC')
-                ->leftJoin('company_admins', 'companies.companyID', '=', 'company_admins.companyId')
-                ->where('adminId', Auth::user()->user_uuid)
-                ->where('status', 1)->paginate(config('global.DATA_LIMIT'), ['companies.companyID', 'companyName', 'companyEmail', 'companyPhone', 'registrationID', 'lastUpdatedOn']);
+        $query = companies::query()->where('companies.status', 1);
+        if ((int) $request->user()->account_type === 2) {
+            $query->whereExists(function ($admins) use ($request) {
+                $admins->selectRaw('1')->from('company_admins')
+                    ->whereColumn('company_admins.companyId', 'companies.companyID')
+                    ->where('company_admins.adminId', $request->user()->user_uuid);
+            });
         }
+
+        $search = trim((string) $request->query('search', ''));
+        if ($search !== '') {
+            $query->where(function ($matches) use ($search) {
+                $term = '%' . $search . '%';
+                $matches->where('registrationID', 'like', $term)
+                    ->orWhere('companyName', 'like', $term)
+                    ->orWhere('companyEmail', 'like', $term)
+                    ->orWhere('companyPhone', 'like', $term);
+            });
+        }
+
+        $companies = $query->orderByDesc('registrationDate')->orderBy('companyID')
+            ->paginate(config('global.DATA_LIMIT'), [
+                'companyID', 'companyName', 'companyEmail', 'companyPhone', 'registrationID', 'lastUpdatedOn',
+            ]);
 
         return view('company.company', compact('companies'));
     }

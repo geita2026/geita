@@ -1,0 +1,192 @@
+.gememis-table-toolbar,
+.gememis-table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    padding: 12px 0;
+    color: #514b42;
+}
+
+.gememis-table-toolbar {
+    margin-bottom: 8px;
+}
+
+.gememis-table-toolbar :is(.dataTables_filter, label),
+.gememis-table-footer :is(.dataTables_info, .dataTables_length, .dataTables_paginate, label) {
+    float: none;
+    margin: 0;
+}
+
+.gememis-table-toolbar .dataTables_filter {
+    width: min(100%, 360px);
+}
+
+.gememis-table-toolbar .dataTables_filter label,
+.gememis-table-toolbar .dataTables_filter input {
+    width: 100%;
+}
+
+.gememis-table-toolbar input[type="search"] {
+    flex: 1 1 240px;
+    width: auto;
+    max-width: 360px;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 14px;
+    border: 1px solid #bbb2a6;
+    border-radius: 24px;
+    background: #fff;
+    color: #251e16;
+    font-size: 15px;
+}
+
+.gememis-table-toolbar select.form-control {
+    width: auto;
+    min-height: 40px;
+}
+
+.gememis-table-footer {
+    justify-content: flex-end;
+    border-top: 1px solid #e7dfd2;
+}
+
+.gememis-table-footer select {
+    margin-inline: 4px;
+    border: 1px solid #bbb2a6;
+    border-radius: 6px;
+    padding: 4px 6px;
+    background: #fff;
+    color: #251e16;
+}
+
+.gememis-table-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+}
+
+.gememis-table.table {
+    width: 100%;
+    border: 0;
+    color: #251e16;
+    background: #fff;
+}
+
+.gememis-table.table > thead > tr > th {
+    border: 0;
+    border-bottom: 1px solid #d9cfbf;
+    background: #f9f5ee;
+    color: #3f3629;
+    font-weight: 600;
+    text-transform: none;
+    white-space: normal;
+}
+
+.gememis-table.table > tbody > tr > td {
+    border: 0;
+    border-bottom: 1px solid #eee8df;
+    vertical-align: middle;
+}
+
+.gememis-table.table-striped > tbody > tr:nth-of-type(odd),
+.gememis-table.table > tbody > tr {
+    background: #fff;
+}
+
+.gememis-table.table > tbody > tr:is(:hover, :focus-within) {
+    background: #faf7f0;
+}
+
+.gememis-table-footer .paginate_button,
+.gememis-app .pagination > li > :is(a, span) {
+    min-width: 36px;
+    min-height: 36px;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    color: #3f3629;
+    text-align: center;
+}
+
+.gememis-table-footer .paginate_button.current,
+.gememis-app .pagination > .active > :is(a, span) {
+    border-color: #eed68b;
+    background: #fff3ce;
+    color: #4c3608;
+}
+
+.gememis-table-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #3f3629;
+    font-size: 0;
+    vertical-align: middle;
+}
+
+.gememis-table-more::before {
+    content: '\22EE';
+    font: 700 22px/1 sans-serif;
+}
+
+.gememis-table-more > * {
+    display: none;
+}
+
+.gememis-table-more:is(:hover, :focus, [aria-expanded="true"]) {
+    background: #f1ebe0;
+    color: #251e16;
+}
+
+.gememis-table-more:focus-visible {
+    outline: 2px solid #916715;
+    outline-offset: 2px;
+}
+
+.gememis-row-action-menu {
+    padding: 4px;
+}
+
+.gememis-row-action-menu :is(a, button) {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: none;
+    color: #251e16;
+    text-align: left;
+    white-space: normal;
+}
+
+.gememis-row-action-menu :is(a, button):is(:focus, :hover) {
+    background: #f5efe2;
+    color: #251e16;
+}
+
+.gememis-table .gememis-table-floating-menu {
+    position: fixed;
+    z-index: 1061;
+    right: auto;
+    bottom: auto;
+    width: max-content;
+    max-width: calc(100vw - 16px);
+    margin: 0;
+    overflow: auto;
+}
+
+@media (max-width: 575px) {
+    .gememis-table-footer {
+        justify-content: flex-start;
+    }
+
+    .gememis-table-toolbar input[type="search"] {
+        max-width: none;
+    }
+}

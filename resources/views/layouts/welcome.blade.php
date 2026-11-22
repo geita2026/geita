@@ -14,6 +14,9 @@
     <link href="{{ asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
     </head>
 <body class="login-container">
     <img src="{{ asset('images/tz-flag.jpg') }}" style="position:absolute; width:100%; height:100%; opacity:10%;">

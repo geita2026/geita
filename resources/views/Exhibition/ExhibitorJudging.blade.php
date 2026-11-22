@@ -36,7 +36,7 @@
                 </div>
 
 
-                <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                     <thead>
 
                         <tr>
@@ -157,7 +157,7 @@
                 </table>
             </div>
             <div class=" text-right p-20">
-                {{ $exhibitors->links() }}
+                {{ $exhibitors->withQueryString()->links() }}
             </div>
         </div>
     </div>

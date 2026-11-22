@@ -32,6 +32,9 @@
 
 <!-- GeMEMIS design system -->
 <link rel="stylesheet" href="{{ asset('assets/css/gememis-theme.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
 
 <style>
     /* The Court of Arms is a vector: without a cap it fills whatever box it is

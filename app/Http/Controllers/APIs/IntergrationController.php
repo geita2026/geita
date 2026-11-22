@@ -18,7 +18,6 @@ use App\Models\Collections\Income;
 use App\Models\Collections\PaymentDetails;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
 use App\Traits\CollectionSettingTraits;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
@@ -99,16 +98,6 @@ class IntergrationController extends Controller
                 return response()->json(['response' => $response]); // return response to Service Provider
             }
             #------- END DITF INVOICES POST CONTROL NUMBER API------#
-
-            #------- OFF FAIR INVOICES POST CONTROL NUMBER API------#
-            if (off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->exists()) {
-                off_fair_advice_notes::find($reference)->update(['control_number' => $control_no]); // set control no to invoice
-                $this->SentControlNoNotification($reference); //this methode send control number to user(BulkSms).
-                $response = array('code' => 200, 'message' => 'Request Processed successfully!');
-                return response()->json(['response' => $response]); // return response to Service Provider
-            }
-            #------- END OFF FAIR INVOICES POST CONTROL NUMBER API------#
-
 
             #---- e_Permit Invoices ----- #
             if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
@@ -209,22 +198,6 @@ class IntergrationController extends Controller
             return 1;
         }
         #---END UPDATE PAYMENTS IN INFAIR INVOICES---#
-
-        #--- UPDATE PAYMENTS IN OFF FAIR INVOICES---#
-        if (off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->exists()) {
-            $invoice = off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->first();
-            $total_amount = $invoice->total_amount;
-            $amount_paid = 0;
-            $payments = PaymentDetails::where('referenceId', $reference)->get();
-            foreach ($payments as $item) {
-                $amount_paid = $amount_paid + $item->amount_paid;
-            }
-            $balance = $total_amount - $amount_paid;
-            $invoice->update(['amount_paid' => $amount_paid, 'balance' => $balance]);
-            return 1;
-        }
-        #--- END UPDATE PAYMENTS IN OFF FAIR INVOICES---#
-
 
         if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
             $invoice=ApplicationInvoice::find($reference);

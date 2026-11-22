@@ -1,23 +1,3 @@
-<style>
-    .zoom {
-        padding: 2%;
-        transition: transform .5s;
-        font-size: 20px;
-    }
-
-    .zoom:hover {
-        -ms-transform: scale(1.1);
-        /* IE 9 */
-        -webkit-transform: scale(1.1);
-        /* Safari 3-8 */
-        transform: scale(1.1);
-    }
-
-    .systemName {
-        font-size: 2vmax;
-    }
-</style>
-
 <x-app-layout>
     <title>{{ env('APP_NAME') }} | Home</title>
     {{-- page header --}}
@@ -40,7 +20,7 @@
     <!-- Content area -->
     <div class="content">
 
-        <div class=" alert alert-info" style="font-size: 0.9vmax">
+        <div class="alert gememis-module-notice">
             This system has two modules, <a href="{{ route('dashboard') }}">Exhibition</a> and <a
                 href="{{ route('permitDashboard') }}">e-Permit</a>.<br>
             <i class=" icon-arrow-right13 ml-20"></i> <b>Exhibition</b> runs the Geita Mineral Exhibition.<br>
@@ -48,47 +28,26 @@
             Event Permits.
         </div>
 
-        <div class="col-md-4 form-group zoom">
-            <a href="{{ route('dashboard') }}">
-                <div type="submit" @if (session('moduleNo') == 1) style="border-bottom: 10px solid black;" @endif
-                    class="btn btn-block btn-float btn-float-lg  text-bold border-primary bg-info"
-                    style="border-top: 10px solid green;border-radius:5%;color:black">
-                    <span class="systemName">EXHIBITION</span>
-                    <hr>
-                    <div style="text-align: left; font-size:90%">
-                        <p class="text-justify">
-                            GeMEMIS - Geita Mineral Exhibition Management Information System handles exhibitor registration,
-                            applications, space allocation on the floor plan, invoicing,
-                            payment and check-in for the Geita Mineral Exhibition &mdash; the gathering of the
-                            mining value chain in Geita: small-scale miners, dealers and processors, equipment
-                            suppliers, and the financial and technical services beside them.
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        @if (config('global.PERMIT_STATUS') == 1)
-            <div class="col-md-4 form-group zoom">
-                <a href="{{ route('permitDashboard') }}">
-                    <button type="submit"
-                        @if (session('moduleNo') == 2) style="border-bottom: 10px solid black;" @endif
-                        class="btn btn-block btn-float btn-float-lg  text-bold border-primary bg-info"
-                        style="border-top: 10px solid green;border-radius:5%;color:black">
-                        <span class="systemName">e-Permit</span>
-                        <hr>
-                        <div style="text-align: left;">
-                            <p class=" text-capitalize text-justify">{{ config('global.MODULE_TWO_DESCRIPTION') }}</p>
-                        </div>
-                    </button>
+        <div class="row">
+            <div class="col-sm-6 col-lg-4 form-group">
+                <a class="gememis-module-card" href="{{ route('dashboard') }}">
+                    <h2 class="h4 no-margin-top">Exhibition</h2>
+                    <p class="no-margin-bottom">
+                        Manage exhibitor registration, floor plans, space allocation, invoicing, payments, and check-in
+                        for the Geita Mineral Exhibition.
+                    </p>
                 </a>
             </div>
-        @endif
 
-
-
-
-    </div>
+            @if (config('global.PERMIT_STATUS') == 1)
+                <div class="col-sm-6 col-lg-4 form-group">
+                    <a class="gememis-module-card" href="{{ route('permitDashboard') }}">
+                        <h2 class="h4 no-margin-top">e-Permit</h2>
+                        <p class="no-margin-bottom">{{ config('global.MODULE_TWO_DESCRIPTION') }}</p>
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
 </x-app-layout>
 <script type="text/javascript" src="{{ asset('assets/js/plugins/visualization/d3/d3.min.js') }}"></script>

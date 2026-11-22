@@ -32,7 +32,7 @@
 
 
                 <div class=" col-md-12 form-group table-responsive">
-                    <table class="table  table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table  table-striped table-bordered  table-responsive">
                         <thead>
 
                             <tr>
@@ -228,7 +228,7 @@
                     </table>
                 </div>
                 <div class=" form-group col-md-12 text-right">
-                    {{ $members->links() }}
+                    {{ $members->withQueryString()->links() }}
                 </div>
             </div>
         </div>

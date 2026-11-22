@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\advice_note\advice_notes;
 use App\Models\advice_note\particulars;
 use Illuminate\Support\Facades\Auth;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
 use App\Models\setting\BankAccount;
 use App\Models\setting\DefaultSettings;
 use App\Traits\BillingTrait;
@@ -39,10 +38,7 @@ class controlNoRequestController extends Controller
             ->where('event_status',1)
             ->where('advice_note_status','!=','CANCELED')->count();
 
-            $off_fair_advice_note_count=off_fair_advice_notes::get()->where('off_fair_advice_note_status','!=',0)->count();
-            $new_off_fair_advice_note_count=off_fair_advice_notes::get()->where('off_fair_advice_note_status',2)->count();
-            return view('accounts.approved-advice-notes',compact('off_fair_advice_note_count',
-            'new_off_fair_advice_note_count','new_on_fair_advice_note_count','on_fair_advice_note_count'));
+            return view('accounts.approved-advice-notes', compact('new_on_fair_advice_note_count', 'on_fair_advice_note_count'));
     }
 
     /**id

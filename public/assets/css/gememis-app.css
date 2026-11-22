@@ -1,0 +1,206 @@
+:root {
+    --gem-app-ink: #070506;
+    --gem-app-surface: #141117;
+    --gem-app-gold: #ffbf00;
+    --gem-app-gold-soft: #ffe9a8;
+    --gem-app-divider: rgba(255, 191, 0, .3);
+}
+
+body.gememis-app {
+    background: #f6f3ed;
+    color: #251e16;
+}
+
+.gememis-app .gememis-navbar,
+.gememis-app .gememis-navbar .navbar-header,
+.gememis-app .gememis-sidebar,
+.gememis-footer {
+    background: var(--gem-app-ink);
+    color: #fff;
+}
+
+.gememis-app .gememis-navbar {
+    border-bottom: 1px solid var(--gem-app-divider);
+}
+
+.gememis-app .gememis-navbar .gememis-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-image: none;
+    color: var(--gem-app-gold);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+.gememis-app .gememis-brand img {
+    display: block;
+    height: 28px;
+    width: auto;
+}
+
+.gememis-app .gememis-navbar .nav > li > a,
+.gememis-app .gememis-navbar #profile > a > span {
+    color: #fff;
+}
+
+.gememis-app .gememis-navbar .nav > li > a:is(:hover, :focus),
+.gememis-app .gememis-navbar .nav > .open > a,
+.gememis-app .gememis-sidebar .navigation li > a:is(:hover, :focus),
+.gememis-app .gememis-sidebar .navigation li.active > a {
+    background: var(--gem-app-surface);
+    color: var(--gem-app-gold-soft);
+}
+
+.gememis-app .gememis-sidebar .navigation li.active > a {
+    box-shadow: inset 3px 0 var(--gem-app-gold);
+}
+
+.gememis-app .gememis-sidebar .navigation > li > a {
+    border-bottom: 1px solid var(--gem-app-divider);
+}
+
+.gememis-app .gememis-sidebar .navigation-header,
+.gememis-app .gememis-sidebar .text-muted {
+    color: #d7cbbc;
+}
+
+.gememis-app .gememis-sidebar .media-body {
+    overflow-wrap: anywhere;
+}
+
+.gememis-app .gememis-sidebar .gememis-menu-search {
+    background: var(--gem-app-surface);
+    border-color: var(--gem-app-divider);
+    color: #fff;
+}
+
+.gememis-app .gememis-sidebar .gememis-menu-search::placeholder {
+    color: #c9beb0;
+}
+
+.gememis-footer {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 12px 20px;
+    border: 0;
+    border-top: 1px solid var(--gem-app-divider);
+    color: var(--gem-app-gold-soft);
+    margin: 0;
+}
+
+.gememis-app .modal-header:not([class*="bg-"]),
+.gememis-app #NoCompany .registration-header {
+    background: var(--gem-app-ink);
+    border-bottom-color: var(--gem-app-gold);
+    color: #fff;
+}
+
+.gememis-app .modal-header:not([class*="bg-"]) .close {
+    color: #fff;
+    opacity: .85;
+}
+
+.gememis-app .modal-footer {
+    background-color: #faf7f2;
+    border-top-color: #e7dfd2;
+}
+
+.gememis-app .btn-primary,
+.gememis-app #NoCompany .registration-submit {
+    background-color: var(--gem-app-gold);
+    border-color: #b88700;
+    color: var(--gem-app-ink);
+    font-weight: 600;
+}
+
+.gememis-app .btn-primary:is(:hover, :focus, :active),
+.gememis-app #NoCompany .registration-submit:is(:hover, :focus) {
+    background-color: var(--gem-app-gold-soft);
+    border-color: #b88700;
+    color: var(--gem-app-ink);
+}
+
+.gememis-app .form-control:focus,
+.gememis-app .select2-container--focus .select2-selection {
+    border-color: #916715;
+    box-shadow: 0 0 0 2px rgba(184, 134, 11, .2);
+}
+
+.gememis-app .select2-results__option--highlighted[aria-selected] {
+    background: #75520a;
+    color: #fff;
+}
+
+#NoCompany .gememis-searchable + .select2-container .select2-selection--single {
+    min-height: 44px;
+    border: 1px solid #a8a096;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 8px 10px;
+}
+
+#NoCompany .gememis-searchable[aria-invalid="true"] + .select2-container .select2-selection--single {
+    border-color: #a52a22;
+}
+
+@media (min-width: 769px) {
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand {
+        display: flex;
+        justify-content: center;
+    }
+
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand img {
+        display: block;
+    }
+
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand span {
+        display: none;
+    }
+}
+
+.gememis-app .modal-header:not([class*="bg-"]) {
+    padding-bottom: 12px;
+}
+
+.gememis-app .modal-header .close + .modal-title {
+    padding-right: 24px;
+}
+
+.gememis-app .breadcrumb-line,
+.gememis-app .panel,
+.gememis-app .panel-default > .panel-heading {
+    border-color: #e3d9c8;
+}
+
+.gememis-app .breadcrumb-line {
+    background: #faf7f2;
+}
+
+.gememis-app .gememis-module-notice {
+    background: #fff4d5;
+    border-color: #e5c976;
+    color: #4b360a;
+}
+
+.gememis-app .gememis-module-card {
+    display: block;
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #e3d9c8;
+    border-top: 4px solid var(--gem-app-gold);
+    border-radius: 12px;
+    background: #fff;
+    color: #251e16;
+}
+
+.gememis-app .gememis-module-card:is(:hover, :focus) {
+    border-color: #b88700;
+    color: #251e16;
+    text-decoration: none;
+}

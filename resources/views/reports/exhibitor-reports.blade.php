@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class=" form-group">
-                            <table class="  table table-bordered  table-responsive table-striped">
+                            <table data-table-paginated class="  table table-bordered  table-responsive table-striped">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -108,7 +108,7 @@
                             </table>
                         </div>
                         <div class=" form-group text-right">
-                            {{ $data1->links() }}
+                            {{ $data1->withQueryString()->links() }}
                         </div>
 
                         <div class=" text-right text-muted">Requested on: {{ date('M d, Y h:i:s') }}</div>

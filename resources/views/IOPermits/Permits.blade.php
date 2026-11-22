@@ -35,7 +35,7 @@
                    </select>
                 </div>
                 <div class="form-group">
-                    <table class=" table table-bordered table-striped">
+                    <table data-table-paginated class=" table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class=" text-center text-bold">#</th>
@@ -69,7 +69,7 @@
                     </table>
                 </div>
                 <div class=" form-group text-right">
-                    {{ $permits->links() }}
+                    {{ $permits->withQueryString()->links() }}
                 </div>
 
             </div>

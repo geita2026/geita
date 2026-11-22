@@ -5,10 +5,8 @@ namespace App\Traits;
 use App\Models\advice_note\advice_notes;
 use App\Models\Logs\ApiLogs;
 use Illuminate\Support\Facades\Http;
-use App\Models\off_fair\customers\off_fair_customers;
 use App\Models\companies;
 use App\Models\ePermit\ApplicationInvoice;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
 use Google\Service\AndroidManagement\Application;
@@ -80,15 +78,6 @@ trait IntergrationTraits
       ]);
     }
     #--- END IN FAIR INVOICE INVOICE UPDATE ---#
-
-    #--- OUT FAIR INVOICE INVOICE UPDATE ---#
-    if (off_fair_advice_notes::where('off_fair_advice_note_id', $id)->exists()) {
-      off_fair_advice_notes::find($id)->update([
-        'sp_invoice_no' => $invoice_no,
-        'control_number' => $control_no,
-      ]);
-    }
-    #--- END OUT FAIR INVOICE INVOICE UPDATE ---#
 
     #------ e_Permit Invoices ---- #
     if (ApplicationInvoice::where('invoiceNo', $id)->exists()) {

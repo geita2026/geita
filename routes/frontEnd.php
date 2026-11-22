@@ -3,7 +3,6 @@ use App\Http\Controllers\Auth\VerifyQrCodeController;
 use App\Http\Controllers\Catalogy\CatalogyController;
 use App\Http\Controllers\company\SelfRegistrationController;
 use App\Http\Controllers\Exhibition\ChartSessionController;
-use App\Http\Controllers\FrontEnd\Booking\BookSpacesController;
 use App\Http\Controllers\FrontEnd\Booking\CustomerBookingController;
 use App\Http\Controllers\FrontEnd\Booking\CustomerSpaceBookingController;
 use App\Http\Controllers\FrontEnd\Booking\ViewSpacesController;
@@ -37,7 +36,6 @@ Route::get('sabasaba_visitors', [CatalogyController::class,'sabaSabaVisitors'])-
 #************BOOKING ENQUIRY *********** #
 Route::resource('exhibition_space_booking',CustomerSpaceBookingController::class);
 Route::resource('sponsorship_packages',CSponsorshipBookingController::class);
-Route::resource('online_booking',BookSpacesController::class);
 
 Route::get('verify/{data}',[VerifyQrCodeController::class,'VerifyQrCodeFunction'])->name('verify');
 

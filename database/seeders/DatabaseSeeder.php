@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
         Role::findOrCreate('Customer', 'web');
 
         $this->call([
+            CountrySeeder::class,
+            CompanySectorSeeder::class,
             LevelOneMenusSeeder::class,
             LevelTwoMenusSeeder::class,
             SuperAdminSeeder::class,

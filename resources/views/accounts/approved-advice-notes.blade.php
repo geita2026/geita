@@ -43,7 +43,6 @@
             </p>
         </div>
 
-       {{--  off Fair Advice Notes  --}}
        @can('View Confirmed Invoice')
        <a href="{{ route('controlNoRequests.create') }}" class="form-group col-md-4 zoom">
                <button class=" btn btn-success btn-block btn-float btn-float-lg" type="button"  title="Click to view on fair Advice notes">
@@ -55,16 +54,6 @@
        @endcan
         {{--  //end  --}}
 
-         {{--  off Fair Advice Notes  --}}
-        @can('View Confirmed Invoice')
-        <a href="{{ route('Generated-Advice-Note.index') }}" class="form-group col-md-4 zoom">
-                <button class=" btn btn-primary btn-block btn-float btn-float-lg" type="button" title="Click to view Off fair Advice notes">
-                    <h4 class=" text-uppercase text-bold">OFF FAIR ADVICE NOTES<i class="  icon-stack-text"></i>
-                   new {{ number_format($new_off_fair_advice_note_count) }}, Total {{ number_format($off_fair_advice_note_count) }}
-                    </h4>
-                </button>
-         </a>
-        @endcan
          {{--  //end  --}}
 
 

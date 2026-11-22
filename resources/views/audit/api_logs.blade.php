@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-group">
-                <table class="table datatable-button-html5-columns table-bordered table-striped  table-lg text-nowrap">
+                <table data-table-paginated class="table datatable-button-html5-columns table-bordered table-striped  table-lg text-nowrap">
                     <thead>
                         <tr>
                             <th class=" text-bold text-center">#</th>
@@ -81,7 +81,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                {{ $response->links() }}
+                {{ $response->withQueryString()->links() }}
             </div>
         </div>
     </div>

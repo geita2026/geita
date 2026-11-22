@@ -49,7 +49,7 @@
                 </div>
                @endcan
                 <div class=" col-md-12 form-group table-responsive">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
 
                             <tr>
@@ -440,7 +440,7 @@
                         </table>
 
                         <div class=" form-group text-right">
-                            {{ $members->links() }}
+                            {{ $members->withQueryString()->links() }}
                         </div>
                     </div>
                 </div>

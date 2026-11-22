@@ -22,7 +22,7 @@
         <div class="panel panel-flat">
             <div class=" panel-body">
                 <div class=" form-group col-md-12">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
                             <tr >
                                 <th colspan="6" class="text-center text-bold text-primary">
@@ -73,7 +73,7 @@
 
             </div>
             <div class=" text-right form-group mb-3">
-                {{ $payments->links() }}
+                {{ $payments->withQueryString()->links() }}
             </div>
         </div>
     </div>

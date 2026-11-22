@@ -41,7 +41,7 @@
                    
                 </div>
                 <div class="form-group">
-                    <table class=" table table-bordered table-striped">
+                    <table data-table-paginated class=" table table-bordered table-striped">
                         <thead>
 
                             <tr>
@@ -97,7 +97,7 @@
                    
                 </div>
                 <div class=" mb-10 text-right form-group">
-                    {{ $companies->links() }}
+                    {{ $companies->withQueryString()->links() }}
                 </div>
 
             </div>

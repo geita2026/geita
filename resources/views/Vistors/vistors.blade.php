@@ -132,7 +132,7 @@
                 {{-- end --}}
                
 
-                <table class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
+                <table data-table-paginated class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
                     <thead>
                         <tr>
                             <th class=" text-center text-bold">#</th>
@@ -211,7 +211,7 @@
                     </tbody>
                 </table>
                 <div class=" text-right">
-                    {{ $vistors->links() }}
+                    {{ $vistors->withQueryString()->links() }}
                 </div>
             </div>
         </div>

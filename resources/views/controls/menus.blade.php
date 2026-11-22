@@ -68,7 +68,6 @@
                                     <select name="system_control" class="bootstrap-select " data-live-search="true" data-width="100%" placehoder="Select menu status">
                                         <option value=""> - - - Show All Menu - - -</option>
                                            <option value="On-Fair">On-Fair Services Menu</option>
-                                           <option value="Off-Fair">Off-Fair Services Menu</option>
                                     </select>
                                 </div>
                                 <div class="col-md-12 text-right">

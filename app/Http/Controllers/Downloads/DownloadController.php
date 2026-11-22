@@ -8,8 +8,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\companyExport;
 use App\Models\advice_note\advice_notes;
 use App\Models\exhibition\exhibition_products;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
-use App\Models\off_fair\booking\off_fair_space_bookings;
 use App\Models\Permits\Permit;
 use App\Models\setting\BankAccount;
 use App\Models\setting\DefaultSettings;
@@ -169,58 +167,6 @@ class DownloadController extends Controller
     #End Export Exhibitors
 
     #Download Invoice
-    public function DownloadOffFairInvoice(Request $request)
-    {
-        $id=$request->id;
-
-        $adviceNotes = off_fair_advice_notes::leftJoin('off_fair_customers', 'off_fair_advice_notes.advice_note_owned_by', '=', 'off_fair_customers.customer_id')
-        ->leftJoin('companies','off_fair_advice_notes.advice_note_owned_by','=','companies.companyID')
-        ->leftJoin('company_details','companies.companyID','=','company_details.companyID')
-        ->where('off_fair_advice_note_id', $id)->get();
-
-
-
-         $booking_dates=off_fair_space_bookings::get(['start_date','end_date','advice_note_id'])->where('advice_note_id',$id);
-
-         $particulars=off_fair_advice_notes::leftJoin('off_fair_booking_particulars','off_fair_advice_notes.off_fair_advice_note_id','=','off_fair_booking_particulars.advice_note_id')
-         ->where('off_fair_advice_note_id',$id)->get();
-
-         $defaultSettings=DefaultSettings::get();
-         $sac_officer=off_fair_advice_notes::leftJoin('users','off_fair_advice_notes.advice_note_generated_by','=','users.user_uuid')->where('off_fair_advice_note_id',$id)->first(); // sac office
-         $sac_officer_name=$sac_officer->first_name." ".$sac_officer->last_name;
-         $url='SAMS|'.$id;
-
-
-         $inv=off_fair_advice_notes::leftJoin('users','off_fair_advice_notes.advice_note_attended_by','=','users.user_uuid')
-         ->leftJoin('roles','users.role','=','roles.id')->where('off_fair_advice_note_id',$id)->first();
-         $approved_by=$inv->first_name.' '.$inv->middle_name.' '.$inv->last_name; // approved by
-         $title=$inv->name; $approved_at=$inv->advice_note_updated_at;
-
-         $transfer=BankAccount::get(['account_number','account_name','swift_code','account_currency','bank_name']);
-        $pdf = PDF::loadView('Off-Fair.Advice-Notes.printing-pages.DownloadableInvoice',compact('adviceNotes','particulars','booking_dates',
-        'defaultSettings','sac_officer_name','url','approved_by','title','approved_at','transfer'));
-                 $pdf->getDomPDF()->setHttpContext(
-            stream_context_create([
-                'ssl' => [
-                    'allow_self_signed'=> true,
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ]
-            ])
-        );
-        $pdf->render();
-        if(Auth::user()->account_type==2)
-        {
-            return $pdf->download($id.'.pdf');
-        }
-        else
-        {
-            return $pdf->stream($id);
-        }
-        // return view('Off-Fair.Advice-Notes.printing-pages.printable-advice-note',compact('adviceNotes','particulars','booking_dates','defaultSettings'));
-    }
-    #Download Invoice
-
     public function DownloadPermit($id){
 
         $permit1=Permit::find($id);

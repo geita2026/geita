@@ -161,7 +161,7 @@
                                                             </div>
                                                             <div class=" col-md-12 form-group text-right">
                                                                 <button class=" btn btn-warning" data-dismiss="modal"> Close Modal</button>
-                                                                <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner" ><span class="ladda-label">Update Off-Fair Customer</span></button>
+                                                                <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner" ><span class="ladda-label">Update Customer</span></button>
                                                             </div>
                                                         </div>
                                                     </form>

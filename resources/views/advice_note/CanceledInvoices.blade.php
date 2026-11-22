@@ -25,7 +25,7 @@
             <div class=" col-md-12 table-header">
                 <h4 class=" p-15 text-center text-default text-bold">LIST OF CANCELED INVOICES</h4>
             </div>
-            <table class="table table-bordered datatable-button-html5-columns">
+            <table data-table-paginated class="table table-bordered datatable-button-html5-columns">
                 <thead>
                     
                     <tr>
@@ -76,7 +76,7 @@
             </table>
             
                 <div class=" text-right">
-                    {{ $advice_note->links() }}
+                    {{ $advice_note->withQueryString()->links() }}
                 </div>
            
 

@@ -104,23 +104,6 @@
                                                             <option value="1">YES</option>
                                                         </select>
                                                     </div>
-                                                    <div class=" form-group col-md-6">
-                                                        <label>INCOME MAPPER</label>
-                                                        <select name="is_joint_payment" class=" form-control">
-                                                            @if ($item->is_joint_payment==0) 
-                                                            <option value="0">DITF COLLECTIONS</option>
-                                                             @elseif ($item->is_joint_payment==1)
-                                                             <option value="1">OFF FAIR COLLECTION</option>
-                                                             @elseif ($item->is_joint_payment==2)
-                                                             <option value="2">FUNCTIONAL HALLS COLLECTIONS</option>
-                                                              @endif
-                                                            <option value="{{ $item->is_joint_payment }}"></option>
-                                                            <option value="0">DITF COLLECTIONS</option>
-                                                            <option value="2">FUNCTIONAL HALLS COLLECTIONS</option>
-                                                            <option value="1">OFF FAIR COLLECTION</option>
-                                                            
-                                                        </select>
-                                                    </div>
                                                 </div>
 
                                                 <div class=" row">
@@ -207,13 +190,6 @@
                                 </select>
                             </div>
 
-                            <div class=" form-group col-md-6">
-                                <label>Is Off Fair Service</label>
-                                <select name="is_joint_payment" class=" form-control">
-                                    <option value="0">NO</option>
-                                    <option value="1">YES</option>
-                                </select>
-                            </div>
                         </div>
                         <div class=" row">
                             <div class="col-md-12 form-group">

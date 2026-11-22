@@ -1,22 +1,17 @@
-
-<style>
-    #logo{
-    font-size:250%; padding:5%; text-shadow: 1px 1px 1px rgb(0, 0, 0), 2px 2px 1px rgb(0, 0, 0);
-    text-align: center;
-}
-</style>
-
 <!-- Main navbar -->
-<div class=" navbar navbar-default navbar-fixed-top header-highlight" style="background-color: rgb(16, 140, 230);">
-    <div class="navbar-header" style="background-color: rgb(16, 140, 230);">
-        <a class="navbar-brand text-bold text-white" href="{{ route('startApp') }}" id="h1">GeMEMIS</a>
+<div class="navbar navbar-default navbar-fixed-top header-highlight gememis-navbar">
+    <div class="navbar-header">
+        <a class="navbar-brand gememis-brand" href="{{ route('startApp') }}" aria-label="GeMEMIS home">
+            <img src="{{ asset('images/coat-of-arms.svg') }}" alt="">
+            <span>GeMEMIS</span>
+        </a>
         <ul class="nav navbar-nav visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class=" icon-user"></i></a></li>
             <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
         </ul>
     </div>
 
-    <div class="navbar-collapse collapse row" id="navbar-mobile">
+    <div class="navbar-collapse collapse" id="navbar-mobile">
         <ul class="nav navbar-nav ">
             <li><a class="sidebar-control sidebar-main-toggle hidden-xs text-white"><i class="icon-paragraph-justify3"></i></a></li>
 
@@ -73,12 +68,6 @@
         {{-- header profile collupse --}}
         <div class=" ">
             <ul class="nav navbar-nav navbar-right">
-                <style>
-                    #name:hover{
-                        color: black;
-                    }
-
-                </style>
                 <li class="dropdown dropdown-user" id="profile">
                     <a class="dropdown-toggle text-bold" data-toggle="dropdown">
                         @if(empty(Auth::user()->profile_image))

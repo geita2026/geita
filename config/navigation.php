@@ -167,7 +167,6 @@ return [
             'Update Services' => 'UPDATE_ADDITIONAL_SERVICE',
             'Delete Services' => 'DELETE_ADDITIONAL_SERVICE',
         ]],
-        'CHECK_BOOKING_STATUS' => ['Check Booking Status', 'check-booking-status.index', []],
     ]],
     'ACCOUNTING' => ['Accounting', 1, 'icon-calculator', [
         'ADVICE_NOTE' => ['Advice Notes', 'adviceNotes.index', [
@@ -175,14 +174,6 @@ return [
             'Request ControlNumber' => 'REQUEST_ADVICE_NOTE',
             'Cancel Invoices' => 'CANCEL_INVOICES',
             'approve-discount' => 'APPROVE_ADVICE_NOTE',
-        ]],
-        'GENERATED_ADVICE_NOTE' => ['Generated Advice Notes', 'Generated-Advice-Note.index', [
-            'View Confirmed Off Fair Invoice' => 'VIEW_GENERATED_ADVICE_NOTE_SUBMENU',
-            'Update Confirmed Off Fair Invoice' => 'UPDATE_GENERATED_ADVICE_NOTE',
-        ]],
-        'OFF_FAIR_ADVICE_NOTE' => ['Off Fair Advice Notes', 'Off-Fair-Advice-Notes.index', [
-            'Manage Invoices' => 'MANAGE_INVOICES',
-            'Cancel Invoices' => 'CANCEL_INVOICES',
         ]],
         'CONTROL_NO_REQUEST' => ['Control No Requests', 'controlNoRequests.index', [
             'View ConfirmedInvoice' => 'VIEW_CONTROL_NO_REQUEST_SUBMENU',
@@ -262,51 +253,6 @@ return [
         ]],
         'PRINT_STICKER' => ['Print Stickers', 'print_stickers.index', [
             'Print Stickers' => 'PRINT_PRINT_STICKER',
-        ]],
-    ]],
-    'OFF_FAIR' => ['Off-Fair Bookings', 1, 'icon-calendar2', [
-        'OFF_FAIR_OVERVIEW' => ['Off-Fair Overview', 'Off-Fair.index', [
-            'View Off Fair Booking' => 'VIEW_OFF_FAIR_OVERVIEW_SUBMENU',
-        ]],
-        'OFF_FAIR_CUSTOMER' => ['Off Fair Customers', 'Off-Fair-Customers.index', [
-            'View Off Fair Customers' => 'VIEW_OFF_FAIR_CUSTOMER_SUBMENU',
-            'Create Off Fair Customers' => 'CREATE_OFF_FAIR_CUSTOMER',
-            'View Off-Fair Customer' => 'VIEW_OFF_FAIR_CUSTOMER',
-            'Update Off Fair Customer' => 'UPDATE_OFF_FAIR_CUSTOMER',
-            'Delete Off Fair Customer' => 'DELETE_OFF_FAIR_CUSTOMER',
-        ]],
-        'OFF_FAIR_SPACE' => ['Off Fair Spaces', 'Off-Fair-Spaces.index', [
-            'Manage OffFairSpace' => 'MANAGE_OFF_FAIR_SPACE',
-            'Delete OffFairSpace' => 'DELETE_OFF_FAIR_SPACE',
-        ]],
-        'OFF_FAIR_UTILITY' => ['Off Fair Utilities', 'Off-Fair-Utilities.index', [
-            'Manage Utilities' => 'MANAGE_OFF_FAIR_UTILITY',
-            'Delete Utilities' => 'DELETE_OFF_FAIR_UTILITY',
-        ]],
-        'OFF_FAIR_SPACE_BOOKING' => ['Off Fair Space Booking', 'off-fair-space-booking.index', [
-            'Book Space' => 'BOOK_SPACE',
-            'Cancel Booking' => 'CANCEL_BOOKING',
-        ]],
-        'OFF_FAIR_SPACE_CATEGORY' => ['Space Categories', 'space_categories.index', [
-            'Manage Spaces' => 'MANAGE_SPACES',
-            'Manage OffFairSpaces' => 'MANAGE_OFF_FAIR_SPACES',
-            'Update Off Fair Space Categories' => 'UPDATE_OFF_FAIR_SPACE_CATEGORY',
-            'Delete Space' => 'DELETE_OFF_FAIR_SPACE_CATEGORY',
-        ]],
-        'OFF_FAIR_ACTIVITY' => ['Off Fair Activities', 'off-fair-activities.index', [
-            'View Off Fair Activities' => 'VIEW_OFF_FAIR_ACTIVITY_SUBMENU',
-            'Create Off Fair Activities' => 'CREATE_OFF_FAIR_ACTIVITY',
-            'Update Off Fair Activities' => 'UPDATE_OFF_FAIR_ACTIVITY',
-            'Delete Off Fair Activities' => 'DELETE_OFF_FAIR_ACTIVITY',
-        ]],
-        'SPACE_SIZE_COST' => ['Space Size Costs', 'space_size_costs.index', [
-            'View Off Fair Space Costs' => 'VIEW_SPACE_SIZE_COST_SUBMENU',
-            'Create Off Fair Space Costs' => 'CREATE_SPACE_SIZE_COST',
-            'Update Off Fair Space Costs' => 'UPDATE_SPACE_SIZE_COST',
-            'Delete Off Fair Space Costs' => 'DELETE_SPACE_SIZE_COST',
-        ]],
-        'OFF_FAIR_BOOKING_SCHEDULE' => ['Off Fair Booking Schedule', 'off_fair_booking_schedule.index', [
-            'View Off Fair Booking Calender' => 'VIEW_OFF_FAIR_BOOKING_SCHEDULE_SUBMENU',
         ]],
     ]],
     'SPONSORSHIP' => ['Sponsorship', 1, 'icon-trophy2', [

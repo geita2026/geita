@@ -400,7 +400,6 @@
                             <ul>
                                 <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-building-o me-2 text-warning"></i> Exhibition space</a></li>
                                 <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy me-2 text-warning"></i> Sponsorship packages</a></li>
-                                <li><a href="{{ route('online_booking.index') }}"><i class="fa fa-cubes me-2 text-warning"></i> Halls &amp; offices</a></li>
                             </ul>
                         </div>
                     </li>
@@ -465,7 +464,6 @@
     <div class="gem-sidebar-sub" id="subBooking">
         <a href="{{ route('exhibition_space_booking.index') }}" class="gem-sidebar-item">Exhibition Space</a>
         <a href="{{ route('sponsorship_package_groups') }}" class="gem-sidebar-item">Sponsorship packages</a>
-        <a href="{{ route('online_booking.index') }}" class="gem-sidebar-item">Halls &amp; offices</a>
     </div>
 
     <!-- Login & Register in Sidebar -->

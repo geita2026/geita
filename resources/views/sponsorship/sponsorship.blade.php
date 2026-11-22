@@ -45,7 +45,7 @@
                     </form>
                 </div>
                 <div class=" form-group col-md-12">
-                    <table
+                    <table data-table-paginated
                         class="table table-sm datatable-button-html5-columns table-bordered table-striped table-responsive">
                         <thead>
 
@@ -250,7 +250,7 @@
                 </div>
 
                 <div class=" form-group col-md-12 text-right">
-                    {{ $packages->links() }}
+                    {{ $packages->withQueryString()->links() }}
 
                 </div>
 

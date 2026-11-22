@@ -32,27 +32,38 @@ class usersController extends Controller
             return back()->with('fail',config('Messages.401'));
         }
 
-        $users=User::leftJoin('roles','users.role','=','roles.id')
-        ->orderBy('user_created_at','DESC')
-        ->orderBy('first_name','ASC')
-        ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        $query = User::leftJoin('roles', 'users.role', '=', 'roles.id');
+        $search = trim((string) $request->input('userName', ''));
+        $type = $request->input('user_type');
 
-        if($request->userName!=Null)
-        {
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('email','LIKE','%'.$request->userName.'%')
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if ($search !== '') {
+            $query->where(function ($matches) use ($search) {
+                $term = '%' . $search . '%';
+                $matches->where('users.email', 'like', $term)
+                    ->orWhere('users.name', 'like', $term)
+                    ->orWhere('users.first_name', 'like', $term)
+                    ->orWhere('users.last_name', 'like', $term)
+                    ->orWhere('users.phone_number', 'like', $term);
+            });
         }
 
-        if($request->user_type!=null){
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('account_type',$request->user_type)
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if (in_array((string) $type, ['1', '2'], true)) {
+            $query->where('users.account_type', $type);
         }
 
-       
+        if ($search !== '' || $type) {
+            $query->orderByDesc('users.account_status')->orderBy('users.first_name')->orderBy('users.id');
+        } else {
+            $query->orderByDesc('users.id');
+        }
+
+        $users = $query->paginate(25, [
+            'users.id', 'users.first_name', 'users.middle_name', 'users.last_name',
+            'users.name', 'users.email', 'users.user_uuid', 'users.user_ip_address',
+            'users.role', 'users.phone_number', 'users.account_status', 'users.account_type',
+            'users.myCompany', 'roles.name as role_name',
+        ]);
+
         $roles=Role::get();
         $companies=companies::orderBy('companyName','ASC')->where('status',1)->get();
 

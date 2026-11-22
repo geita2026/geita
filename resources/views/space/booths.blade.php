@@ -129,7 +129,7 @@
                     {{-- user registration here --}}
                     <div class=" row form-group">
                         {{-- booths table --}}
-                        <table class="table table-bordered table-striped table-responsive table-lg text-nowrap">
+                        <table data-table-paginated class="table table-bordered table-striped table-responsive table-lg text-nowrap">
                             <thead>
                                 @foreach ($pav as $d)
                                     <tr>
@@ -359,7 +359,7 @@
                         {{-- //booths table --}}
                     </div>
                     <div class=" row form-group text-right">
-                        {{ $pavilions->links() }}
+                        {{ $pavilions->withQueryString()->links() }}
                     </div>
                 </div>
             </div>

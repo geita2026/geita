@@ -1,6 +1,6 @@
 	@auth
     <!-- Main sidebar -->
-    <div class="sidebar sidebar-main sidebar-fixed " style="background-color: rgb(0, 143, 245);">
+    <div class="sidebar sidebar-main sidebar-fixed gememis-sidebar">
         <div class="sidebar-content">
             <!-- User menu -->
             <div class="sidebar-user">
@@ -36,19 +36,19 @@
                         <li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages" ></i>
                         </li>
                         <div class=" p-10">
-                            <input type="text" class=" form-control bg-primary-400 text-muted" placeholder=" search menu">
+                            <input type="text" class="form-control gememis-menu-search" placeholder=" search menu">
                         </div>
                         
                         @if (session('moduleNo') ==false)
-                        <li class="@if(request()->is('startApp')) active  @endif " ><a href="{{ route('startApp') }}" style=" border:1px solid white"><i class=" icon-grid6" style="font-size:23px" ></i> <span>Start System</span></a></li>
+                        <li class="@if(request()->is('startApp')) active  @endif " ><a href="{{ route('startApp') }}"><i class=" icon-grid6" style="font-size:23px" ></i> <span>Start System</span></a></li>
                         @endif
                         
                         @if (session('moduleNo')==1)
-                        <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
+                        <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
                         @endif
 
                         @if (session('moduleNo')==2)
-                        <li class="@if(request()->is('ePermit/permitDashboard')) active  @endif " ><a href="{{ route('permitDashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>ePermit Dashboard</span></a></li>
+                        <li class="@if(request()->is('ePermit/permitDashboard')) active  @endif " ><a href="{{ route('permitDashboard') }}"><i class=" icon-home4" style="font-size:23px" ></i> <span>ePermit Dashboard</span></a></li>
                         @endif
 
                         
@@ -60,7 +60,7 @@
                         @foreach ($level_one_menu as $item)
                         @can($item->level_one_gate_name)
                         <li>
-                            <a href="#" style=" border:1px solid white;"><i style="font-size:25px" class=" {{ $item->level_one_icon_name }}"></i> <span class="text-bold">{{ $item->level_one_common_name }}</span></a>
+                            <a href="#"><i style="font-size:25px" class=" {{ $item->level_one_icon_name }}"></i> <span class="text-bold">{{ $item->level_one_common_name }}</span></a>
                             <ul>
                                 @foreach ($level_two_menu as $data)
                                 @if ($data->upper_level_id==$item->level_one_menu_id)

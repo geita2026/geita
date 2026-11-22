@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class=" form-group">
-                    <table class="table  table-striped table-bordered" width="100%">
+                    <table data-table-paginated class="table  table-striped table-bordered" width="100%">
                         <thead>
                             <tr>
                                
@@ -218,7 +218,7 @@
                 </div>
 
                 <div class=" form-group text-right">
-                    {{ $applications->links() }}
+                    {{ $applications->withQueryString()->links() }}
                 </div>
             </div>
         </div>

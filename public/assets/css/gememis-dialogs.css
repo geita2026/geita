@@ -1,0 +1,124 @@
+.modal {
+    --gem-dialog-space: 24px;
+    --gem-dialog-height: calc(100vh - 2 * var(--gem-dialog-space));
+    --gem-dialog-height: calc(100dvh - 2 * var(--gem-dialog-space));
+}
+
+.modal > .modal-dialog {
+    width: auto;
+    max-width: calc(100% - 2 * var(--gem-dialog-space));
+    margin: var(--gem-dialog-space) auto;
+}
+
+.modal.fade > .modal-dialog {
+    transform: none;
+    transition: none;
+}
+
+.modal > .modal-dialog:not(.modal-sm, .modal-lg, .modal-xl, .modal-full) {
+    width: 600px;
+}
+
+.modal > .modal-dialog.modal-sm { width: 360px; }
+.modal > .modal-dialog.modal-lg { width: 900px; }
+.modal > .modal-dialog.modal-xl { width: 1140px; }
+.modal > .modal-dialog.modal-full { width: 100%; }
+
+.modal > .modal-dialog > .modal-content {
+    max-height: var(--gem-dialog-height);
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+/* Keep legacy dialogs with unconventional markup scrollable as a whole. */
+.modal-content > .modal-header,
+.modal-content > .modal-footer {
+    position: sticky;
+    z-index: 2;
+    background-color: #fff;
+}
+
+.modal-content > .modal-header { top: 0; }
+.modal-content > .modal-footer { bottom: 0; }
+
+.modal-content:has(> .modal-body, > form > .modal-body),
+#NoCompany .modal-content,
+.modal-content > form:has(> .modal-body),
+#NoCompany .modal-content > form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.modal-content > form:has(> .modal-body),
+#NoCompany .modal-content > form {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
+.modal-content > .modal-body,
+.modal-content > form > .modal-body,
+#NoCompany .registration-body {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 12px;
+}
+
+.modal-content :is(.modal-header, .modal-footer),
+#NoCompany :is(.registration-header, .registration-footer) {
+    flex: 0 0 auto;
+    max-height: 32vh;
+    max-height: 32dvh;
+    overflow: auto;
+    overflow-wrap: anywhere;
+    overscroll-behavior: contain;
+}
+
+.modal-content .modal-footer {
+    padding-top: 12px;
+    white-space: normal;
+}
+
+.modal-content .modal-footer .btn {
+    max-width: 100%;
+    white-space: normal;
+}
+
+.modal > .select2-container--open {
+    z-index: 1;
+}
+
+.modal:has(> .select2-container--open) {
+    overflow-anchor: none;
+}
+
+#NoCompany {
+    --gem-dialog-space: 28px;
+}
+
+.swal2-popup {
+    max-height: calc(100dvh - 24px);
+    overflow: auto;
+}
+
+@media (max-width: 575px) {
+    .modal {
+        --gem-dialog-space: 8px;
+    }
+
+    .modal-content :is(.modal-header, .modal-footer) {
+        padding: 12px 14px;
+    }
+
+    #NoCompany {
+        --gem-dialog-height: 100vh;
+        --gem-dialog-height: 100dvh;
+    }
+
+    #NoCompany > .modal-dialog {
+        max-width: none;
+        width: 100%;
+    }
+}

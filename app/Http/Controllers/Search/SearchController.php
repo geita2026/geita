@@ -8,7 +8,6 @@ use App\Models\companies;
 use App\Models\Companies\CompanyAdmin;
 use App\Models\ePermit\ePermitApplication;
 use App\Models\exhibition\exhibitors;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
 use App\Models\sectors;
 use App\Models\settings\events;
 use Illuminate\Http\Request;
@@ -131,64 +130,6 @@ class SearchController extends Controller
         }
         return response()->json($data);
     }
-
-    public function searchOffFairInvoice(Request $request)
-    {
-        ########### AUTO SEARCH ############
-        $search = $request->get('q');
-        if (Auth::user()->account_type == 1) {
-            $data = off_fair_advice_notes::orderBy('advice_note_created_at', 'DESC')
-                ->leftJoin('off_fair_customers', 'off_fair_advice_notes.advice_note_owned_by', '=', 'off_fair_customers.customer_id')
-                ->leftJoin('companies', 'off_fair_advice_notes.advice_note_owned_by', '=', 'companies.companyID')
-                ->where('off_fair_advice_note_status', '!=', 0)
-                ->where(function ($query) use ($search) {
-                    $query->orWhere('customer_name', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('companyName', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('off_fair_advice_note_id', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('control_number', 'LIKE', '%' . $search . '%');
-                })
-                ->limit(config('global.SEARCH_LIMIT'))
-                ->get([
-                    'off_fair_advice_note_id',
-                    'off_fair_customers.customer_id',
-                    'customer_name',
-                    'companyName',
-                    'off_fair_advice_note_deadline',
-                    'control_number',
-                    'total_amount',
-                    'currency',
-                    'balance'
-                ]);
-        }
-        if (Auth::user()->account_type == 2) {
-            $data = off_fair_advice_notes::orderBy('advice_note_created_at', 'DESC')
-                ->leftJoin('off_fair_customers', 'off_fair_advice_notes.advice_note_owned_by', '=', 'off_fair_customers.customer_id')
-                ->leftJoin('companies', 'off_fair_advice_notes.advice_note_owned_by', '=', 'companies.companyID')
-                ->where('off_fair_advice_note_status', '!=', 0)
-                ->whereIn('companies.companyID', CompanyAdmin::where('adminId', Auth::user()->user_uuid)->get(['companyId']))
-                ->where(function ($query) use ($search) {
-                    $query->orWhere('customer_name', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('companyName', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('off_fair_advice_note_id', 'LIKE', '%' . $search . '%');
-                    $query->orWhere('control_number', 'LIKE', '%' . $search . '%');
-                })
-                ->limit(config('global.SEARCH_LIMIT'))
-                ->get([
-                    'off_fair_advice_note_id',
-                    'off_fair_customers.customer_id',
-                    'customer_name',
-                    'companyName',
-                    'off_fair_advice_note_deadline',
-                    'control_number',
-                    'total_amount',
-                    'currency',
-                    'balance'
-                ]);
-        }
-
-        return response()->json($data);
-    }
-    ########## END AUTO SEARCH ###########
 
     public function TsrnVerification(Request $request)
     {

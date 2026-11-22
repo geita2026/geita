@@ -6,8 +6,6 @@ use App\Http\Controllers\advice_note\adviceNoteDeadlineController;
 use App\Http\Controllers\advice_note\CanceledInvoiceController;
 use App\Http\Controllers\advice_note\WithBalanceInvoiceController;
 use App\Http\Controllers\FrontEnd\Invoice\InvoiceController;
-use App\Http\Controllers\off_fair\booking\advice_note_displayController;
-use App\Http\Controllers\off_fair\booking\off_fair_advice_noteController;
 use App\Http\Controllers\Payments\PaymentReceiptsController;
 use App\Http\Controllers\settings\accountSettingController;
 use App\Http\Controllers\settings\BankAccountController;
@@ -27,8 +25,6 @@ Route::prefix('accountingManagement')->middleware('auth')->group(function() {
     Route::get('incomes',[IncomeController::class,'index'])->name('incomes');
     Route::post('add_income',[IncomeController::class,'store'])->name('add_income');
     Route::resource('controlNoRequests',controlNoRequestController::class);
-    Route::resource('Generated-Advice-Note',advice_note_displayController::class);
-    Route::resource('Off-Fair-Advice-Notes',off_fair_advice_noteController::class);
 
     Route::get('review_invoice_discount/{id}',[adviceNoteController::class,'reviewInvoiceDiscount'])->name('review_invoice_discount');
     Route::post('apply_discount',[adviceNoteController::class,'applyDiscount'])->name('apply_discount');

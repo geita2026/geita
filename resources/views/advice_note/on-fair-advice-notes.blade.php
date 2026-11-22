@@ -33,7 +33,7 @@
                     </div>
 
                     <div class=" form-group col-md-12">
-                        <table class="table table-bordered table-striped table-responsive">
+                        <table data-table-paginated class="table table-bordered table-striped table-responsive">
                             <thead>
                                 <tr>
                                     <th class=" text-bold text-center">INVOICE ID</th>
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class=" col-md-12 text-right form-group">
-                        {{ $advice_note->links() }}
+                        {{ $advice_note->withQueryString()->links() }}
                     </div>
 
                 </div>

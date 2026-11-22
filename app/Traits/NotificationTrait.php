@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\advice_note\advice_notes;
-use App\Models\Collections\OffFairBill;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\Notifications\BulkSms;
 use App\Traits\BulkSmsTrait;
@@ -112,29 +111,6 @@ Your TSRN: $registrationID";
             #-------------- END MESSAGE ---- #
         }
 
-        #***************** OFF FAIR NOTIFICATION ********#
-        $invoices = OffFairBill::leftJoin('off_fair_customers', 'off_fair_bills.customer_id', '=', 'off_fair_customers.customer_id')
-            ->leftJoin('off_fair_advice_notes', 'off_fair_bills.advice_note_id', '=', 'off_fair_advice_notes.off_fair_advice_note_id')
-            ->where('off_fair_bills.advice_note_id', $reference)->first();
-        if ($invoices) {
-            $phone_number = $invoices->customer_phone;
-            $customer_name = $invoices->customer_name;
-            $amount = number_format($invoices->total_amount, 2);
-            $control_no = $invoices->control_number;
-            $currency = $invoices->currency;
-            $deadline = date('d-m-y h:i:s', strtotime($invoices->off_fair_advice_note_deadline));
-            $app_url = env('APP_URL');
-
-            #------------ MESSAGE -----------#
-            $sms_content = "You have been invoiced for Off fair Rental services,
-Control No: $control_no,
-Total Amount: $amount $currency,
-Deadline: $deadline,
-#Sabasaba Kidijitali";
-            #-------------- END MESSAGE ---- #
-        }
-        #*************** END OFF FAIR ****************#
-
         if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
             $invoice = ApplicationInvoice::leftJoin('companies', 'application_invoices.customerId', '=', 'companies.companyID')
                 ->where('invoiceNo', $reference)->first();
@@ -146,7 +122,7 @@ Amount: $invoice->invoiceAmount $invoice->currency.";
         }
 
         $sent_on = date('Y-m-d');
-        if ($phone_number != Null) {
+        if (!empty($phone_number)) {
             $this->SaveSendSmsJobs($phone_number, $sms_content, $sent_on, $customer_name);
         }
     }

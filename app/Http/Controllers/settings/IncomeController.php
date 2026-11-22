@@ -81,7 +81,6 @@ class IncomeController extends Controller
             'income_name'=>$request->income_name,
             'description'=>$request->description,
             'is_space_fee'=>$request->is_space_fee,
-            'is_joint_payment'=>$request->is_joint_payment,
         ]); // adding income to database
     return response()->json(['status'=>1,'success'=>'Income Registered Successfully!']);
     }

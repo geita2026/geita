@@ -40,14 +40,12 @@
                     The aim of this document is to keep the customer informed about the status of his order, so that he or she can make payment process.
                 </p>
                 <p><b>ON Fair Invoices,</b> This are invoices provided specific for exhibitions and trade fairs such as, DITF and Industrial Exhibitions.</p>
-                <p><b>OFF FAIR Invoices,</b> This are invoice provided to customer for off fair activities such as Renting activities and Functional Halls.</p>
             </div>
 
             <div class="row">
             {{-- report points --}}
             @can('View All Advice Note')
 
-                {{--  off Fair Advice Notes  --}}
                 @can('View On Fair Advice Notes')
                 <a href="{{ route('adviceNotes.create') }}" class=" form-group col-md-4 zoom ">
                     <button class=" btn btn-success btn-block btn-float btn-float-lg"  title="Click to view on fair Advice notes">
@@ -60,16 +58,6 @@
           {{--  //end  --}}
 
 
-         {{--  off Fair Advice Notes  --}}
-        @can('View On Fair Advice Notes')
-        <a href="{{ route('Off-Fair-Advice-Notes.index') }}" class=" form-group col-md-4 zoom">
-                <button class=" btn btn-primary btn-block btn-float btn-float-lg" type="button" title="Click to view Off fair Advice notes">
-                    <h4 class=" text-uppercase text-bold" id="h2">OFF FAIR INVOICES<i class="  icon-stack-text"></i>
-                    Total &colon; {{ number_format($off_fair_advice_notes) }}
-                    </h4>
-                </button>
-         </a>
-        @endcan
          {{--  //end  --}}
         </div>
         @endcan

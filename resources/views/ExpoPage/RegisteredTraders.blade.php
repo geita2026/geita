@@ -15,6 +15,7 @@
     <link href="{{ asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="icon" href="{{ asset('ExpoFolder/ExpoIcon.png') }}" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
     <!-- Core JS files -->
     <script type="text/javascript" src="{{ asset('assets/js/plugins/loaders/pace.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/core/libraries/jquery.min.js') }}"></script>
@@ -79,7 +80,7 @@
                                             </div>
                                             @else
                                             <div class=" form-group col-md-12 table-responsive">
-                                                <table
+                                                <table data-table-paginated
                                                     class="table table-bordered table-striped">
                                                     <thead>
                                                         <tr class=" bg-teal-400">
@@ -114,7 +115,7 @@
                                                 </table>
                                             </div>
                                             <div class=" col-md-12 form-group text-right">
-                                                {{ $expoData->links() }}
+                                                {{ $expoData->withQueryString()->links() }}
                                             </div>
                                             @endif
                                         </div>
@@ -141,6 +142,8 @@
     </div>
     <!-- /page container -->
 
+    <script src="{{ asset('assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/datatables_basic.js') }}"></script>
 </body>
 
 </html>
