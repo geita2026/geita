@@ -48,7 +48,7 @@
                @endif
            </div>
            <div style=" height:20px;">
-               <p style=" font-size:100%;font-family:monospace;"><b>Visit: </b> <i style="color:blue">www.tantrade.go.tz</i></p>
+               <p style=" font-size:100%;font-family:monospace;"><b>Visit: </b> <i style="color:blue">www.gememis.go.tz</i></p>
            </div>
         </div>
  </div>

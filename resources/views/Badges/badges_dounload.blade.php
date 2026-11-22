@@ -39,7 +39,7 @@
                </div>
 
                <div style=" height:25px; position:relative">
-                   <p><b>Powered By</b><br>Tanzania Trade Development Authorityz.</p>
+                   <p><b>Powered By</b><br>Geita Mineral Exhibition Secretariat.</p>
                </div>
             </div>
      </div>

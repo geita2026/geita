@@ -8,7 +8,7 @@
     <meta name="keywords"
         content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
     <meta name="description" content="{{ $event->eventTitle }},{{ $event->eventDescription }}">
-    <meta name='copyright' content='Tanzania Trade Development Authority (TanTrade)'>
+    <meta name='copyright' content='Geita Mineral Exhibition'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Google Fonts -->
     <link

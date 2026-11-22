@@ -8,7 +8,7 @@
     <meta name="keywords"
         content="GeMEMIS, Geita, mineral exhibition, madini, maonesho ya madini, exhibition space, space allocation, Tanzania">
     <meta name="description" content="{{ $liveEvent->eventTitle }},{{ $liveEvent->eventDescription }}">
-    <meta name='copyright' content='Tanzania Trade Development Authority (TanTrade)'>
+    <meta name='copyright' content='Geita Mineral Exhibition'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Google Fonts -->
     <link
@@ -94,9 +94,9 @@
                         </div>
                         <div class=" row">
                             <div class=" form-group col-md-6">
-                                <label>Tantrade Service Registration Number<i class=" text-danger">*</i></label>
+                                <label>Service Registration Number<i class=" text-danger">*</i></label>
                                 <input type="text" name="TSRN" class="form-control"
-                                    placeholder="Tantrade Service Registration Number (TSRN)"
+                                    placeholder="Service Registration Number (TSRN)"
                                     value="{{ old('TSRN') }}" required>
                                 <span class=" text-danger">
                                     @error('TSRN')

@@ -1,6 +1,6 @@
 @php
         #Nembo ya taifa
-    $image = Image::make(public_path('images/Logo.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_tantradeLogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     // ***********************
 @endphp
@@ -9,7 +9,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TANTRADE Badge</title>
+  <title>Geita Mineral Exhibition Badge</title>
   <style>
     * {
       margin: 0;
@@ -197,12 +197,10 @@
 
   <!-- Top Logos -->
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Coat_of_arms_of_Tanzania.svg/120px-Coat_of_arms_of_Tanzania.svg.png" class="logo-top" alt="Coat of Arms">
-  <img src="https://www.tantrade.go.tz/assets/img/logo.png" class="tantrade-logo" alt="TanTrade Logo">
 
   <!-- Title and Event -->
-  <div class="title">TANZANIA TRADE DEVELOPMENT AUTHORITY (TANTRADE)</div>
-  <div class="event">THE 49<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR</div>
-  <div class="event-dates">28<sup>th</sup> June - 13<sup>th</sup> July 2025</div>
+  <div class="title">GEITA MINERAL EXHIBITION SECRETARIAT</div>
+  <div class="event">GEITA MINERAL EXHIBITION</div>
 
   <!-- Profile Image -->
   <div class="profile-wrapper">
@@ -211,18 +209,16 @@
 
   <!-- Name and Group -->
   <div class="name">LATIFA KHAMIS</div>
-  <div class="group">TANTRADE STAFF</div>
+  <div class="group">GEITA MINERAL EXHIBITION STAFF</div>
 
   <!-- QR Code -->
-  <div class="qrcode" style="background-image: url('https://api.qrserver.com/v1/create-qr-code/?data=https://tantrade.go.tz&size=100x100');"></div>
+  <div class="qrcode" style="background-image: url('https://api.qrserver.com/v1/create-qr-code/?data=https://gememis.go.tz&size=100x100');"></div>
 
   <!-- Footer Logos -->
   <div class="footer">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/UFI_logo.svg" alt="ufi">
-    <img src="https://via.placeholder.com/40x30?text=49DITF" alt="49DITF">
     <img src="https://via.placeholder.com/30x30?text=TBS" alt="TBS">
   </div>
-  <div class="website">www.tantrade.go.tz</div>
+  <div class="website">www.gememis.go.tz</div>
 </div>
 
 </body>

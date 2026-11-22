@@ -1,5 +1,5 @@
   <!-- Favicon -->
-  <link href="{{ asset('images/ditflogo.jpg') }}" rel="icon">
+  <link href="{{ asset('images/coat-of-arms.svg') }}" rel="icon">
 
   <!-- Google Web Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

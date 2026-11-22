@@ -49,7 +49,7 @@
                                 <select name="userType" class=" bootstrap-select" data-live-search="true"
                                     data-width="100%" id="userType" required>
                                     <option> - - - Select User Type - - - </option>
-                                    <option value="1">Internal User (TanTrade Staff)</option>
+                                    <option value="1">Internal User (Exhibition Staff)</option>
                                     <option value="2">External User (Exhibitor)</option>
                                 </select>
                             </div>
@@ -57,10 +57,10 @@
                                 <div class=" col-md-6 form-group">
                                     
                                     <div id="TSRNFIELD">
-                                        <label>TanTrade Service Registration Number (TSRN)<i
+                                        <label>Service Registration Number (SRN)<i
                                                 class=" text-danger">*</i></label>
                                         <input type="text" id="TSRN" name="TSRN" class=" form-control"
-                                            placeholder="TanTrade Service Registration Number (TSRN)" value="{{ old('TSRN') }}">
+                                            placeholder="Service Registration Number (SRN)" value="{{ old('TSRN') }}">
                                             <span class=" text-danger">@error('TSRN'){{ $message }}@enderror</span>
                                     </div>
                                 </div>
@@ -216,10 +216,10 @@
         
         <div id="TSRNFIELD">
            
-            <label>TanTrade Service Registration Number (TSRN)<i
+            <label>Service Registration Number (SRN)<i
                     class=" text-danger">*</i> <b id="response" class=" text-bold text-success"></b></label>
             <input type="text" id="TSRN" name="TSRN" class=" form-control"
-                placeholder="TanTrade Service Registration Number (TSRN)">
+                placeholder="Service Registration Number (SRN)">
         </div>
     </div>
 </form> --}}

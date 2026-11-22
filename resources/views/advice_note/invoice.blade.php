@@ -233,7 +233,7 @@
     <table class="footer-table" width="100%">
         <tr>
             <td>
-                © {{ date('Y') }} Tanzania Trade Development Authority (TANTRADE) • System Generated
+                © {{ date('Y') }} Geita Mineral Exhibition • System Generated
             </td>
             <td class="right">
                 Page <span class="pagenum"></span>/<span class="pagecount"></span>

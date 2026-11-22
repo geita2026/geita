@@ -3,11 +3,11 @@
         <!DOCTYPE html>
         <html>
         <header>
-            <title> TANTRADE QRCODE VERIFICATION RESPONSE</title>
+            <title> GEITA MINERAL EXHIBITION QR CODE VERIFICATION RESPONSE</title>
         </header>
         <body>
             <div>
-                <h4 style="text-align: center;font-size:2.5vmax">TANTRADE eDOCUMENT VERIFICATION RESPONSE</h4>
+                <h4 style="text-align: center;font-size:2.5vmax">GEITA MINERAL EXHIBITION eDOCUMENT VERIFICATION RESPONSE</h4>
             </div>
             <p style="color: green;font-size:2vmax">
                 This is to certify that the bearer of this document has been granted to <b></b>
@@ -33,8 +33,8 @@
             </table>
             <br><br><br>
             <p style="font-size: 0.8vmax; ">If you have any inquiries regarding this Document , please
-                contact The Tanzania Trade Development Authority at the contact us via <a
-                    href="tel:{{ config('global.CALL_CENTER') }}">{{ config('global.CALL_CENTER') }}</a> or <a href="mailto:sac@tantrade.go.tz">sac@tantrade.go.tz</a> regarding the information provided above.</p>
+                contact the Geita Mineral Exhibition Secretariat via <a
+                    href="tel:{{ config('global.CALL_CENTER') }}">{{ config('global.CALL_CENTER') }}</a> or <a href="mailto:info@gememis.go.tz">info@gememis.go.tz</a> regarding the information provided above.</p>
 
         </body>
 
@@ -44,7 +44,7 @@
     @if ($data == null)
         <br><br>
         <h2 style=" color:red;">
-            This Document  is not recoginized by TanTrade, Please contact Us via <a
+            This Document is not recognized by the Geita Mineral Exhibition Secretariat, Please contact Us via <a
                 href="tel:{{ config('global.CALL_CENTER') }}">{{ config('global.CALL_CENTER') }}</a>  For help and Advice before Making any decision regading this document.
         </h2>
     @endif

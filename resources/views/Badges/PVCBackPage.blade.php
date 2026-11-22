@@ -1,6 +1,6 @@
 @php
     #Logo
-    $logo = public_path('images/logo.jpg');
+    $logo = public_path('badgeAssets/coat_of_arms.png');
     $image = Image::make($logo);
     $logo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     #end logo
@@ -17,7 +17,7 @@
     #End Background
 
     #Ditf Logo
-    $image = Image::make(public_path('badgeAssets/ufi.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_DITFlogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     #end Ditf logo
     $i = 0;
@@ -50,7 +50,7 @@
 
             </div>
             <div style="text-align: center;; color: #3b53a2; font-weight: 500;">
-                <p style="font-size:15px;">If found, return to Tanzania Trade Development Authority (TanTrade)</p>
+                <p style="font-size:15px;">If found, return to the Geita Mineral Exhibition Secretariat</p>
                 <p style="font-size:20px;color:green">+255 733 002 014</p>
             </div>
             <div style="position: absolute;  left: 0; right: 0;">

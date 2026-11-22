@@ -19,7 +19,7 @@
             <img src="{{$base64_nembo ?? ''}}" height="50" width="70">
         </th>
         <th style="text-align: center">
-            TANZANIA TRADE DEVELOPMENT AUTHORITY (Tan Trade)<br>
+            GEITA MINERAL EXHIBITION SECRETARIAT<br>
             P.O. BOX 5402, Dar Es Salaam, Tanzania<br>
             Tel: +255 22 2850238, Fax: +255 22 2850539
             <br><b style="letter-spacing: 3px;">TIN:113-710-888 | VRN: 40-010307-T</b>

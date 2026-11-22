@@ -4,7 +4,7 @@
 
 @php
        #Logo
-       $logo =public_path('images/ditf1.jpeg');
+       $logo =public_path('badgeAssets/coat_of_arms.png');
         $image = Image::make($logo);
         $base64_logo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
         #end logo

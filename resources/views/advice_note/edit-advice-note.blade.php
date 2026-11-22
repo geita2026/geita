@@ -83,7 +83,7 @@
         <img src="{{ asset('images/nembo.png') }}" height="80" width="80">
         </div>
         <div style="text-align: center;">
-        <h6>TANZANIA TRADE DEVELOPMENT AUTHORITY<br> (Tan Trade)</h6>
+        <h6>GEITA MINERAL EXHIBITION SECRETARIAT<br> (Tan Trade)</h6>
         <p>P.O. BOX 5402, Dar Es Salaam, Tanzania </p>
         <p>Tel: +255 22 2850238, Fax: +255 22 2850539</p>
        </div>

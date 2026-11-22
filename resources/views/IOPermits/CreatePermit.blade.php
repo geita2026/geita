@@ -122,7 +122,7 @@
                 },
                 cache: true
             },
-            placeholder: 'Search Companies (write company name or Tantrade Service Registration Number) . . .',
+            placeholder: 'Search Companies (write company name or Service Registration Number) . . .',
             minimumInputLength: 0,
         });
     });

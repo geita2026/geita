@@ -58,7 +58,8 @@
                                         <button type="button" class="close"
                                             data-dismiss="alert"><span>&times;</span><span
                                                 class="sr-only">Close</span></button>
-                                        Congratulations for booking space for 50<sup>th</sup> DITF, Please request
+                                        Congratulations for booking space for the Geita Mineral
+                                        Exhibition, Please request
                                         control number Now.
                                     </div>
                                 @else
@@ -74,7 +75,8 @@
                                                 <button type="button" class="close"
                                                     data-dismiss="alert"><span>&times;</span><span
                                                         class="sr-only">Close</span></button>
-                                                Congratulations for booking space for 50<sup>th</sup> DITF, Control
+                                                Congratulations for booking space for the Geita Mineral
+                                                Exhibition, Control
                                                 number will be given After your Application being reviewed! This may
                                                 take one to two working hours.
                                             </div>
@@ -83,8 +85,8 @@
                                                 <button type="button" class="close"
                                                     data-dismiss="alert"><span>&times;</span><span
                                                         class="sr-only">Close</span></button>
-                                                Congratulations for being Accepted as Exhibitor for the 49<sup>th</sup>
-                                                DITF. @if ($item->amout_paid == 0)
+                                                Congratulations for being Accepted as Exhibitor for the Geita
+                                                Mineral Exhibition. @if ($item->amout_paid == 0)
                                                     <b class=" text-danger">Note! Your booking will be canceled
                                                         automatically by the system if you fail to pay your full invoice
                                                         Amount before
@@ -248,9 +250,10 @@
                                                         <input type="checkbox" name="isAcceptedTerms" class="styled"
                                                             required style=" width: 20px;height: 20px;"
                                                             @if ($item->isAcceptedTerms ?? 0 == 1) checked @endif>
+                                                        {{-- Placeholder domain: replace with the official site when it is confirmed. --}}
                                                         By accessing or using <a
-                                                            href="https://tradefair.tantrade.go.tz"
-                                                            target="_newtab">tradefair.tantrade.go.tz</a>, you agree to
+                                                            href="https://gememis.go.tz"
+                                                            target="_newtab">gememis.go.tz</a>, you agree to
                                                         be bound by <a href="{{ route('terms_and_condition.index') }}"
                                                             target="_newtab">Terms
                                                             and Conditions</a>. If

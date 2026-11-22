@@ -7,7 +7,7 @@ $count=0;
     #end logo
 
     #Badge Header
-    $tantradeLogo = public_path('images/Logo.png');
+    $tantradeLogo = public_path('badgeAssets/coat_of_arms.png');
     $image = Image::make($tantradeLogo);
     $base64_tantradeLogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     // ***********************

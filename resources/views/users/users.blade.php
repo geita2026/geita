@@ -57,7 +57,7 @@
                             <div class="col-md-3 form-group" id="usersType">
                                 <select name="user_type" class=" form-control" onchange="this.form.submit()">
                                     <option value=""> - - - Filter By Type of Users - - - </option>
-                                    <option value="1" class=" text-capitalize"> Internal System Users (TanTrade Staff)</option>
+                                    <option value="1" class=" text-capitalize"> Internal System Users (Exhibition Staff)</option>
                                     <option value="2" class=" text-capitalize">External System Users (Exhibitors)</option>
                                 </select>
                                 <span class="text-danger"> @error('role')

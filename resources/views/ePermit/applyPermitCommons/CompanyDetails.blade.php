@@ -118,7 +118,7 @@
                             <div class=" row form-group">
                                 <div class=" col-md-6">
                                     <label>Company Website <span class=" text-muted">eg:
-                                            https://tantrade.go.tz</span></label>
+                                            https://yourcompany.co.tz</span></label>
                                     <input type="text" name="website" onfocus="this.setSelectionRange(8, 8);"
                                         class=" form-control" placeholder="Company Website"
                                         value="{{ $item->website ?? old('website') }}">
@@ -341,8 +341,9 @@
                                         <input type="checkbox" name="isAcceptedTerms" class="styled" required
                                             style=" width: 20px;height: 20px;"
                                             @if ($item->isAcceptedTerms ?? 0 == 1) checked @endif>
-                                        By accessing or using <a href="https://tradefair.tantrade.go.tz"
-                                            target="_newtab">tradefair.tantrade.go.tz</a>, you agree to be bound by <a
+                                        {{-- Placeholder domain: replace with the official site when it is confirmed. --}}
+                                        By accessing or using <a href="https://gememis.go.tz"
+                                            target="_newtab">gememis.go.tz</a>, you agree to be bound by <a
                                             href="{{ route('terms_and_condition.index') }}" target="_newtab">Terms
                                             and Conditions</a>. If
                                         you

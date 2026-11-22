@@ -1,6 +1,6 @@
 @php
     #Logo
-    $logo = public_path('images/logo.jpg');
+    $logo = public_path('badgeAssets/coat_of_arms.png');
     $image = Image::make($logo);
     $logo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     #end logo
@@ -37,7 +37,7 @@
                     <td colspan="4" style="text-align: center; margin-top:10px">
                         <img src="{{ $logo }}" height="60" width="200">
                         {{-- <p style="text-align: center">
-                            TANZANIA TRADE DEVELOPMENT AUTHORITY (Tan Trade)<br>
+                            GEITA MINERAL EXHIBITION SECRETARIAT<br>
                                 P.O. BOX 5402, Dar Es Salaam, Tanzania<br>
                                 Tel: +255 22 2850238, Fax: +255 22 2850539<br>
                                 Email: info@tantrade.go.tz.

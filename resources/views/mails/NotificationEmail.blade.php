@@ -70,7 +70,7 @@
     <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-            <h1>Tanzania Trade Development Authority</h1>
+            <h1>Geita Mineral Exhibition Secretariat</h1>
             <p>Facilitating Trade for Sustainable Development</p>
         </div>
 
@@ -86,7 +86,7 @@
             @endif
             
             <p>
-                Thank you for your continued trust in the Tanzania Trade Development Authority. 
+                Thank you for your continued trust in the Geita Mineral Exhibition Secretariat. 
                 Should you have any questions, feel free to contact us.
             </p>
             <p style="color:red">

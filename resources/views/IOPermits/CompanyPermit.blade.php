@@ -46,7 +46,7 @@
                                 <td colspan="3">
                                     <h4>This is to Notify that <b
                                             style="border-bottom: 1px dashed black;">{{ $item->companyName }}</b> with
-                                        TanTrade Service Registration Number(TSRN) <b style="border-bottom: 1px dashed black;">{{ $item->registrationID }}</b>
+                                        Service Registration Number (SRN) <b style="border-bottom: 1px dashed black;">{{ $item->registrationID }}</b>
                                         has participated in Dar es salaam International Trade Fair.
                                     </h4>
                                 </td>
@@ -63,7 +63,7 @@
                             </div>
 
                             <div class=" panel-body">
-                                <h5><b>{{ $item->companyName }}</b> with Tantrade registration No:
+                                <h5><b>{{ $item->companyName }}</b> with SRN:
                                     <b>{{ $item->registrationID }}</b>,</h5>
                                 <p>Has been issued entrance permit during 47<sup>th</sup> Dar es salaam International
                                     Trade Fair.</p>
