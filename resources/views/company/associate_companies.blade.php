@@ -25,7 +25,7 @@
                     <form action="{{ route('companies.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="source" value="2">
-                        <input type="hidden" name="associate_company" value="{{ $company_id }}">
+                        <input type="hidden" name="associate_company" value="{{ $company_id ?? '' }}">
                         @include('company.RegCompany')
                     </form>
                 </div>
@@ -36,7 +36,10 @@
                             <tr style="background-color: rgb(223, 215, 215);">
                                 <th colspan="7" class=" text-bold text-center text-uppercase">
                                     <h3 class=" text-bold">
-                                        REGISTERED ASSOCIATE COMPANIES [ AVAILABLE BADGES: {{ session('allowedAllocation') }} ]</h3>
+                                        REGISTERED ASSOCIATE COMPANIES
+                                        @isset($company_id)
+                                            [ AVAILABLE BADGES: {{ session('allowedAllocation') }} ]
+                                        @endisset</h3>
                                 </th>
                             </tr>
                             <tr>
@@ -63,7 +66,7 @@
                                     <td>{{ $item->companyPhone }}</td>
                                     <td>{{ $item->companyEmail }}</td>
                                     <td class=" text-center">
-                                        <a @if(session('allowedAllocation')>0) data-toggle="modal" data-target="#allocateBadges{{ $item->companyID }}"@endif
+                                        <a @if(isset($company_id) && session('allowedAllocation') > 0) data-toggle="modal" data-target="#allocateBadges{{ $item->companyID }}"@endif
                                             class=" btn btn-primary"><b>
                                                 @foreach ($associateWithAllocations as $value)
                                                     @if ($value->companyID == $item->companyID)
@@ -121,7 +124,7 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <div class=" row">
-                                                            <input type="hidden" name="parentCompany" value="{{ $company_id }}">
+                                                            <input type="hidden" name="parentCompany" value="{{ $company_id ?? '' }}">
                                                             <div class=" col-md-12 form-group">
                                                                 <label>Allocated Badges<i
                                                                         class=" text-danger">*</i></label>

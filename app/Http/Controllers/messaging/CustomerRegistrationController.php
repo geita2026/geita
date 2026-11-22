@@ -22,9 +22,9 @@ class CustomerRegistrationController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Sms Customer',Role::class))
+        if($request->user()->cannot('VIEW_SMS_CUSTOMER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_SMS_CUSTOMER'));
         }
 
         if($request->group_name)
@@ -49,9 +49,9 @@ class CustomerRegistrationController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Sms Customer',Role::class))
+        if($request->user()->cannot('CREATE_SMS_CUSTOMER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_SMS_CUSTOMER'));
         }
 
         try {
@@ -80,9 +80,9 @@ class CustomerRegistrationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Sms Customer',Role::class))
+        if($request->user()->cannot('UPDATE_SMS_CUSTOMER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_SMS_CUSTOMER'));
         }
 
         $request->validate([
@@ -111,9 +111,9 @@ class CustomerRegistrationController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Sms Customer',Role::class))
+        if($request->user()->cannot('DELETE_SMS_CUSTOMER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_SMS_CUSTOMER'));
         }
 
         try {

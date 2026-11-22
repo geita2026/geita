@@ -23,9 +23,9 @@ class eventBookingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
         $events=Events::where('event_id',session('liveEvent'))->get();
         foreach ($events as $key) {
@@ -47,9 +47,9 @@ class eventBookingController extends Controller
     public function show(Request $request,$id)
     {
         try {
-            if($request->user()->cannot('Book Space',Role::class))
+            if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
         $spaces=pavilions::leftJoin('space_categories','pavilions.pavilionCategory','=','space_categories.category_id')
         ->where('space_status','UNRESERVED')->orderBy('pavilionName','ASC')->distinct()

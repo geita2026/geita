@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             CompanySectorSeeder::class,
             LevelOneMenusSeeder::class,
             LevelTwoMenusSeeder::class,
+            BookingMenuPermissionsSeeder::class,
             SuperAdminSeeder::class,
         ]);
     }

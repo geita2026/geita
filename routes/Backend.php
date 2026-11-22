@@ -10,7 +10,6 @@ use App\Http\Controllers\Catalogy\CatalogueSettingController;
 use App\Http\Controllers\company\templateController;
 use App\Http\Controllers\dashboard\userDashboardController;
 use App\Http\Controllers\Database\DbManagementController;
-use App\Http\Controllers\Downloads\DownloadController;
 use App\Http\Controllers\sponsorships\EventSponsorController;
 use App\Http\Controllers\Exhibition\EventProgramController;
 use App\Http\Controllers\Exhibition\ExhibitorJudgingController;
@@ -88,7 +87,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('catalogue_settings',CatalogueSettingController::class);
     Route::resource('db_management',DbManagementController::class);
     Route::resource('products',ProductsController::class);
-    Route::get('download_permit{id}',[DownloadController::class,'DownloadPermit'])->name('download_permit');
     Route::resource('exhibitor_judging',ExhibitorJudgingController::class);
 });
 

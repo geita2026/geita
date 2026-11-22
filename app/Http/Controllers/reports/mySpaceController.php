@@ -26,9 +26,9 @@ class mySpaceController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('view my space',Role::class))
+        if($request->user()->cannot('VIEW_MY_SPACE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_MY_SPACE'));
         }
         //
         $specific=$request->space_name;

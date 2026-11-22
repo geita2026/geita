@@ -24,8 +24,8 @@ class RegisterApiRequestController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View All Api Requests', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_API_REQUEST_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_API_REQUEST_SUBMENU'));
         }
 
         $api_requests = ApiRequest::get();
@@ -40,8 +40,8 @@ class RegisterApiRequestController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create Api Requests', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_API_REQUEST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_API_REQUEST'));
         }
         try {
             $token = str::random(80);
@@ -75,8 +75,8 @@ class RegisterApiRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Api Requests', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_API_REQUEST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_API_REQUEST'));
         }
 
         try {
@@ -101,8 +101,8 @@ class RegisterApiRequestController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Api Requests', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_API_REQUEST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_API_REQUEST'));
         }
 
         try {

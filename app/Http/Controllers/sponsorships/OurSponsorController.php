@@ -26,9 +26,9 @@ class OurSponsorController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Sponsors',Role::class))
+        if($request->user()->cannot('VIEW_SPONSORS',Role::class))
         {
-            return back()->with('fail',config('Messages.500'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_SPONSORS'));
         }
         $sponsors=booked_sponsorship_packages::leftJoin('sponsorship_packages','booked_sponsorship_packages.package_id','=','sponsorship_packages.package_id')
         ->leftJoin('advice_notes','booked_sponsorship_packages.advice_note_id','=','advice_notes.advice_note_id')
@@ -48,7 +48,7 @@ class OurSponsorController extends Controller
         ->get(); // get all advice note generated in the system;
 
         $service=additional_services::leftJoin('events','additional_services.service_event','=','events.event_id')
-        ->where('service_type','Tantrade')
+        ->whereIn('service_type', ['Geita', 'TanTrade', 'Tantrade'])
         ->where('event_status',1)->get(); // return services provided by only Tantrade
 
         $advice_note=advice_notes::get();
@@ -71,9 +71,9 @@ class OurSponsorController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Sponsors',Role::class))
+        if($request->user()->cannot('CREATE_SPONSORS',Role::class))
         {
-            return back()->with('fail',config('Messages.500'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_SPONSORS'));
         }
         try {
            foreach ($request->service as $value) {
@@ -101,9 +101,9 @@ class OurSponsorController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View Sponsors',Role::class))
+        if($request->user()->cannot('VIEW_SPONSORS',Role::class))
         {
-            return back()->with('fail',config('Messages.500'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_SPONSORS'));
         }
         //
         $advice_note=advice_notes::leftJoin('companies','advice_notes.company_id','=','companies.companyID')
@@ -124,7 +124,7 @@ class OurSponsorController extends Controller
         ->get(); // get all advice note generated in the system;
 
         $service=additional_services::leftJoin('events','additional_services.service_event','=','events.event_id')
-        ->where('service_type','Tantrade')
+        ->whereIn('service_type', ['Geita', 'TanTrade', 'Tantrade'])
         ->where('event_status',1)->get(); // return services provided by only Tantrade
 
         $booths=booths::orderBy('boothNo','ASC')->get();

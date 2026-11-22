@@ -21,9 +21,9 @@ class BankAccountController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('view-bank-accounts',Role::class))
+        if($request->user()->cannot('VIEW_BANK_ACCOUNT_SUBMENU',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BANK_ACCOUNT_SUBMENU'));
         }
         $banks=BankAccount::get();
         return view('settings.BankAccounts',compact('banks'));
@@ -36,9 +36,9 @@ class BankAccountController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Bank Accounts',Role::class))
+        if($request->user()->cannot('CREATE_BANK_ACCOUNT',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_BANK_ACCOUNT'));
         }
 
         // return $request;
@@ -77,9 +77,9 @@ class BankAccountController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('Create Bank Accounts',Role::class))
+        if($request->user()->cannot('CREATE_BANK_ACCOUNT',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_BANK_ACCOUNT'));
         }
     }
 
@@ -92,9 +92,9 @@ class BankAccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Bank Accounts',Role::class))
+        if($request->user()->cannot('UPDATE_BANK_ACCOUNT',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_BANK_ACCOUNT'));
         }
         // return $request;
         $request->validate([
@@ -132,9 +132,9 @@ class BankAccountController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Bank Accounts',Role::class))
+        if($request->user()->cannot('DELETE_BANK_ACCOUNT',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_BANK_ACCOUNT'));
         }
     }
 }

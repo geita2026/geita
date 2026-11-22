@@ -21,6 +21,7 @@
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
 
@@ -43,6 +44,7 @@
 
     </style>
 
+    @include('layouts.sweet-alerts')
     </head>
 <body class="gememis-app">
 <!-- Page container -->
@@ -88,33 +90,7 @@
  <script src="{{ asset('assets/js/pages/datatables_basic.js') }}"></script>
 
 
- <script>
-
-    $(function() {
-        @if(Session::get('success'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'OK',
-            text: '{{ session::get("success") }}',
-            icon: 'icon-check',
-            type: 'success'
-        });
-        });
-    @endif
-
-    @if(Session::get('fail'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'Ooops!',
-            text: '{{ session::get("fail") }}',
-            icon: 'icon-x',
-            type: 'error',
-        });
-        });
-    @endif
-
-    });
-    </script>
+ @include('layouts.flash-toasts')
     <script type="text/javascript" src="{{ asset('assets/js/plugins/notifications/pnotify.min.js') }}"></script>
 
 

@@ -29,6 +29,12 @@ return [
         ]],
     ]],
     'SYSTEM' => ['System Settings', 1, 'icon-cog3', [
+        'INCOME_LIST' => ['Service GFS Codes', 'income_list.index', [
+            'View Income' => 'VIEW_INCOME_LIST_SUBMENU',
+            'Create Income' => 'CREATE_INCOME_LIST',
+            'Update Income' => 'UPDATE_INCOME_LIST',
+            'Delete Income' => 'DELETE_INCOME_LIST',
+        ]],
         'DEFAULT_SETTINGS' => ['Default Settings', 'default_settings.index', [
             'View Default Settings' => 'VIEW_DEFAULT_SETTINGS_SUBMENU',
             'Create Default Settings' => 'CREATE_DEFAULT_SETTINGS',
@@ -61,6 +67,7 @@ return [
     ]],
     'COMPANY' => ['Companies', 1, 'icon-office', [
         'COMPANY' => ['Companies', 'companies.index', [
+            'Company Registration' => 'CREATE_COMPANY',
             'Delete Company' => 'DELETE_COMPANY',
         ]],
         'COMPANY_PROFILE' => ['Company Profiles', 'company_profiles.index', [
@@ -190,12 +197,6 @@ return [
             'Create Bank Accounts' => 'CREATE_BANK_ACCOUNT',
             'Update Bank Accounts' => 'UPDATE_BANK_ACCOUNT',
             'Delete Bank Accounts' => 'DELETE_BANK_ACCOUNT',
-        ]],
-        'INCOME_LIST' => ['Income List', 'income_list.index', [
-            'View Income' => 'VIEW_INCOME_LIST_SUBMENU',
-            'Create Income' => 'CREATE_INCOME_LIST',
-            'Update Income' => 'UPDATE_INCOME_LIST',
-            'Delete Income' => 'DELETE_INCOME_LIST',
         ]],
         'CANCELED_INVOICE' => ['Canceled Invoices', 'canceled_invoices.index', [
             'View Canceled Invoice' => 'VIEW_CANCELED_INVOICE_SUBMENU',

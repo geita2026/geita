@@ -21,8 +21,8 @@ class TextAdvertisementController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Advatisment', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ADVATISMENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ADVATISMENT'));
         }
         $advertisements = TextAdvertisement::get();
         return view('Advertisements.TextAdvertisements', compact('advertisements'));
@@ -36,8 +36,8 @@ class TextAdvertisementController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage Advatisment', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ADVATISMENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ADVATISMENT'));
         }
         $request->validate([
             'advertisement_title' => 'required',
@@ -76,8 +76,8 @@ class TextAdvertisementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Advatisments', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ADVATISMENTS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ADVATISMENTS'));
         }
 
         try {

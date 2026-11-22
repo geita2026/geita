@@ -1,0 +1,241 @@
+.geita-invoice {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px;
+    border: 1px solid #e3d9c8;
+    border-radius: 14px;
+    background: #fff;
+    color: #241e16;
+    font: 13px/1.5 "DejaVu Sans", Arial, sans-serif;
+}
+
+.geita-invoice .invoice-letterhead {
+    padding-bottom: 16px;
+    border-bottom: 3px solid #d6a54f;
+    text-align: center;
+}
+
+.geita-invoice .invoice-emblem {
+    display: block;
+    width: 68px;
+    height: auto;
+    margin: 0 auto 8px;
+}
+
+.geita-invoice .invoice-letterhead h2 {
+    margin: 4px 0 1px;
+    color: #241e16;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.25;
+}
+
+.geita-invoice .invoice-letterhead p {
+    margin: 0;
+    color: #5b5143;
+}
+
+.geita-invoice .invoice-country {
+    color: #735312;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.geita-invoice .invoice-title-row {
+    margin: 17px 0 12px;
+}
+
+.geita-invoice .invoice-title-row h3 {
+    margin: 0 0 3px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.geita-invoice .invoice-status {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 7px;
+    border: 1px solid #e3d9c8;
+    border-radius: 6px;
+    background: #faf5e9;
+    color: #604509;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.geita-invoice .invoice-meta,
+.geita-invoice .invoice-items,
+.geita-invoice .invoice-totals {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.geita-invoice .invoice-meta td {
+    width: 50%;
+    padding: 10px 12px;
+    border: 1px solid #e3d9c8;
+    background: #faf7f1;
+    vertical-align: top;
+    overflow-wrap: break-word;
+}
+
+.geita-invoice .invoice-label {
+    margin: 0 0 3px;
+    color: #735312;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.geita-invoice .invoice-description {
+    margin: 14px 0 10px;
+}
+
+.geita-invoice .invoice-items th,
+.geita-invoice .invoice-items td {
+    padding: 8px;
+    border-bottom: 1px solid #e9e1d6;
+}
+
+.geita-invoice .invoice-items th {
+    background: #272118;
+    color: #fff;
+    font-weight: bold;
+    text-align: left;
+}
+
+.geita-invoice .invoice-items tr {
+    page-break-inside: avoid;
+}
+
+.geita-invoice .invoice-items .invoice-amount,
+.geita-invoice .invoice-totals .invoice-amount {
+    text-align: right;
+}
+
+.geita-invoice .invoice-items .invoice-quantity {
+    text-align: center;
+}
+
+.geita-invoice .invoice-muted {
+    color: #66594a;
+    font-size: 11px;
+}
+
+.geita-invoice .invoice-totals {
+    width: 54%;
+    margin: 10px 0 15px auto;
+    page-break-inside: avoid;
+}
+
+.geita-invoice .invoice-totals td {
+    padding: 4px 8px;
+}
+
+.geita-invoice .invoice-total td {
+    border-top: 1px solid #d6a54f;
+    background: #fff4d6;
+    color: #49350c;
+    font-weight: bold;
+}
+
+.geita-invoice .invoice-payment {
+    padding: 10px 12px;
+    border: 1px solid #e3d9c8;
+    page-break-inside: avoid;
+}
+
+.geita-invoice .invoice-payment p {
+    margin: 0;
+}
+
+.geita-invoice .invoice-footer {
+    margin-top: 16px;
+    padding-top: 10px;
+    border-top: 1px solid #e3d9c8;
+    color: #66594a;
+    font-size: 10px;
+    text-align: center;
+    page-break-inside: avoid;
+}
+
+.geita-invoice .invoice-footer img {
+    display: block;
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 5px;
+}
+
+@media screen and (max-width: 575px) {
+    .geita-invoice {
+        padding: 14px;
+    }
+
+    .geita-invoice .invoice-meta td {
+        display: block;
+        width: 100%;
+    }
+
+    .geita-invoice .invoice-items th,
+    .geita-invoice .invoice-items td {
+        padding: 5px;
+    }
+
+    .geita-invoice .invoice-totals {
+        width: 100%;
+    }
+}
+
+.invoice-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    max-width: 920px;
+    margin: 0 auto 16px;
+}
+
+.invoice-toolbar .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 14px;
+    white-space: normal;
+    text-align: center;
+}
+
+.invoice-toolbar .invoice-toolbar-cancel {
+    margin-inline-start: auto;
+}
+
+.invoice-action-status {
+    max-width: 920px;
+    margin: 0 auto 16px;
+}
+
+@media screen and (max-width: 575px) {
+    .invoice-toolbar {
+        gap: 8px;
+    }
+
+    .invoice-toolbar .btn {
+        flex: 0 1 auto;
+        max-width: 100%;
+        padding-inline: 10px;
+    }
+
+    .invoice-toolbar .invoice-toolbar-cancel {
+        margin-inline-start: 0;
+    }
+}
+
+@media print {
+    .invoice-toolbar,
+    .invoice-action-status {
+        display: none;
+    }
+}

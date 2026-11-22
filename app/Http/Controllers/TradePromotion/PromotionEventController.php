@@ -19,8 +19,8 @@ class PromotionEventController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage PromotionEvents', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PROMOTION_EVENTS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PROMOTION_EVENTS'));
         }
         $promotionEvents = PromotionEvent::get(['eventId', 'eventTitle', 'startFrom', 'endTo', 'eventParticipants', 'eventDescription', 'eventPoster', 'eventStatus', 'registrationDeadline','eventNumber']);
         return view('TradePromotion.PromotionEvents', compact('promotionEvents'));
@@ -34,8 +34,8 @@ class PromotionEventController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage PromotionEvent', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PROMOTION_EVENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PROMOTION_EVENT'));
         }
         $request->validate([
             'eventTitle' => 'required|max:200',
@@ -81,8 +81,8 @@ class PromotionEventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage PromotionEvents', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PROMOTION_EVENTS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PROMOTION_EVENTS'));
         }
 
         $request->validate([
@@ -133,8 +133,8 @@ class PromotionEventController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete PromotionEvents', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_PROMOTION_EVENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_PROMOTION_EVENT'));
         }
         try {
             $event = PromotionEvent::find($id);

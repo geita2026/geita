@@ -33,9 +33,9 @@ class InvoiceController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View My Invoice',Role::class))
+        if($request->user()->cannot('VIEW_MY_INVOICE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_MY_INVOICE'));
         }
         //
 
@@ -62,9 +62,9 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create My Invoice',Role::class))
+        if($request->user()->cannot('CREATE_MY_INVOICE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_MY_INVOICE'));
         }
         //
 
@@ -117,9 +117,9 @@ class InvoiceController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View My Invoice',Role::class))
+        if($request->user()->cannot('VIEW_MY_INVOICE',Role::class))
         {
-            return response()->json(['status'=>2,'fail'=>'You do not have permission to perform this Action']);
+            return response()->json(['status'=>2,'fail'=>$this->permissionDeniedMessage('VIEW_MY_INVOICE')]);
         }
         //
         $inv = advice_notes::leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
@@ -141,7 +141,7 @@ class InvoiceController extends Controller
             ->get([
                 'advice_notes.advice_note_id', 'companyName', 'advice_note_created_at', 'companyAddress', 'companyLocation',
                 'companyPhone', 'personalPhone', 'first_name', 'last_name', 'companyEmail', 'roles.name', 'advice_note_deadline', 'advice_note_description', 'tinNo', 'users.user_signature', 'registrationNo', 'advice_note_status',
-                'advice_notes.updated_at', 'event_name', 'event_descriptions', 'vat', 'total_amount', 'currency', 'advice_notes.control_number',
+                'event_name', 'event_descriptions', 'vat', 'total_amount', 'currency', 'advice_notes.control_number',
                 'rejection_comment', 'total_amount', 'account_type', 'discount', 'discount_reasons', 'discount_attachment', 'initially_assessed_by',
                 'finally_assessed_by', 'rejection_reasons', 'balance', 'amount_paid', 'change_currency', 'new_deadline', 'sp_invoice_no'
             ]);
@@ -198,9 +198,9 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('View My Invoice',Role::class))
+        if($request->user()->cannot('VIEW_MY_INVOICE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_MY_INVOICE'));
         }
         //
 
@@ -237,9 +237,9 @@ class InvoiceController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete My Invoice',Role::class))
+        if($request->user()->cannot('DELETE_MY_INVOICE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_MY_INVOICE'));
         }
 
         try {

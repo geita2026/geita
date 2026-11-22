@@ -204,7 +204,7 @@
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-right">
 
-                                               @can('Delete Sponsor')
+                                               @can('DELETE_SPONSOR')
                                                 <li>
                                                     <a  data-toggle="modal" data-target="#DeleteSponsor{{ $item->sponsor_id }}" class=" text-danger"><i class="icon-bin"></i> Delete Sponsor</a>
                                                 </li>

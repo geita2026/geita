@@ -3,7 +3,7 @@
     @method('PUT')
 
     @if ($item->applicationStatus == 2 && Auth::user()->user_uuid == $item->asignedUser)
-        @can('Review StageTwo')
+        @can('REVIEW_STAGE_TWO')
             <div class=" row">
                 <div class=" col-md-4">
                     <label>Select Review Decision<i class=" text-danger">*</i></label>

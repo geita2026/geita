@@ -19,9 +19,9 @@ class DbManagementController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Permissions',Permission::class))
+        if($request->user()->cannot('VIEW_PERMISSION_SUBMENU',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_PERMISSION_SUBMENU'));
         }
         try
         {

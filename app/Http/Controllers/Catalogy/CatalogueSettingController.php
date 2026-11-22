@@ -33,8 +33,8 @@ class CatalogueSettingController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Catalogue', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_CATALOGUE_SETTING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_CATALOGUE_SETTING'));
             }
             $catalogueSettings = CatalogueSetting::orderBy('order_number', 'ASC')
                 ->leftJoin('events', 'catalogue_settings.event', '=', 'events.event_id')
@@ -56,8 +56,8 @@ class CatalogueSettingController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Catalogue', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_CATALOGUE_SETTING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_CATALOGUE_SETTING'));
             }
             $validator = Validator::make($request->all(), [
                 'leader_name' => 'required',
@@ -97,8 +97,8 @@ class CatalogueSettingController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Catalogue', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_CATALOGUE_SETTING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_CATALOGUE_SETTING'));
             }
             $validator = Validator::make($request->all(), [
                 'leader_name' => 'required',
@@ -140,8 +140,8 @@ class CatalogueSettingController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Catalogue', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_CATALOGUE_SETTING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_CATALOGUE_SETTING'));
             }
             $leader = CatalogueSetting::find($id);
             if (File::delete(public_path('CatalogueImages/') . $leader->leader_image)) {
@@ -157,8 +157,8 @@ class CatalogueSettingController extends Controller
     public function confirmParticipation(Request $request)
     {
         try {
-            if ($request->user()->cannot('Confirm Participation', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CONFIRM_PARTICIPATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CONFIRM_PARTICIPATION'));
             }
 
             $companyId = $request->companyId;
@@ -259,8 +259,8 @@ class CatalogueSettingController extends Controller
     public function uploadParticipationForm(Request $request, $participationId)
     {
         try {
-            if ($request->user()->cannot('Book Space', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
             }
             $validator = Validator::make($request->all(), [
                 'participationForm' => 'required|mimes:pdf'

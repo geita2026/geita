@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\companyExport;
 use App\Models\advice_note\advice_notes;
-use App\Models\exhibition\exhibition_products;
-use App\Models\Permits\Permit;
 use App\Models\setting\BankAccount;
 use App\Models\setting\DefaultSettings;
 use App\Models\settings\events;
@@ -26,9 +24,9 @@ class DownloadController extends Controller
     }
 
     function ExportCompanies(Request $request){
-        if($request->user()->cannot('Export All Companies',Role::class))
+        if($request->user()->cannot('EXPORT_ALL_COMPANIES',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('EXPORT_ALL_COMPANIES'));
         }
         return Excel::download(new companyExport, 'companies.xlsx');
 
@@ -41,9 +39,9 @@ class DownloadController extends Controller
      * @return \Illuminate\Http\Response
      */
     function DownloadInvoice(Request $request){
-        if($request->user()->cannot('Download Invoice',Role::class))
+        if($request->user()->cannot('DOWNLOAD_INVOICE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DOWNLOAD_INVOICE'));
         }
 
         $id=$request->id;
@@ -57,7 +55,7 @@ class DownloadController extends Controller
             'advice_notes.advice_note_id','companyName','advice_note_created_at','companyAddress','companyLocation',
             'companyPhone','personalPhone','first_name','last_name','companyEmail','roles.name','advice_note_deadline'
             ,'advice_note_description','tinNo','users.user_signature','registrationNo','advice_note_status',
-            'advice_notes.updated_at','event_name','event_descriptions','vat','total_amount','currency','control_number',
+            'event_name','event_descriptions','vat','total_amount','currency','control_number',
             'balance','amount_paid','account_type','registrationID','sp_invoice_no'
             ]);
         //end
@@ -122,9 +120,9 @@ class DownloadController extends Controller
 
     // download collection reports
     function ExportCollectionReport(Request $request){
-        if($request->user()->cannot('Download Collection Report',Role::class))
+        if($request->user()->cannot('DOWNLOAD_COLLECTION_REPORT',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DOWNLOAD_COLLECTION_REPORT'));
         }
             $from_date=session('from_date');
             $to_date=session('to_date');
@@ -152,9 +150,9 @@ class DownloadController extends Controller
 
     #Space Booking Reprot
     function ExportSpaceReport(Request $request){
-        if($request->user()->cannot('Export Space Report',Role::class))
+        if($request->user()->cannot('EXPORT_SPACE_REPORT',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('EXPORT_SPACE_REPORT'));
         }
     }
     #Space Booking
@@ -165,35 +163,4 @@ class DownloadController extends Controller
 
     }
     #End Export Exhibitors
-
-    #Download Invoice
-    public function DownloadPermit($id){
-
-        $permit1=Permit::find($id);
-        $downloadNumber=random_int(1000,9999).'-'.date('dm').'-'.date('Y');
-        $permit1->update(['downloadNumber'=>$downloadNumber]);
-        $companyId=$permit1->company_id;
-
-        $permit=Permit::leftJoin('companies','permits.company_id','=','companies.companyID')
-        ->leftJoin('users','permits.approvedBy','=','users.user_uuid')
-        ->leftJoin('roles','users.role','=','roles.id')->where('permit_id',$id)->get();
-
-        $products=exhibition_products::leftJoin('events','exhibition_products.event','=','events.event_id')
-        ->where('event_status',1)->where('exhibitor_id',$companyId)->get();
-
-        $pdf = PDF::loadView('IOPermits.DownloadablePermit',compact('permit','products'));
-                 $pdf->getDomPDF()->setHttpContext(
-            stream_context_create([
-                'ssl' => [
-                    'allow_self_signed'=> true,
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ]
-            ])
-        );
-        $pdf->render();
-        
-            // return $pdf->download($id.'.pdf');
-            return $pdf->stream($id);
-    }
 }

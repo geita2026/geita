@@ -21,9 +21,9 @@ class exhibitionCollectionController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Manage CollectionReports',Role::class))
+        if($request->user()->cannot('MANAGE_COLLECTION_REPORTS',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('MANAGE_COLLECTION_REPORTS'));
         }
         //
 

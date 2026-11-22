@@ -18,6 +18,20 @@ class FirstCompanyRegistrationController extends Controller
     {
         abort_unless((int) $request->user()->account_type === 2, 403);
 
+        return $this->register($request, true);
+    }
+
+    public function storeFromCompanyList(Request $request)
+    {
+        if ($request->user()->cannot('CREATE_COMPANY')) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
+        }
+
+        return $this->register($request, false);
+    }
+
+    private function register(Request $request, bool $firstCompanyOnly)
+    {
         $data = $request->validateWithBag('firstCompany', [
             'companyName' => ['required', 'string', 'max:255'],
             'tinNo' => ['required', 'digits:9'],
@@ -35,7 +49,7 @@ class FirstCompanyRegistrationController extends Controller
             'isAcceptedTerms' => ['accepted'],
         ]);
 
-        $company = DB::transaction(function () use ($request, $data) {
+        $company = DB::transaction(function () use ($request, $data, $firstCompanyOnly) {
             $year = now()->year;
             $sequence = DB::table('company_registration_sequences')->where('year', $year);
             DB::table('company_registration_sequences')->insertOrIgnore([
@@ -47,7 +61,7 @@ class FirstCompanyRegistrationController extends Controller
             $user = User::whereKey($request->user()->getKey())->lockForUpdate()->firstOrFail();
             $alreadyRegistered = $user->myCompany
                 || CompanyAdmin::where('adminId', $user->user_uuid)->exists();
-            if ($alreadyRegistered) {
+            if ($firstCompanyOnly && $alreadyRegistered) {
                 return null;
             }
 
@@ -76,12 +90,16 @@ class FirstCompanyRegistrationController extends Controller
                 'status' => 1,
                 'lastUpdatedOn' => $year,
             ]));
-            CompanyAdmin::create([
-                'referenceId' => (string) Str::uuid(),
-                'adminId' => $user->user_uuid,
-                'companyId' => $company->companyID,
-            ]);
-            $user->update(['myCompany' => $company->companyID]);
+            if ((int) $user->account_type === 2) {
+                CompanyAdmin::create([
+                    'referenceId' => (string) Str::uuid(),
+                    'adminId' => $user->user_uuid,
+                    'companyId' => $company->companyID,
+                ]);
+                if (!$user->myCompany) {
+                    $user->update(['myCompany' => $company->companyID]);
+                }
+            }
             $sequence->update(['last_number' => $nextNumber]);
 
             return $company;
@@ -91,7 +109,7 @@ class FirstCompanyRegistrationController extends Controller
             return redirect()->route('startApp');
         }
 
-        return redirect()->route('startApp')->with(
+        return redirect()->route($firstCompanyOnly ? 'startApp' : 'companies.index')->with(
             'success',
             'Company registered successfully. Your registration ID is ' . $company->registrationID . '.'
         );

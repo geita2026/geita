@@ -22,8 +22,8 @@ class EventTypeController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             $eventTypes = PromotionEventType::get();
             return view('ePermit.eventTypes.eventTypeList', compact('eventTypes'));
@@ -39,8 +39,8 @@ class EventTypeController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             return view('ePermit.eventTypes.CreateEventType');
         } catch (Throwable $e) {
@@ -57,8 +57,8 @@ class EventTypeController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             $validator = Validator::make($request->all(), [
                 'promotionEventTypeName' => 'required',
@@ -97,8 +97,8 @@ class EventTypeController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
         }
     }
 
@@ -111,8 +111,8 @@ class EventTypeController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             $eventType = PromotionEventType::where('eventTypeId', $id)->get();
             return view('ePermit.eventTypes.EditEventType', compact('eventType'));
@@ -131,8 +131,8 @@ class EventTypeController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             $validator = Validator::make($request->all(), [
                 'promotionEventTypeName' => 'required',
@@ -182,8 +182,8 @@ class EventTypeController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage EventTypes', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_EVENT_TYPE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_EVENT_TYPE'));
             }
             $eventType = PromotionEventType::find($id);
             $eventTypePoster = $eventType->eventTypePoster;

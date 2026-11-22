@@ -55,7 +55,7 @@
 
             <div class=" p-20">
 
-                @can('View Booking Progress Reports')
+                @can('VIEW_BOOKING_PROGRESS_REPORTS')
             <div class="row zoom text-center mb-20" style="border:3px solid rgb(169, 169, 187); border-radius:0.5%">
                 <div class=" form-group">
                     <h4 class=" text-bold text-monospace" style=" border-bottom:1px dotted rgb(20, 206, 206);">CURRENT EXHIBITION SPACE BOOKING STATUS</h4>
@@ -99,7 +99,7 @@
 
 
 
-            @can('View All Exhibitor Reports')
+            @can('VIEW_ALL_EXHIBITOR_REPORTS')
             <div class="row zoom text-center mt-20" style="border:3px solid rgb(51, 51, 58); border-radius:0.5%">
                 <div class=" form-group">
                     <h4 class=" text-bold text-monospace" style=" border-bottom:1px dotted rgb(20, 206, 206);">CURRENT EXHIBITORS PARTICIPATION STATUS</h4>
@@ -150,7 +150,7 @@
 
 
 
-            @can('View All Advice Notes')
+            @can('VIEW_ALL_ADVICE_NOTES')
             <div class="row zoom text-center mt-20" style="border:3px solid rgb(51, 51, 58); border-radius:0.5%">
                 <div class=" form-group">
                     <h4 class=" text-bold text-monospace" style=" border-bottom:1px dotted rgb(20, 206, 206);">CURRENT INVOICES(ADVICE NOTES) STATUS</h4>

@@ -44,7 +44,7 @@
         <!-- Dashboard content -->
         <div class="row">
 
-            @can('Review Applications')
+            @can('REVIEW_APPLICATIONS')
                 @php
                     $unsubmited = 0;
                     $submited = 0;
@@ -193,7 +193,7 @@
 
             @endcan
 
-            @can('View My Application')
+            @can('VIEW_MY_APPLICATION')
                 <div class="col-lg-12">
                     <!-- Daily sales -->
                     <div class="panel panel-flat">

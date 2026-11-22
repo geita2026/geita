@@ -22,8 +22,8 @@ class VirtualServiceController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('View Virtual Services', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_VIRTUAL_SERVICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_VIRTUAL_SERVICES'));
             }
             $virtual_pavilions = VirtualService::get();
             return view('Exhibition.VirtualPavilions', compact('virtual_pavilions'));
@@ -40,8 +40,8 @@ class VirtualServiceController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('Create Virtual Services', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CREATE_VIRTUAL_SERVICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_VIRTUAL_SERVICES'));
             }
             //
 
@@ -64,8 +64,8 @@ class VirtualServiceController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create Virtual Services', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_VIRTUAL_SERVICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_VIRTUAL_SERVICES'));
         }
         $id = session('participation_id');
         $request->validate([
@@ -103,8 +103,8 @@ class VirtualServiceController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('View Virtual Services', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_VIRTUAL_SERVICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_VIRTUAL_SERVICES'));
             }
             //
             session(['participation_id' => $id]); // save participation id in session.
@@ -125,8 +125,8 @@ class VirtualServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Virtual Services', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_VIRTUAL_SERVICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_VIRTUAL_SERVICES'));
         }
         //
         $request->validate([
@@ -166,8 +166,8 @@ class VirtualServiceController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Virtual Service', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_VIRTUAL_SERVICE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_VIRTUAL_SERVICE'));
         }
         //
         try {

@@ -17,9 +17,9 @@ class helpController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->cannot('View FeedBack',Permission::class))
+        if($request->user()->cannot('VIEW_FEED_BACK',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_FEED_BACK'));
         }
         //
         $account_type=Auth::user()->account_type;
@@ -51,9 +51,9 @@ class helpController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create FeedBack',Permission::class))
+        if($request->user()->cannot('CREATE_FEED_BACK',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_FEED_BACK'));
         }
 
         $request->validate([
@@ -81,9 +81,9 @@ class helpController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update FeedBack',Permission::class))
+        if($request->user()->cannot('UPDATE_FEED_BACK',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_FEED_BACK'));
         }
 
       try {
@@ -106,9 +106,9 @@ class helpController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete FeedBack',Permission::class))
+        if($request->user()->cannot('DELETE_FEED_BACK',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_FEED_BACK'));
         }
         //
         try {

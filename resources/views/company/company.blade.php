@@ -41,13 +41,6 @@
 
             <div class="panel-body table-responsive">
 
-                <!-- COMPANY REGISTRATION FORM -->
-                <div class="row mb-15">
-                    <div class="col-md-12">
-                        @include('company.NewCompanyRegistration')
-                    </div>
-                </div>
-
                 <form action="{{ route('companies.index') }}" method="GET" class="gememis-table-toolbar">
                     <label class="sr-only" for="company-table-search">Search companies</label>
                     <input type="search" class="form-control" id="company-table-search" name="search"
@@ -56,6 +49,10 @@
                     @if (request()->filled('search'))
                         <a href="{{ route('companies.index') }}" class="btn btn-default">Clear</a>
                     @endif
+                    <button type="button" class="btn btn-primary gememis-table-register"
+                        data-toggle="modal" data-target="#NoCompany" aria-haspopup="dialog">
+                        Register Company
+                    </button>
                 </form>
 
                 <!-- TABLE -->

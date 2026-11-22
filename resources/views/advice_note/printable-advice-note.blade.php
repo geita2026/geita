@@ -1,8 +1,7 @@
 <title>
     {{ env('APP_NAME') }} | Invoice</title>
 <x-app-layout>
-    <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css?family=Open+Sans|Rock+Salt|Shadows+Into+Light|Cedarville+Cursive">
+    <link rel="stylesheet" href="{{ asset('assets/css/exhibition-invoice.css') }}">
     {{-- page header --}}
     <div class="page-header">
         <div class="page-header-content">
@@ -41,151 +40,63 @@
 
                 {{--  message  --}}
                 @foreach ($adviceNotes as $item)
-                    <div class=" row form-group">
-                        {{-- <div class=" col-md-2 text-center" style="font-size:1vmin">
-                            <b style="font-size:150%;">PAID: <b
-                                    class=" text-success">{{ number_format($item->amount_paid, 2) }}
-                                    {{ $item->currency }}</b></b>
-                            <b style="font-size:150%;" class=" ml-10">|</b>
-                            <b style="font-size:150%;" class=" ml-10">BALANCE: <b
-                                    class=" text-warning">{{ number_format($item->balance, 2) }}
-                                    {{ $item->currency }}</b></b>
-                        </div> --}}
-                        <div class=" col-md-9">
-                            @if ($exhibitor)
-                                @if ($item->control_number == null)
-                                    <div class="alert alert-info no-border">
-                                        <button type="button" class="close"
-                                            data-dismiss="alert"><span>&times;</span><span
-                                                class="sr-only">Close</span></button>
-                                        Congratulations for booking space for 50<sup>th</sup> DITF, Please request
-                                        control number Now.
-                                    </div>
-                                @else
-                                    @if (Auth::user()->account_type == 1)
-                                        @if ($exhibitor->participationCommitimentFile != null)
-                                            <a href="{{ $exhibitor->participationCommitimentFile }}"
-                                                class=" btn btn-primary">Preview Signed Participation Form <i
-                                                    class=" icon icon-file-eye2"></i></a>
-                                        @endif
-                                    @else
-                                        @if ($item->control_number == null)
-                                            <div class="alert alert-info no-border">
-                                                <button type="button" class="close"
-                                                    data-dismiss="alert"><span>&times;</span><span
-                                                        class="sr-only">Close</span></button>
-                                                Congratulations for booking space for 50<sup>th</sup> DITF, Control
-                                                number will be given After your Application being reviewed! This may
-                                                take one to two working hours.
-                                            </div>
-                                        @else
-                                            <div class="alert alert-success no-border">
-                                                <button type="button" class="close"
-                                                    data-dismiss="alert"><span>&times;</span><span
-                                                        class="sr-only">Close</span></button>
-                                                Congratulations for being Accepted as Exhibitor for the 49<sup>th</sup>
-                                                DITF. @if ($item->amout_paid == 0)
-                                                    <b class=" text-danger">Note! Your booking will be canceled
-                                                        automatically by the system if you fail to pay your full invoice
-                                                        Amount before
-                                                        {{ date('M d, Y h:i:s', strtotime($item->advice_note_deadline)) }}
-                                                @endif
-                                                </b>.
-                                            </div>
-                                        @endif
-                                    @endif
-                                @endif
+                    @php
+                        $canceled = $item->advice_note_status === 'CANCELED';
+                        $canRequestControl = !$canceled && !$item->control_number && !$item->sp_invoice_no
+                            && Auth::user()->can('REQUEST_ADVICE_NOTE');
+                        $canDownload = $item->control_number && Auth::user()->can('DOWNLOAD_INVOICE');
+                        $canPreviewForm = Auth::user()->account_type == 1 && $exhibitor?->participationCommitimentFile;
+                        $canApplyDiscount = !$canceled && !$item->sp_invoice_no && Auth::user()->can('APPLY_DISCOUNT');
+                        $canExtendDeadline = !$canceled && $item->control_number && $item->advice_note_deadline
+                            && strtotime($item->advice_note_deadline) < strtotime('today') && Auth::user()->can('EXTEND_DEADLINE');
+                        $canCancel = !$canceled && $item->amount_paid == 0 && Auth::user()->can('CANCEL_INVOICES');
+                    @endphp
+
+                    @if ($canRequestControl || $canDownload || $canPreviewForm || $canApplyDiscount || $canExtendDeadline || $canCancel)
+                        <div class="invoice-toolbar" role="group" aria-label="Invoice actions">
+                            @if ($canRequestControl)
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#requestControlNumber{{ $item->advice_note_id }}">
+                                    <i class="icon-arrow-right13" aria-hidden="true"></i> Request control number
+                                </button>
                             @endif
-                        </div>
-                        <div class=" col-md-2 text-center">
-                            @if ($item->sp_invoice_no == null)
-                                <a data-toggle="modal" data-target="#requestControlNumber{{ $item->advice_note_id }}"
-                                    class="text-bold btn btn-primary" title="Request Control Number">Request
-                                    Control Number<i class=" icon-arrow-right13"></i>
+                            @if ($canDownload)
+                                <a class="btn {{ $canRequestControl ? 'btn-default' : 'btn-primary' }}"
+                                    href="{{ route('download_invoice', ['id' => $item->advice_note_id]) }}"
+                                    target="_blank" rel="noopener">
+                                    <i class="icon-download" aria-hidden="true"></i> Download invoice
                                 </a>
                             @endif
+                            @if ($canPreviewForm)
+                                <a href="{{ $exhibitor->participationCommitimentFile }}" class="btn btn-default">
+                                    <i class="icon-file-eye2" aria-hidden="true"></i> Preview signed form
+                                </a>
+                            @endif
+                            @if ($canApplyDiscount)
+                                <a href="{{ route('review_invoice_discount', ['id' => $item->advice_note_id]) }}" class="btn btn-default">
+                                    <i class="icon-pencil7" aria-hidden="true"></i> Manage discount
+                                </a>
+                            @endif
+                            @if ($canExtendDeadline)
+                                <button type="button" class="btn btn-default" data-toggle="modal"
+                                    data-target="#Extend{{ $item->advice_note_id }}">
+                                    <i class="icon-calendar2" aria-hidden="true"></i> Extend deadline
+                                </button>
+                            @endif
+                            @if ($canCancel)
+                                <button type="button" class="btn btn-danger invoice-toolbar-cancel" data-toggle="modal"
+                                    data-target="#cancelInvoice{{ $item->advice_note_id }}">
+                                    <i class="icon-cross2" aria-hidden="true"></i> Cancel invoice
+                                </button>
+                            @endif
                         </div>
-                        <div class="col-md-1 text-center">
-                            <ul class="icons-list">
-                                <li class="dropdown">
-                                    <a href="#"
-                                        class="dropdown-toggle text-primary text-bold btn btn-default border-success"
-                                        data-toggle="dropdown">
-                                        Actions <i class="icon-menu4"></i>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-right">
+                    @endif
 
-                                        {{-- Approve Control Number --}}
-                                        @if ($item->sp_invoice_no == null)
-                                            @can('Request ControlNumber')
-                                                <li>
-                                                    <a data-toggle="modal"
-                                                        data-target="#requestControlNumber{{ $item->advice_note_id }}"
-                                                        class=" text-primary text-bold"
-                                                        title="Request
-                                                        Control Number">Request
-                                                        Control Number<i class=" icon-arrow-right13"></i>
-                                                    </a>
-                                                </li>
-                                            @endcan
-                                        @endif
-
-                                        {{-- ********download invoice********* --}}
-                                        @can('Download Invoice')
-                                            @if ($item->control_number)
-                                                <li>
-                                                    <a onclick=" event.preventDefault();document.getElementById('download_invoice').submit();"
-                                                        class=" text-primary text-bold" title="Download Invoice">Download
-                                                        Invoice<i class=" icon-arrow-right13"></i></a>
-                                                </li>
-                                            @endif
-                                        @endcan
-                                        {{-- ******** end download invoice ****** --}}
-
-
-                                        {{-- Apply Discount --}}
-                                        @if ($item->sp_invoice_no == null && $item->advice_note_status != 'CANCELED')
-                                            @can('apply-discount')
-                                                <li>
-                                                    <a href="{{ route('review_invoice_discount', ['id' => $item->advice_note_id]) }}"
-                                                        class=" text-primary text-bold" title="Download Invoice">Manage
-                                                        Discount<i class="icon-arrow-right13"></i></a>
-                                                </li>
-                                            @endcan
-                                        @endif
-                                        {{-- End Apply discount --}}
-
-                                        {{-- ****EXTEND DEADLINE********* --}}
-                                        @can('Extend Deadline')
-                                            @if (date('Ymd', strtotime($item->advice_note_deadline)) < date('Ymd') &&
-                                                    $item->control_number != null &&
-                                                    $item->advice_note_status != 'CANCELED')
-                                                <li>
-                                                    <a data-toggle="modal" data-target="#Extend{{ $item->advice_note_id }}"
-                                                        class=" text-primary"><i class="icon-arrow-right13"></i> Extend
-                                                        Deadline</a>
-                                                </li>
-                                            @endif
-                                        @endcan
-                                        {{-- ******END EXTEND DEADLINE******* --}}
-
-                                        {{-- ******* CANCEL INVOICE ******* --}}
-                                        @can('Cancel Invoices')
-                                            @if ($item->amount_paid == 0 && $item->advice_note_status != 'CANCELED')
-                                                <li>
-                                                    <a data-toggle="modal"
-                                                        data-target="#cancelInvoice{{ $item->advice_note_id }}"
-                                                        title="Cancel Advice Note" class=" text-danger"><i
-                                                            class="icon-arrow-right13"></i> Cancel Invoice</a>
-                                                </li>
-                                            @endif
-                                        @endcan
-                                        {{-- ****** END CANCELE INVOICE **** --}}
-
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
+                    @if ($exhibitor && !$item->control_number && !$canceled)
+                        <p class="alert alert-info invoice-action-status" role="status">
+                            The control number for this Geita Mineral Exhibition invoice is pending.
+                        </p>
+                    @endif
 
                         {{-- *********** INVOICE Control Number ******** --}}
                         <div id="requestControlNumber{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
@@ -248,15 +159,9 @@
                                                         <input type="checkbox" name="isAcceptedTerms" class="styled"
                                                             required style=" width: 20px;height: 20px;"
                                                             @if ($item->isAcceptedTerms ?? 0 == 1) checked @endif>
-                                                        By accessing or using <a
-                                                            href="https://tradefair.tantrade.go.tz"
-                                                            target="_newtab">tradefair.tantrade.go.tz</a>, you agree to
-                                                        be bound by <a href="{{ route('terms_and_condition.index') }}"
-                                                            target="_newtab">Terms
-                                                            and Conditions</a>. If
-                                                        you
-                                                        do not agree with any part of these terms, please do not use our
-                                                        service.
+                                                        I accept the
+                                                        <a href="{{ route('terms_and_condition.index') }}" target="_blank"
+                                                            rel="noopener">GeMEMIS terms and conditions</a>.
                                                     </label>
                                                 </div>
                                             </div>
@@ -413,11 +318,7 @@
                         </div>
                         {{-- ******** END UPLOAD PARTICIPATION FORM --}}
 
-                    </div>
-                    <hr>
-                    <div style="font-size: 12px;">
-                        @include('advice_note.invoice')
-                    </div>
+                    @include('advice_note.invoice', ['invoiceStylesLoaded' => true])
                 @endforeach
             </div>
 
@@ -431,14 +332,6 @@
     <!-- /main content -->
 </x-app-layout>
 
-
-{{-- download form --}}
-<form action="{{ route('download_invoice') }}" method="POST" id="download_invoice" target="_blank">
-    @csrf
-    <input type="hidden" name="id" value="{{ $item->advice_note_id }}">
-    @method('GET')
-</form>
-{{-- end --}}
 
 <div id="ConfirmInvoice{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
     <div class="modal-dialog modal-lg">

@@ -62,13 +62,13 @@
                                             <i class="icon-menu4"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @can('Update Menu')
+                                            @can('UPDATE_MENU')
                                             <li>
                                                 <a href="{{ route('system_menus_level_one.edit',['system_menus_level_one'=>$item->level_one_menu_id]) }}" class=" text-primary"><i class=" icon-pencil7"></i> Edit Menu</a>
                                             </li>
                                             @endcan
 
-                                            @can('Update Menu')
+                                            @can('UPDATE_MENU')
                                             <li>
                                                 <a href="#" onclick=" event.preventDefault();document.getElementById('{{ $item->level_one_menu_id }}level_two_menu').submit();" class=" text-primary"><i class=" icon-link2"></i>Sub Menus</a>
                                                 <form action="{{ route('system_menus_level_two.index',['system_menus_level_one'=>$item->level_one_menu_id]) }}" method="post" id="{{ $item->level_one_menu_id }}level_two_menu">@csrf
@@ -77,7 +77,7 @@
                                             </li>
                                             @endcan
 
-                                            @can('Delete Menu')
+                                            @can('DELETE_LEVEL_TWO_MENU')
                                             <li>
                                                 <a  data-toggle="modal" data-target="#{{ $item->level_one_menu_id }}"  class=" text-danger"><i class="icon-bin"></i> Delete Menu</a>
                                             </li>

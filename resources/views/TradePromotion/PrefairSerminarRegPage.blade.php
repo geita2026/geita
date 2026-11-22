@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="{{ asset('frontEndAssets/css/responsive.css') }}">
 
     <link rel="icon" href="{{ asset('images/Logo.png') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 </head>
 
 <body class="">

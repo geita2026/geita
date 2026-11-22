@@ -173,7 +173,7 @@
     </div>
 
     {{-- external Users --}}
-    @can('Give Feedback')
+    @can('GIVE_FEEDBACK')
     <div class="col-lg-5">
         <!-- Search -->
         <div class="panel panel-flat">

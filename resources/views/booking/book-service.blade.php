@@ -1,63 +1,15 @@
 <x-app-layout>
-    <title>{{ env('APP_NAME') }} | Service Booking</title>
+    <title>{{ config('app.name') }} | Book Services</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/service-booking.css') }}">
 
-    <style>
-        .section-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 6px 18px rgba(0,0,0,.06);
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            color: #1f2937;
-            margin-bottom: 10px;
-        }
-
-        .section-note {
-            font-size: 13px;
-            color: #b91c1c;
-            margin-bottom: 16px;
-        }
-
-        table th {
-            background: #f8fafc;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-        }
-
-        .total-row {
-            font-size: 16px;
-            font-weight: 700;
-            color: #2563eb;
-        }
-
-        .form-footer {
-            margin-top: 16px;
-            text-align: right;
-        }
-    </style>
-
-    {{-- PAGE HEADER --}}
     <div class="page-header">
         <div class="page-header-content">
             @include('layouts.heading-elements')
         </div>
-
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li>
-                    <a href="#">
-                        <i class="icon-home position-left"></i> Home
-                    </a>
-                </li>
-                <li class="active">Service Booking</li>
+                <li><a href="{{ route('startApp') }}"><i class="icon-home position-left"></i> GeMEMIS</a></li>
+                <li class="active">Book Services</li>
             </ul>
             <ul class="breadcrumb-elements">
                 @include('layouts.help')
@@ -65,197 +17,161 @@
         </div>
     </div>
 
-    {{-- CONTENT --}}
-    <div class="content">
-
-        {{-- ================= BOOKING FORM ================= --}}
-        <div class="section-card">
-
-            <div class="section-title text-center">
-                Exhibition Extra Services Booking
-            </div>
-
-            <div class="section-note text-center">
-                Note: Extra services can only be booked after exhibitor confirmation.
-            </div>
-
-            {{-- VALIDATION ERRORS --}}
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
+    <div class="content service-booking">
+        <header class="service-booking-header">
+            <h1>Book exhibition services</h1>
+            @if ($event)
+                <p>{{ $event->event_name }}</p>
             @endif
+        </header>
 
-            <form action="{{ route('book-services.store') }}" method="POST">
-                @csrf
+        <div class="service-booking-layout">
+            <section class="service-booking-card" aria-labelledby="add-booking-service">
+                <h2 id="add-booking-service">Add a service</h2>
 
-                <div class="row">
-
-                    {{-- CHECK EXISTING CUSTOMER --}}
-                    @php $hasCustomer = false; @endphp
-                    @foreach ($booked_services as $item)
-                        <input type="hidden" name="customer_name" value="{{ $item->company_id }}">
-                        @php $hasCustomer = true; @endphp
-                    @endforeach
-
-                    {{-- CUSTOMER SELECT (INTERNAL USERS) --}}
-                    @if (!$hasCustomer)
-                        <div class="col-md-6 form-group">
-                            <label>Select Customer (Company) <i class="text-danger">*</i></label>
-                            <select id="search-select" name="customer_name" class="form-control" required></select>
-                        </div>
-                    @endif
-
-                    {{-- SERVICE SELECT --}}
-                    <div class="col-md-4 form-group">
-                        <label>Select Service <i class="text-danger">*</i></label>
-                        <select name="service_name" class="bootstrap-select"
-                                data-live-search="true" data-width="100%" required>
-                            <option value="">— Select Service —</option>
-                            @foreach ($services as $service)
-                                <option value="{{ $service->serviceID }}">
-                                    {{ $service->serviceName }}
-                                    — {{ number_format($service->serviceCost,2) }}
-                                    {{ $service->type_of_currency }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- QUANTITY --}}
-                    <div class="col-md-2 form-group">
-                        <label>Quantity <i class="text-danger">*</i></label>
-                        <input type="number" name="service_quantity"
-                               class="form-control" min="1" value="1" required>
-                    </div>
-
-                    {{-- EXHIBITION YEAR --}}
-                    @foreach ($services as $val) @endforeach
-                    <input type="hidden" name="exhibition_year" value="{{ $val->service_event ?? '' }}">
-
-                    <div class="col-md-12 form-footer">
-                        <button class="btn btn-primary">
-                            Add Service <i class="icon-plus2"></i>
-                        </button>
-                    </div>
-
-                </div>
-            </form>
-        </div>
-
-        {{-- ================= BOOKED SERVICES ================= --}}
-        <div class="section-card">
-
-            <div class="section-title text-center">
-                @if (Auth::user()->account_type == 1 && isset($item))
-                    Services Booking For <span class="text-primary">{{ $item->companyName ?? '' }}</span>
+                @if (!$bookingOpen)
+                    <p class="service-booking-note">Service booking is currently closed.</p>
+                @elseif (!$event)
+                    <p class="service-booking-note">There is no exhibition selected for service booking.</p>
+                @elseif ($services->isEmpty())
+                    <p class="service-booking-note">No other services are available for this booking.</p>
+                @elseif (!$draft && $companies->isEmpty())
+                    <p class="service-booking-note">No eligible companies are registered for this exhibition.</p>
                 @else
-                    List of Booked Services
+                    <form id="service-booking-form" action="{{ route('book-services.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="exhibition_year" value="{{ $event->event_id }}">
+
+                        <div class="form-group">
+                            @if ($draft)
+                                <span class="service-booking-label">Company</span>
+                                <div class="service-booking-selection">{{ $draft->companyName ?? 'Selected company' }}</div>
+                                <input type="hidden" name="customer_name" value="{{ $draft->company_id }}">
+                            @else
+                                <label for="service-booking-company">Company</label>
+                                <select id="service-booking-company" name="customer_name" class="form-control"
+                                    @error('customer_name') aria-invalid="true" aria-describedby="service-company-error" @enderror required>
+                                    <option value="">Search by company or registration ID</option>
+                                    @foreach ($companies as $company)
+                                        <option value="{{ $company->companyID }}" {{ old('customer_name') === $company->companyID ? 'selected' : '' }}>
+                                            {{ $company->companyName }}{{ $company->registrationID ? ' · ' . $company->registrationID : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
+                            @error('customer_name')
+                                <p id="service-company-error" class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="service-booking-service">Service</label>
+                            <select id="service-booking-service" name="service_name" class="form-control"
+                                @error('service_name') aria-invalid="true" aria-describedby="service-option-error" @enderror required>
+                                <option value="">Search available services</option>
+                                @foreach ($services as $service)
+                                    <option value="{{ $service->serviceID }}" data-price="{{ $service->serviceCost }}"
+                                        data-currency="{{ $service->type_of_currency }}"
+                                        {{ old('service_name') === $service->serviceID ? 'selected' : '' }}>
+                                        {{ $service->serviceName }} · {{ $service->type_of_currency }} {{ number_format($service->serviceCost, 2) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('service_name')
+                                <p id="service-option-error" class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="service-booking-quantity">
+                            <div class="form-group">
+                                <label for="service-booking-quantity">Quantity</label>
+                                <input id="service-booking-quantity" name="service_quantity" type="number"
+                                    class="form-control" min="1" step="1" value="{{ old('service_quantity', 1) }}"
+                                    @error('service_quantity') aria-invalid="true" aria-describedby="service-quantity-error" @enderror required>
+                                @error('service_quantity')
+                                    <p id="service-quantity-error" class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <span class="service-booking-label">Line subtotal</span>
+                                <output id="service-booking-preview" aria-live="polite">—</output>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Add to booking</button>
+                    </form>
                 @endif
-            </div>
+            </section>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Service</th>
-                            <th class="text-center">Qty</th>
-                            <th>Unit Cost</th>
-                            <th>Sub Total</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <section class="service-booking-card" aria-labelledby="booking-summary">
+                <h2 id="booking-summary">Booking summary</h2>
 
-                        @php $i = 1; $subtotal = 0; @endphp
-                        @foreach ($booked_services as $item)
-                            <tr>
-                                <td>{{ $i }}</td>
-                                <td>{{ $item->serviceName }}</td>
-                                <td class="text-center">{{ $item->service_quantity }}</td>
-                                <td>{{ number_format($item->serviceCost,2) }}</td>
-                                <td>
-                                    {{ number_format($item->serviceCost * $item->service_quantity,2) }}
-                                    {{ $item->type_of_currency }}
-                                </td>
-                                <td class="text-center">
-                                    <form action="{{ route('book-services.destroy',['book_service'=>$item->service_charge_id]) }}"
-                                          method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">
-                                            Remove <i class="icon-cross2"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @php
-                                $subtotal += $item->serviceCost * $item->service_quantity;
-                                $i++;
-                            @endphp
-                        @endforeach
-
-                        <tr>
-                            <td colspan="4" class="text-right">VAT (18%)</td>
-                            <td>{{ number_format($vat = $subtotal * 0.18,2) }} {{ $item->type_of_currency ?? '' }}</td>
-                            <td></td>
-                        </tr>
-
-                        <tr class="total-row">
-                            <td colspan="4" class="text-right">Total Cost</td>
-                            <td>{{ number_format($subtotal + $vat,2) }} {{ $item->type_of_currency ?? '' }}</td>
-                            <td></td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- CONFIRM BOOKING --}}
-            @if ($i > 1)
-                <form action="{{ route('adviceNotes.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="company_id" value="{{ $item->company_id }}">
-                    <input type="hidden" name="exhibition_year" value="{{ $item->exhibition_year }}">
-                    <input type="hidden" name="event" value="{{ $item->service_event }}">
-                    <input type="hidden" name="advice_note" value="advice_note">
-                    <input type="hidden" name="vat" value="1">
-
-                    <div class="form-footer">
-                        <button type="submit" class="btn btn-success">
-                            Confirm Booking
-                        </button>
+                @if (!$draft)
+                    <p class="service-booking-note">No services have been added to this booking.</p>
+                @else
+                    <div class="table-responsive">
+                        <table class="table gememis-table" data-table-static>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Service</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Subtotal</th>
+                                    @can('CANCEL_SERVICE_BOOKING')
+                                        <th scope="col"><span class="sr-only">Actions</span></th>
+                                    @endcan
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pendingServices as $line)
+                                    <tr>
+                                        <td>
+                                            {{ $line->serviceName ?? 'Unavailable service' }}
+                                            <small class="text-muted">{{ $line->type_of_currency }} {{ number_format($line->serviceCost, 2) }} each</small>
+                                        </td>
+                                        <td>{{ $line->service_quantity }}</td>
+                                        <td>{{ $line->type_of_currency }} {{ number_format($line->serviceCost * $line->service_quantity, 2) }}</td>
+                                        @can('CANCEL_SERVICE_BOOKING')
+                                            <td>
+                                                <form action="{{ route('book-services.destroy', ['book_service' => $line->service_charge_id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-default btn-sm">Remove</button>
+                                                </form>
+                                            </td>
+                                        @endcan
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                </form>
-            @endif
 
+                    @foreach ($pendingServices->groupBy('type_of_currency') as $currency => $lines)
+                        @php
+                            $subtotal = $lines->sum(fn ($line) => $line->serviceCost * $line->service_quantity);
+                            $vat = $subtotal * 0.18;
+                        @endphp
+                        <dl class="service-booking-totals">
+                            <div><dt>Subtotal</dt><dd>{{ $currency }} {{ number_format($subtotal, 2) }}</dd></div>
+                            <div><dt>VAT (18%)</dt><dd>{{ $currency }} {{ number_format($vat, 2) }}</dd></div>
+                            <div class="service-booking-total"><dt>Total</dt><dd>{{ $currency }} {{ number_format($subtotal + $vat, 2) }}</dd></div>
+                        </dl>
+                    @endforeach
+
+                    @can('MANAGE_INVOICES')
+                        <form action="{{ route('adviceNotes.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="company_id" value="{{ $draft->company_id }}">
+                            <input type="hidden" name="exhibition_year" value="{{ $draft->exhibition_year }}">
+                            <input type="hidden" name="event" value="{{ $draft->service_event }}">
+                            <input type="hidden" name="advice_note" value="advice_note">
+                            <input type="hidden" name="vat" value="1">
+                            <button type="submit" class="btn btn-primary">Confirm booking</button>
+                        </form>
+                    @endcan
+                @endif
+            </section>
         </div>
-
     </div>
 </x-app-layout>
 
-{{-- CUSTOMER SEARCH --}}
-<script>
-    $(document).ready(function () {
-        $('#search-select').select2({
-            ajax: {
-                url: '{{ route('search-exhibitors') }}',
-                dataType: 'json',
-                delay: 250,
-                data: params => ({ q: params.term }),
-                processResults: data => ({
-                    results: data.map(item => ({
-                        id: item.companyID,
-                        text: item.registrationID + ' | ' + item.companyName + ' | ' +
-                              item.companyPhone + ' | ' + item.companyEmail
-                    }))
-                })
-            },
-            placeholder: 'Search exhibitors',
-            minimumInputLength: 0
-        });
-    });
-</script>
+<script src="{{ asset('assets/js/core/service-booking.js') }}"></script>

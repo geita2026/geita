@@ -1,4 +1,4 @@
-<form id="first-company-registration-form" method="POST" action="{{ route('companies.first.store') }}">
+<form id="first-company-registration-form" method="POST" action="{{ $registrationAction }}">
     @csrf
     @php
         $registrationErrors = $errors->firstCompany;
@@ -93,8 +93,8 @@
             </div>
         </div>
 
-        <details class="registration-optional" @if (old('registrationNo') || old('website') || $registrationErrors->hasAny(['registrationNo', 'website'])) open @endif>
-            <summary>Optional company details</summary>
+        <section class="registration-optional" aria-labelledby="optional-company-details">
+            <h3 id="optional-company-details">Optional company details</h3>
             <div class="registration-grid">
                 <div class="registration-field">
                     <label for="first-company-registration">Business registration number</label>
@@ -111,7 +111,7 @@
                     <span class="registration-error" id="first-company-website-error" aria-live="polite">{{ $registrationErrors->first('website') }}</span>
                 </div>
             </div>
-        </details>
+        </section>
     </div>
 
     <div class="registration-footer">

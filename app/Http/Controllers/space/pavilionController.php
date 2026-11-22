@@ -32,8 +32,8 @@ class pavilionController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         $pavilions = pavilions::orderBy('pavilions.updated_at', 'DESC')
             ->leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
@@ -64,8 +64,8 @@ class pavilionController extends Controller
     public function create(Request $request)
     {
         $search = $request->get('q');
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         $categories = space_categories::orderBy('category_name', 'ASC')->get(['category_id', 'category_name', 'category_event']);
         if ($search != Null) {
@@ -105,8 +105,8 @@ class pavilionController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $validator = Validator::make($request->all(), [
                 'pavilion_name' => 'required',
@@ -178,8 +178,8 @@ class pavilionController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         //
         session(['event_id' => $id]); // save event session.
@@ -216,8 +216,8 @@ class pavilionController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
 
         $pavilions = pavilions::leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
@@ -262,8 +262,8 @@ class pavilionController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
 
             $validator = Validator::make($request->all(), [
@@ -336,8 +336,8 @@ class pavilionController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_PAVILION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_PAVILION'));
             }
             //
             $pavilion = pavilions::find($id);

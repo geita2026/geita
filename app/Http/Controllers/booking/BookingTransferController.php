@@ -27,8 +27,8 @@ class BookingTransferController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('transfer-booking', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('TRANSFER_BOOKING_TRANSFER', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('TRANSFER_BOOKING_TRANSFER'));
             }
             if ($request->eventName!= null) {
                 session(['transferEvent' => $request->eventName]);
@@ -55,8 +55,8 @@ class BookingTransferController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('transfer-booking', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('TRANSFER_BOOKING_TRANSFER', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('TRANSFER_BOOKING_TRANSFER'));
             }
             session('companyID');
 
@@ -137,8 +137,8 @@ class BookingTransferController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('transfer-booking', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('TRANSFER_BOOKING_TRANSFER', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('TRANSFER_BOOKING_TRANSFER'));
             }
             $validator = Validator::make($request->all(), [
                 'bookingId' => 'required',
@@ -206,8 +206,8 @@ class BookingTransferController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('approve-transfer', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('APPROVE_BOOKING_TRANSFER', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('APPROVE_BOOKING_TRANSFER'));
             }
             $booking = booked_pavilions::find($id);
             $booking->update([

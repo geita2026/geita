@@ -26,8 +26,8 @@ class PaymentReceiptsController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Payments', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PAYMENT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PAYMENT'));
             }
 
             if (Auth::user()->account_type == 1) {
@@ -76,8 +76,8 @@ class PaymentReceiptsController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Payments', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PAYMENT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PAYMENT'));
             }
             $search = $request->get('q');
             if (Auth::user()->account_type == 1) {
@@ -135,8 +135,8 @@ class PaymentReceiptsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Payment Receipt', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_PAYMENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_PAYMENT'));
         }
         try {
 
@@ -201,8 +201,8 @@ class PaymentReceiptsController extends Controller
     {
 
         try {
-            if ($request->user()->cannot('Manage Payments', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PAYMENT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PAYMENT'));
             }
 
             $data=PaymentDetails::leftJoin('advice_notes','payment_details.referenceId','=','advice_notes.advice_note_id')
@@ -261,8 +261,8 @@ class PaymentReceiptsController extends Controller
     {
 
         try {
-            if ($request->user()->cannot('Manage Payments', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PAYMENT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PAYMENT'));
             }
             $payments = PaymentDetails::orderBy('payment_made_on', 'DESC')
                 ->leftJoin('advice_notes', 'payment_details.referenceId', '=', 'advice_notes.advice_note_id')

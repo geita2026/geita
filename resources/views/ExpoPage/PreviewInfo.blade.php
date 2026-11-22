@@ -32,7 +32,8 @@
         <script type="text/javascript" src="{{ asset('assets/js/core/app.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/pages/form_multiselect.js') }}"></script>
         <!-- /theme JS files -->
-    </head>
+        <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
+</head>
 
     <body class="login-container" style="background-image: url({{ asset('ExpoFolder/Expobackground.png') }})">
 

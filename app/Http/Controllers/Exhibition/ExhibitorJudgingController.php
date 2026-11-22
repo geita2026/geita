@@ -27,8 +27,8 @@ class ExhibitorJudgingController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Confirm Judging', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CONFIRM_JUDGING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CONFIRM_JUDGING'));
             }
 
             $sectors = JudgingCategory::where('categoryStatus', 1)->get();
@@ -64,8 +64,8 @@ class ExhibitorJudgingController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Confirm Judging', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CONFIRM_JUDGING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CONFIRM_JUDGING'));
         }
 
         // Source of truth = the DITF Judging app. GeMEMIS pulls categories from it.
@@ -115,8 +115,8 @@ class ExhibitorJudgingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Confirm Judging', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CONFIRM_JUDGING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CONFIRM_JUDGING'));
         }
         try {
 

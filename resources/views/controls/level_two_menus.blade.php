@@ -139,14 +139,14 @@
                                             <i class="icon-menu4"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @can('Update Menu')
+                                            @can('UPDATE_MENU')
                                             <li>
                                                 <a href="{{ route('system_menus_level_two.edit',['system_menus_level_two'=>$item->level_two_menu_id]) }}"  class="text-primary"><i class=" icon-pencil7"></i> Edit Sub Menus</a>
 
                                             </li>
                                             @endcan
 
-                                            @can('Delete Menu')
+                                            @can('DELETE_LEVEL_TWO_MENU')
                                             <li>
                                                 <a  data-toggle="modal" data-target="#delete{{ $item->level_two_menu_id }}"  class=" text-danger"><i class="icon-bin"></i> Delete Menu</a>
                                             </li>

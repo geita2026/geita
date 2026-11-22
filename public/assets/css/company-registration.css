@@ -1,11 +1,11 @@
-#NoCompany .modal-dialog {
+.gememis-registration-modal .modal-dialog {
     width: auto;
     max-width: 760px;
     margin: 28px auto;
     padding: 0 16px;
 }
 
-#NoCompany .modal-content {
+.gememis-registration-modal .modal-content {
     border: 0;
     border-radius: 18px;
     background: #fff;
@@ -13,7 +13,7 @@
     box-shadow: 0 18px 60px rgba(16, 13, 10, .32);
 }
 
-#NoCompany .registration-header {
+.gememis-registration-modal .registration-header {
     padding: 24px 28px;
     border-radius: 18px 18px 0 0;
     border-bottom: 3px solid #d6a54f;
@@ -21,13 +21,13 @@
     color: #fff;
 }
 
-#NoCompany .registration-brand {
+.gememis-registration-modal .registration-brand {
     margin: 0 0 6px;
     color: #ffda91;
     font-size: 13px;
 }
 
-#NoCompany .modal-title {
+.gememis-registration-modal .modal-title {
     margin: 0;
     font-size: clamp(23px, 4vw, 29px);
     font-weight: 700;
@@ -35,106 +35,71 @@
     outline: none;
 }
 
-#NoCompany .registration-intro {
+.gememis-registration-modal .registration-intro {
     margin: 8px 0 0;
     color: #eee5d8;
     font-size: 14px;
 }
 
-#NoCompany .registration-body {
+.gememis-registration-modal .registration-body {
     padding: 20px 28px;
 }
 
-#NoCompany .registration-grid {
+.gememis-registration-modal .registration-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px 18px;
 }
 
-#NoCompany .registration-field {
+.gememis-registration-modal .registration-field {
     min-width: 0;
 }
 
-#NoCompany .registration-wide {
+.gememis-registration-modal .registration-wide {
     grid-column: 1 / -1;
 }
 
-#NoCompany label {
+.gememis-registration-modal label {
     display: block;
     margin-bottom: 5px;
     font-weight: 600;
     font-size: 14px;
 }
 
-#NoCompany .registration-required,
-#NoCompany .registration-error {
+.gememis-registration-modal .registration-required,
+.gememis-registration-modal .registration-error {
     color: #a52a22;
 }
 
-#NoCompany .registration-hint,
-#NoCompany .registration-error {
+.gememis-registration-modal .registration-hint,
+.gememis-registration-modal .registration-error {
     display: block;
     margin: 4px 0 0;
     font-size: 13px;
 }
 
-#NoCompany .registration-error:empty {
+.gememis-registration-modal .registration-error:empty {
     margin: 0;
 }
 
-#NoCompany .registration-hint {
+.gememis-registration-modal .registration-hint {
     color: #645d53;
 }
 
-#NoCompany .form-control {
-    min-height: 44px;
-    height: auto;
-    padding: 9px 11px;
-    border: 1px solid #a8a096;
-    border-radius: 8px;
-    background-color: #fff;
-    color: #24211e;
-    font-size: 16px;
-}
-
-#NoCompany select.form-control {
-    padding-right: 24px;
-}
-
-#NoCompany textarea {
-    resize: vertical;
-}
-
-#NoCompany [aria-invalid="true"] {
-    border-color: #a52a22;
-}
-
-#NoCompany :is(input, select, textarea, button, summary, a):focus-visible {
-    outline: 2px solid #85590c;
-    outline-offset: 2px;
-}
-
-#NoCompany .registration-optional {
+.gememis-registration-modal .registration-optional {
     margin-top: 16px;
-    border-block: 1px solid #e5ddd2;
+    padding-top: 14px;
+    border-top: 1px solid #e5ddd2;
 }
 
-#NoCompany summary {
-    display: list-item;
-    list-style-position: inside;
-    min-height: 44px;
-    padding: 11px 0;
+.gememis-registration-modal .registration-optional h3 {
+    margin: 0 0 12px;
     color: #5e410c;
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
 }
 
-#NoCompany .registration-optional .registration-grid {
-    padding-bottom: 14px;
-}
-
-#NoCompany .registration-footer {
+.gememis-registration-modal .registration-footer {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -146,7 +111,7 @@
     background: #faf7f2;
 }
 
-#NoCompany .registration-consent {
+.gememis-registration-modal .registration-consent {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -155,7 +120,7 @@
     font-weight: 400;
 }
 
-#NoCompany .registration-consent input {
+.gememis-registration-modal .registration-consent input {
     flex: 0 0 auto;
     width: 18px;
     height: 18px;
@@ -163,56 +128,54 @@
     accent-color: #5e410c;
 }
 
-#NoCompany .registration-consent a {
+.gememis-registration-modal .registration-consent a {
     color: #684707;
     text-decoration: underline;
 }
 
-#NoCompany .registration-submit {
-    min-height: 44px;
+.gememis-registration-modal .registration-submit {
     padding: 10px 20px;
-    border: 0;
-    border-radius: 8px;
-    background: #6b490d;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-}
-
-#NoCompany .registration-submit:hover {
-    background: #543709;
 }
 
 @media (max-width: 575px) {
-    #NoCompany .modal-dialog {
+    .gememis-registration-modal .modal-dialog {
         margin: 0;
         padding: 0;
     }
 
-    #NoCompany .modal-content {
+    .gememis-registration-modal .modal-content {
         min-height: 100vh;
         min-height: 100dvh;
     }
 
-    #NoCompany :is(.modal-content, .registration-header, .registration-footer) {
+    .gememis-registration-modal :is(.modal-content, .registration-header, .registration-footer) {
         border-radius: 0;
     }
 
-    #NoCompany :is(.registration-header, .registration-body, .registration-footer) {
+    .gememis-registration-modal :is(.registration-header, .registration-body, .registration-footer) {
         padding-inline: 16px;
     }
 
-    #NoCompany .registration-grid {
+    .gememis-registration-modal .registration-grid {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    #NoCompany .registration-footer {
+    .gememis-registration-modal .registration-footer {
         align-items: stretch;
         flex-direction: column;
         padding-bottom: max(16px, env(safe-area-inset-bottom));
     }
 
-    #NoCompany .registration-submit {
+    .gememis-registration-modal .registration-submit {
         width: 100%;
     }
+}
+
+.gememis-registration-modal .registration-close {
+    float: right;
+    min-width: 40px;
+    min-height: 40px;
+    color: #fff;
+    opacity: .9;
+    text-shadow: none;
 }

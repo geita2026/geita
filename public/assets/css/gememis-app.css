@@ -95,7 +95,7 @@ body.gememis-app {
 }
 
 .gememis-app .modal-header:not([class*="bg-"]),
-.gememis-app #NoCompany .registration-header {
+.gememis-app .gememis-registration-modal .registration-header {
     background: var(--gem-app-ink);
     border-bottom-color: var(--gem-app-gold);
     color: #fff;
@@ -111,42 +111,9 @@ body.gememis-app {
     border-top-color: #e7dfd2;
 }
 
-.gememis-app .btn-primary,
-.gememis-app #NoCompany .registration-submit {
-    background-color: var(--gem-app-gold);
-    border-color: #b88700;
-    color: var(--gem-app-ink);
-    font-weight: 600;
-}
-
-.gememis-app .btn-primary:is(:hover, :focus, :active),
-.gememis-app #NoCompany .registration-submit:is(:hover, :focus) {
-    background-color: var(--gem-app-gold-soft);
-    border-color: #b88700;
-    color: var(--gem-app-ink);
-}
-
-.gememis-app .form-control:focus,
-.gememis-app .select2-container--focus .select2-selection {
-    border-color: #916715;
-    box-shadow: 0 0 0 2px rgba(184, 134, 11, .2);
-}
-
 .gememis-app .select2-results__option--highlighted[aria-selected] {
     background: #75520a;
     color: #fff;
-}
-
-#NoCompany .gememis-searchable + .select2-container .select2-selection--single {
-    min-height: 44px;
-    border: 1px solid #a8a096;
-    border-radius: 8px;
-    font-size: 16px;
-    padding: 8px 10px;
-}
-
-#NoCompany .gememis-searchable[aria-invalid="true"] + .select2-container .select2-selection--single {
-    border-color: #a52a22;
 }
 
 @media (min-width: 769px) {

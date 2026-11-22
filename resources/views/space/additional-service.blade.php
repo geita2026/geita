@@ -34,10 +34,14 @@
                 @endif
                 {{-- end errors --}}
 
-                <div class=" form-group text-right">
-                    <button type="submit" class=" btn btn-success" data-toggle="modal" data-target="#service">Add
-                        Service <i class=" icon-add-to-list"></i></button>
-                </div>
+                @can('CREATE_ADDITIONAL_SERVICE')
+                    <div class="form-group text-right">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#service"
+                            aria-haspopup="dialog">
+                            Add Service <i class="icon-add-to-list"></i>
+                        </button>
+                    </div>
+                @endcan
                 <table class="table datatable-save-state table-striped table-bordered  table-responsive">
                     <thead>
                         <tr>
@@ -52,7 +56,12 @@
                     </thead>
                     <tbody>
                         @php$i=1;@endphp
-                        @foreach ($services as $item)
+                        @forelse ($services as $item)
+                            @php
+                                $provider = strcasecmp((string) $item->service_type, 'TanTrade') === 0
+                                    ? 'Geita'
+                                    : $item->service_type;
+                            @endphp
                             <tr>
                                 <td class=" text-center">{{ $item->gfs_code }}</td>
                                 <td>
@@ -65,7 +74,7 @@
                                     {{ $item->type_of_currency }}</td>
                                 <td>{{ $item->event_name }}</td>
                                 <td class=" text-center">{{ $item->service_priolity }}</td>
-                                <td class=" text-center">{{ $item->service_type }}</td>
+                                <td class=" text-center">{{ $provider }}</td>
 
 
                                 <td class="text-center">
@@ -160,10 +169,11 @@
                                                                 <label>Service Provider</label>
                                                                 <select name="service_type" class=" form-control"
                                                                     required>
-                                                                    <option value="{{ $item->service_type }}">
-                                                                        {{ $item->service_type }}</option>
-                                                                    <option value="TanTrade">TanTrade</option>
-                                                                    <option value="Exhibitor">Exhibitor</option>
+                                                                    @if ($provider && !in_array($provider, ['Geita', 'Exhibitor'], true))
+                                                                        <option value="{{ $provider }}" selected>{{ $provider }}</option>
+                                                                    @endif
+                                                                    <option value="Geita" {{ $provider === 'Geita' ? 'selected' : '' }}>Geita</option>
+                                                                    <option value="Exhibitor" {{ $provider === 'Exhibitor' ? 'selected' : '' }}>Exhibitor</option>
                                                                 </select>
                                                             </div>
 
@@ -304,7 +314,9 @@
                                 </div>
                                 {{-- delete modal --}}
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr><td colspan="7" class="text-center text-muted">No additional services registered.</td></tr>
+                        @endforelse
                     </tbody>
 
                 </table>
@@ -316,195 +328,101 @@
     </div>
     <!-- /dashboard content -->
 
-    {{-- add role modal --}}
-    <div id="service" class="modal fade" aria-modal="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-blue">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title text-center text-bold">ADD ADDTIONAL SERVICE DETAILS</h5>
-                </div>
-                <div class="modal-body">
-                    <form data-action="{{ route('additional_services.store') }}" id="add_service" method="POST">
+    @can('CREATE_ADDITIONAL_SERVICE')
+        @php
+            $serviceErrors = $errors->newService;
+            $yesNo = ['0' => 'No', '1' => 'Yes'];
+            $selectFields = [
+                'type_of_currency' => ['Currency', ['TZS' => 'TZS', 'USD' => 'USD'], '', 'Select currency'],
+                'service_event' => ['Exhibition event', $events->pluck('event_name', 'event_id'), '', 'Select an event'],
+                'gfs_code' => [
+                    'Service GFS code',
+                    $income->mapWithKeys(fn ($code) => [$code->gfs_code => $code->gfs_code . ' - ' . $code->income_name]),
+                    '',
+                    'Select a GFS code',
+                ],
+                'service_type' => ['Service provider', ['Geita' => 'Geita', 'Exhibitor' => 'Exhibitor'], 'Geita'],
+                'service_priolity' => ['Service priority', ['Mandatory' => 'Mandatory', 'Optional' => 'Optional'], 'Mandatory'],
+                'is_printable' => ['Printable service', $yesNo, '0'],
+                'self_booking' => ['Allow self booking', $yesNo, '0'],
+                'relateToSpaceSize' => ['Charge based on space size', $yesNo, '1'],
+            ];
+        @endphp
+        <div id="service" class="modal fade gememis-registration-modal" role="dialog" aria-modal="true" tabindex="-1"
+            aria-labelledby="add-service-title" aria-describedby="add-service-intro">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="registration-header">
+                        <button type="button" class="close registration-close" data-dismiss="modal"
+                            aria-label="Close Add Service">&times;</button>
+                        <p class="registration-brand">GeMEMIS</p>
+                        <h2 id="add-service-title" class="modal-title">Add service</h2>
+                        <p id="add-service-intro" class="registration-intro">
+                            Set up a service for an exhibition event and assign its local GFS code.
+                        </p>
+                    </div>
+                    <form action="{{ route('additional_services.store') }}" method="POST">
                         @csrf
-                        <div class="row">
-                            <div class=" row">
-                                <div class=" form-group col-md-6">
-                                    <label>Service Name<i class=" text-danger">*</i></label>
-                                    <input type="text" name="service_name" class=" form-control"
-                                        placeholder=" Service Name" value="{{ old('service_name') }}">
-                                    <span class=" text-danger text-error service_name_error"></span>
+                        <div class="registration-body">
+                            <div class="registration-grid">
+                                <div class="registration-field">
+                                    <label for="new-service-name">Service name <span class="registration-required" aria-hidden="true">*</span></label>
+                                    <input id="new-service-name" name="service_name" class="form-control"
+                                        value="{{ old('service_name') }}" aria-describedby="new-service-name-error"
+                                        @if ($serviceErrors->has('service_name')) aria-invalid="true" @endif required>
+                                    <span id="new-service-name-error" class="registration-error" aria-live="polite">{{ $serviceErrors->first('service_name') }}</span>
                                 </div>
-                                <div class=" form-group col-md-6">
-                                    <label>Service Cost<i class=" text-danger">*</i></label>
-                                    <input type="text" name="service_cost" class=" form-control"
-                                        placeholder=" Service Cost" value="{{ old('service_cost') }}">
-                                    <span class=" text-danger text-error service_cost_error"></span>
-
+                                <div class="registration-field">
+                                    <label for="new-service-cost">Service cost <span class="registration-required" aria-hidden="true">*</span></label>
+                                    <input id="new-service-cost" name="service_cost" type="number" step="any" class="form-control"
+                                        value="{{ old('service_cost') }}" aria-describedby="new-service-cost-error"
+                                        @if ($serviceErrors->has('service_cost')) aria-invalid="true" @endif required>
+                                    <span id="new-service-cost-error" class="registration-error" aria-live="polite">{{ $serviceErrors->first('service_cost') }}</span>
                                 </div>
-                            </div>
-                            <div class=" row">
-                                <div class=" form-group col-md-6">
-                                    <label> Type of currence <i class=" text-danger">*</i></label>
-                                    <select name="type_of_currency" class=" form-control">
-                                        {{-- <optgroup title="Sevice Priolities"> --}}
-                                        <option value="">Select Type of currency . . . . .</option>
-                                        <option value="TZS">TZS</option>
-                                        <option value="USD">USD</option>
-                                        {{-- </optgroup> --}}
-                                    </select>
-                                    <span class=" text-danger text-error type_of_currency_error"></span>
+                                @foreach ($selectFields as $field => $definition)
+                                    @php
+                                        [$label, $options, $default] = $definition;
+                                        $fieldId = 'new-service-' . $field;
+                                    @endphp
+                                    <div class="registration-field">
+                                        <label for="{{ $fieldId }}">{{ $label }} <span class="registration-required" aria-hidden="true">*</span></label>
+                                        <select id="{{ $fieldId }}" name="{{ $field }}" class="form-control"
+                                            aria-describedby="{{ $fieldId }}-error"
+                                            @if ($serviceErrors->has($field)) aria-invalid="true" @endif required>
+                                            @if (isset($definition[3]))
+                                                <option value="">{{ $definition[3] }}</option>
+                                            @endif
+                                            @foreach ($options as $value => $name)
+                                                <option value="{{ $value }}" {{ (string) old($field, $default) === (string) $value ? 'selected' : '' }}>
+                                                    {{ $name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <span id="{{ $fieldId }}-error" class="registration-error" aria-live="polite">{{ $serviceErrors->first($field) }}</span>
+                                    </div>
+                                @endforeach
+                                <div class="registration-field registration-wide">
+                                    <label for="new-service-description">Description (optional)</label>
+                                    <textarea id="new-service-description" name="service_description" class="form-control"
+                                        rows="2" maxlength="100" aria-describedby="new-service-description-error"
+                                        @if ($serviceErrors->has('service_description')) aria-invalid="true" @endif>{{ old('service_description') }}</textarea>
+                                    <span id="new-service-description-error" class="registration-error" aria-live="polite">{{ $serviceErrors->first('service_description') }}</span>
                                 </div>
-
-                                <div class=" form-group col-md-6">
-                                    <label> Service Event<i class=" text-danger">*</i></label>
-                                    <select name="service_event" class="bootstrap-select " data-live-search="true"
-                                        data-width="100%" placehoder="Select Event">
-                                        <option value=""> - - - Select Events - - - </option>
-                                        @foreach ($events as $event)
-                                            <option value="{{ $event->event_id }}">{{ $event->event_name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class=" text-danger text-error service_event_error"></span>
-                                </div>
-                            </div>
-
-                            <div class=" row">
-                                <div class=" form-group col-md-6">
-                                    <label>Service Provider<i class="text-danger">*</i></label>
-                                    <select name="service_type" class=" form-control">
-                                        <option value="TanTrade">Tan Trade</option>
-                                        <option value="Exhibitor">Exhibitor</option>
-                                    </select>
-                                    <span class=" text-danger text-error service_type_error"></span>
-                                </div>
-
-                                <div class=" form-group col-md-6">
-                                    <label>Service Priolity<i class="text-danger">*</i></label>
-                                    <select name="service_priolity" class=" form-control">
-                                        <option value="Mandatory">Mandatory Service</option>
-                                        <option value="Optional">Optional Service</option>
-                                    </select>
-                                    <span class=" text-danger text-error service_priolity_error"></span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label>Service GFS code<i class="text-danger">*</i></label>
-                                    <select name="gfs_code" class=" form-control ">
-                                        <option value="">- - - Select GFS Code - - - </option>
-                                        @foreach ($income as $item)
-                                            <option value="{{ $item->gfs_code }}">{{ $item->income_name }} -
-                                                {{ $item->gfs_code }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class=" text-danger text-error gfs_code_error"></span>
-                                </div>
-                                <div class=" form-group col-md-6">
-                                    <label>Is Printable Service (eg car stikers)<i class="text-danger">*</i></label>
-                                    <select name="is_printable" class=" form-control">
-                                        <option value="0">No</option>
-                                        <option value="1">Yes</option>
-                                    </select>
-                                    <span class=" text-danger text-error is_printable_error"></span>
-                                </div>
-                            </div>
-                            <div class=" row">
-                                <div class=" form-group col-md-6">
-                                    <label>Allow Self Booking<i
-                                            class="text-danger">*</i></label>
-                                    <select name="self_booking" class=" form-control">
-                                        @if ($item->self_booking == 0)
-                                            <option value="0">No</option>
-                                            <option value="1">Yes</option>
-                                        @else
-                                            <option value="1">Yes</option>
-                                            <option value="0">No</option>
-                                        @endif
-                                    </select>
-                                    <span
-                                        class=" text-danger text-error is_printable_error"></span>
-                                </div>
-                                <div class=" form-group col-md-6">
-                                    <label>Service Booking Relate to Space Size ?<i class="text-danger">*</i></label>
-                                    <select name="relateToSpaceSize" class=" form-control">
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
-                                    </select>
-                                    <span class=" text-danger text-error is_printable_error"></span>
-                                </div>
-
-                            </div>
-                            <div class=" form-group col-md-12">
-                                <label>Service Description</label>
-                                <textarea class="form-control" name="service_description" placeholder="Service description">Service description Here</textarea>
                             </div>
                         </div>
-
+                        <div class="registration-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="registration-submit">Register service</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner"><span
-                            class="ladda-label">Register Service</span></button>
-                </div>
-                </form>
             </div>
         </div>
-    </div>
 
+        @if ($serviceErrors->any())
+            <script>
+                $(function () { $('#service').modal('show'); });
+            </script>
+        @endif
+    @endcan
 </x-app-layout>
-
-<script>
-    $(document).ready(function() {
-        var form = '#add_service';
-        $(form).on('submit', function(event) {
-            event.preventDefault();
-            var url = $(this).attr('data-action');
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: new FormData(this),
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#add_service').find('span.text-error').text('');
-                },
-                success: function(response) {
-                    if (response.status == 0) {
-                        $.each(response.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0]);
-                        });
-                    }
-                    if (response.status == 1) {
-                        $(document).ready(function() {
-                            new PNotify({
-                                title: 'Congratulations!',
-                                text: response.success,
-                                icon: 'icon-info3',
-                                type: 'success'
-                            });
-                        });
-                        $('#service').modal('toggle');
-                        document.location.reload(); // reload page
-                    }
-
-                    if (response.status == 2) {
-                        $(document).ready(function() {
-                            new PNotify({
-                                title: 'Congratulations!',
-                                text: response.fail,
-                                icon: 'icon-info3',
-                                type: 'danger'
-                            });
-                        });
-                        $('#service').modal('toggle'); // reload page
-                    }
-
-
-                }
-            });
-        });
-    });
-</script>

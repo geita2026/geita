@@ -44,9 +44,9 @@
 
             <div class="row">
             {{-- report points --}}
-            @can('View All Advice Note')
+            @can('VIEW_ALL_ADVICE_NOTE')
 
-                @can('View On Fair Advice Notes')
+                @can('VIEW_ON_FAIR_ADVICE_NOTES')
                 <a href="{{ route('adviceNotes.create') }}" class=" form-group col-md-4 zoom ">
                     <button class=" btn btn-success btn-block btn-float btn-float-lg"  title="Click to view on fair Advice notes">
                   <h4 class=" text-uppercase text-bold" id="h2">ON FAIR INVOICES<i class="  icon-stack-text"></i>

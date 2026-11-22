@@ -22,9 +22,9 @@ class IntergrationMappingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Intergration Mapping',Role::class))
+        if($request->user()->cannot('VIEW_INTERGRATION_MAPPING_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_INTERGRATION_MAPPING_SUBMENU'));
         }
         $intergrationMapping=Intergration::get();
         return view('settings.IntergrationMapping',compact('intergrationMapping'));
@@ -39,9 +39,9 @@ class IntergrationMappingController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Intergration Mapping',Role::class))
+        if($request->user()->cannot('CREATE_INTERGRATION_MAPPING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_INTERGRATION_MAPPING'));
         }
 
       try {

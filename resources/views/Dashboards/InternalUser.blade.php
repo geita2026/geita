@@ -170,7 +170,7 @@
 
 <div class="dashboard-wrapper">
 
-    @can('VIEW SAMMARY REPORT')
+    @can('VIEW_SAMMARY_REPORT')
         <div class="kpi-grid mb-4">
 
             <a href="{{ route('Exhibition-Events.index') }}" class="text-decoration-none">
@@ -249,7 +249,7 @@
     @endcan
 
 
-    @can('View Participation Reports')
+    @can('VIEW_PARTICIPATION_REPORTS')
         <div class="row mb-4">
             <div class="col-12">
                 <div class="dashboard-card">
@@ -313,7 +313,7 @@
 
 
     {{-- ================= INVOICE & COLLECTION ================= --}}
-    @can('View Collection Reports')
+    @can('VIEW_COLLECTION_REPORTS')
         <div class="row">
             <div class="col-12">
                 <a href="{{ route('payments.index') }}" class="text-decoration-none text-dark">

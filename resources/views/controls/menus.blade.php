@@ -42,7 +42,7 @@
 
     <div class=" row">
                  {{--  My space  --}}
-                 @can('System Control')
+                 @can('SYSTEM_CONTROL')
                <div class=" col-md-6">
                 <a data-toggle="modal" data-target="#system_control" title="Click to request services" class=" btn btn-default border-primary">
                     <b class=" text-uppercase text-bold text-primary">Menu - Control <i class=" icon-gear"></i></b>

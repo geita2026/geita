@@ -19,9 +19,9 @@ class accountSettingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Account Settings',Role::class))
+        if($request->user()->cannot('ACCOUNT_SETTINGS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('ACCOUNT_SETTINGS'));
         }
         return view('settings.account_setting');
     }

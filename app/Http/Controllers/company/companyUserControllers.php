@@ -4,9 +4,9 @@ namespace App\Http\Controllers\company;
 
 use App\Http\Controllers\Controller;
 use App\Models\companies;
-use App\Models\Companies\CompanyAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -17,7 +17,10 @@ class companyUserControllers extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {}
+    public function index(Request $request)
+    {
+        return $this->companyUsersView($request);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -48,18 +51,51 @@ class companyUserControllers extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('view-company-users', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        return $this->companyUsersView($request, $id);
+    }
+
+    private function companyUsersView(Request $request, ?string $companyId = null)
+    {
+        $viewer = $request->user();
+        if ($viewer->cannot('VIEW_COMPANY_USER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_COMPANY_USER'));
         }
 
-        $users = User::leftJoin('companies', 'users.myCompany', '=', 'companies.companyID')
-            ->leftJoin('roles', 'users.role', '=', 'roles.id')
-            ->where('myCompany', $id)->get();
-        $users = CompanyAdmin::leftJoin('users', 'company_admins.adminId', '=', 'users.user_uuid')
-            ->leftJoin('companies', 'company_admins.companyId', '=', 'companies.companyID')
-            ->where('company_admins.companyId', $id)->get();
+        $memberships = DB::table('company_admins')
+            ->select('adminId as user_uuid', 'companyId as company_id')
+            ->union(DB::table('users')->whereNotNull('myCompany')
+                ->select('user_uuid', 'myCompany as company_id'));
 
-        $companies = companies::get(['companyID', 'companyName']);
+        $visibleCompanies = companies::query();
+        if ((int) $viewer->account_type === 2) {
+            $visibleCompanies->where(function ($query) use ($viewer) {
+                $query->where('companies.companyID', $viewer->myCompany)
+                    ->orWhereExists(function ($admins) use ($viewer) {
+                        $admins->selectRaw('1')->from('company_admins')
+                            ->whereColumn('company_admins.companyId', 'companies.companyID')
+                            ->where('company_admins.adminId', $viewer->user_uuid);
+                    });
+            });
+        }
+
+        $users = User::joinSub($memberships, 'company_memberships', function ($join) {
+                $join->on('users.user_uuid', '=', 'company_memberships.user_uuid');
+            })
+            ->joinSub($visibleCompanies->select('companyID', 'companyName'), 'user_company', function ($join) {
+                $join->on('company_memberships.company_id', '=', 'user_company.companyID');
+            })
+            ->when($companyId !== null, fn ($query) => $query->where('user_company.companyID', $companyId))
+            ->orderBy('user_company.companyName')
+            ->orderBy('users.first_name')
+            ->orderBy('users.last_name')
+            ->get([
+                'users.user_uuid', 'users.first_name', 'users.middle_name', 'users.last_name',
+                'users.name', 'users.email', 'users.phone_number', 'users.account_status',
+                'users.myCompany', 'user_company.companyID', 'user_company.companyName',
+            ]);
+
+        $companies = $visibleCompanies->orderBy('companyName')->get();
+
         return view('company.CompanyUsers', compact('users', 'companies'));
     }
 
@@ -88,8 +124,8 @@ class companyUserControllers extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Update Company Users', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('UPDATE_COMPANY_USER', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('UPDATE_COMPANY_USER'));
             }
             $userId = User::where('user_uuid', $id)->first()->id;
 
@@ -124,8 +160,8 @@ class companyUserControllers extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Sunspend User Account', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('SUNSPEND_USER_ACCOUNT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('SUNSPEND_USER_ACCOUNT'));
             }
             $user = User::where('user_uuid', $id)->first();
             if ($user->account_status == 0) {

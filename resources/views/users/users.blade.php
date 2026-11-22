@@ -119,7 +119,7 @@
                                                     <i class="icon-menu4"></i>
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-menu-right">
-                                                    @can('Update Users')
+                                                    @can('UPDATE_USER')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#editUser{{ $item->id }}"
@@ -128,7 +128,7 @@
                                                         </li>
                                                     @endcan
 
-                                                    @can('Resert Password')
+                                                    @can('RESERT_PASSWORD')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#ResertPassword{{ $item->user_uuid }}"
@@ -138,7 +138,7 @@
                                                     @endcan
 
                                                     @if ($item->account_type==2 && $item->myCompany!=Null)
-                                                    @can('View Companies')
+                                                    @can('VIEW_COMPANIES')
                                                     <li>
                                                         <a href="{{ route('companies.edit',['company'=>$item->myCompany]) }}"
                                                             
@@ -149,7 +149,7 @@
                                                     @endif
                                                     
 
-                                                    @can('Delete Users')
+                                                    @can('DELETE_USER')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#delete_user{{ $item->user_uuid }}"

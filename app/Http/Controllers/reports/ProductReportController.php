@@ -20,9 +20,9 @@ class ProductReportController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Product Reports',Role::class))
+        if($request->user()->cannot('VIEW_EXHIBITION_PRODUCT_REPORT_SUBMENU',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_EXHIBITION_PRODUCT_REPORT_SUBMENU'));
         }
 
         $events=events::orderBy('event_created_at','ASC')->get();
@@ -58,9 +58,9 @@ class ProductReportController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Product Reports',Role::class))
+        if($request->user()->cannot('DELETE_EXHIBITION_PRODUCT_REPORT',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_EXHIBITION_PRODUCT_REPORT'));
         }
         //
         try {

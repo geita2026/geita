@@ -19,10 +19,11 @@
 
     <!-- Golden Design System -->
     <link rel="stylesheet" href="{{ asset('assets/css/gememis-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 
     <!-- Core jQuery & SweetAlert2 -->
     <script src="{{ asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('layouts.sweet-alerts')
 
     <style>
         body.challenge-page-body {
@@ -256,12 +257,13 @@
         }).then(function (result) {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title: 'Please wait...',
-                    text: 'Loading new questions',
+                    toast: true,
+                    position: 'top-end',
+                    customClass: { popup: 'gememis-toast' },
+                    title: 'Loading new questions',
+                    showConfirmButton: false,
                     background: '#0e0b12',
                     color: '#ffffff',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
                     didOpen: function () {
                         Swal.showLoading();
                     },
@@ -273,24 +275,18 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         @if (Session::get('status'))
-            Swal.fire({
+            window.gememisToast({
                 icon: 'success',
                 title: 'Questions updated',
-                background: '#0e0b12',
-                color: '#ffffff',
                 text: @json(Session::get('status')),
-                confirmButtonColor: '#FFBF00',
             });
         @endif
 
         @if (Session::get('fail'))
-            Swal.fire({
+            window.gememisToast({
                 icon: 'error',
-                title: 'Verification Failed',
-                background: '#0e0b12',
-                color: '#ffffff',
+                title: 'Verification failed',
                 text: @json(Session::get('fail')),
-                confirmButtonColor: '#d32f2f',
             });
         @endif
     });

@@ -54,16 +54,19 @@
                         
                         @php
                         $level_one_menu=App\Models\setting\level_one_menus::orderBy('level_one_common_name','ASC')->where('level_one_menu_status',1)->where('moduleNo',session('moduleNo'))->get();
-                        $level_two_menu=App\Models\setting\level_two_menus::orderBy('level_two_common_name','ASC')->where('level_two_menu_status',1)->get();
+                        $level_two_menu = App\Models\setting\level_two_menus::orderBy('level_two_common_name')
+                            ->where('level_two_menu_status', 1)->get()
+                            ->filter(fn ($menu) => filled($menu->level_two_menu_link) && Route::has($menu->level_two_menu_link))
+                            ->groupBy('upper_level_id');
                         @endphp
 
                         @foreach ($level_one_menu as $item)
+                        @continue(!$level_two_menu->has($item->level_one_menu_id))
                         @can($item->level_one_gate_name)
                         <li>
                             <a href="#"><i style="font-size:25px" class=" {{ $item->level_one_icon_name }}"></i> <span class="text-bold">{{ $item->level_one_common_name }}</span></a>
                             <ul>
-                                @foreach ($level_two_menu as $data)
-                                @if ($data->upper_level_id==$item->level_one_menu_id)
+                                @foreach ($level_two_menu[$item->level_one_menu_id] as $data)
 
                                 @can( $data->level_two_gate_name )
                                     <li class="text-capitalize {{Route::is($data->level_two_menu_link)  ? 'active' : '' }}" ><a href="@php
@@ -75,8 +78,6 @@
                                 }
                                 @endphp"> <i style="font-size:20px" class="{{ $data->level_two_icon_name }}"></i> <span class="text-bold"> {{ $data->level_two_common_name }}</a></li>
                                 @endcan
-
-                                @endif
                                 @endforeach
                             </ul>
                         </li>

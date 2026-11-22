@@ -29,10 +29,10 @@ class applicationReviewController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Review Applications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
             }
-            if ($request->user()->cannot('Review AllApplications', Role::class)) {
+            if ($request->user()->cannot('REVIEW_ALL_APPLICATIONS', Role::class)) {
                 if (!$request->applicationStatus) {
                     $applications = ePermitApplication::orderBy('applicationStatus', 'ASC')
                         ->orderBy('applicationDate', 'DESC')
@@ -105,8 +105,8 @@ class applicationReviewController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Review Applications', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
         }
         $query = $request->get('q');
 
@@ -130,8 +130,8 @@ class applicationReviewController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Review Applications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
             }
 
             $validator = Validator::make($request->all(), [
@@ -169,8 +169,8 @@ class applicationReviewController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Review Applications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
             }
             $sectors = sectors::get(['sectorID', 'sectorName']);
             $application = ePermitApplication::leftJoin('companies', 'e_permit_applications.companyId', '=', 'companies.companyID')
@@ -200,14 +200,14 @@ class applicationReviewController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Review Applications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
             }
             $application = ePermitApplication::find($id);
 
             if ($request->decision == 1) {
-                if ($request->user()->cannot('Return Application', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('RETURN_APPLICATION', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('RETURN_APPLICATION'));
                 }
                 $application->update([
                     'lastComment' => Auth::user()->user_uuid,
@@ -216,8 +216,8 @@ class applicationReviewController extends Controller
                     'allowedToEdit' => 1,
                 ]);
             } elseif ($request->decision == 2) {
-                if ($request->user()->cannot('Verify Application', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('VERIFY_APPLICATION_REVIEW', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('VERIFY_APPLICATION_REVIEW'));
                 }
                 $application->update([
                     'lastComment' => Auth::user()->user_uuid,
@@ -225,8 +225,8 @@ class applicationReviewController extends Controller
                     'applicationStatus' => $request->decision
                 ]);
             } elseif ($request->decision == 3) {
-                if ($request->user()->cannot('Review StageTwo', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('REVIEW_STAGE_TWO', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('REVIEW_STAGE_TWO'));
                 }
                 $application->update([
                     'lastComment' => Auth::user()->user_uuid,
@@ -234,8 +234,8 @@ class applicationReviewController extends Controller
                     'applicationStatus' => $request->decision
                 ]);
             } elseif ($request->decision == 4) {
-                if ($request->user()->cannot('Review StageThree', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('REVIEW_STAGE_THREE', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('REVIEW_STAGE_THREE'));
                 }
                 $application->update([
                     'lastComment' => Auth::user()->user_uuid,
@@ -243,8 +243,8 @@ class applicationReviewController extends Controller
                     'applicationStatus' => $request->decision
                 ]);
             } elseif ($request->decision == 5) {
-                if ($request->user()->cannot('Review StageFour', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('REVIEW_STAGE_FOUR', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('REVIEW_STAGE_FOUR'));
                 }
                 #---------- CREATE INVOICE TO CUSTOMER --------#
                 if (!ApplicationInvoice::where('referenceApplication', $id)->exists()) {
@@ -319,8 +319,8 @@ class applicationReviewController extends Controller
     public function permitList(Request $request)
     {
         try {
-            if ($request->user()->cannot('Review Applications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('REVIEW_APPLICATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('REVIEW_APPLICATIONS'));
             }
             $applications = ePermitApplication::orderBy('applicationStatus', 'ASC')
                 ->orderBy('applicationDate', 'ASC')

@@ -15,7 +15,7 @@ class ClientIntergrationController extends Controller
     
     public function ExhibitorList(Request $request)
     {
-        // if($request->user()->cannot('VIEW ARTICLES',Role::class))
+        // if($request->user()->cannot('VIEW_ARTICLES',Role::class))
         // {
         //     return response()->json([
         //         'status'=>0,

@@ -78,10 +78,6 @@
         }
         if (firstInvalid) {
             event.preventDefault();
-            const details = firstInvalid.closest('details');
-            if (details) {
-                details.open = true;
-            }
             visibleControl(firstInvalid).focus();
         }
     });

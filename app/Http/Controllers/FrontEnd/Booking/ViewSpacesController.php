@@ -21,9 +21,9 @@ class ViewSpacesController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Customer Booking',Role::class))
+        if($request->user()->cannot('VIEW_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CUSTOMER_BOOKING'));
         }
 
     }
@@ -46,9 +46,9 @@ class ViewSpacesController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Customer Booking',Role::class))
+        if($request->user()->cannot('CREATE_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_CUSTOMER_BOOKING'));
         }
     }
 
@@ -60,9 +60,9 @@ class ViewSpacesController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View Customer Booking',Role::class))
+        if($request->user()->cannot('VIEW_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CUSTOMER_BOOKING'));
         }
 
         $spaces=pavilions::leftJoin('space_categories','pavilions.pavilionCategory','=','space_categories.category_id')
@@ -85,9 +85,9 @@ class ViewSpacesController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('Update Customer Booking',Role::class))
+        if($request->user()->cannot('UPDATE_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_CUSTOMER_BOOKING'));
         }
 
         $companies=companies::get(['companyID','companyName']);
@@ -136,9 +136,9 @@ class ViewSpacesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Customer Booking',Role::class))
+        if($request->user()->cannot('UPDATE_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_CUSTOMER_BOOKING'));
         }
     }
 
@@ -150,9 +150,9 @@ class ViewSpacesController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Customer Booking',Role::class))
+        if($request->user()->cannot('DELETE_CUSTOMER_BOOKING',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_CUSTOMER_BOOKING'));
         }
     }
 }

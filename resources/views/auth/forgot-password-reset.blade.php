@@ -19,6 +19,7 @@
 
     <!-- Golden Design System -->
     <link rel="stylesheet" href="{{ asset('assets/css/gememis-theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 
     <!-- Core jQuery -->
     <script src="{{ asset('assets/js/core/libraries/jquery.min.js') }}"></script>
@@ -58,9 +59,9 @@
 
         .gold-floating-field input.form-control {
             height: 54px;
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1.5px solid rgba(255, 191, 0, 0.25) !important;
-            border-radius: 14px !important;
+            background: var(--gem-field-bg) !important;
+            border: 1px solid var(--gem-field-border) !important;
+            border-radius: var(--gem-control-radius) !important;
             color: #ffffff !important;
             padding: 20px 42px 6px 16px !important;
             font-size: 14.5px !important;
@@ -68,8 +69,8 @@
         }
 
         .gold-floating-field input.form-control:focus {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: #FFBF00 !important;
+            background: var(--gem-field-bg) !important;
+            border-color: var(--gem-field-focus) !important;
             box-shadow: 0 0 18px rgba(255, 191, 0, 0.35) !important;
             outline: none !important;
         }

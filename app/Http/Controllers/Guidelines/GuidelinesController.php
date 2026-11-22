@@ -21,9 +21,9 @@ class GuidelinesController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Guidelines',Role::class))
+        if($request->user()->cannot('VIEW_DITF_GUIDELINE_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_DITF_GUIDELINE_SUBMENU'));
         }
 
         $guidelines=Guideline::get();
@@ -37,9 +37,9 @@ class GuidelinesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { if($request->user()->cannot('Create Guidelines',Role::class))
+    { if($request->user()->cannot('CREATE_DITF_GUIDELINE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_DITF_GUIDELINE'));
         }
 
         $request->validate([
@@ -64,9 +64,9 @@ class GuidelinesController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if($request->user()->cannot('View Guidelines',Role::class))
+        if($request->user()->cannot('VIEW_DITF_GUIDELINE_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_DITF_GUIDELINE_SUBMENU'));
         }
     }
 
@@ -78,9 +78,9 @@ class GuidelinesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    { if($request->user()->cannot('Update Guidelines',Role::class))
+    { if($request->user()->cannot('UPDATE_DITF_GUIDELINE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_DITF_GUIDELINE'));
         }
         try {
             Guideline::find($id)->update([
@@ -100,9 +100,9 @@ class GuidelinesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request,$id)
-    { if($request->user()->cannot('Delete Guidelines',Role::class))
+    { if($request->user()->cannot('DELETE_DITF_GUIDELINE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_DITF_GUIDELINE'));
         }
 
         try {

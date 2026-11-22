@@ -19,8 +19,8 @@ class EventParticipantController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage EventParticipants', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_EVENT_PARTICIPANT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_EVENT_PARTICIPANT'));
         }
         $event=$request->eventNumber;
         $participants = EventParticipant::orderBy('participantRank','ASC')
@@ -44,8 +44,8 @@ class EventParticipantController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('manage EventParticipants', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_EVENT_PARTICIPANT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_EVENT_PARTICIPANT'));
         }
         $request->validate([
             'participantName' => 'required',
@@ -99,8 +99,8 @@ class EventParticipantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage EventParticipants', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_EVENT_PARTICIPANT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_EVENT_PARTICIPANT'));
         }
     }
 
@@ -117,8 +117,8 @@ class EventParticipantController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete EventParticipants', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_EVENT_PARTICIPANT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_EVENT_PARTICIPANT'));
         }
 
         try {
@@ -142,8 +142,8 @@ class EventParticipantController extends Controller
     }
 
     public function updateParticipant(Request $request){
-        if ($request->user()->cannot('Manage EventParticipants', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_EVENT_PARTICIPANT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_EVENT_PARTICIPANT'));
         }
         $id=$request->participantId;
         $request->validate([

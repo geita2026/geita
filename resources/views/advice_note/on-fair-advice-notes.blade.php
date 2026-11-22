@@ -107,6 +107,7 @@
 
 <script>
     $(document).ready(function() {
+        const invoiceUrl = @json(route('adviceNotes.show', ['adviceNote' => '__INVOICE_ID__']));
         $('#search-select').select2({
             ajax: {
                 url: '{{ route('search_invoices') }}', // URL for the AJAX request
@@ -121,8 +122,7 @@
                     return {
                         results: $.map(data, function(item) {
                             return {
-                                id: '{{ env('APP_URL') }}/accountingManagement/adviceNotes/' +
-                                    item.advice_note_id,
+                                id: invoiceUrl.replace('__INVOICE_ID__', encodeURIComponent(item.advice_note_id)),
                                 text: item.advice_note_id + ' || ' + item.companyName +
                                     ' || ' + item.control_number + ' || ' +
                                     numberWithCommas(item.total_amount) + ' ' + item

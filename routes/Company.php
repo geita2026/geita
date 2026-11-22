@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('customerReg')->middleware('auth')->group(function() {
     
     Route::post('first-company', [FirstCompanyRegistrationController::class, 'store'])->name('companies.first.store');
+    Route::post('companies/registration', [FirstCompanyRegistrationController::class, 'storeFromCompanyList'])
+        ->name('companies.registration.store');
     Route::resource('companies',companyController::class);
     Route::resource('countries',CountriesController::class);
     Route::post('update_my_company',[userDashboardController::class,'store'])->name('update_my_company');

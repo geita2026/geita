@@ -23,9 +23,9 @@ class userAuditController extends Controller
     public function index(Request $request)
     {
         //
-        if($request->user()->cannot('View User Logs',Permission::class))
+        if($request->user()->cannot('VIEW_AUDIT_SUBMENU',Permission::class))
         {
-           return back()->with('fail','You do not have permission to access this resource.');
+           return back()->with('fail',$this->permissionDeniedMessage('VIEW_AUDIT_SUBMENU'));
         }
         $data=DB::table('audits')->orderBy('created_at','DESC')->leftJoin('users','audits.user_id','=','users.id')
         ->paginate(10,['first_name','middle_name','last_name','audits.id','auditable_type','audits.created_at','event']);
@@ -41,9 +41,9 @@ class userAuditController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View User Logs',Permission::class))
+        if($request->user()->cannot('VIEW_AUDIT_SUBMENU',Permission::class))
         {
-           return back()->with('fail','You do not have permission to access this resource.');
+           return back()->with('fail',$this->permissionDeniedMessage('VIEW_AUDIT_SUBMENU'));
         }
 
 
@@ -60,9 +60,9 @@ class userAuditController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('View User Logs',Permission::class))
+        if($request->user()->cannot('VIEW_AUDIT_SUBMENU',Permission::class))
         {
-           return back()->with('fail','You do not have permission to access this resource.');
+           return back()->with('fail',$this->permissionDeniedMessage('VIEW_AUDIT_SUBMENU'));
         }
         //
 
@@ -89,9 +89,9 @@ class userAuditController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if($request->user()->cannot('Delete User Logs',Permission::class))
+        if($request->user()->cannot('DELETE_AUDIT',Permission::class))
         {
-            return back()->with("fail, You don't have parmission to perform this Action!");
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_AUDIT'));
         }
         try {
             DB::delete("delete from audits where id ='$id'");

@@ -43,7 +43,7 @@
             </p>
         </div>
 
-       @can('View Confirmed Invoice')
+       @can('VIEW_CONTROL_NO_REQUEST')
        <a href="{{ route('controlNoRequests.create') }}" class="form-group col-md-4 zoom">
                <button class=" btn btn-success btn-block btn-float btn-float-lg" type="button"  title="Click to view on fair Advice notes">
                    <h4 class=" text-uppercase text-bold">ON FAIR ADVICE NOTES<i class="  icon-stack-text"></i>

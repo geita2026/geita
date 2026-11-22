@@ -252,10 +252,10 @@ $(document).ready(function () {
     $('#confirmBookingBtn').on('click', function () {
 
         if (!$('#search-select').val()) {
-            swal({
-                title: 'Company Required',
-                text: 'Please select a company before confirming booking.',
-                type: 'error'
+            window.gememisToast({
+                title: 'Company required',
+                text: 'Select a company before confirming your booking.',
+                icon: 'error',
             });
             return;
         }

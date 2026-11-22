@@ -174,7 +174,6 @@ Amount: $invoice->invoiceAmount $invoice->currency.";
                 'users.user_signature',
                 'registrationNo',
                 'advice_note_status',
-                'advice_notes.updated_at',
                 'event_name',
                 'event_descriptions',
                 'vat',

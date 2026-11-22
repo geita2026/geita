@@ -23,8 +23,8 @@ class SponsorShipReportController extends Controller
     }
     public function loadSponsorshipData(Request $request){
         try {
-            if ($request->user()->cannot('Manage SponsorshipReports', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPONSORSHIP_REPORTS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPONSORSHIP_REPORTS'));
             }
             $events=events::orderBy('event_created_at','DESC')->get(['event_id','event_name']);
             $event=$request->event;

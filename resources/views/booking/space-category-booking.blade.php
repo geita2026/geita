@@ -121,7 +121,9 @@
 
                 {{-- CATEGORY GRID --}}
                 <div class="category-content">
-                    @if ($space_categories->count() > 0)
+                    @if (isset($bookingOpen) && !$bookingOpen)
+                        <div class="empty-state">Booking is not open. Contact the exhibition organizer for updates.</div>
+                    @elseif ($space_categories->count() > 0)
                         <div class="category-grid">
                             @foreach ($space_categories as $item)
                                 <a href="{{ route('event-booking-spaces.show', ['event_booking_space' => $item->category_id]) }}"

@@ -58,8 +58,8 @@
     </div>
 
     <div class="event-controller-desc">
-        Manage all exhibition business processes including exhibitor registration,
-        space and service booking, entrance and exit permits, badge management, and gate control.
+        GeMEMIS manages exhibitor registration,
+        space and service bookings, exhibitor badges, and gate access for the Geita Mineral Exhibition.
     </div>
 
     <div class="event-controller-footer">

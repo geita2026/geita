@@ -25,8 +25,8 @@ class ApplicationInvoiceController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
             if (Auth::user()->account_type==1) {
                 $invoices = ApplicationInvoice::orderBy('invoiceDate', 'ASC')
@@ -62,8 +62,8 @@ class ApplicationInvoiceController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Manage Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
     }
 
@@ -75,8 +75,8 @@ class ApplicationInvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
     }
 
@@ -89,8 +89,8 @@ class ApplicationInvoiceController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
             $invoices = ApplicationInvoice::leftJoin('e_permit_applications', 'application_invoices.referenceApplication', '=', 'e_permit_applications.applicationId')
                 ->leftJoin('trade_promotion_events', 'e_permit_applications.applicationId', '=', 'trade_promotion_events.eventApplicationId')
@@ -129,8 +129,8 @@ class ApplicationInvoiceController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
 
             $payments = ApplicationInvoice::leftJoin('payment_details', 'application_invoices.invoiceNo', '=', 'payment_details.referenceId')
@@ -164,8 +164,8 @@ class ApplicationInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
     }
 
@@ -178,8 +178,8 @@ class ApplicationInvoiceController extends Controller
     public function destroy(Request $request,$id)
     {
         try {
-            if ($request->user()->cannot('Delete Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_PERMIT_INVOICE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_PERMIT_INVOICE'));
             }
             $validator=Validator::make($request->all(),[
                 'cancelReasons'=>'required|max:200|min:5'

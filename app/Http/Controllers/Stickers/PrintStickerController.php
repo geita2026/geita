@@ -23,9 +23,9 @@ class PrintStickerController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Print Stickers',Role::class))
+        if($request->user()->cannot('PRINT_PRINT_STICKER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('PRINT_PRINT_STICKER'));
         }
 
         $stickers=CarSticker::leftJoin('companies','car_stickers.company_id','=','companies.companyID')
@@ -54,9 +54,9 @@ class PrintStickerController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('Print Stickers',Role::class))
+        if($request->user()->cannot('PRINT_PRINT_STICKER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('PRINT_PRINT_STICKER'));
         }
 
        try
@@ -106,9 +106,9 @@ class PrintStickerController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('Print Stickers',Role::class))
+        if($request->user()->cannot('PRINT_PRINT_STICKER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('PRINT_PRINT_STICKER'));
         }
     try {
         $print_id=Str::uuid();
@@ -177,9 +177,9 @@ class PrintStickerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Print Stickers',Role::class))
+        if($request->user()->cannot('PRINT_PRINT_STICKER',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('PRINT_PRINT_STICKER'));
         }
 
 

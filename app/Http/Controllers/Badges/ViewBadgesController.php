@@ -28,8 +28,8 @@ class ViewBadgesController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Badges List', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BADGES_LIST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
 
         $badges = CompanyMember::leftJoin('companies', 'company_members.company_id', '=', 'companies.companyID')
@@ -49,8 +49,8 @@ class ViewBadgesController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('View Badges List', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BADGES_LIST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
         //
 
@@ -71,8 +71,8 @@ class ViewBadgesController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Print Exhibitor Badges', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('PRINT_PRINT_BADGE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('PRINT_PRINT_BADGE'));
         }
 
         # ── Resolve target badges (bulk form or single id) ──────────────
@@ -152,8 +152,8 @@ class ViewBadgesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Validate Badges', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VALIDATE_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VALIDATE_BADGES'));
         }
 
         // $badges=CompanyMember::leftJoin('companies')
@@ -209,8 +209,8 @@ Download TanTrade App for more information.";
 
     public function backPage(Request $request)
     {
-        if ($request->user()->cannot('Print Exhibitor Badges', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('PRINT_PRINT_BADGE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('PRINT_PRINT_BADGE'));
         }
         #BackPage
         #PVCBackPage

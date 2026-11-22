@@ -16,9 +16,9 @@ class CustomerPasswordResertController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->cannot('Resert Customer Password',User::class))
+        if($request->user()->cannot('RESET_CUSTOMER_PASSWORD_RESET',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('RESET_CUSTOMER_PASSWORD_RESET'));
         }
         $event = events::where('event_status', 1)->first();
         $users = User::orderBy('users.first_name')

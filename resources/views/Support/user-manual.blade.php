@@ -66,17 +66,6 @@
                         <li>After submiting your all badge information visit the Exhibition Secretariat office to collect your badge ready for {{ date('Y') }} - Exhibition.</li>
                     </ul>
 
-                    <ul id="permit">
-                        <b class=" text-pink">HOW TO REQUEST PERMIT ?</b><br>
-                        <li>To request either Entry or Exit Permit you must be paid all balances </li>
-                        <li>Select Exhibition Permit Menu then click EntryExit Permits</li>
-                        <li>Check permit of your interest then click Process Permit</li>
-                        <li>Now your request will be received and processing will start check after sometime.</li>
-                        <li>If processing will be ready you will be able to see download button at the top of the processing stages</li>
-                        <li>Click print button to either download or print your permit</li>
-                        <li>Show your permit at the gate Entry / Exit when requested for verification</li>
-                    </ul>
-
                     
                    
                 </div>

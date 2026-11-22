@@ -21,9 +21,9 @@ class BadgeGroupController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Badge Group',Role::class))
+        if($request->user()->cannot('VIEW_BADGE_GROUP_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BADGE_GROUP_SUBMENU'));
         }
 
         $badge_groups=BadgeGroup::get();
@@ -38,9 +38,9 @@ class BadgeGroupController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Badge Group',Role::class))
+        if($request->user()->cannot('CREATE_BADGE_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_BADGE_GROUP'));
         }
         //
 
@@ -67,9 +67,9 @@ class BadgeGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Badge Group',Role::class))
+        if($request->user()->cannot('UPDATE_BADGE_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_BADGE_GROUP'));
         }
 
         try {
@@ -94,9 +94,9 @@ class BadgeGroupController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Badge Group',Role::class))
+        if($request->user()->cannot('DELETE_BADGE_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_BADGE_GROUP'));
         }
         try {
             $group=BadgeGroup::find($id);

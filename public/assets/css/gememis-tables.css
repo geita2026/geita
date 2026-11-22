@@ -31,11 +31,11 @@
     flex: 1 1 240px;
     width: auto;
     max-width: 360px;
-    min-height: 40px;
+    min-height: var(--gem-control-height, 44px);
     margin: 0;
     padding: 8px 14px;
-    border: 1px solid #bbb2a6;
-    border-radius: 24px;
+    border: 1px solid var(--gem-field-border, #a8a096);
+    border-radius: var(--gem-control-radius, 8px);
     background: #fff;
     color: #251e16;
     font-size: 15px;
@@ -189,4 +189,8 @@
     .gememis-table-toolbar input[type="search"] {
         max-width: none;
     }
+}
+
+.gememis-table-register {
+    margin-inline-start: auto;
 }

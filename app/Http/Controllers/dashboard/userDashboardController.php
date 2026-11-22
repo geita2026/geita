@@ -81,7 +81,7 @@ class userDashboardController extends Controller
         if (!$activeEvent) {
             $request->session()->forget('liveEvent');
 
-            if ($request->user()->can('View Events', Role::class)) {
+            if ($request->user()->can('VIEW_EXHIBITION_EVENT_SUBMENU', Role::class)) {
                 return redirect()->route('Exhibition-Events.index')
                     ->with('info', 'Create or activate an exhibition event to open the Trade Fair dashboard.');
             }
@@ -182,8 +182,8 @@ class userDashboardController extends Controller
     public function ePermitDashboard(Request $request)
     {
         try {
-            if ($request->user()->cannot('View ePermitDashboard', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_E_PERMIT_DASHBOARD', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_E_PERMIT_DASHBOARD'));
             }
             session(['moduleNo' => 2]);
             $promotionEventTypes = PromotionEventType::get();

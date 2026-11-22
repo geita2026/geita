@@ -119,7 +119,7 @@ $sms_content ="Dear, ".$customer_name.", $msg, Control No: $control_no, Total Am
            'advice_notes.advice_note_id','companyName','advice_note_created_at','companyAddress','companyLocation',
            'companyPhone','personalPhone','first_name','last_name','companyEmail','roles.name','advice_note_deadline'
            ,'advice_note_description','tinNo','users.user_signature','registrationNo','advice_note_status',
-           'advice_notes.updated_at','event_name','event_descriptions','vat','total_amount','currency','control_number'
+           'event_name','event_descriptions','vat','total_amount','currency','control_number'
            ]);
 
            foreach ($adviceNotes as  $value) {

@@ -10,6 +10,7 @@ use App\Models\sectors;
 use App\Models\setting\Country;
 use App\Models\settings\events;
 use App\Traits\ExhibitorTrait;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class companyListController extends Controller
@@ -26,14 +27,16 @@ class companyListController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View All Company',Role::class))
+        if($request->user()->cannot('VIEW_COMPANY_PROFILE_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_COMPANY_PROFILE_SUBMENU'));
         }
-        //
-        $company_list=companies::leftJoin('company_details','companies.companyID','=','company_details.companyID')->limit(300)
-        ->orderBy('companyName','ASC')
-        ->get(['companies.companyID','companyName','companyPhone','companyEmail','companyDetailID','personalName','personalEmail','personalPhone']);
+        $company_list = $this->companyProfileQuery()
+            ->addSelect('companies.companyID', 'companies.companyName', 'companies.companyPhone', 'companies.companyEmail')
+            ->orderBy('companies.companyName')
+            ->limit(300)
+            ->get();
+
         return view('company.company_list',compact('company_list'));
     }
 
@@ -47,22 +50,12 @@ class companyListController extends Controller
     public function show(Request $request,$id)
     {
 
-        if($request->user()->cannot('View Company',Role::class))
+        if($request->user()->cannot('VIEW_COMPANY_PROFILE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_COMPANY_PROFILE'));
         }
 
-        $sectors=sectors::orderBy('sectorName','ASC')->get(['sectorID','sectorName']);
-        $companies=companies::leftJoin('sectors','companies.companySector','=','sectors.sectorID')
-        ->leftJoin('company_details','companies.companyID','=','company_details.companyID')
-        ->get(['companies.companyID','companyName','companyEmail','companyPhone','companyCategory'
-        ,'companyLocation','companySector','sectorName','companyDetailID','registrationNo','tinNo',
-        'companyTel','companyAddress','website','originality','personalName','personalPhone',
-        'personalEmail','personalTitle','registrationID','companies.updated_at'])
-        ->where('companyID',$id);
-
-        $countries=Country::get(['country_name']);
-        return view('company.company-profile',compact('companies','countries','sectors'));
+        return $this->companyProfileView($id);
     }
 
 
@@ -76,25 +69,74 @@ class companyListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Company',Role::class))
+        if($request->user()->cannot('UPDATE_COMPANY_PROFILE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_COMPANY_PROFILE'));
         }
-        //
-        $sectors=sectors::orderBy('sectorName','ASC')->get(['sectorID','sectorName']);
-        $companies=companies::leftJoin('sectors','companies.companySector','=','sectors.sectorID')
-        ->leftJoin('company_details','companies.companyID','=','company_details.companyID')
-        ->get(['companies.companyID','companyName','companyEmail','companyPhone','companyCategory'
-        ,'companyLocation','companySector','sectorName','companyDetailID','registrationNo','tinNo',
-        'companyTel','companyAddress','website','originality','personalName','personalPhone',
-        'personalEmail','personalTitle','registrationID','companies.updated_at'])
-        ->where('companyID',$id);
+        $data = $request->validate([
+            'company_name' => ['required', 'string', 'max:255'],
+            'company_email' => ['nullable', 'email', 'max:255'],
+            'company_phone' => ['required', 'string', 'max:30'],
+            'person_name' => ['required', 'string', 'max:255'],
+            'contact_person_email' => ['nullable', 'email', 'max:255'],
+            'contact_person_phone' => ['required', 'string', 'max:30'],
+        ]);
 
-        $countries=Country::get(['country_name']);
-        return view('company.company-profile',compact('companies','countries','sectors'));
+        $contact = [
+            'personalName' => $data['person_name'],
+            'personalEmail' => $data['contact_person_email'] ?? null,
+            'personalPhone' => $data['contact_person_phone'],
+        ];
 
+        DB::transaction(function () use ($id, $data, $contact) {
+            $company = companies::whereKey($id)->lockForUpdate()->firstOrFail();
+            $company->update([
+                'companyName' => $data['company_name'],
+                'companyEmail' => $data['company_email'] ?? null,
+                'companyPhone' => $data['company_phone'],
+            ] + $contact);
+
+            // Older profiles can also have contact fields in the details table.
+            company_details::where('companyID', $company->companyID)->update($contact);
+        });
+
+        return back()->with('success', 'Company details updated successfully!');
     }
 
+
+    private function companyProfileQuery()
+    {
+        return companies::leftJoin('company_details', 'companies.companyID', '=', 'company_details.companyID')
+            ->select('company_details.companyDetailID')
+            ->selectRaw('COALESCE(company_details.personalName, companies.personalName) AS personalName')
+            ->selectRaw('COALESCE(company_details.personalEmail, companies.personalEmail) AS personalEmail')
+            ->selectRaw('COALESCE(company_details.personalPhone, companies.personalPhone) AS personalPhone');
+    }
+
+    private function companyProfileView($id)
+    {
+        $companies = $this->companyProfileQuery()
+            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
+            ->where('companies.companyID', $id)
+            ->addSelect([
+                'companies.companyID', 'companies.companyName', 'companies.companyEmail',
+                'companies.companyPhone', 'companies.companyCategory', 'companies.companyLocation',
+                'companies.companySector', 'sectors.sectorName', 'company_details.companyTel',
+                'companies.registrationID', 'companies.updated_at',
+            ])
+            ->selectRaw('COALESCE(company_details.registrationNo, companies.registrationNo) AS registrationNo')
+            ->selectRaw('COALESCE(company_details.tinNo, companies.tinNo) AS tinNo')
+            ->selectRaw('COALESCE(company_details.companyAddress, companies.companyAddress) AS companyAddress')
+            ->selectRaw('COALESCE(company_details.website, companies.website) AS website')
+            ->selectRaw('COALESCE(company_details.originality, companies.originality) AS originality')
+            ->selectRaw('COALESCE(company_details.personalTitle, companies.personalTitle) AS personalTitle')
+            ->get();
+
+        $countries = Country::get(['country_name']);
+        $sectors = sectors::orderBy('sectorName')->get(['sectorID', 'sectorName']);
+
+        return view('company.company-profile', compact('companies', 'countries', 'sectors'));
+    }
 
     /**
      * Display the specified resource.
@@ -105,9 +147,9 @@ class companyListController extends Controller
     public function edit(Request $request,$id)
     {
 
-        if($request->user()->cannot('View Company',Role::class))
+        if($request->user()->cannot('VIEW_COMPANY_PROFILE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_COMPANY_PROFILE'));
         }
         try
         {

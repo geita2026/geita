@@ -26,8 +26,8 @@ class SponsorshipSpacesController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Sponsorship Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_SPONSORSHIP_SPACE_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_SPONSORSHIP_SPACE_SUBMENU'));
         }
         $packages = sponsorship_packages::leftJoin('package_groups', 'sponsorship_packages.packageGroup', '=', 'package_groups.packageGroupId')
             ->where('packageStatus', 'PUBLISHED')
@@ -61,8 +61,8 @@ class SponsorshipSpacesController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Create Sponsorship Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CREATE_SPONSORSHIP_SPACE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_SPONSORSHIP_SPACE'));
             }
 
             if (!empty($request->pavilion_name)) {
@@ -92,8 +92,8 @@ class SponsorshipSpacesController extends Controller
     public function show(Request $request, $id)
     {
 
-        if ($request->user()->cannot('View Sponsorship Spaces', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_SPONSORSHIP_SPACE_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_SPONSORSHIP_SPACE_SUBMENU'));
         }
 
         $pavilions = pavilions::leftJoin('events', 'pavilions.event', '=', 'events.event_id')
@@ -114,8 +114,8 @@ class SponsorshipSpacesController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Sponsorship Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_SPONSORSHIP_SPACE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_SPONSORSHIP_SPACE'));
             }
             $booking = SponsorSpace::find($id);
             $booking->delete();

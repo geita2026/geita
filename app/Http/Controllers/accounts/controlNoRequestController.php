@@ -25,9 +25,9 @@ class controlNoRequestController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View ConfirmedInvoice',Role::class))
+        if($request->user()->cannot('VIEW_CONTROL_NO_REQUEST_SUBMENU',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CONTROL_NO_REQUEST_SUBMENU'));
         }
         //
             $new_on_fair_advice_note_count=advice_notes::leftJoin('events','advice_notes.event','=','events.event_id')
@@ -48,9 +48,9 @@ class controlNoRequestController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('View Confirmed Invoice',Role::class))
+        if($request->user()->cannot('VIEW_CONTROL_NO_REQUEST',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CONTROL_NO_REQUEST'));
         }
         //
         if (!empty($request->search)) {
@@ -96,9 +96,9 @@ class controlNoRequestController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('Approve Invoice',Role::class))
+        if($request->user()->cannot('APPROVE_CONTROL_NO_REQUEST',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('APPROVE_CONTROL_NO_REQUEST'));
         }
 
         $inv=advice_notes::leftJoin('companies','companies.companyID','=','advice_notes.company_id')
@@ -118,7 +118,7 @@ class controlNoRequestController extends Controller
         ->where('advice_notes.advice_note_id',$id)
         ->get(['advice_notes.advice_note_id','companyName','advice_note_created_at','companyAddress','companyLocation',
         'companyPhone','personalPhone','first_name','last_name','companyEmail','roles.name','advice_note_deadline','advice_note_description'
-        ,'tinNo','users.user_signature','registrationNo','advice_note_status','advice_notes.updated_at','event_name','event_descriptions',
+        ,'tinNo','users.user_signature','registrationNo','advice_note_status','event_name','event_descriptions',
         'vat','rejection_comment','control_number','account_type','discount','currency','total_amount','balance','amount_paid','change_currency','exchange_rate'
         ]);
         //end
@@ -149,9 +149,9 @@ class controlNoRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Reject Invoice',Role::class))
+        if($request->user()->cannot('REJECT_CONTROL_NO_REQUEST',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('REJECT_CONTROL_NO_REQUEST'));
         }
         //
 

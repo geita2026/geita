@@ -23,15 +23,15 @@ class CanceledInvoiceController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Canceled Invoice',Role::class))
+        if($request->user()->cannot('VIEW_CANCELED_INVOICE_SUBMENU',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CANCELED_INVOICE_SUBMENU'));
         }
         //
          #---------------------------------- INTERNAL USERS--------------------------#
          if (Auth::user()->account_type == 1) {
-            if ($request->user()->cannot('View Canceled Invoice', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_CANCELED_INVOICE_SUBMENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_CANCELED_INVOICE_SUBMENU'));
             }
 
             $advice_note = advice_notes::leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')
@@ -56,8 +56,8 @@ class CanceledInvoiceController extends Controller
 
         #------------------------- EXTERNAL USERS----------------------------#
         elseif (Auth::user()->account_type == 2) {
-            if ($request->user()->cannot('View Canceled Invoice', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_CANCELED_INVOICE_SUBMENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_CANCELED_INVOICE_SUBMENU'));
             }
             //CURRENT EVENT INVOICES
            return $advice_note = advice_notes::leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')

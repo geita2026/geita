@@ -62,7 +62,7 @@
                                         <a  data-toggle="modal" data-target="#edit{{ $item->product_id }}" class=" text-primary"><i class="icon-pencil7"></i> Edit Product</a>
                                     </li>
 
-                                    @can('Delete Product')
+                                    @can('DELETE_PRODUCT')
                                     <li>
                                         <a  data-toggle="modal" data-target="#delete{{ $item->product_id }}" class="text-danger"> <i class=" icon-bin"></i> Delete Product</a>
                                     </li>

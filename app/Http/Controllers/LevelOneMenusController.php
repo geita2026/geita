@@ -6,6 +6,7 @@ use App\Http\Requests\Storelevel_one_menusRequest;
 use App\Http\Requests\Updatelevel_one_menusRequest;
 use App\Models\setting\level_one_menus;
 use Illuminate\Http\Request;
+use App\Support\PermissionNames;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -23,8 +24,8 @@ class LevelOneMenusController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View All Menu', Role::class)) {
-            return back()->with(config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ALL_MENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ALL_MENU'));
         }
         //
         $level_one_menus = level_one_menus::get();
@@ -38,8 +39,8 @@ class LevelOneMenusController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Create Menu', Role::class)) {
-            return back()->with(config('Messages.401'));
+        if ($request->user()->cannot('CREATE_MENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_MENU'));
         }
         //
         return view('controls.register_level_one_menu');
@@ -53,17 +54,21 @@ class LevelOneMenusController extends Controller
      */
     public function store(Storelevel_one_menusRequest $request)
     {
-        if ($request->user()->cannot('Create Menu', Role::class)) {
-            return back()->with(config('Messages.401'));
+        if ($request->user()->cannot('CREATE_MENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_MENU'));
         }
         //
 
+        $gate = $request->input('level_one_gate_name');
+        if (is_string($gate)) {
+            $request->merge(['level_one_gate_name' => PermissionNames::canonical($gate)]);
+        }
         $request->validate([
             'level_one_common_name' => 'required|max:50',
             'level_one_menu_status' => 'required',
             'level_one_icon_name' => 'required',
             'level_one_menu_link' => 'required',
-            'level_one_gate_name' => 'required',
+            'level_one_gate_name' => 'required|string|max:125',
         ]);
 
         try {
@@ -94,8 +99,8 @@ class LevelOneMenusController extends Controller
     public function edit(level_one_menus $level_one_menus, Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Update Menu', Role::class)) {
-                return back()->with(config('Messages.401'));
+            if ($request->user()->cannot('UPDATE_MENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('UPDATE_MENU'));
             }
             //
             $level_one_menus = level_one_menus::get()->where('level_one_menu_id', $id);
@@ -114,16 +119,20 @@ class LevelOneMenusController extends Controller
      */
     public function update(Updatelevel_one_menusRequest $request, $id)
     {
-        if ($request->user()->cannot('Create Menu', Role::class)) {
-            return back()->with(config('Messages.401'));
+        if ($request->user()->cannot('CREATE_MENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_MENU'));
         }
         //
+        $gate = $request->input('level_one_gate_name');
+        if (is_string($gate)) {
+            $request->merge(['level_one_gate_name' => PermissionNames::canonical($gate)]);
+        }
         $request->validate([
             'level_one_common_name' => 'required|max:50',
             'level_one_menu_status' => 'required',
             'level_one_icon_name' => 'required',
             'level_one_menu_link' => 'required',
-            'level_one_gate_name' => 'required',
+            'level_one_gate_name' => 'required|string|max:125',
             'moduleNo' => 'required'
         ]);
         try {
@@ -150,8 +159,8 @@ class LevelOneMenusController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Create Menu', Role::class)) {
-                return back()->with(config('Messages.401'));
+            if ($request->user()->cannot('CREATE_MENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_MENU'));
             }
             level_one_menus::find($id)->delete();
             return back()->with('success', config('Messages.200'));

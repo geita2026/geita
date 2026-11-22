@@ -24,9 +24,9 @@ class customerpackagesController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Manage BookedPackages',Role::class))
+        if($request->user()->cannot('MANAGE_CUSTOMER_PACKAGE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('MANAGE_CUSTOMER_PACKAGE'));
         }
         //
         $packages=booked_sponsorship_packages::leftJoin('advice_notes','booked_sponsorship_packages.advice_note_id','=','advice_notes.advice_note_id')
@@ -46,9 +46,9 @@ class customerpackagesController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Create Customer Packages',Role::class))
+        if($request->user()->cannot('CREATE_CUSTOMER_PACKAGE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_CUSTOMER_PACKAGE'));
         }
         //
         $companies=companies::get(['companyID','companyName']);
@@ -63,9 +63,9 @@ class customerpackagesController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Customer Packages',Role::class))
+        if($request->user()->cannot('CREATE_CUSTOMER_PACKAGE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_CUSTOMER_PACKAGE'));
         }
         //
         $request->validate([
@@ -102,9 +102,9 @@ class customerpackagesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Customer Packages',Role::class))
+        if($request->user()->cannot('UPDATE_CUSTOMER_PACKAGE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_CUSTOMER_PACKAGE'));
         }
         //
 
@@ -142,9 +142,9 @@ class customerpackagesController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Customer Packages',Role::class))
+        if($request->user()->cannot('DELETE_CUSTOMER_PACKAGE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_CUSTOMER_PACKAGE'));
         }
         //
         $package=customer_packages::find($id);

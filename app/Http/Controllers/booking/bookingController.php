@@ -46,18 +46,18 @@ class bookingController extends Controller
 
     public function index(Request $request)
     {
-        if($this->checkApplicationStatus() == false){
-            return back()->with('fail','Application is currently not opened, please stay tuned for updates');
-        }
-        if ($request->user()->cannot('Book Space', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_BOOKING_SUBMENU', Role::class)
+            && $request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BOOKING_SUBMENU'));
         }
         # $this->Vistors($ip = $request->ip()); # save new vistor
         $space_categories = space_categories::orderBy('category_name', 'ASC')
             ->where('category_event', session('liveEvent'))->get();
         $event = events::find(session('liveEvent'));
 
-        return view('booking.space-category-booking', compact('space_categories', 'event'));
+        $bookingOpen = $this->checkApplicationStatus();
+
+        return view('booking.space-category-booking', compact('space_categories', 'event', 'bookingOpen'));
     }
 
     /**
@@ -67,8 +67,8 @@ class bookingController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('View Booking Space Categories', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_BOOKING_SPACE_CATEGORIES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BOOKING_SPACE_CATEGORIES'));
         }
         #
         $companies = companies::get(['companyID', 'companyName']);
@@ -94,8 +94,8 @@ class bookingController extends Controller
             return back()->with('fail','Application is currently not opened, please stay tuned for updates');
         }
        
-        if ($request->user()->cannot('Book Space', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
         }
         #
        
@@ -259,8 +259,8 @@ class bookingController extends Controller
         if($this->checkApplicationStatus() == false){
             return back()->with('fail','Application is currently not opened, please stay tuned for updates');
         }
-        if ($request->user()->cannot('Book Space', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
         }
         #
         session(['moduleNo' => 1]);
@@ -388,8 +388,8 @@ class bookingController extends Controller
         if($this->checkApplicationStatus() == false){
             return back()->with('fail','Application is currently not opened, please stay tuned for updates');
         }
-        if ($request->user()->cannot('Book Space', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
         }
         #
         $booking = booked_pavilions::where('advice_note_id', Null)
@@ -480,8 +480,8 @@ class bookingController extends Controller
             return back()->with('fail','Application is currently not opened, please stay tuned for updates');
         }
         try {
-            if ($request->user()->cannot('Cancel Booking', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CANCEL_BOOKING', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CANCEL_BOOKING'));
             }
 
             $space = booked_pavilions::find($id);
@@ -569,8 +569,8 @@ class bookingController extends Controller
 
     public function pendingBooking(Request $request)
     {
-        if ($request->user()->cannot('View Pending Booking', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_PENDING_BOOKING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_PENDING_BOOKING'));
         }
         $bookedBooths = booked_pavilions::leftJoin('booths', 'booths.boothID', '=', 'booked_pavilions.pavilionID')
             ->leftJoin('pavilions', 'booked_pavilions.pavilionID', '=', 'pavilions.pavilionID')

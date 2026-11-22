@@ -42,8 +42,8 @@ class companyController extends Controller
     public function index(Request $request)
     {
 
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         $request->session()->forget('TSRN');
         $query = companies::query()->where('companies.status', 1);
@@ -81,8 +81,8 @@ class companyController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         $countries = Country::get(['country_name', 'country_short_code']);
         $sectors = sectors::get(['sectorID', 'sectorName']);
@@ -99,8 +99,8 @@ class companyController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         //
         $request->validate([
@@ -169,37 +169,13 @@ class companyController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         //
         $sectors = sectors::orderBy('sectorName', 'ASC')
             ->get(['sectorID', 'sectorName']);
-        $companies = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('company_details', 'companies.companyID', '=', 'company_details.companyID')
-            ->get([
-                'companies.companyID',
-                'companyName',
-                'companyEmail',
-                'companyPhone',
-                'companyCategory',
-                'companyLocation',
-                'companySector',
-                'sectorName',
-                'companyDetailID',
-                'registrationNo',
-                'tinNo',
-                'companyTel',
-                'companyAddress',
-                'website',
-                'originality',
-                'personalName',
-                'personalPhone',
-                'personalEmail',
-                'personalTitle',
-                'registrationID'
-            ])
-            ->where('companyID', $id);
+        $companies = $this->companyWithDetails($id);
         return view('company.company-details', compact('companies', 'sectors'));
     }
 
@@ -211,40 +187,15 @@ class companyController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         //
 
         $sectors = sectors::orderBy('sectorName', 'ASC')
             ->get(['sectorID', 'sectorName']);
 
-        $companies = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->get([
-                'companies.companyID',
-                'companyName',
-                'companyEmail',
-                'companyPhone',
-                'companyCategory',
-                'companyLocation',
-                'companySector',
-                'sectorName',
-                'registrationNo',
-                'tinNo',
-                'companyTel',
-                'companyAddress',
-                'website',
-                'originality',
-                'personalName',
-                'personalPhone',
-                'personalEmail',
-                'personalTitle',
-                'registrationID',
-                'region',
-                'isAcceptedTerms',
-                'companyLogo'
-            ])
-            ->where('companyID', $id);
+        $companies = $this->companyWithDetails($id);
         $countries = Country::get(['country_name']);
         $regStatus = 0;
         $regStatus = User::where('user_uuid', $id)->first();
@@ -252,6 +203,30 @@ class companyController extends Controller
             $regStatus = $regStatus->isAcceptedTerms;
         }
         return view('company.edit-company', compact('companies', 'sectors', 'countries', 'regStatus'));
+    }
+
+    private function companyWithDetails($id)
+    {
+        $details = [
+            'registrationNo', 'tinNo', 'companyAddress', 'website', 'originality',
+            'personalName', 'personalPhone', 'personalEmail', 'personalTitle',
+        ];
+
+        $query = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
+            ->leftJoin('company_details', 'companies.companyID', '=', 'company_details.companyID')
+            ->where('companies.companyID', $id)
+            ->select([
+                'companies.companyID', 'companies.companyName', 'companies.companyEmail', 'companies.companyPhone',
+                'companies.companyCategory', 'companies.companyLocation', 'companies.companySector',
+                'companies.registrationID', 'companies.region', 'companies.isAcceptedTerms', 'companies.companyLogo',
+                'sectors.sectorName', 'company_details.companyDetailID', 'company_details.companyTel',
+            ]);
+
+        foreach ($details as $column) {
+            $query->selectRaw("COALESCE(company_details.$column, companies.$column) AS $column");
+        }
+
+        return $query->get();
     }
 
     /**
@@ -263,8 +238,8 @@ class companyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Company Registration', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         try {
             $validator = Validator::make($request->all(), [
@@ -375,8 +350,8 @@ class companyController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Company', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_COMPANY', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_COMPANY'));
         }
         //
         try {

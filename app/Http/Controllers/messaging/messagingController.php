@@ -22,8 +22,8 @@ class messagingController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View All Messages', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_MESSAGING_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_MESSAGING_SUBMENU'));
         }
         $draft_messages = CreatedEmails::get();
         $sectors = sectors::orderBy('sectorName', 'ASC')->get();
@@ -39,8 +39,8 @@ class messagingController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Messages', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_MESSAGING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_MESSAGING'));
         }
         try {
             $email = CreatedEmails::get()->where('email_status', 0);

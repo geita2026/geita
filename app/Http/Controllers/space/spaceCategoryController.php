@@ -29,14 +29,18 @@ class spaceCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             //
             $categories = space_categories::leftJoin('events', 'space_categories.category_event', '=', 'events.event_id')
-                ->orderBy('created_at', 'DESC')->get();
+                ->orderByDesc('events.event_start_date')
+                ->orderBy('space_categories.category_name')
+                ->get(['space_categories.*', 'events.event_name']);
             return view('space.space-category', compact('categories'));
         } catch (\Throwable $th) {
+            report($th);
+
             return back()->with('fail', config('Messages.500'));
         }
     }
@@ -49,8 +53,8 @@ class spaceCategoryController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $events = events::orderBy('event_status', 'DESC')->orderBy('event_start_date', 'DESC')->get();
             return view('space.add-space-category', compact('events'));
@@ -68,8 +72,8 @@ class spaceCategoryController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             //
             $validator = Validator::make($request->all(), [
@@ -122,8 +126,8 @@ class spaceCategoryController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $events = events::orderBy('event_status', 'DESC')->orderBy('event_start_date', 'DESC')->get();
             $categories = space_categories::leftJoin('events', 'space_categories.category_event', '=', 'events.event_id')
@@ -145,8 +149,8 @@ class spaceCategoryController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             //
             $validator = Validator::make($request->all(), [
@@ -213,8 +217,8 @@ class spaceCategoryController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete SpacesCategory', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_EXHIBITION_SPACE_CATEGORY', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_EXHIBITION_SPACE_CATEGORY'));
             }
             $category = space_categories::find($id);
             $img = str_replace(env('APP_URL') . '/public/uploadedFiles/','',$category->category_icon);

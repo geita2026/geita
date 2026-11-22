@@ -27,12 +27,12 @@ class additionaServiceController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Service', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ADDITIONAL_SERVICE_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ADDITIONAL_SERVICE_SUBMENU'));
         }
         $events = events::orderBy('event_start_date', 'DESC')->where('event_status', 1)->get();
         $services = additional_services::leftJoin('events', 'additional_services.service_event', '=', 'events.event_id')->get();
-        $income = Income::get();
+        $income = Income::orderBy('gfs_code')->get();
         return view('space.additional-service', compact('services', 'events', 'income'));
     }
 
@@ -44,33 +44,31 @@ class additionaServiceController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create Services', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_ADDITIONAL_SERVICE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_ADDITIONAL_SERVICE'));
         }
-        //
+        $validator = Validator::make($request->all(), [
+            'service_name' => 'required|string|max:255|unique:additional_services,serviceName',
+            'service_cost' => 'required|numeric',
+            'service_description' => 'nullable|string|max:100',
+            'type_of_currency' => 'required',
+            'service_type' => 'required',
+            'service_priolity' => 'required',
+            'service_event' => 'required|exists:events,event_id',
+            'gfs_code' => 'required|exists:incomes,gfs_code',
+            'is_printable' => 'nullable|boolean',
+            'self_booking' => 'required|boolean',
+            'relateToSpaceSize' => 'required|boolean',
+        ]);
+        if ($validator->fails()) {
+            if ($request->expectsJson()) {
+                return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+            }
 
+            return back()->withErrors($validator, 'newService')->withInput();
+        }
 
         try {
-
-            $validators = Validator::make($request->all(), [
-                'service_name' => 'required|unique:additional_services,serviceName',
-                'service_cost' => 'required|numeric',
-                'service_description' => 'max:100',
-                'type_of_currency' => 'required',
-                'service_type' => 'required',
-                'service_priolity' => 'required',
-                'service_event' => 'required',
-                'gfs_code' => 'required',
-                'self_booking' => 'required',
-                'relateToSpaceSize' => 'required'
-            ]);
-
-            if ($validators->fails()) {
-                return response([
-                    'status' => 0,
-                    'error' => $validators->errors()->toArray()
-                ]);
-            }
             additional_services::create([
                 'serviceID' => Str::uuid(),
                 'userID' => Auth::user()->user_uuid,
@@ -86,17 +84,20 @@ class additionaServiceController extends Controller
                 'self_booking' => $request->self_booking,
                 'relateToSpaceSize' => $request->relateToSpaceSize
             ]);
-            return response()->json([
-                'status' => 1,
-                'success' => 'service_registered_successfully!'
-            ]);
         } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'status' => 2,
-                'fail' => config('Messages.500'),
-            ], 500);
+            report($th);
+            if ($request->expectsJson()) {
+                return response()->json(['status' => 2, 'fail' => config('Messages.500')], 500);
+            }
+
+            return back()->with('fail', config('Messages.500'))->withInput();
         }
+
+        if ($request->expectsJson()) {
+            return response()->json(['status' => 1, 'success' => 'Service registered successfully.']);
+        }
+
+        return redirect()->route('additional_services.index')->with('success', 'Service registered successfully.');
     }
 
     /**
@@ -108,8 +109,8 @@ class additionaServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Services', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_ADDITIONAL_SERVICE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_ADDITIONAL_SERVICE'));
         }
         $request->validate([
             'service_name' => 'required',
@@ -119,7 +120,7 @@ class additionaServiceController extends Controller
             'service_type' => 'required',
             'service_priolity' => 'required',
             'service_event' => 'required',
-            'gfs_code' => 'required',
+            'gfs_code' => 'required|exists:incomes,gfs_code',
             'self_booking' => 'required',
             'relateToSpaceSize' => 'required'
         ]);
@@ -167,8 +168,8 @@ class additionaServiceController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Services', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_ADDITIONAL_SERVICE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_ADDITIONAL_SERVICE'));
         }
         //
 

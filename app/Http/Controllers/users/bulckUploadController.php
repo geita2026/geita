@@ -33,9 +33,9 @@ class bulckUploadController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
+        if($request->user()->cannot('CREATE_USER',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_USER'));
         }
 
         $request->validate([

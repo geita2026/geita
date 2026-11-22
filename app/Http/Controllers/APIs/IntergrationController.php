@@ -3,7 +3,6 @@
     |  ******************* INTERGRATION FILE CONTROLLER *****************
     |
     | This file define all endpoint logics for posting
-    |-->All gfs Codes created from Billing system
     |-->All control numbers from billing system
     |-->All payments being made.
     |
@@ -14,63 +13,17 @@ namespace App\Http\Controllers\APIs;
 use App\Http\Controllers\Controller;
 use App\Models\advice_note\advice_notes;
 use Illuminate\Http\Request;
-use App\Models\Collections\Income;
 use App\Models\Collections\PaymentDetails;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
-use App\Traits\CollectionSettingTraits;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
 use Illuminate\Support\Str;
 
 class IntergrationController extends Controller
 {
-    use  CollectionSettingTraits;
     use APITraits;
     use NotificationTrait;
-
-
-    # ************  POST GFSCODE FUNCTION **************#
-    function PostGfsCode(Request $request)
-    {
-        try {
-            $request_name = $request->response['sp_code'];
-            $token = $request->response['token'];
-            $status = $this->AuthenticateRequest($request_name, $token);
-            if ($status == 0) {
-                return response()->json([
-                    'code' => '401',
-                    'message' => 'You are not Authenticated to Access this Resource!'
-                ]);
-            }
-
-            foreach ($request->data as $key) {
-                $gfs_code = $key['item_code'];
-                $income_name = $key['name'];
-                $gfs_codes = Income::get();
-                foreach ($gfs_codes as $value) {
-                    if ($gfs_code == $value->gfs_code) {
-                        continue;
-                    }
-                }
-
-                $this->SaveNewGfsCode($gfs_code, $income_name); // method to register new Iterm
-
-            }
-
-            return response()->json([
-                'code' => 200,
-                'message' => 'Item added successfully!',
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'code' => 500,
-                'message' => 'Something went wrong!'
-            ]);
-        }
-    }
-    # ******** END POST GFSCODE FUNCTION ***********#
-
 
 
     # ********* POST CONTROL NUMBER FUNCTION *******#

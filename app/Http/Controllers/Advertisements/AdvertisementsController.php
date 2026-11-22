@@ -17,9 +17,9 @@ class AdvertisementsController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Advertisements',Role::class))
+        if($request->user()->cannot('VIEW_ADVERTISEMENTS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_ADVERTISEMENTS'));
         }
         $advertisements=ClipsAdvertisement::orderBy('advertisement_created_at','DESC')->get();
         return view('Advertisements.advertisements',compact('advertisements'));
@@ -34,9 +34,9 @@ class AdvertisementsController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Advertisements',Role::class))
+        if($request->user()->cannot('CREATE_ADVERTISEMENTS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_ADVERTISEMENTS'));
         }
         //
         $request->validate([
@@ -78,9 +78,9 @@ class AdvertisementsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Advertisements',Role::class))
+        if($request->user()->cannot('UPDATE_ADVERTISEMENTS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_ADVERTISEMENTS'));
         }
 
       $request->validate([
@@ -125,9 +125,9 @@ class AdvertisementsController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Advertisements',Role::class))
+        if($request->user()->cannot('DELETE_ADVERTISEMENTS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_ADVERTISEMENTS'));
         }
 
         try {

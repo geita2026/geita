@@ -69,7 +69,7 @@
             <div class="row g-4">
 
                 {{-- BOOK SPACE --}}
-                @can('Book Space')
+                @can('BOOK_SPACE')
                 <div class="col-md-3">
                     <a href="{{ route('booking.index') }}" class="text-decoration-none">
                         <div class="service-card">
@@ -101,7 +101,7 @@
                 </div>
 
                 {{-- MY PAYMENTS --}}
-                @can('Manage Payments')
+                @can('MANAGE_PAYMENT')
                 <div class="col-md-3">
                     <a href="{{ route('payments.index') }}" class="text-decoration-none">
                         <div class="service-card">
@@ -118,7 +118,7 @@
                 @endcan
 
                 {{-- SERVICE BOOKING --}}
-                @can('Book Services')
+                @can('BOOK_SERVICES')
                 <div class="col-md-3">
                     <a href="{{ route('book-services.index') }}" class="text-decoration-none">
                         <div class="service-card">
@@ -135,7 +135,7 @@
                 @endcan
 
                 {{-- EXHIBITION BADGES --}}
-                @can('Manage Badges Menu')
+                @can('MANAGE_BADGES_MENU')
                 <div class="col-md-3">
                     <a href="{{ route('exhibitors_list.index') }}" class="text-decoration-none">
                         <div class="service-card">
@@ -152,7 +152,7 @@
                 @endcan
 
                 {{-- JUDGING PROCESS --}}
-                @can('Confirm Judging')
+                @can('CONFIRM_JUDGING')
                 <div class="col-md-3">
                     <a href="{{ route('exhibitor_judging.index') }}" class="text-decoration-none">
                         <div class="service-card">

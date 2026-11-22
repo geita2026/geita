@@ -20,9 +20,9 @@ class rolesPermissionsController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Roles Permissions',Role::class))
+        if($request->user()->cannot('VIEW_ROLES_PERMISSIONS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_ROLES_PERMISSIONS'));
         }
 
         //

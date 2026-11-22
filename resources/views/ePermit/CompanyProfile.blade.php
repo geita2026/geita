@@ -43,27 +43,27 @@
 
                                     <ul class="dropdown-menu dropdown-menu-right">
 
-                                        @can('view-company-users')
+                                        @can('VIEW_COMPANY_USER')
                                             <li>
                                                 <a href="{{ route('company_users.show', ['company_user' => $item->companyID ?? '12']) }}"
                                                     class=" text-primary"><i class=" icon-users4"></i> Company Users
                                                 </a>
                                             </li>
                                         @endcan
-                                        @can('Company Registration')
+                                        @can('CREATE_COMPANY')
                                         <li>
                                             <a href="{{ route('associate_companies.show', ['associate_company' => $item->companyID ?? '12']) }}"
                                                 class=" text-primary">Associate Members<i class=" icon-plus2"></i></a>
                                         </li>
                                         @endcan
-                                        @can('Make AsExhibitor')
+                                        @can('MAKE_AS_EXHIBITOR')
                                         <li>
                                             <a href="{{ route('company_profiles.edit', ['company_profile' => $item->companyID ?? '12']) }}"
                                                 class=" text-primary">Make Exhibitor<i class=" icon-markup"></i></a>
                                         </li>
                                         @endcan
 
-                                        @can('View CompanyPayments')
+                                        @can('VIEW_COMPANY_PAYMENTS')
                                             <li>
                                                 <a href="{{ route('payments.edit', ['payment' => $item->companyID ?? '12']) }}"
                                                     class=" text-primary"><i class=" icon-coin-dollar"></i> Company Payments
@@ -71,7 +71,7 @@
                                             </li>
                                         @endcan
 
-                                        @can('manage-company-allocations')
+                                        @can('MANAGE_COMPANY_ALLOCATIONS')
                                             <li>
                                                 <a href="{{ route('badge_allocations.show', ['badge_allocation' => $item->companyID ?? '12']) }}"
                                                     class=" text-primary"><i class=" icon-ticket"></i> Company Allocations
@@ -79,7 +79,7 @@
                                             </li>
                                         @endcan
 
-                                        @can('Delete Companies')
+                                        @can('DELETE_COMPANIES')
                                             <li>
                                                 <a class=" text-danger" title="Delete Company" data-toggle="modal"
                                                     data-target="#delete_company"><i class=" icon-bin2"></i> Suspend Company

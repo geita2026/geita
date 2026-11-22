@@ -48,7 +48,7 @@
         </div>
         <div class=" row">
              {{--  boked vs Unbooked  --}}
-             @can('view All Invoice')
+             @can('VIEW_ALL_INVOICE')
              <a href="#">
                  <div class="form-group col-xs-4 mt-20">
                      <button class=" btn bg-purple btn-block btn-float btn-float-lg" type="button" data-popup="tooltip" title="Click to view list of invoices">
@@ -61,7 +61,7 @@
               {{--  //end  --}}
 
                {{--  My space  --}}
-             @can('View Paid Invoice')
+             @can('VIEW_PAID_INVOICE')
              <a href="#">
                  <div class="form-group col-md-4 mt-20">
                      <button class=" btn bg-success btn-block btn-float btn-float-lg" type="button" data-popup="tooltip" title="Click to view Your space">
@@ -74,7 +74,7 @@
               {{--  //end  --}}
 
                 {{--  Exhibitors  --}}
-             @can('View Pending Invoice')
+             @can('VIEW_PENDING_INVOICE')
              <a href="#">
                  <div class="form-group col-md-4 mt-20 shadow">
                      <button class=" btn bg-warning-800 btn-block btn-float btn-float-lg" type="button" data-popup="tooltip" title="Click to view Exhibitor">
@@ -85,7 +85,7 @@
               </a>
              @endcan
 
-             @can('View Expired Invoice')
+             @can('VIEW_EXPIRED_INVOICE')
              <a href="#">
                  <div class="form-group col-md-4 mt-20">
                      <button class=" btn bg-grey-300 btn-block btn-float btn-float-lg" type="button" data-popup="tooltip" title="Click to view Your space">

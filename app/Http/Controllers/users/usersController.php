@@ -27,9 +27,9 @@ class usersController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Users',User::class))
+        if($request->user()->cannot('VIEW_USER_SUBMENU',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_USER_SUBMENU'));
         }
 
         $query = User::leftJoin('roles', 'users.role', '=', 'roles.id');
@@ -77,9 +77,9 @@ class usersController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
+        if($request->user()->cannot('CREATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_USER'));
         }
         $roles=DB::table('roles')->get();
         return view('users.add_user',compact('roles'));
@@ -93,9 +93,9 @@ class usersController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
+        if($request->user()->cannot('CREATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_USER'));
         }
 
         #validating user inputs
@@ -182,9 +182,9 @@ class usersController extends Controller
     public function show(Request $request,$id)
     {
         //
-        if($request->user()->cannot('View Users',User::class))
+        if($request->user()->cannot('VIEW_USER_SUBMENU',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_USER_SUBMENU'));
         }
         else
         {
@@ -200,9 +200,9 @@ class usersController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
+        if($request->user()->cannot('UPDATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_USER'));
         }
         // return $id;
         // $users=DB::table('users')->leftJoin('roles','users.role','=','roles.id')->where('user_uuid',$id)->get();
@@ -219,9 +219,9 @@ class usersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
+        if($request->user()->cannot('UPDATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_USER'));
         }
         #validating user inputs
         $request->validate([
@@ -277,9 +277,9 @@ class usersController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Users',User::class))
+        if($request->user()->cannot('DELETE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_USER'));
         }
 
         #------- DISABLE ACCOUNT -----#

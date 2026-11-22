@@ -16,8 +16,8 @@ class permitReportController extends Controller
 {
     public function getPermitReports(Request $request){
         try {
-            if ($request->user()->cannot('Manage PermitReports', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_REPORTS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_REPORTS'));
             }
             $data=ePermitApplication::leftJoin('companies','e_permit_applications.companyId','=','companies.companyID')
             ->leftJoin('application_invoices','e_permit_applications.applicationId','=','application_invoices.referenceApplication')

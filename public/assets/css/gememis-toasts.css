@@ -1,0 +1,17 @@
+.swal2-popup.swal2-toast.gememis-toast {
+    box-sizing: border-box;
+    width: min(640px, calc(100vw - 24px));
+    padding: clamp(16px, 3vw, 24px) clamp(18px, 4vw, 28px);
+}
+
+.gememis-toast.swal2-toast .swal2-title {
+    font-size: 22px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.gememis-toast.swal2-toast .swal2-html-container {
+    font-size: 18px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}

@@ -21,9 +21,9 @@ class ApiLogsController extends Controller
 
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Api Logs',Role::class))
+        if($request->user()->cannot('VIEW_API_LOG_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_API_LOG_SUBMENU'));
         }
 
      $data=ApiLogs::orderBy('response_date','DESC')->paginate(20);
@@ -40,9 +40,9 @@ class ApiLogsController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Api Logs',Role::class))
+        if($request->user()->cannot('DELETE_API_LOG',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_API_LOG'));
         }
 
         try {

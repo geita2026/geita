@@ -44,8 +44,8 @@ class ApplyPermitController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
 
             $applications = ePermitApplication::orderBy('applicationDate', 'DESC')
@@ -75,8 +75,8 @@ class ApplyPermitController extends Controller
     public function create(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
             $proEvents = PromotionEventType::get([
                 'eventTypeId',
@@ -105,8 +105,8 @@ class ApplyPermitController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
             $validator = Validator::make($request->all(), [
                 'typeOfPromotionEvent' => 'required',
@@ -152,8 +152,8 @@ class ApplyPermitController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
             $products = Product::get();
             $sectors = sectors::get(['sectorID', 'sectorName']);
@@ -206,8 +206,8 @@ class ApplyPermitController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
             $permit = ApplicationInvoice::leftJoin('e_permit_applications', 'application_invoices.referenceApplication', '=', 'e_permit_applications.applicationId')
                 ->leftJoin('trade_promotion_events', 'e_permit_applications.applicationId', '=', 'trade_promotion_events.eventApplicationId')
@@ -244,8 +244,8 @@ class ApplyPermitController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PERMIT_APPLICATION'));
             }
             if ($request->source == 1) {
                 $MOFAttachment = Null;
@@ -342,8 +342,8 @@ class ApplyPermitController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete MyApplications', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_PERMIT_APPLICATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_PERMIT_APPLICATION'));
             }
             $application = ePermitApplication::where('applicationId', $id)->where('applicationStatus', '<', 6)->first();
             if ($application) {

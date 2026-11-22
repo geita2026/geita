@@ -30,8 +30,8 @@ class CarStickerController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_STICKER_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_STICKER_SUBMENU'));
         }
         #************* INTERNAL USERS **************#
         if (Auth::user()->account_type == 1) {
@@ -55,8 +55,8 @@ class CarStickerController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Create Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_STICKER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_STICKER'));
         }
         //
         $stickers = CarSticker::leftJoin('companies', 'car_stickers.company_id', '=', 'companies.companyID')
@@ -82,8 +82,8 @@ class CarStickerController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_STICKER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_STICKER'));
         }
         //
 
@@ -132,8 +132,8 @@ class CarStickerController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('View Stickers', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_STICKER_SUBMENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_STICKER_SUBMENU'));
             }
             if (session('serviceId') == null && !$request->serviceId) {
                 session(['serviceId' => additional_services::where('is_printable', 1)->where('service_event', session('liveEvent'))->first()->serviceID]);
@@ -238,8 +238,8 @@ class CarStickerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_STICKER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_STICKER'));
         }
         #************* INTERNAL USERS **************#
         if (Auth::user()->account_type == 1) {
@@ -309,8 +309,8 @@ class CarStickerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_STICKER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_STICKER'));
         }
 
         try {
@@ -357,8 +357,8 @@ class CarStickerController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Stickers', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_STICKER', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_STICKER'));
         }
 
         try {

@@ -27,7 +27,7 @@
 
                     <div class=" panel-body">
 
-                        {{-- @can('Download Programs') --}}
+                        {{-- @can('DOWNLOAD_PROGRAMS') --}}
                         <div class=" form-group text-right">
                             <a href="{{ route('preview_programs.show', ['preview_program' => 'DITF_Programs.pdf']) }}"
                                 class=" btn btn-default text-primary border-primary">Download Progrms <i

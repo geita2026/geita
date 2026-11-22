@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\controls;
 
 use App\Http\Controllers\Controller;
+use App\Support\PermissionNames;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Nette\Utils\Json;
+use Illuminate\Validation\Rule;
 
 class permissionController extends Controller
 {
@@ -23,9 +24,9 @@ class permissionController extends Controller
     public function index(Request $request)
     {
         //
-        if($request->user()->cannot('View Permissions',Permission::class))
+        if($request->user()->cannot('VIEW_PERMISSION_SUBMENU',Permission::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_PERMISSION_SUBMENU'));
         }
         $permissions=Permission::orderBy('name','ASC')->paginate(25);
         return view('controls.permissions',compact('permissions'));
@@ -52,9 +53,9 @@ class permissionController extends Controller
     public function create(Request $request)
     {
         //
-        if($request->user()->cannot('Create Permissions',Permission::class))
+        if($request->user()->cannot('CREATE_PERMISSION',Permission::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_PERMISSION'));
         }
         $permissions=DB::table('permissions')->get();
         return response()->json(['status'=>0,'permissions'=>$permissions]);
@@ -69,27 +70,27 @@ class permissionController extends Controller
     public function store(Request $request)
     {
 
-        if($request->user()->cannot('Create Permissions',Permission::class))
+        if($request->user()->cannot('CREATE_PERMISSION',Permission::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_PERMISSION'));
         }
 
-        $validator=Validator::make($request->all(),
-            [
-                'permission_name'=>'required|unique:permissions,name',
-            ]);
+        $name = $request->input('permission_name');
+        $name = is_string($name) ? PermissionNames::canonical($name) : $name;
+        $guard = 'web';
+        $validator = Validator::make(['permission_name' => $name], [
+            'permission_name' => [
+                'required', 'string', 'max:125',
+                Rule::unique('permissions', 'name')->where('guard_name', $guard),
+            ],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+        }
 
-            if($validator->fails())
-            {
-                return response()->json(['status'=>0,'error'=>$validator->errors()->toArray()]);
-            }
-            else
-            {
+        Permission::create(['name' => $name, 'guard_name' => $guard]);
 
-            Permission::create(['name' =>$request->input('permission_name')]);
-             return response()->json(['status'=>1,'success'=>'Permission Registered Successfully!']);
-            // return back()->with('success','Permission Registered Successfully!');
-            }
+        return response()->json(['status' => 1, 'success' => 'Permission Registered Successfully!']);
 
     }
 
@@ -104,16 +105,24 @@ class permissionController extends Controller
     public function update(Request $request, $id)
     {
         //
-        if($request->user()->cannot('Update Permissions',Permission::class))
+        if($request->user()->cannot('UPDATE_PERMISSION',Permission::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_PERMISSION'));
         }
-        // return $request;
-        $permission=Permission::find($id);
-        // return $permission;
-        $updated=$permission->update(['name'=>$request->permission_name]);
-        return back()->with('success','Permission Updated successfully!');
+        $permission = Permission::findOrFail($id);
+        $name = $request->input('permission_name');
+        if (is_string($name)) {
+            $request->merge(['permission_name' => PermissionNames::canonical($name)]);
+        }
+        $data = $request->validate([
+            'permission_name' => [
+                'required', 'string', 'max:125',
+                Rule::unique('permissions', 'name')->where('guard_name', $permission->guard_name)->ignore($permission),
+            ],
+        ]);
+        $permission->update(['name' => $data['permission_name']]);
 
+        return back()->with('success', 'Permission Updated successfully!');
 
     }
 
@@ -126,9 +135,9 @@ class permissionController extends Controller
     public function destroy(Request $request,$id)
     {
         //
-        if($request->user()->cannot('Delete Permissions',Permission::class))
+        if($request->user()->cannot('DELETE_PERMISSION',Permission::class))
         {
-            abort(403);
+            abort(403, $this->permissionDeniedMessage('DELETE_PERMISSION'));
         }
         try {
             $permission=Permission::find($id);

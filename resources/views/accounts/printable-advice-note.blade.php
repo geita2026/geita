@@ -100,7 +100,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 {{-- download invoice --}}
-                                @can('Download Invoice')
+                                @can('DOWNLOAD_INVOICE')
                                 @if ($item->control_number!=Null)
                                 <li>
                                  <a onclick=" event.preventDefault();document.getElementById('download_invoice').submit();" class=" text-primary text-bold" title="Download Invoice">Print Invoice<i class=" icon-printer2"></i></a>
@@ -108,7 +108,7 @@
                                 @endif
                                 @endcan
                                 {{-- end download invoice --}}
-                                @can('Cancel Advice Note')
+                                @can('CANCEL_ADVICE_NOTE')
                                 @if($item->advice_note_status==3 || $item->advice_note_status==2)
                                 <li>
                                     <a  data-toggle="modal" data-target="#SendBack{{ $item->advice_note_id }}" title="return Advice Note" class=" text-warning text-bold"><i class=" icon-backspace"></i> Reject Invoice</a>

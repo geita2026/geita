@@ -72,7 +72,7 @@
                                                         <i class="icon-menu4"></i>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
-                                                        @can('Update Menu')
+                                                        @can('UPDATE_MENU')
                                                             <li>
                                                                 <a href="{{ route('virtual_pavilions.edit', ['virtual_pavilion' => $item->participation_id]) }}"
                                                                     class=" text-primary"><i
@@ -80,7 +80,7 @@
                                                                     Details</a>
                                                             </li>
                                                         @endcan
-                                                        @can('Update Menu')
+                                                        @can('UPDATE_MENU')
                                                             <li>
                                                                 <a href="{{ route('virtual_services.show', ['virtual_service' => $item->participation_id]) }}"
                                                                     class=" text-primary"><i
@@ -88,7 +88,7 @@
                                                                 </a>
                                                             </li>
                                                         @endcan
-                                                        @can('Delete Virtual Pavilion')
+                                                        @can('DELETE_VIRTUAL_PAVILION')
                                                             <li>
                                                                 <a data-toggle="modal"
                                                                     data-target="#PavilionStatus{{ $item->participation_id }}"
