@@ -329,24 +329,6 @@
                 </div>
             </div>
 
-            <!-- 2. E-Permit Application -->
-            <div class="col-lg-4 col-md-6">
-                <div class="brand-card service-brand-card">
-                    <div>
-                        <div class="service-icon-box">
-                            <i class="fa fa-file-text-o"></i>
-                        </div>
-                        <h4>Permits</h4>
-                        <p>Apply for the permits an event needs. Follow each one from submission to approval.</p>
-                    </div>
-                    <div>
-                        <a href="{{ route('/') }}" class="service-arrow">
-                            Apply for a Permit <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <!-- 3. Sponsorship Packages -->
             <div class="col-lg-4 col-md-6">
                 <div class="brand-card service-brand-card">

@@ -378,19 +378,6 @@
                         </div>
                     </li>
 
-                    <!-- Permits -->
-                    <li>
-                        <a href="#" class="nav-link-custom">
-                            Permits <i class="fa fa-chevron-down"></i>
-                        </a>
-                        <div class="gem-dropdown">
-                            <ul>
-                                <li><a href="{{ route('/') }}"><i class="fa fa-file-text-o me-2 text-warning"></i> Apply for an event permit</a></li>
-                                <li><a href="{{ route('approved_events') }}"><i class="fa fa-check-square-o me-2 text-warning"></i> Approved events</a></li>
-                            </ul>
-                        </div>
-                    </li>
-
                     <!-- Book space -->
                     <li>
                         <a href="#" class="nav-link-custom">
@@ -400,7 +387,6 @@
                             <ul>
                                 <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-building-o me-2 text-warning"></i> Exhibition space</a></li>
                                 <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy me-2 text-warning"></i> Sponsorship packages</a></li>
-                                <li><a href="{{ route('online_booking.index') }}"><i class="fa fa-cubes me-2 text-warning"></i> Halls &amp; offices</a></li>
                             </ul>
                         </div>
                     </li>
@@ -447,16 +433,6 @@
         <a href="{{ route('exhibited_products.index') }}" class="gem-sidebar-item">Exhibited minerals</a>
     </div>
 
-    <!-- Permits -->
-    <div class="gem-sidebar-group" onclick="toggleSubmenu('subTrade')">
-        <span><i class="fa fa-calendar-check-o me-2"></i> Permits</span>
-        <i class="fa fa-chevron-down"></i>
-    </div>
-    <div class="gem-sidebar-sub" id="subTrade">
-        <a href="{{ route('/') }}" class="gem-sidebar-item">Apply for an event permit</a>
-        <a href="{{ route('approved_events') }}" class="gem-sidebar-item">Approved events</a>
-    </div>
-
     <!-- Book space -->
     <div class="gem-sidebar-group" onclick="toggleSubmenu('subBooking')">
         <span><i class="fa fa-check-circle me-2"></i> Book space</span>
@@ -465,7 +441,6 @@
     <div class="gem-sidebar-sub" id="subBooking">
         <a href="{{ route('exhibition_space_booking.index') }}" class="gem-sidebar-item">Exhibition Space</a>
         <a href="{{ route('sponsorship_package_groups') }}" class="gem-sidebar-item">Sponsorship packages</a>
-        <a href="{{ route('online_booking.index') }}" class="gem-sidebar-item">Halls &amp; offices</a>
     </div>
 
     <!-- Login & Register in Sidebar -->

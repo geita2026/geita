@@ -70,7 +70,6 @@
                                             data-live-search="true" data-width="100%" placehoder="Select menu status">
                                             <option value="{{ $item->moduleNo }}">{{ $item->moduleNo }}</option>
                                             <option value="1">GeMEMIS</option>
-                                            <option value="2">ePermit</option>
                                         </select>
                                         <span class="text-danger"> @error('moduleNo')
                                                 {{ $message }}

@@ -41,11 +41,9 @@
     <div class="content">
 
         <div class=" alert alert-info" style="font-size: 0.9vmax">
-            This system has two modules, <a href="{{ route('dashboard') }}">Exhibition</a> and <a
-                href="{{ route('permitDashboard') }}">e-Permit</a>.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>Exhibition</b> runs the Geita Mineral Exhibition.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>e-Permit</b> involves managing the provision of Trade Promotion
-            Event Permits.
+            This system runs the <a href="{{ route('dashboard') }}">Geita Mineral Exhibition</a>.<br>
+            <i class=" icon-arrow-right13 ml-20"></i> <b>Exhibition</b> covers exhibitor registration, applications,
+            space allocation, invoicing, payment and check-in.
         </div>
 
         <div class="col-md-4 form-group zoom">
@@ -67,26 +65,6 @@
                 </div>
             </a>
         </div>
-
-        @if (config('global.PERMIT_STATUS') == 1)
-            <div class="col-md-4 form-group zoom">
-                <a href="{{ route('permitDashboard') }}">
-                    <button type="submit"
-                        @if (session('moduleNo') == 2) style="border-bottom: 10px solid black;" @endif
-                        class="btn btn-block btn-float btn-float-lg  text-bold border-primary bg-info"
-                        style="border-top: 10px solid green;border-radius:5%;color:black">
-                        <span class="systemName">e-Permit</span>
-                        <hr>
-                        <div style="text-align: left;">
-                            <p class=" text-capitalize text-justify">{{ config('global.MODULE_TWO_DESCRIPTION') }}</p>
-                        </div>
-                    </button>
-                </a>
-            </div>
-        @endif
-
-
-
 
     </div>
     </div>

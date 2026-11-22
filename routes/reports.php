@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Downloads\DownloadController;
-use App\Http\Controllers\ePermit\permitReportController;
 use App\Http\Controllers\ExpoControllers\ExpoBackEndController;
 use App\Http\Controllers\reports\adviceNoteReports;
 use App\Http\Controllers\reports\bookedUnbookedReportController;
@@ -44,8 +43,6 @@ Route::get('export-general-report',[invoiceReportController::class,'ExportGenera
 Route::get('sponsorship_report',[SponsorShipReportController::class,'loadSponsorshipData'])->name('sponsorship_report');
 Route::post('exportSponsoshipReport',[SponsorShipReportController::class,'ExportSponsorshipReport'])->name('exportSponsoshipReport');
 
-Route::get('permit_reports',[permitReportController::class,'getPermitReports'])->name('permit_reports');
-Route::post('export_permit_reports',[permitReportController::class,'ExportPermitReport'])->name('export_permit_reports');
 
 Route::get('tnblc_report',[specialWorkController::class,'getAllApplication'])->name('tnblc_report');
 

@@ -47,9 +47,6 @@
                         <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
                         @endif
 
-                        @if (session('moduleNo')==2)
-                        <li class="@if(request()->is('ePermit/permitDashboard')) active  @endif " ><a href="{{ route('permitDashboard') }}" style=" border:1px solid white"><i class=" icon-home4" style="font-size:23px" ></i> <span>ePermit Dashboard</span></a></li>
-                        @endif
 
                         
                         @php

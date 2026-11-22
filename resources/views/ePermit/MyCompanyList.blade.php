@@ -7,7 +7,7 @@
         </div>
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home2 position-left"></i> ePermit </a></li>
+                <li><a href="{{ route('startApp') }}"><i class="icon-home2 position-left"></i> Home </a></li>
                 <li class="active">View All my companies</li>
             </ul>
            
@@ -70,45 +70,10 @@
                                                         class=" btn btn-info">View Application <i
                                                             class=" icon-eye"></i></a>
                                                 </li>
-                                                <li>
-                                                    <a href="" data-toggle="modal"
-                                                        data-target="#deleteApplication{{ $item->companyId }}"
-                                                        class="btn btn-danger"> Cancel Application <i
-                                                            class=" icon-bin"></i></a>
-
-                                                </li>
                                             </ul>
                                         </li>
                                     </ul>
                                 </td>
-                                {{-- delete modal --}}
-                                <div id="deleteApplication{{ $item->companyId }}" class="modal fade"
-                                    aria-modal="true">
-                                    <div class="modal-dialog modal-md">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-danger">
-                                                <button type="button" class="close"
-                                                    data-dismiss="modal">&times;</button>
-                                                <h5 class="modal-title">Are you sure you whant to delete this Data!
-                                                    ?</h5>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form
-                                                    action="{{ route('apply_permit.destroy', ['apply_permit' => $item->companyId]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class=" text-right">
-                                                        <button type="button" data-dismiss="modal"
-                                                            class=" btn btn-secondary">Close</button>
-                                                        <button type="submit" class="btn btn-danger ml-20">Yes,
-                                                            Delete</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 {{-- DELETE --}}
 
                             </tr>

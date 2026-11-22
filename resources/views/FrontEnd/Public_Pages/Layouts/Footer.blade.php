@@ -53,7 +53,6 @@
                 <ul class="list-unstyled" style="font-size:13.5px;line-height:2.1;">
                     <li><a href="{{ route('login') }}"><i class="fa fa-lock text-warning me-2"></i> Exhibitor sign in</a></li>
                     <li><a href="{{ route('registration') }}"><i class="fa fa-user-plus text-warning me-2"></i> Create an account</a></li>
-                    <li><a href="{{ route('/') }}"><i class="fa fa-certificate text-warning me-2"></i> Event permit application</a></li>
                     <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy text-warning me-2"></i> Sponsorship packages</a></li>
                     <li><a href="{{ route('terms_and_condition.index') }}"><i class="fa fa-shield text-warning me-2"></i> Terms &amp; conditions</a></li>
                 </ul>

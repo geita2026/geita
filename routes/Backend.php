@@ -130,7 +130,6 @@ Route::controller(SearchController::class)->group(function(){
     Route::get('search_off_fair_invoice','searchOffFairInvoice')->name('search_off_fair_invoice');
     Route::get('search_sectors','searchSectors')->name('search_sectors');
 });
-Route::get('search_approved_events',[SearchController::class,'searchApprovedEvents'])->name('search_approved_events');
 Route::get('search-exhibitors',[SearchController::class,'searchExhibitor'])->name('search-exhibitors');
 //
 

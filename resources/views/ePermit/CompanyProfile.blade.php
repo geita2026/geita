@@ -1,5 +1,5 @@
 <x-app-layout>
-    <title>{{ config('global.MODULE_TWO') }} | Company Profile</title>
+    <title>{{ config('global.MODULE_ONE') }} | Company Profile</title>
     {{-- page header --}}
     <div class="page-header">
         <div class="page-header-content">
@@ -7,7 +7,7 @@
         </div>
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li><a href="{{ route('permitDashboard') }}"><i class="icon-home2 position-left"></i> ePermit</a></li>
+                <li><a href="{{ route('startApp') }}"><i class="icon-home2 position-left"></i> Home</a></li>
                 <li class="active">Update Company details</li>
             </ul>
 
