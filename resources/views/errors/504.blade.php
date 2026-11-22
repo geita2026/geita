@@ -26,6 +26,7 @@
 	<!-- Theme JS files -->
 	<script type="text/javascript" src="{{ asset('assets/js/core/app.js') }}"></script>
 	<!-- /theme JS files -->
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 
@@ -87,3 +88,4 @@
 
 </body>
 </html>
+

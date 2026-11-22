@@ -1,0 +1,293 @@
+/* =========================================================
+   SAMS - TANTRADE CORPORATE THEME
+   Centralized visual layer. Existing functionality retained.
+   ========================================================= */
+
+:root {
+    --sams-green: #176b45;
+    --sams-green-dark: #104b34;
+    --sams-green-soft: #eaf3ed;
+    --sams-gold: #c5a044;
+    --sams-gold-soft: #f7f0dc;
+    --sams-white: #ffffff;
+    --sams-page: #f4f7f4;
+    --sams-text: #26352d;
+    --sams-muted: #718078;
+    --sams-border: #dfe8e1;
+    --sams-shadow: 0 4px 18px rgba(20, 65, 43, .08);
+}
+
+/* Base */
+html, body {
+    background: var(--sams-page);
+    color: var(--sams-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+}
+
+a {
+    transition: color .18s ease, background-color .18s ease;
+}
+
+.content-wrapper,
+.page-content {
+    background: var(--sams-page);
+}
+
+/* Top navigation */
+.navbar-default,
+.navbar-default .navbar-header,
+.navbar-fixed-top,
+.header-highlight {
+    background: var(--sams-green-dark) !important;
+    border-color: var(--sams-green-dark) !important;
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a i,
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-nav > li > a:hover {
+    color: var(--sams-white) !important;
+}
+
+.navbar-default .navbar-brand {
+    font-size: 23px !important;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-shadow: none !important;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover {
+    background: rgba(255,255,255,.12) !important;
+}
+
+.navbar .dropdown-menu {
+    border: 1px solid var(--sams-border);
+    border-top: 3px solid var(--sams-gold);
+    box-shadow: var(--sams-shadow);
+}
+
+/* Sidebar - keep existing dynamic menu and permission checks */
+.sidebar,
+.sidebar.sidebar-main {
+    background: var(--sams-green-dark) !important;
+    color: var(--sams-white);
+}
+
+.sidebar .sidebar-user,
+.sidebar .category-content {
+    background: transparent;
+}
+
+.sidebar .media-heading,
+.sidebar .media-heading a,
+.sidebar .text-white,
+.sidebar .navigation > li > a,
+.sidebar .navigation > li > a > span,
+.sidebar .navigation > li > a > i {
+    color: var(--sams-white) !important;
+}
+
+.sidebar .navigation > li > a {
+    border: 0 !important;
+    border-left: 3px solid transparent !important;
+    border-radius: 4px;
+    margin: 3px 8px;
+    padding: 11px 13px;
+}
+
+.sidebar .navigation > li > a:hover,
+.sidebar .navigation > li.active > a {
+    background: rgba(255,255,255,.13) !important;
+    border-left-color: var(--sams-gold) !important;
+}
+
+.sidebar .navigation li ul {
+    background: rgba(0,0,0,.10);
+}
+
+.sidebar .navigation li ul li a {
+    color: #edf5ef !important;
+}
+
+.sidebar .navigation li ul li a:hover,
+.sidebar .navigation li ul li.active > a {
+    color: #fff !important;
+    background: rgba(255,255,255,.10) !important;
+}
+
+.sidebar .navigation-header {
+    color: #d7e8dc !important;
+    font-weight: 700;
+    letter-spacing: .7px;
+}
+
+/* Page headings and breadcrumbs */
+.page-header {
+    background: var(--sams-white);
+    border-bottom: 1px solid var(--sams-border);
+    box-shadow: 0 2px 8px rgba(20,65,43,.035);
+}
+
+.page-header,
+.page-header-content {
+    color: var(--sams-text);
+}
+
+.breadcrumb-line,
+.breadcrumb-line-component {
+    background: #f9fbf9 !important;
+    border-color: var(--sams-border) !important;
+}
+
+.breadcrumb a {
+    color: var(--sams-green) !important;
+}
+
+/* Content panels and cards */
+.panel,
+.panel-default,
+.panel-white,
+.card,
+.well {
+    border-color: var(--sams-border);
+    border-radius: 7px;
+    box-shadow: var(--sams-shadow);
+}
+
+.panel-heading {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.panel-primary > .panel-heading,
+.bg-primary,
+.btn-primary {
+    background-color: var(--sams-green) !important;
+    border-color: var(--sams-green) !important;
+}
+
+.text-primary,
+a.text-primary {
+    color: var(--sams-green) !important;
+}
+
+.bg-success,
+.btn-success {
+    background-color: var(--sams-green) !important;
+    border-color: var(--sams-green) !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 5px;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    background-color: var(--sams-green-dark) !important;
+    border-color: var(--sams-green-dark) !important;
+    box-shadow: 0 3px 9px rgba(16,75,52,.18);
+}
+
+.btn-warning,
+.label-warning,
+.badge-warning {
+    background-color: var(--sams-gold) !important;
+    border-color: var(--sams-gold) !important;
+    color: #fff !important;
+}
+
+/* Forms */
+.form-control,
+select.form-control,
+textarea.form-control {
+    border: 1px solid #d4dfd7;
+    border-radius: 5px;
+    box-shadow: none;
+    min-height: 36px;
+}
+
+.form-control:focus {
+    border-color: var(--sams-green);
+    box-shadow: 0 0 0 2px rgba(23,107,69,.10);
+}
+
+label {
+    color: #34483c;
+    font-weight: 600;
+}
+
+/* Tables */
+.table {
+    background: var(--sams-white);
+}
+
+.table > thead > tr > th,
+.table-header {
+    background: var(--sams-green-soft) !important;
+    color: var(--sams-green-dark);
+    border-color: var(--sams-border) !important;
+    font-weight: 700;
+}
+
+.table > tbody > tr > td {
+    border-color: #e8eee9;
+    vertical-align: middle;
+}
+
+.table-hover > tbody > tr:hover {
+    background: #f5faf6;
+}
+
+/* Footer */
+.navbar-fixed-bottom,
+.navbar-fixed-bottom.bg-secondary {
+    background: var(--sams-green-dark) !important;
+    border-top: 3px solid var(--sams-gold);
+    color: var(--sams-white) !important;
+}
+
+.navbar-fixed-bottom a,
+.navbar-fixed-bottom .navbar-text,
+.navbar-fixed-bottom .navbar-nav > li > a {
+    color: #f4f8f5 !important;
+}
+
+/* Modals and alerts */
+.modal-content {
+    border: 1px solid var(--sams-border);
+    border-top: 4px solid var(--sams-gold);
+    border-radius: 8px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.18);
+}
+
+.alert-info {
+    border-color: #d7e8dc;
+}
+
+/* Responsive spacing */
+@media (max-width: 767px) {
+    .content-wrapper {
+        padding-bottom: 55px;
+    }
+
+    .page-header {
+        margin-bottom: 12px;
+    }
+
+    .navbar-default .navbar-brand {
+        font-size: 20px !important;
+    }
+
+    .table-responsive {
+        border: 0;
+    }
+}

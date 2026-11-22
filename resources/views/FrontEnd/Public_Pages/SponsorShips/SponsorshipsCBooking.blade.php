@@ -40,6 +40,7 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
             padding: 10px;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -300,7 +301,7 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
                                             <div class=" col-md-10">
                                                 <label>
                                                     <input type="checkbox" required>
-                                                    I accept that the selection committee’s decision is final and if
+                                                    I accept that the selection committeeâ€™s decision is final and if
                                                     selected, my firm will participate in the trade fair and I accept to
                                                     abide by all the  <a href="#" data-toggle="modal"
                                                     data-target="#termsAdCondition"> Rules
@@ -336,3 +337,4 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
 </html>
 @include('FrontEnd.Public_Pages.Layouts.scripts')
 {{--  --}}
+

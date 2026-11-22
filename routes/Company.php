@@ -6,7 +6,7 @@ use App\Http\Controllers\company\companyListController;
 use App\Http\Controllers\company\companyUserControllers;
 use App\Http\Controllers\company\sectorController;
 use App\Http\Controllers\dashboard\userDashboardController;
-use App\Http\Controllers\ePermit\CompanyRegistrationController;
+// [GEMEMIS-CLEANUP] use App\Http\Controllers\ePermit\CompanyRegistrationController;
 use App\Http\Controllers\settings\CountriesController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +19,8 @@ Route::prefix('customerReg')->middleware('auth')->group(function() {
     Route::resource('company_profiles',companyListController::class);
     Route::resource('company_users',companyUserControllers::class);
     Route::resource('sectors',sectorController::class);
-    Route::post('register_company',[CompanyRegistrationController::class,'registerCompany'])->name('register_company');
-    Route::get('company_profile/{companyId}',[CompanyRegistrationController::class,'CompanyProfile'])->name('company_profile');
-    Route::get('mycompanies',[CompanyRegistrationController::class,'myCompanyList'])->name('mycompanies');
-    Route::post('update_company',[CompanyRegistrationController::class,'UpdateCompanyFromTRA'])->name('update_company');
+// [GEMEMIS-CLEANUP]     Route::post('register_company',[CompanyRegistrationController::class,'registerCompany'])->name('register_company');
+// [GEMEMIS-CLEANUP]     Route::get('company_profile/{companyId}',[CompanyRegistrationController::class,'CompanyProfile'])->name('company_profile');
+// [GEMEMIS-CLEANUP]     Route::get('mycompanies',[CompanyRegistrationController::class,'myCompanyList'])->name('mycompanies');
+// [GEMEMIS-CLEANUP]     Route::post('update_company',[CompanyRegistrationController::class,'UpdateCompanyFromTRA'])->name('update_company');
 });

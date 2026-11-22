@@ -23,20 +23,36 @@ class eventBookingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Book Space', Role::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
-        $events=Events::where('event_id',session('liveEvent'))->get();
-        foreach ($events as $key) {
-            $event_name=$key->event_name;
-        }
-        $space_categories=space_categories::orderBy('category_name','ASC')->where('category_event',session('event_id'))->get();
-        $spaces=pavilions::get();
-            return view('booking.space-category-booking',compact('space_categories','event_id','event_name','spaces'));
 
+        // Use the same active event session as the main booking controller.
+        $event_id = session('liveEvent');
+
+        if (!$event_id) {
+            return back()->with('fail', 'No active exhibition event has been selected.');
+        }
+
+        $event = Events::where('event_id', $event_id)->first();
+
+        if (!$event) {
+            return back()->with('fail', 'The selected exhibition event could not be found.');
+        }
+
+        $event_name = $event->event_name;
+
+        $space_categories = space_categories::where('category_event', $event_id)
+            ->orderBy('category_name', 'ASC')
+            ->get();
+
+        $spaces = pavilions::get();
+
+        return view(
+            'booking.space-category-booking',
+            compact('space_categories', 'event_id', 'event_name', 'spaces')
+        );
     }
-
 
     /**
      * Display the specified resource.

@@ -17,7 +17,6 @@ use App\Models\booking\booked_pavilions;
 use App\Models\Companies\CompanyAdmin;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
-use App\Models\ePermit\PromotionEventType;
 use App\Models\exhibition\exhibition_products;
 use App\Models\Inquiry\BookingInquiry;
 use App\Models\setting\ExchangeRate;
@@ -179,28 +178,4 @@ class userDashboardController extends Controller
         }
     }
 
-    public function ePermitDashboard(Request $request)
-    {
-        try {
-            if ($request->user()->cannot('View ePermitDashboard', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
-            }
-            session(['moduleNo' => 2]);
-            $promotionEventTypes = PromotionEventType::get();
-            $applications = ePermitApplication::get();
-
-            $permits = ApplicationInvoice::leftJoin('e_permit_applications', 'application_invoices.referenceApplication', '=', 'e_permit_applications.applicationId')
-                ->leftJoin('trade_promotion_events', 'e_permit_applications.applicationId', '=', 'trade_promotion_events.eventApplicationId')
-                ->leftJoin('companies', 'application_invoices.customerId', '=', 'companies.companyID')
-                ->leftJoin('promotion_event_types', 'trade_promotion_events.tradeEventType', '=', 'promotion_event_types.eventTypeId')
-                ->leftJoin('company_details', 'companies.companyID', '=', 'company_details.companyID')
-                ->where('appliedBy', Auth::user()->user_uuid)
-                ->where('applicationStatus', 6)->get();
-                $companies=companies::leftJoin('company_admins','companies.companyID','=','company_admins.companyId')
-                ->where('adminId',Auth::user()->user_uuid)->get();
-            return view('ePermit.ePermitDashboard', compact('permits', 'promotionEventTypes', 'applications','companies'));
-        } catch (\Throwable $th) {
-            return back()->with('fail', config('Messages.500'));
-        }
-    }
 }

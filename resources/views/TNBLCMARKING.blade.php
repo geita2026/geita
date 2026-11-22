@@ -24,6 +24,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/core/libraries/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
     <!-- /core JS files -->
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -123,3 +124,4 @@
 </body>
 
 </html>
+

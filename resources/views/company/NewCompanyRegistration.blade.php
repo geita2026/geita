@@ -153,7 +153,7 @@
                 <div class="p-4">
                     <div class="row align-items-center collapse-animate" id="TSRNFIELD">
                         <div class="col-md-10">
-                            <form action="{{ route('company_profile', ['companyId' => date('dmd')]) }}"
+                            <form action="{{ route('companies.create') }}"
                                   method="post" id="registerWithTsrn">
                                 @csrf
                                 @method('GET')
@@ -175,7 +175,7 @@
                     <!-- TIN FIELD -->
                     <div class="row align-items-center collapse-animate" id="tinField">
                         <div class="col-md-10">
-                            <form action="{{ route('company_profile', ['companyId' => date('dmd')]) }}"
+                            <form action="{{ route('companies.create') }}"
                                   method="post" id="registerWithTin">
                                 @csrf
                                 @method('GET')

@@ -7,7 +7,6 @@
         </div>
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li><a href="{{ route('permitDashboard') }}"><i class="icon-home2 position-left"></i> ePermit</a></li>
                 <li class="active">Update Company details</li>
             </ul>
 
@@ -100,7 +99,6 @@
             <div class="panel-body">
 
                 <div class="">
-                    @include('ePermit.applyPermitCommons.CompanyDetails')
                 </div>
 
             </div>
@@ -114,21 +112,22 @@
     const checkbox = document.getElementById('TSRN');
     const toggleDiv = document.getElementById('TSRNFIELD');
 
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            toggleDiv.style.display = 'block'; // Show the div
-        } else {
-            toggleDiv.style.display = 'none'; // Hide the div
-        }
-    });
+    if (checkbox && toggleDiv) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                toggleDiv.style.display = 'block';
+            } else {
+                toggleDiv.style.display = 'none';
+            }
+        });
+    }
 </script>
 <script>
     $("#country").change(function() {
-        if ($(this).val() == "Tanzania") { //for functional Halls
+        if ($(this).val() == "Tanzania") {
             $("#region").show();
         } else {
             $("#region").hide();
-
         }
     });
 </script>
@@ -144,7 +143,7 @@
             <div class="modal-header bg-danger">
 
                 <h4 class="modal-title text-center text-uppercase">DELETE
-                    <b>{{ $item->companyName ?? '12' }}</b> Company</h5>
+                    <b>{{ $item->companyName ?? '12' }}</b> Company</h4>
 
             </div>
 
@@ -179,5 +178,3 @@
     </div>
 
 </div>
-
-

@@ -37,6 +37,7 @@
         }
     </style>
     @include('WelcomePageLayouts.welcomeCss')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <h1>HELLOW</h1>
 <body>
@@ -45,3 +46,4 @@
 
 </html>
 @include('WelcomePageLayouts.welcomeJs')
+

@@ -14,6 +14,7 @@
     <title>{{ env('APP_NAME') }} | SabaSaba Fair Ground</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     @include('WelcomePageLayouts.welcomeCss')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -110,6 +111,7 @@
 <script type="text/javascript" src="{{ asset('assets/js/plugins/buttons/spin.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/plugins/buttons/ladda.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/pages/components_buttons.js') }}"></script>
+
 
 
 

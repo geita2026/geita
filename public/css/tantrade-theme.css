@@ -1,0 +1,363 @@
+﻿:root {
+    --tt-green: #16834A;
+    --tt-dark-green: #105C35;
+    --tt-white: #FFFFFF;
+    --tt-gold: #D4AF37;
+    --tt-background: #F5F7F5;
+    --tt-text: #26332B;
+}
+
+/* Main layout */
+body {
+    background: var(--tt-background);
+    color: var(--tt-text);
+}
+
+/* Green sidebar */
+.sidebar,
+.main-sidebar {
+    background: var(--tt-green) !important;
+}
+
+/* Sidebar links */
+.sidebar a,
+.main-sidebar a {
+    color: var(--tt-white);
+}
+
+/* Active menu */
+.sidebar .active,
+.main-sidebar .active,
+.sidebar .nav-link.active,
+.main-sidebar .nav-link.active {
+    background: var(--tt-gold) !important;
+    color: var(--tt-dark-green) !important;
+    border-radius: 6px;
+}
+
+/* Header */
+.main-header,
+.navbar {
+    background: var(--tt-white);
+}
+
+/* Cards */
+.card {
+    border-top: 3px solid var(--tt-green);
+    border-radius: 8px;
+}
+
+/* Primary buttons */
+.btn-primary {
+    background: var(--tt-green);
+    border-color: var(--tt-green);
+}
+
+.btn-primary:hover {
+    background: var(--tt-dark-green);
+    border-color: var(--tt-dark-green);
+}
+
+/* Gold highlights */
+.text-gold {
+    color: var(--tt-gold) !important;
+}
+
+.bg-gold {
+    background: var(--tt-gold) !important;
+    color: var(--tt-dark-green) !important;
+}
+
+.border-gold {
+    border-color: var(--tt-gold) !important;
+}
+
+
+/* GEMEMIS PREMIUM CHARCOAL GOLD THEME */
+
+:root {
+    --gememis-charcoal: #17191d;
+    --gememis-dark: #202329;
+    --gememis-gold: #d4af37;
+    --gememis-gold-light: #f0d77a;
+    --gememis-white: #ffffff;
+    --gememis-background: #f4f5f7;
+    --gememis-text: #30343b;
+}
+
+/* General application background */
+body {
+    background-color: var(--gememis-background) !important;
+    color: var(--gememis-text);
+}
+
+/* Top navigation */
+.navbar-fixed-top,
+.navbar.header-highlight,
+.navbar-default.navbar-fixed-top {
+    background: var(--gememis-charcoal) !important;
+    border-color: #30343b !important;
+    box-shadow: 0 3px 14px rgba(0,0,0,.18);
+}
+
+.navbar-fixed-top .navbar-header {
+    background: var(--gememis-charcoal) !important;
+}
+
+.navbar-fixed-top .navbar-brand,
+.navbar-fixed-top .navbar-nav > li > a,
+.navbar-fixed-top .navbar-nav > li > a i {
+    color: var(--gememis-white) !important;
+}
+
+.navbar-fixed-top .navbar-brand {
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.navbar-fixed-top .navbar-brand:hover,
+.navbar-fixed-top .navbar-nav > li > a:hover {
+    color: var(--gememis-gold-light) !important;
+}
+
+.navbar-fixed-top .navbar-brand:after {
+    content: "";
+    display: block;
+    width: 35px;
+    height: 3px;
+    margin-top: 3px;
+    background: var(--gememis-gold);
+    border-radius: 5px;
+}
+
+/* Header profile */
+.navbar-fixed-top .dropdown-user > a,
+.navbar-fixed-top .dropdown-user > a span {
+    color: var(--gememis-white) !important;
+}
+
+.navbar-fixed-top .dropdown-menu {
+    border: 1px solid rgba(212,175,55,.35);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}
+
+.navbar-fixed-top .dropdown-menu > li > a:hover {
+    background: #f8f3e3;
+    color: #17191d;
+}
+
+/* Sidebar */
+.sidebar,
+.sidebar.sidebar-main,
+.sidebar-fixed {
+    background: var(--gememis-charcoal) !important;
+    border-right: 1px solid rgba(212,175,55,.25);
+}
+
+.sidebar .sidebar-content,
+.sidebar .sidebar-category,
+.sidebar .category-content {
+    background: transparent !important;
+}
+
+.sidebar .sidebar-user {
+    background: #202329 !important;
+    border-bottom: 1px solid rgba(212,175,55,.25);
+}
+
+.sidebar .media-heading,
+.sidebar .media-heading a,
+.sidebar .media-body,
+.sidebar .media-body a,
+.sidebar .navigation > li > a,
+.sidebar .navigation > li > a span {
+    color: #f4f4f4 !important;
+}
+
+.sidebar .navigation > li > a {
+    border: 0 !important;
+    border-radius: 7px;
+    margin: 4px 9px;
+    padding: 11px 13px;
+    transition: background .2s ease, color .2s ease;
+}
+
+.sidebar .navigation > li > a i {
+    color: var(--gememis-gold) !important;
+}
+
+.sidebar .navigation > li > a:hover,
+.sidebar .navigation > li > a:focus {
+    background: #30343b !important;
+    color: var(--gememis-gold-light) !important;
+}
+
+.sidebar .navigation > li.active > a,
+.sidebar .navigation > li > ul > li.active > a {
+    background: var(--gememis-gold) !important;
+    color: var(--gememis-charcoal) !important;
+    font-weight: 700;
+}
+
+.sidebar .navigation > li.active > a span,
+.sidebar .navigation > li.active > a i,
+.sidebar .navigation > li > ul > li.active > a {
+    color: var(--gememis-charcoal) !important;
+}
+
+.sidebar .navigation-header,
+.sidebar .navigation-header span {
+    color: var(--gememis-gold-light) !important;
+}
+
+/* Sidebar search */
+.sidebar input.form-control {
+    background: #292d34 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(212,175,55,.4) !important;
+    border-radius: 6px;
+}
+
+.sidebar input.form-control::placeholder {
+    color: #c5c5c5;
+}
+
+/* Main content */
+.content-wrapper {
+    background: transparent;
+}
+
+.content-wrapper main {
+    color: var(--gememis-text);
+}
+
+/* Panels and cards */
+.panel,
+.card,
+.dashboard-wrapper .kpi-card,
+.dashboard-wrapper .trend-card,
+.dashboard-wrapper .service-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(25,30,35,.07);
+}
+
+.panel {
+    border-top: 3px solid var(--gememis-gold);
+}
+
+.panel-heading {
+    border-color: rgba(212,175,55,.35);
+}
+
+.dashboard-wrapper {
+    background: var(--gememis-background);
+}
+
+.dashboard-wrapper .kpi-card,
+.dashboard-wrapper .trend-card,
+.dashboard-wrapper .service-card {
+    border: 1px solid #e5e5e5;
+    border-top: 3px solid var(--gememis-gold);
+    background: #ffffff;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.dashboard-wrapper .kpi-card:hover,
+.dashboard-wrapper .trend-card:hover,
+.dashboard-wrapper .service-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(25,30,35,.12);
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--gememis-charcoal) !important;
+    border-color: var(--gememis-gold) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: #30343b !important;
+    border-color: var(--gememis-gold-light) !important;
+    color: var(--gememis-gold-light) !important;
+}
+
+/* Gold utility classes */
+.text-gold {
+    color: var(--gememis-gold) !important;
+}
+
+.bg-gold {
+    background: var(--gememis-gold) !important;
+    color: var(--gememis-charcoal) !important;
+}
+
+.border-gold {
+    border-color: var(--gememis-gold) !important;
+}
+
+/* Login page */
+body.login-container {
+    background: linear-gradient(135deg, #111317 0%, #252a31 55%, #17191d 100%) !important;
+    color: #ffffff;
+}
+
+.login-container .login-card {
+    border: 1px solid rgba(212,175,55,.55);
+    border-radius: 15px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    overflow: hidden;
+}
+
+.login-container .login-header {
+    color: var(--gememis-charcoal);
+}
+
+.login-container .login-header h1,
+.login-container .login-header h2 {
+    color: var(--gememis-charcoal);
+}
+
+.login-container .login-card input:focus {
+    border-color: var(--gememis-gold) !important;
+    box-shadow: 0 0 0 3px rgba(212,175,55,.15);
+}
+
+.login-container #loginBtn {
+    background: var(--gememis-charcoal) !important;
+    border: 1px solid var(--gememis-gold) !important;
+    color: #ffffff !important;
+    border-radius: 7px;
+    transition: .2s ease;
+}
+
+.login-container #loginBtn:hover {
+    background: #30343b !important;
+    color: var(--gememis-gold-light) !important;
+}
+
+/* Tables */
+.table > thead > tr > th,
+.table-header {
+    background: #252a31 !important;
+    color: #ffffff !important;
+    border-color: var(--gememis-gold) !important;
+}
+
+.table > tbody > tr:hover {
+    background: #fbf7e9;
+}
+
+/* Footer */
+.navbar-fixed-bottom.bg-secondary {
+    background: var(--gememis-charcoal) !important;
+    border-top: 2px solid var(--gememis-gold);
+    color: #ffffff !important;
+}
+
+.navbar-fixed-bottom.bg-secondary,
+.navbar-fixed-bottom.bg-secondary a {
+    color: #ffffff !important;
+}

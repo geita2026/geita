@@ -39,7 +39,8 @@
                 font-size: 8px;
             }
         </style>
-    </head>
+    <link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+</head>
 
     <body style="text-align: center">
         <div class="content">
@@ -280,3 +281,4 @@
 
     </html>
 @endforeach
+

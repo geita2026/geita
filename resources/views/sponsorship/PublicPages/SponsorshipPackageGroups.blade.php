@@ -11,6 +11,7 @@
             background-color: rgb(214, 212, 212);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -52,9 +53,9 @@
         <div class=" card-body">
             <div class="row" style="padding: 3%">
                 <div class=" col-md-12">
-                   The 2026 edition of the Dar es Salaam International Trade Fair (DITF) marks a historic milestone—its 50th Anniversary (Golden Jubilee)- celebrating five decades of advancing trade, investment, and economic cooperation in domestic and external Markets.  We are thrilled to welcome our esteemed sponsors, your support plays a crucial role in making this prestigious event possible. As a sponsor, you will gain unparalleled exposure and the opportunity to connect with prominent leaders, innovators, and decision-makers from around the globe. This is not just an event; it’s a platform for growth, collaboration and innovation.
+                   The 2026 edition of the Dar es Salaam International Trade Fair (DITF) marks a historic milestoneâ€”its 50th Anniversary (Golden Jubilee)- celebrating five decades of advancing trade, investment, and economic cooperation in domestic and external Markets.  We are thrilled to welcome our esteemed sponsors, your support plays a crucial role in making this prestigious event possible. As a sponsor, you will gain unparalleled exposure and the opportunity to connect with prominent leaders, innovators, and decision-makers from around the globe. This is not just an event; itâ€™s a platform for growth, collaboration and innovation.
                     <br> 
-                    <h4> What’s in it for you?</h4>
+                    <h4> Whatâ€™s in it for you?</h4>
 
                     <b>Brand Visibility:</b> Brand Visibility: Showcase your brand to thousands of visitors, media outlets and exhibitors
                     <b> Networking Opportunities:</b> Engage with potential customers, partners and industry stakeholders.
@@ -101,3 +102,4 @@
 </body>
 
 </html>
+

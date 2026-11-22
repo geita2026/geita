@@ -8,8 +8,8 @@
                         @csrf
                         <div class="panel panel-body login-form" >
                             <div class="text-center">
-                                <div class="icon-object border-slate-300 text-slate-300"><img src="{{ asset('images/logo.jpg') }}" height="60" width="60"></div>
-                                <h5 class="content-group" ><b id="h3">SAMS LOGIN PANEL</b><small class="display-block ">{{ __('Space Allocation  Management System (SAMS).') }}</small></h5>
+                                <div class="icon-object border-slate-300 text-slate-300"><img src="{{ asset('images/tanzania-coat-of-arms.svg') }}" height="60" width="60"></div>
+                                <h5 class="content-group" ><b id="h3">GeMEMIS LOGIN PANEL</b><small class="display-block ">{{ __('Space Allocation  Management System (SAMS).') }}</small></h5>
                             </div>
                             <div class="form-group has-feedback has-feedback-left">
                                 <input type="text" name="user_name" class="form-control" placeholder="Username" {{ old('user_name') }}>

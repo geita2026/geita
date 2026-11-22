@@ -65,6 +65,7 @@
             text-decoration: underline;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
     <div class="email-container">
@@ -110,9 +111,10 @@
                 <a href="https://linkedin.com/company/tantrade" target="_blank">LinkedIn</a>
             </p>
             <p>
-                © 2024 Tanzania Trade Development Authority. All Rights Reserved.
+                Â© 2024 Tanzania Trade Development Authority. All Rights Reserved.
             </p>
         </div>
     </div>
 </body>
 </html>
+

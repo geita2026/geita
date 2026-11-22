@@ -76,6 +76,7 @@
             text-align: center;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -206,3 +207,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
+

@@ -51,6 +51,7 @@
             /* Custom Cursor */
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -155,3 +156,4 @@
         });
     });
 </script>
+

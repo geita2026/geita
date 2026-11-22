@@ -6,7 +6,7 @@
     <title>Print Badges</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
     <style>
-        /* ── A4 page setup ─────────────────────────────────────────────── */
+        /* â”€â”€ A4 page setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         @page { size: A4 portrait; margin: 0; }
 
         * { box-sizing: border-box; }
@@ -16,7 +16,7 @@
         body.layout-4   { --grid-rows: 2; --badge-w: 88mm;    --badge-h: 120mm; }
         body.layout-4xl { --grid-rows: 2; --badge-w: 86mm;    --badge-h: 127mm; }
 
-        /* ── Sidebar — offer-card style (Uiverse.io) ─────────────────── */
+        /* â”€â”€ Sidebar â€” offer-card style (Uiverse.io) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         :root {
             --sb-bg:          #0b0c10;
             --sb-bg-light:    #12141a;
@@ -182,7 +182,7 @@
             flex-shrink: 0;
         }
         .sb-option-arrow svg { width: 0.9em; height: 0.9em; }
-        /* ── Print button (Uiverse.io — animated, purple) ─────────────── */
+        /* â”€â”€ Print button (Uiverse.io â€” animated, purple) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .print-btn-wrap { display: flex; justify-content: center; margin: 0.6em 0 0.4em; }
         .print-btn {
             --white:   #f0ebf0;
@@ -406,7 +406,7 @@
             text-align: center;
         }
 
-        /* ── Sheets area ───────────────────────────────────────────────── */
+        /* â”€â”€ Sheets area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .sheets-area {
             margin-left: 220px;
             padding: 20px;
@@ -434,9 +434,9 @@
             position: relative;
         }
 
-        /* ── Badge — keeps 576 × 864.16 aspect (1.5003) ──────────────────
-             6-up (2×3) → 63.33 × 95 mm
-             4-up (2×2) → 98.65 × 148 mm  (cells are ~105 × 148.5mm)   */
+        /* â”€â”€ Badge â€” keeps 576 Ã— 864.16 aspect (1.5003) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+             6-up (2Ã—3) â†’ 63.33 Ã— 95 mm
+             4-up (2Ã—2) â†’ 98.65 Ã— 148 mm  (cells are ~105 Ã— 148.5mm)   */
         .badge-wrap {
             position: relative;
             width:  var(--badge-w, 63.33mm);
@@ -485,11 +485,11 @@
             transform: translate(-50%, -50%);
         }
 
-        /* ── Print-mode visibility ─────────────────────────────────────── */
+        /* â”€â”€ Print-mode visibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         body.mode-front .sheet-back { display: none !important; }
         body.mode-back  .sheet-front { display: none !important; }
 
-        /* ── Print rules ───────────────────────────────────────────────── */
+        /* â”€â”€ Print rules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         @media print {
             html, body { background: white; }
             .sidebar { display: none !important; }
@@ -500,9 +500,10 @@
             body.mode-back  .sheet-front { display: none !important; }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 @php
-    // ── Resolve image paths that work in both environments ───────────
+    // â”€â”€ Resolve image paths that work in both environments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // Use asset() to honour APP_URL (including /public prefix on the
     // non-standard production nginx setup), then strip host/scheme so
     // the browser loads from whatever origin served the page.
@@ -511,7 +512,7 @@
 @endphp
 <body class="layout-{{ $layout }}">
 
-    {{-- ── Sidebar ──────────────────────────────────────────────────── --}}
+    {{-- â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     <div class="sidebar">
         <div class="sidebar-inner">
             {{-- Progress dots --}}
@@ -626,7 +627,7 @@
                 </label>
             </form>
 
-            {{-- Print mode (front/back/both) — JS only, no reload --}}
+            {{-- Print mode (front/back/both) â€” JS only, no reload --}}
             <div class="sb-options">
                 <label class="sb-option">
                     <input type="radio" name="print-mode" value="both" checked
@@ -770,7 +771,7 @@
         </div>
     </div>
 
-    {{-- ── Sheets (front + back alternating for duplex) ──────────────── --}}
+    {{-- â”€â”€ Sheets (front + back alternating for duplex) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     <div class="sheets-area">
         @foreach (array_chunk($badges, $perPage) as $page)
             {{-- Front sheet --}}
@@ -788,7 +789,7 @@
                                  style="color: {{ $b['textColor'] }};">{{ $b['group'] }}</div>
                         </div>
                     </div>
-                    {{-- Inline script per badge — executes synchronously before
+                    {{-- Inline script per badge â€” executes synchronously before
                          the parser reaches the next, so no shared-state race. --}}
                     <script type="text/javascript">
                         new QRCodeStyling({
@@ -809,7 +810,7 @@
                 @endfor
             </div>
 
-            {{-- Back sheet — static; only fill cells whose duplex-mirrored
+            {{-- Back sheet â€” static; only fill cells whose duplex-mirrored
                  spot has a front (long-edge flip mirrors columns). --}}
             <div class="sheet sheet-back">
                 @for ($i = 0; $i < $perPage; $i++)
@@ -826,30 +827,30 @@
     </div>
 
     <script>
-        // ── SVG coord system (same as /badge_preview) ────────────────────
+        // â”€â”€ SVG coord system (same as /badge_preview) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         // JS only positions/sizes overlays; QR itself is server-rendered
         // to avoid the qr-code-styling library race that made every
         // client-rendered QR scan to the same value.
         const SVG_W = 576, SVG_H = 864.16;
         const QR_X  = 302.5, QR_SIZE = 156.49;  // QR vertical now flows a constant gap below the strip
         const QR_SCALE = 1.3;
-        const NAME_CX = 379.8,  NAME_TOP = 172,  NAME_FS = 20;   // person name — larger; anchors the stack below it
+        const NAME_CX = 379.8,  NAME_TOP = 172,  NAME_FS = 20;   // person name â€” larger; anchors the stack below it
 
-        // ── Company: rendered LARGE and allowed to wrap within a fixed band.
-        //    The strip + QR below flow downward when it grows to 2+ lines. ──
+        // â”€â”€ Company: rendered LARGE and allowed to wrap within a fixed band.
+        //    The strip + QR below flow downward when it grows to 2+ lines. â”€â”€
         const CO_CX    = 379.8;   // horizontal centre
-        const CO_FS    = 18;      // large — long names break onto a new line
+        const CO_FS    = 18;      // large â€” long names break onto a new line
         const CO_BANDW = 235;     // wrap width (SVG units)
 
         const STRIP_X = 267.89, STRIP_W = 223.86, STRIP_H = 38.8;
         const GRP_CX  = STRIP_X + STRIP_W / 2;
         const GRP_FS  = 21.44;
 
-        // Vertical rhythm — every gap is constant, so the stack just grows
+        // Vertical rhythm â€” every gap is constant, so the stack just grows
         // taller (into the free space below) as the company wraps to more lines.
-        const GAP_NAME_CO  = 13;   // name → company gap (SVG units)
-        const GAP_CO_STRIP = 14;   // company → strip gap (SVG units)
-        const GAP_STRIP_QR = 24;   // strip → QR gap (SVG units)
+        const GAP_NAME_CO  = 13;   // name â†’ company gap (SVG units)
+        const GAP_CO_STRIP = 14;   // company â†’ strip gap (SVG units)
+        const GAP_STRIP_QR = 24;   // strip â†’ QR gap (SVG units)
 
         function renderBadge(wrap) {
             const bW = wrap.offsetWidth;
@@ -857,14 +858,14 @@
             const scaleX = bW / SVG_W;
             const scaleY = bH / SVG_H;
 
-            // ── Name (single line) — larger; top of the flowing stack ──────
+            // â”€â”€ Name (single line) â€” larger; top of the flowing stack â”€â”€â”€â”€â”€â”€
             const nm = wrap.querySelector('.badge-name');
             nm.style.left      = (NAME_CX * scaleX).toFixed(2) + 'px';
             nm.style.top       = (NAME_TOP * scaleY).toFixed(2) + 'px';
             nm.style.fontSize  = (NAME_FS * scaleX).toFixed(2) + 'px';
             const nameBottomPx = NAME_TOP * scaleY + nm.offsetHeight;
 
-            // ── Company: big, centred, wraps; sits GAP_NAME_CO below name ───
+            // â”€â”€ Company: big, centred, wraps; sits GAP_NAME_CO below name â”€â”€â”€
             const coTopPx = nameBottomPx + GAP_NAME_CO * scaleY;
             const co = wrap.querySelector('.badge-company');
             co.style.left     = (CO_CX * scaleX).toFixed(2) + 'px';
@@ -873,7 +874,7 @@
             co.style.fontSize = (CO_FS * scaleX).toFixed(2) + 'px';
             const coBottomPx  = coTopPx + co.offsetHeight;   // grows with line count
 
-            // ── Strip: a constant gap below the company ────────────────────
+            // â”€â”€ Strip: a constant gap below the company â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const stripTopPx = coBottomPx + GAP_CO_STRIP * scaleY;
             const stripHpx   = STRIP_H * scaleY;
             const strip = wrap.querySelector('.badge-strip');
@@ -889,8 +890,8 @@
             grp.style.top      = (stripTopPx + stripHpx / 2).toFixed(2) + 'px';
             grp.style.fontSize = (GRP_FS * scaleX).toFixed(2) + 'px';
 
-            // ── QR: always a constant gap below the strip (gap no longer
-            //    depends on how many lines the company name wrapped to) ──────
+            // â”€â”€ QR: always a constant gap below the strip (gap no longer
+            //    depends on how many lines the company name wrapped to) â”€â”€â”€â”€â”€â”€
             const qrTopPx = stripTopPx + stripHpx + GAP_STRIP_QR * scaleY;
             const size    = Math.round(QR_SIZE * scaleX * QR_SCALE);
             const centerX = (QR_X + QR_SIZE / 2) * scaleX;
@@ -913,3 +914,4 @@
 
 </body>
 </html>
+

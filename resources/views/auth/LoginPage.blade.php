@@ -1,36 +1,45 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Login | TanTrade</title>
+    <title>Login | GeMEMIS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="{{ asset('images/nembo.png') }}">
 
-    <!-- Core CSS -->
+    <!-- Bootstrap CSS -->
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
+
+    <!-- Icons -->
     <link href="{{ asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet">
 
-    <!-- Core JS -->
-    <script src="{{ asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/libraries/bootstrap.min.js') }}"></script>
-
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body.login-container {
             margin: 0;
             min-height: 100vh;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: radial-gradient(circle at top, #0a3d62, #043d3a, #021f1f);
-            overflow: hidden;
+            background: radial-gradient(
+                circle at top,
+                #0a3d62,
+                #043d3a,
+                #021f1f
+            );
+            overflow-x: hidden;
         }
 
-        canvas#networkCanvas {
+        #networkCanvas {
             position: fixed;
             inset: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
+            pointer-events: none;
         }
 
         .login-wrapper {
@@ -44,12 +53,12 @@
         }
 
         .login-card {
-            background: rgba(255,255,255,0.96);
+            background: rgba(255, 255, 255, 0.97);
             max-width: 420px;
             width: 100%;
             border-radius: 16px;
             padding: 40px 35px;
-            box-shadow: 0 30px 60px rgba(0,0,0,.35);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, .35);
         }
 
         .login-header {
@@ -61,18 +70,37 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
+            object-fit: contain;
             margin-bottom: 10px;
         }
 
-        /* Floating labels */
+        .login-header h4 {
+            font-weight: 700;
+            color: #173b4b;
+        }
+
+        .login-header p {
+            color: #777;
+        }
+
         .form-floating {
             position: relative;
+            margin-bottom: 24px;
         }
 
         .form-floating input {
-            height: 50px;
-            padding: 16px 40px 6px 12px;
+            height: 52px;
+            padding: 16px 42px 6px 12px;
             border-radius: 8px;
+            width: 100%;
+            border: 1px solid #ced4da;
+            background: #fff;
+        }
+
+        .form-floating input:focus {
+            border-color: #1e90a8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 144, 168, .12);
         }
 
         .form-floating label {
@@ -90,7 +118,7 @@
 
         .form-floating input:focus + label,
         .form-floating input:not(:placeholder-shown) + label {
-            top: 6px;
+            top: 0;
             font-size: 12px;
             color: #1e90a8;
         }
@@ -98,27 +126,82 @@
         .toggle-password {
             position: absolute;
             right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 17px;
             cursor: pointer;
             color: #777;
-        }
-
-        .btn-primary:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-        }
-
-        .login-actions {
-            margin-top: 20px;
+            z-index: 3;
         }
 
         .login-links {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .login-links a {
+            color: #1677a0;
+            text-decoration: none;
+        }
+
+        .login-actions {
+            margin-top: 24px;
+        }
+
+        #loginBtn {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 8px;
+            font-weight: 600;
+            background: #087f9c;
+            border: none;
+            color: #fff;
+            transition: .2s ease;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        #loginBtn:hover:not(:disabled) {
+            background: #065e76;
+        }
+
+        #loginBtn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+
+        .login-footer a {
+            color: #087f9c;
+        }
+
+        .login-divider {
+            margin: 22px 0;
+            text-align: center;
+            color: #888;
+        }
+
+        .text-danger {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 22px;
+            }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+<link rel="stylesheet" href="{{ asset('css/gememis-auth.css') }}">
 </head>
 
 <body class="login-container">
@@ -126,144 +209,415 @@
 <canvas id="networkCanvas"></canvas>
 
 <div class="login-wrapper">
-<form action="{{ route('login') }}" method="POST" id="loginForm" class="login-card">
-@csrf
 
-<div class="login-header">
-    <img src="{{ asset('images/logo.jpg') }}">
-    <h4>Login to your account</h4>
-    <p class="text-muted">Enter your credentials</p>
-</div>
+    <form action="{{ route('login') }}"
+          method="POST"
+          id="loginForm"
+          class="login-card"
+          autocomplete="on">
 
-@if (Session::get('fail'))
-    <div class="alert alert-danger">{{ Session::get('fail') }}</div>
-@endif
+        @csrf
 
-@if (Session::get('success'))
-    <div class="alert alert-info">{{ Session::get('success') }}</div>
-@endif
+        <!-- LOGIN HEADER -->
+        <div class="login-header">
 
-<div class="form-group form-floating">
-    <input type="text" name="user_name"
-           class="form-control required-field"
-           placeholder=" "
-           value="{{ old('user_name') }}"
-           required>
-    <label>Email or phone number *</label>
-    <span class="text-danger">@error('user_name') {{ $message }} @enderror</span>
-</div>
+            <img src="{{ asset('images/nembo.png') }}"
+                 alt="GeMEMIS Logo">
 
-<div class="form-group form-floating">
-    <input type="password" name="password" id="loginPassword"
-           class="form-control required-field"
-           placeholder=" "
-           required>
-    <label>Password *</label>
-    <i class="icon-eye toggle-password" data-target="#loginPassword"></i>
-    <span class="text-danger">@error('password') {{ $message }} @enderror</span>
-</div>
+            <h4>Login to your account</h4>
 
-<div class="login-links">
-    <label class="checkbox-inline">
-        <input type="checkbox" class="styled"> Remember
-    </label>
-    <a href="{{ route('password.request') }}">Forgot password?</a>
-</div>
+            <p>Enter your credentials</p>
 
-<div class="login-actions">
-    <button type="submit" id="loginBtn" class="btn btn-primary btn-block" disabled>
-        Login <i class="icon-arrow-right14"></i>
-    </button>
-</div>
+        </div>
 
-<div class="content-divider text-muted text-center" style="margin:20px 0;">
-    <span>Don't have an account?</span>
-</div>
+        <!-- SUCCESS MESSAGE -->
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-<a href="{{ route('registration') }}" class="btn btn-default btn-block">
-    Sign up
-</a>
+        <!-- ERROR MESSAGE -->
+        @if(session('fail'))
+            <div class="alert alert-danger">
+                {{ session('fail') }}
+            </div>
+        @endif
 
-<p class="help-block text-center" style="margin-top:10px;">
-    By continuing, you agree to our
-    <a href="{{ route('terms_and_condition.index') }}">Terms &amp; Conditions</a>
-</p>
+        <!-- VALIDATION ERRORS -->
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul style="margin:0;padding-left:18px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-</form>
+        <!-- USERNAME / EMAIL -->
+        <div class="form-group form-floating">
+
+            <input type="text"
+                   name="user_name"
+                   id="user_name"
+                   class="form-control required-field"
+                   placeholder=" "
+                   value="{{ old('user_name') }}"
+                   autocomplete="username"
+                   required
+                   autofocus>
+
+            <label for="user_name">
+                Email or username *
+            </label>
+
+            @error('user_name')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group form-floating">
+
+            <input type="password"
+                   name="password"
+                   id="loginPassword"
+                   class="form-control required-field"
+                   placeholder=" "
+                   autocomplete="current-password"
+                   required>
+
+            <label for="loginPassword">
+                Password *
+            </label>
+
+            <i class="icon-eye toggle-password"
+               id="togglePassword"
+               role="button"
+               tabindex="0"
+               aria-label="Show password"
+               aria-pressed="false"></i>
+
+            @error('password')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+
+        </div>
+
+        <!-- REMEMBER / FORGOT PASSWORD -->
+        <div class="login-links">
+
+            <label>
+                <input type="checkbox"
+                       name="remember"
+                       value="1"
+                       {{ old('remember') ? 'checked' : '' }}>
+
+                Remember me
+            </label>
+
+            <a href="{{ route('password.request') }}">
+                Forgot password?
+            </a>
+
+        </div>
+
+        <!-- LOGIN BUTTON -->
+        <div class="login-actions">
+
+            <button type="submit"
+                    id="loginBtn"
+                    class="btn btn-primary">
+
+                Login
+                <i class="icon-arrow-right14"></i>
+
+            </button>
+
+        </div>
+
+        <!-- REGISTRATION -->
+        <div class="login-divider">
+            <span>Don't have an account?</span>
+        </div>
+
+        <a href="{{ route('registration') }}"
+           class="btn btn-default btn-block">
+
+            Sign up
+
+        </a>
+
+        <!-- TERMS -->
+        <div class="login-footer">
+
+            By continuing, you agree to our
+
+            <a href="{{ route('terms_and_condition.index') }}">
+                Terms &amp; Conditions
+            </a>
+
+        </div>
+
+    </form>
+
 </div>
 
 <script>
-/* ===== NETWORK BACKGROUND ===== */
-const canvas = document.getElementById('networkCanvas');
-const ctx = canvas.getContext('2d');
-let nodes = [];
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+/* =========================================
+   LOGIN FORM VALIDATION
+========================================= */
 
-for (let i = 0; i < 70; i++) {
-    nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - .5) * 0.6,
-        vy: (Math.random() - .5) * 0.6
-    });
-}
+document.addEventListener('DOMContentLoaded', function () {
 
-function animateNetwork() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const form = document.getElementById('loginForm');
 
-    nodes.forEach(n => {
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
-    });
+    const username = document.getElementById('user_name');
 
-    for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-            const dx = nodes[i].x - nodes[j].x;
-            const dy = nodes[i].y - nodes[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < 120) {
-                ctx.strokeStyle = 'rgba(0, 200, 180, 0.15)';
-                ctx.beginPath();
-                ctx.moveTo(nodes[i].x, nodes[i].y);
-                ctx.lineTo(nodes[j].x, nodes[j].y);
-                ctx.stroke();
-            }
-        }
+    const password = document.getElementById('loginPassword');
+
+    const loginBtn = document.getElementById('loginBtn');
+
+    const togglePassword = document.getElementById('togglePassword');
+
+    let submitting = false;
+
+    if (!form || !username || !password || !loginBtn) {
+        console.error('SAMS Login: Required form elements not found.');
+        return;
     }
-    requestAnimationFrame(animateNetwork);
-}
-animateNetwork();
 
-/* ===== FORM VALIDATION (FRONTEND ONLY) ===== */
-function validateLogin() {
-    let valid = true;
-    $('.required-field').each(function () {
-        if (!this.value.trim()) valid = false;
+    function validateLogin() {
+
+        const usernameValid = username.value.trim().length > 0;
+
+        const passwordValid = password.value.length > 0;
+
+        loginBtn.disabled = !(usernameValid && passwordValid);
+
+    }
+
+    username.addEventListener('input', validateLogin);
+
+    password.addEventListener('input', validateLogin);
+
+    username.addEventListener('change', validateLogin);
+
+    password.addEventListener('change', validateLogin);
+
+    // Initial validation
+    validateLogin();
+
+
+    /* =====================================
+       SHOW / HIDE PASSWORD
+    ===================================== */
+
+    function changePasswordVisibility() {
+
+        const isPassword = password.type === 'password';
+
+        password.type = isPassword ? 'text' : 'password';
+
+        togglePassword.classList.toggle('icon-eye', !isPassword);
+
+        togglePassword.classList.toggle('icon-eye-blocked', isPassword);
+
+        togglePassword.setAttribute(
+            'aria-label',
+            isPassword ? 'Hide password' : 'Show password'
+        );
+
+        togglePassword.setAttribute(
+            'aria-pressed',
+            isPassword ? 'true' : 'false'
+        );
+
+    }
+
+    if (togglePassword) {
+
+        togglePassword.addEventListener('click', changePasswordVisibility);
+
+        togglePassword.addEventListener('keydown', function (event) {
+
+            if (event.key === 'Enter' || event.key === ' ') {
+
+                event.preventDefault();
+
+                changePasswordVisibility();
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================
+       PREVENT EMPTY SUBMISSION
+    ===================================== */
+
+    form.addEventListener('submit', function (event) {
+
+        if (
+            username.value.trim().length === 0 ||
+            password.value.length === 0
+        ) {
+
+            event.preventDefault();
+
+            validateLogin();
+
+            return;
+
+        }
+
+        if (submitting) {
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+        submitting = true;
+
+        loginBtn.disabled = true;
+
+        loginBtn.innerHTML =
+            'Logging in... <i class="icon-spinner2 spinner"></i>';
+
     });
-    $('#loginBtn').prop('disabled', !valid);
-}
 
-$('.required-field').on('input', validateLogin);
-
-$('.toggle-password').on('click', function () {
-    const target = $($(this).data('target'));
-    target.attr('type', target.attr('type') === 'password' ? 'text' : 'password');
 });
 
-$(document).ready(validateLogin);
 
-$('#loginForm').on('submit', function () {
-    $('#loginBtn').prop('disabled', true);
-});
+/* =========================================
+   NETWORK BACKGROUND ANIMATION
+========================================= */
+
+(function () {
+
+    const canvas = document.getElementById('networkCanvas');
+
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    let nodes = [];
+
+    let animationFrame;
+
+    function resizeCanvas() {
+
+        const ratio = window.devicePixelRatio || 1;
+
+        canvas.width = window.innerWidth * ratio;
+
+        canvas.height = window.innerHeight * ratio;
+
+        canvas.style.width = window.innerWidth + 'px';
+
+        canvas.style.height = window.innerHeight + 'px';
+
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+        nodes = [];
+
+        for (let i = 0; i < 70; i++) {
+
+            nodes.push({
+
+                x: Math.random() * window.innerWidth,
+
+                y: Math.random() * window.innerHeight,
+
+                vx: (Math.random() - 0.5) * 0.6,
+
+                vy: (Math.random() - 0.5) * 0.6
+
+            });
+
+        }
+
+    }
+
+    function animateNetwork() {
+
+        const width = window.innerWidth;
+
+        const height = window.innerHeight;
+
+        ctx.clearRect(0, 0, width, height);
+
+        nodes.forEach(function (node) {
+
+            node.x += node.vx;
+
+            node.y += node.vy;
+
+            if (node.x < 0 || node.x > width) {
+                node.vx *= -1;
+            }
+
+            if (node.y < 0 || node.y > height) {
+                node.vy *= -1;
+            }
+
+        });
+
+        for (let i = 0; i < nodes.length; i++) {
+
+            for (let j = i + 1; j < nodes.length; j++) {
+
+                const dx = nodes[i].x - nodes[j].x;
+
+                const dy = nodes[i].y - nodes[j].y;
+
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 120) {
+
+                    ctx.strokeStyle = 'rgba(0, 200, 180, 0.15)';
+
+                    ctx.beginPath();
+
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+
+                    ctx.stroke();
+
+                }
+
+            }
+
+        }
+
+        animationFrame = requestAnimationFrame(animateNetwork);
+
+    }
+
+    resizeCanvas();
+
+    window.addEventListener('resize', resizeCanvas);
+
+    animateNetwork();
+
+})();
+
 </script>
 
 </body>
 </html>
+

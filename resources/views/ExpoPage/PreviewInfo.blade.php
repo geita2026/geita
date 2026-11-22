@@ -32,7 +32,8 @@
         <script type="text/javascript" src="{{ asset('assets/js/core/app.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/pages/form_multiselect.js') }}"></script>
         <!-- /theme JS files -->
-    </head>
+    <link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+</head>
 
     <body class="login-container" style="background-image: url({{ asset('ExpoFolder/Expobackground.png') }})">
 
@@ -394,14 +395,14 @@
                                                                 id="typeOfParticipation" class="multiselect">
                                                                 <option value="{{ $item->typeOfParticipation }}">{{ $item->typeOfParticipation }}</option>
                                                                 <option
-                                                                    value="Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 – 13 Oktoba, 2025) [Tanzania Pavilion]">
-                                                                    Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 – 13
+                                                                    value="Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 â€“ 13 Oktoba, 2025) [Tanzania Pavilion]">
+                                                                    Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 â€“ 13
                                                                     Oktoba,
                                                                     2025) [Tanzania Pavilion]</option>
                                                                 <option
-                                                                    value="Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 – Oktoba 2025)">
+                                                                    value="Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 â€“ Oktoba 2025)">
                                                                     Programu maalum (za siku 12 kuanzia Mwezi Aprili,
-                                                                    2025 –
+                                                                    2025 â€“
                                                                     Oktoba 2025)</option>
                                                                 <option value="Eneo la Mauzo (Commercial Space)">Eneo
                                                                     la Mauzo
@@ -424,8 +425,8 @@
                                                                  autofocus>
                                                                 <option value="{{ $item->programOfInterest }}">{{ $item->programOfInterest }}</option>
                                                                 {{-- <option
-                                                                    value="Tanzania Unforgettable Experience [25th April – 6th May, 2025]">
-                                                                    Tanzania Unforgettable Experience [25th April – 6th
+                                                                    value="Tanzania Unforgettable Experience [25th April â€“ 6th May, 2025]">
+                                                                    Tanzania Unforgettable Experience [25th April â€“ 6th
                                                                     May,
                                                                     2025]</option> --}}
                                                                 {{-- <option
@@ -563,3 +564,4 @@
 
     </html>
 @endforeach
+

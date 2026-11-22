@@ -61,6 +61,7 @@
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     <link href="{{ asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -118,3 +119,4 @@
 </body>
 
 </html>
+

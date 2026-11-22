@@ -6,9 +6,9 @@
     <style>
         /*
             Badge page geometry
-            ────────────────────
-            Preview SVG coord system: 576 × 864.16
-            PDF page: 226.77pt × 340.29pt (8cm × 12cm).
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            Preview SVG coord system: 576 Ã— 864.16
+            PDF page: 226.77pt Ã— 340.29pt (8cm Ã— 12cm).
             Scale factors:   sx = 226.77 / 576     = 0.39370
                              sy = 340.29 / 864.16  = 0.39378
             All overlay positions below come straight from the preview's
@@ -33,65 +33,65 @@
             height: 340.29pt;
         }
 
-        /* ── NAME (SVG anchor: cx=379.8, baseline y=184.31, fs=15.65) ── */
+        /* â”€â”€ NAME (SVG anchor: cx=379.8, baseline y=184.31, fs=15.65) â”€â”€ */
         .name {
             position: absolute;
-            left: 81.51pt;          /* cx·sx − 60% of page / 2 */
-            top:  66.42pt;          /* (184.31 − 15.65)·sy */
+            left: 81.51pt;          /* cxÂ·sx âˆ’ 60% of page / 2 */
+            top:  66.42pt;          /* (184.31 âˆ’ 15.65)Â·sy */
             width: 136pt;           /* 60% of 226.77pt */
             text-align: center;
             font-family: 'Times New Roman', serif;
             font-weight: bold;
-            font-size: 6.16pt;      /* 15.65·sx */
+            font-size: 6.16pt;      /* 15.65Â·sx */
             color: #1b1b1b;
             letter-spacing: 0.05em;
         }
 
-        /* ── COMPANY (SVG anchor: cx=379.8, baseline y=193.5, fs=8) ── */
+        /* â”€â”€ COMPANY (SVG anchor: cx=379.8, baseline y=193.5, fs=8) â”€â”€ */
         .company {
             position: absolute;
             left: 81.51pt;
-            top:  73.01pt;          /* (193.5 − 8)·sy */
+            top:  73.01pt;          /* (193.5 âˆ’ 8)Â·sy */
             width: 136pt;
             text-align: center;
             font-family: Arial, sans-serif;
-            font-size: 3.15pt;      /* 8·sx */
+            font-size: 3.15pt;      /* 8Â·sx */
             color: #444444;
         }
 
-        /* ── GROUP COLOR STRIP (SVG: 267.89,195.91 · 223.86×38.8) ── */
+        /* â”€â”€ GROUP COLOR STRIP (SVG: 267.89,195.91 Â· 223.86Ã—38.8) â”€â”€ */
         .strip {
             position: absolute;
-            left:   105.47pt;       /* 267.89·sx */
-            top:     77.14pt;       /* 195.91·sy */
-            width:   88.13pt;       /* 223.86·sx */
-            height:  15.28pt;       /* 38.8·sy */
-            border-radius: 1.57pt;  /* preview's 4px × sx */
+            left:   105.47pt;       /* 267.89Â·sx */
+            top:     77.14pt;       /* 195.91Â·sy */
+            width:   88.13pt;       /* 223.86Â·sx */
+            height:  15.28pt;       /* 38.8Â·sy */
+            border-radius: 1.57pt;  /* preview's 4px Ã— sx */
         }
 
-        /* ── GROUP TEXT — positioned as SIBLING of strip, same box,
-              vertically centered via line-height (reliable in DomPDF) ── */
+        /* â”€â”€ GROUP TEXT â€” positioned as SIBLING of strip, same box,
+              vertically centered via line-height (reliable in DomPDF) â”€â”€ */
         .group {
             position: absolute;
             left:   105.47pt;
             top:     77.14pt;
             width:   88.13pt;
             height:  15.28pt;
-            line-height: 15.28pt;   /* = height → vertical center */
+            line-height: 15.28pt;   /* = height â†’ vertical center */
             text-align: center;
             font-family: 'Times New Roman', serif;
             font-weight: bold;
-            font-size: 8.44pt;      /* 21.44·sx */
+            font-size: 8.44pt;      /* 21.44Â·sx */
             letter-spacing: 0.06em;
         }
 
-        /* ── QR ── preview uses QR_X=306, QR_Y=298.46, size=156.49,
+        /* â”€â”€ QR â”€â”€ preview uses QR_X=306, QR_Y=298.46, size=156.49,
                then scales by QR_SCALE=1.3 and RE-CENTERS on that same anchor.
-               scaled_size = 156.49·1.3 = 203.44
+               scaled_size = 156.49Â·1.3 = 203.44
                center = (306 + 78.245,  298.46 + 78.245) = (384.245, 376.705)
-               left   = (384.245 − 101.72)·sx = 111.24pt
-               top    = (376.705 − 101.72)·sy = 108.26pt
-               w = h  = 203.44·sx               =  80.09pt
+               left   = (384.245 âˆ’ 101.72)Â·sx = 111.24pt
+               top    = (376.705 âˆ’ 101.72)Â·sy = 108.26pt
+               w = h  = 203.44Â·sx               =  80.09pt
                Preview wraps the QR in a white box: 4px pad, 6px radius.
                At print scale that's 1.57pt pad and 2.36pt radius.            */
         .qr {
@@ -111,6 +111,7 @@
             height: 100%;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
 @foreach ($badges as $b)
@@ -133,3 +134,4 @@
 @endforeach
 </body>
 </html>
+

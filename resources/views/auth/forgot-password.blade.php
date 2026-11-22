@@ -100,6 +100,7 @@
             margin-top: 20px;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -218,3 +219,4 @@ $('#recoveryForm').on('submit', function () {
 
 </body>
 </html>
+

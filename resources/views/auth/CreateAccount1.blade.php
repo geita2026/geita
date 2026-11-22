@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Create Account | TanTrade</title>
+    <title>Create Account | GeMEMIS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="{{ asset('images/nembo.png') }}">
@@ -155,6 +155,8 @@
             }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+<link rel="stylesheet" href="{{ asset('css/gememis-auth.css') }}">
 </head>
 
 <body class="login-container">
@@ -166,7 +168,7 @@
 @csrf
 
 <div class="register-header">
-    <img src="{{ asset('images/logo.jpg') }}">
+    <img src="{{ asset('images/nembo.png') }}">
     <h4>Create New Account</h4>
 </div>
 
@@ -377,3 +379,4 @@ $('#myForm').on('submit', function () {
 
 </body>
 </html>
+

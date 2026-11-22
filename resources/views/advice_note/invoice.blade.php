@@ -93,6 +93,7 @@
         .pagenum:before { content: counter(page); }
         .pagecount:before { content: counter(pages); }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -228,12 +229,12 @@
     </div>
 </div>
 
-{{-- ================= FOOTER (OWNERSHIP ADDED – SMALL) ================= --}}
+{{-- ================= FOOTER (OWNERSHIP ADDED â€“ SMALL) ================= --}}
 <footer>
     <table class="footer-table" width="100%">
         <tr>
             <td>
-                © {{ date('Y') }} Tanzania Trade Development Authority (TANTRADE) • System Generated
+                Â© {{ date('Y') }} Tanzania Trade Development Authority (TANTRADE) â€¢ System Generated
             </td>
             <td class="right">
                 Page <span class="pagenum"></span>/<span class="pagecount"></span>
@@ -244,3 +245,4 @@
 
 </body>
 </html>
+

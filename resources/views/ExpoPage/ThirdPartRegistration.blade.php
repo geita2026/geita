@@ -21,6 +21,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/core/libraries/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
     <!-- /core JS files -->
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -110,11 +111,11 @@
 
                                                 <p style="text-align: justify">
                                                     Join us in discovering the incredible opportunities that Tanzania
-                                                    has to offer. By registering your details in the form below, you’re
+                                                    has to offer. By registering your details in the form below, youâ€™re
                                                     taking the first step toward building powerful partnerships that
                                                     drive mutual growth and lasting prosperity.
 
-                                                    Don’t miss out on the chance to connect, collaborate, and thrive
+                                                    Donâ€™t miss out on the chance to connect, collaborate, and thrive
                                                     together! We look forward to embarking on this exciting journey with
                                                     you!
                                                 </p>
@@ -240,8 +241,8 @@
                                                             {{ old('programOfInterest') ?? '- - - Select program of interest - - -' }}
                                                         </option>
                                                         <option
-                                                            value="Tanzania Unforgettable Experience [25th April – 6th May, 2025]">
-                                                            Tanzania Unforgettable Experience [ 25th April – 6th May,
+                                                            value="Tanzania Unforgettable Experience [25th April â€“ 6th May, 2025]">
+                                                            Tanzania Unforgettable Experience [ 25th April â€“ 6th May,
                                                             2025 ]</option>
                                                         <option
                                                             value="Infrastructure for sustainable development [15th May- 26th May, 2025]">
@@ -386,3 +387,4 @@
 </body>
 
 </html>
+

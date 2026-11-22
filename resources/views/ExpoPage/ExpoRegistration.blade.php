@@ -36,6 +36,7 @@
 	<!-- /theme JS files -->
 
     <!-- /core JS files -->
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container" style="background-image: url({{ asset('ExpoFolder/Expobackground.png') }})">
@@ -376,12 +377,12 @@
                                                         autofocus id="typeOfParticipation" class="multiselect" >
                                                        
                                                         <option
-                                                            value="Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 – 13 Oktoba, 2025) [Tanzania Pavilion]">
-                                                            Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 – 13 Oktoba,
+                                                            value="Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 â€“ 13 Oktoba, 2025) [Tanzania Pavilion]">
+                                                            Banda Kuu la Tanzania (kuanzia 13 Aprili, 2025 â€“ 13 Oktoba,
                                                             2025) [Tanzania Pavilion]</option>
                                                         <option
-                                                            value="Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 – Oktoba 2025)">
-                                                            Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 –
+                                                            value="Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 â€“ Oktoba 2025)">
+                                                            Programu maalum (za siku 12 kuanzia Mwezi Aprili, 2025 â€“
                                                             Oktoba 2025)</option>
                                                         <option value="Eneo la Mauzo (Commercial Space)">Eneo la Mauzo
                                                             (Commercial Space)</option>
@@ -404,8 +405,8 @@
                                                         <select name="programOfInterest" class="multiselect" required autofocus>
                                                           
                                                             {{-- <option
-                                                                value="Tanzania Unforgettable Experience [25th April – 6th May, 2025]">
-                                                                Tanzania Unforgettable Experience [25th April – 6th May,
+                                                                value="Tanzania Unforgettable Experience [25th April â€“ 6th May, 2025]">
+                                                                Tanzania Unforgettable Experience [25th April â€“ 6th May,
                                                                 2025]</option> --}}
                                                             {{-- <option
                                                                 value="Infrastructure for sustainable development [15th May- 26th May, 2025]">

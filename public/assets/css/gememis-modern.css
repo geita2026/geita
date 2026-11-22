@@ -1,0 +1,644 @@
+
+/* =====================================================
+   GeMEMIS MODERN GOVERNMENT THEME
+   Premium Black + Gold + White
+   Safe Visual Overrides Only
+   ===================================================== */
+
+:root {
+    --gem-primary: #123B66;
+    --gem-primary-dark: #0B2948;
+    --gem-primary-light: #EAF1F8;
+
+    --gem-gold: #D4AF37;
+    --gem-gold-light: #F5E8B5;
+
+    --gem-black: #080808;
+    --gem-black-soft: #151515;
+
+    --gem-white: #FFFFFF;
+    --gem-page: #F4F7FB;
+    --gem-text: #263445;
+    --gem-border: #E1E8F0;
+}
+
+/* =====================================================
+   1. MAIN PAGE
+   ===================================================== */
+
+html,
+body {
+    background: var(--gem-page) !important;
+    color: var(--gem-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.content-wrapper,
+.page-content {
+    background: var(--gem-page) !important;
+}
+
+/* =====================================================
+   2. TOP NAVIGATION BAR
+   ===================================================== */
+
+.navbar-fixed-top,
+.navbar.header-highlight,
+.navbar-default.navbar-fixed-top,
+.navbar-fixed-top .navbar-header {
+    background: var(--gem-primary-dark) !important;
+    border-color: var(--gem-gold) !important;
+    box-shadow: 0 3px 14px rgba(11, 41, 72, .15);
+}
+
+.navbar-fixed-top .navbar-brand,
+.navbar-fixed-top .navbar-nav > li > a,
+.navbar-fixed-top .navbar-nav > li > a span {
+    color: var(--gem-white) !important;
+}
+
+.navbar-fixed-top .navbar-brand {
+    font-size: 23px !important;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* TOP BAR ICONS */
+.navbar-fixed-top i,
+.navbar-fixed-top .navbar-nav > li > a > i,
+.navbar-fixed-top .navbar-header i,
+.navbar-fixed-top .navbar-nav .dropdown-toggle i,
+.navbar-fixed-top .navbar-nav > li > a .icon {
+    color: var(--gem-gold) !important;
+    -webkit-text-fill-color: var(--gem-gold) !important;
+}
+
+.navbar-fixed-top .navbar-nav > li > a:hover,
+.navbar-fixed-top .navbar-nav > .open > a {
+    background: rgba(255,255,255,.12) !important;
+    color: var(--gem-gold-light) !important;
+}
+
+.navbar-fixed-top .navbar-nav > li > a:hover i {
+    color: #FFD700 !important;
+}
+
+/* HEADER DROPDOWNS */
+.navbar-fixed-top .dropdown-menu {
+    background: var(--gem-white) !important;
+    border: 1px solid var(--gem-border);
+    border-top: 3px solid var(--gem-gold);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+
+.navbar-fixed-top .dropdown-menu > li > a {
+    color: var(--gem-text) !important;
+}
+
+.navbar-fixed-top .dropdown-menu > li > a:hover {
+    background: var(--gem-primary-light) !important;
+    color: var(--gem-primary) !important;
+}
+
+/* =====================================================
+   3. BLACK & GOLD SIDEBAR
+   ===================================================== */
+
+.sidebar.sidebar-main,
+.sidebar.sidebar-fixed,
+.sidebar-main.gememis-sidebar,
+.gememis-sidebar {
+    background: var(--gem-black) !important;
+    border-right: 1px solid rgba(212,175,55,.35);
+    color: var(--gem-white) !important;
+    box-shadow: 4px 0 18px rgba(0,0,0,.25);
+}
+
+.gememis-sidebar .sidebar-content,
+.gememis-sidebar .sidebar-category,
+.gememis-sidebar .category-content {
+    background: transparent !important;
+}
+
+/* =====================================================
+   4. PROFILE SECTION
+   ===================================================== */
+
+.gememis-sidebar .sidebar-user,
+.gememis-sidebar .sidebar-user .category-content {
+    background: var(--gem-black) !important;
+    border-bottom: 1px solid rgba(212,175,55,.35);
+    padding: 12px !important;
+}
+
+.gememis-sidebar .media-heading,
+.gememis-sidebar .media-heading a,
+.gememis-sidebar .media-body {
+    color: var(--gem-gold) !important;
+}
+
+.gememis-sidebar .gememis-email {
+    color: #cccccc !important;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+/* AVATAR BLACK WITH GOLD BORDER */
+.gememis-sidebar .gememis-avatar {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+
+    border: 2px solid var(--gem-gold) !important;
+    border-radius: 50% !important;
+
+    background: #000000 !important;
+    overflow: hidden !important;
+
+    box-shadow: 0 0 12px rgba(212,175,55,.30);
+}
+
+/* HIDE OLD PROFILE IMAGE */
+.gememis-sidebar .gememis-avatar img {
+    display: none !important;
+}
+
+/* GOLD USER HEAD */
+.gememis-sidebar .gememis-avatar::before {
+    content: "";
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gem-gold);
+    border-radius: 50%;
+}
+
+/* GOLD USER BODY */
+.gememis-sidebar .gememis-avatar::after {
+    content: "";
+    position: absolute;
+    width: 29px;
+    height: 17px;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gem-gold);
+    border-radius: 18px 18px 7px 7px;
+}
+
+/* =====================================================
+   5. SIDEBAR NAVIGATION
+   ===================================================== */
+
+.gememis-sidebar .navigation {
+    background: transparent !important;
+}
+
+.gememis-sidebar .navigation > li > a,
+.gememis-sidebar .navigation li ul li a {
+    color: #EEEEEE !important;
+    background: transparent !important;
+    border-radius: 7px;
+    margin: 3px 8px;
+    transition: all .25s ease;
+}
+
+/* ALL ICONS INCLUDING DYNAMIC MENUS */
+.gememis-sidebar .navigation i,
+.gememis-sidebar .navigation i[class*="icon-"],
+.gememis-sidebar .navigation a i,
+.gememis-sidebar .navigation li a > i,
+.gememis-sidebar .navigation li ul li a > i,
+.gememis-sidebar .navigation-header i,
+.gememis-sidebar .sidebar-user i {
+    color: var(--gem-gold) !important;
+    -webkit-text-fill-color: var(--gem-gold) !important;
+    opacity: 1 !important;
+}
+
+/* MAIN ICON SIZE */
+.gememis-sidebar .navigation > li > a > i {
+    font-size: 21px !important;
+}
+
+/* SUBMENU ICON SIZE */
+.gememis-sidebar .navigation li ul li a > i {
+    font-size: 18px !important;
+}
+
+/* HOVER */
+.gememis-sidebar .navigation li > a:hover {
+    background: rgba(212,175,55,.13) !important;
+    color: #FFD700 !important;
+}
+
+.gememis-sidebar .navigation li > a:hover i {
+    color: #FFD700 !important;
+}
+
+/* ACTIVE MAIN MENU */
+.gememis-sidebar .navigation > li.active > a {
+    background: linear-gradient(
+        90deg,
+        #D4AF37,
+        #F5D77A
+    ) !important;
+
+    color: #080808 !important;
+    font-weight: 700;
+}
+
+.gememis-sidebar .navigation > li.active > a > i {
+    color: #080808 !important;
+}
+
+/* SUBMENU BACKGROUND */
+.gememis-sidebar .navigation li ul {
+    background: #151515 !important;
+}
+
+/* ACTIVE SUBMENU */
+.gememis-sidebar .navigation li ul li.active > a {
+    color: var(--gem-gold-light) !important;
+    background: rgba(212,175,55,.14) !important;
+    border-left: 3px solid var(--gem-gold);
+}
+
+.gememis-sidebar .navigation li ul li.active > a i {
+    color: var(--gem-gold) !important;
+}
+
+/* NAVIGATION HEADERS */
+.gememis-sidebar .navigation-header {
+    color: var(--gem-gold) !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding-top: 20px;
+}
+
+/* SEARCH */
+.gememis-sidebar .gememis-search {
+    padding: 10px 12px !important;
+}
+
+.gememis-sidebar .gememis-search input,
+.gememis-sidebar input.form-control {
+    background: #202020 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(212,175,55,.45) !important;
+    border-radius: 7px;
+}
+
+.gememis-sidebar input::placeholder {
+    color: #AAAAAA !important;
+}
+
+.gememis-sidebar input:focus {
+    border-color: var(--gem-gold) !important;
+    box-shadow: 0 0 7px rgba(212,175,55,.2);
+}
+
+/* =====================================================
+   6. PANELS AND CARDS
+   ===================================================== */
+
+.panel,
+.panel-default,
+.panel-white,
+.card,
+.well {
+    background: var(--gem-white);
+    border: 1px solid var(--gem-border);
+    border-radius: 9px;
+    box-shadow: 0 4px 16px rgba(20,45,75,.06);
+}
+
+.panel {
+    border-top: 3px solid var(--gem-gold);
+}
+
+.panel-heading {
+    border-color: var(--gem-border);
+}
+
+/* =====================================================
+   7. BUTTONS
+   ===================================================== */
+
+.btn {
+    border-radius: 5px;
+    transition: .2s ease;
+}
+
+.btn-primary,
+.panel-primary > .panel-heading,
+.bg-primary {
+    background: var(--gem-primary) !important;
+    border-color: var(--gem-primary) !important;
+    color: var(--gem-white) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--gem-primary-dark) !important;
+    border-color: var(--gem-gold) !important;
+}
+
+.btn-warning,
+.label-warning,
+.badge-warning {
+    background: var(--gem-gold) !important;
+    border-color: var(--gem-gold) !important;
+    color: var(--gem-primary-dark) !important;
+}
+
+/* =====================================================
+   8. LINKS
+   ===================================================== */
+
+a,
+.text-primary {
+    color: var(--gem-primary);
+}
+
+a:hover {
+    color: var(--gem-primary-dark);
+}
+
+/* =====================================================
+   9. FORMS
+   ===================================================== */
+
+.form-control {
+    border: 1px solid #D5DFEA;
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: var(--gem-primary);
+    box-shadow: 0 0 0 2px rgba(18,59,102,.10);
+}
+
+/* =====================================================
+   10. TABLES
+   ===================================================== */
+
+.table {
+    background: var(--gem-white);
+}
+
+.table > thead > tr > th,
+.table-header {
+    background: var(--gem-primary) !important;
+    color: var(--gem-white) !important;
+    border-color: var(--gem-gold) !important;
+}
+
+.table > tbody > tr:hover {
+    background: var(--gem-primary-light);
+}
+
+/* =====================================================
+   11. PAGE HEADINGS
+   ===================================================== */
+
+.page-header {
+    background: var(--gem-white);
+    border-bottom: 1px solid var(--gem-border);
+    box-shadow: 0 2px 8px rgba(20,45,75,.04);
+}
+
+/* =====================================================
+   12. MODALS
+   ===================================================== */
+
+.modal-content {
+    border: 1px solid var(--gem-border);
+    border-top: 4px solid var(--gem-gold);
+    border-radius: 9px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.15);
+}
+
+/* =====================================================
+   13. RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 767px) {
+
+    .navbar-fixed-top .navbar-brand {
+        font-size: 20px !important;
+    }
+
+    .content-wrapper {
+        padding-bottom: 55px;
+    }
+
+    .table-responsive {
+        border: 0;
+    }
+}
+
+/* =========================================
+   GEMEMIS BLACK & GOLD ICON FIX
+========================================= */
+
+/* Sidebar background */
+.sidebar.sidebar-main,
+.gememis-sidebar {
+    background: #080808 !important;
+    border-right: 1px solid #b89535 !important;
+}
+
+/* Sidebar menu icons */
+.sidebar-main .navigation > li > a > i,
+.sidebar-main .navigation > li > a .icon,
+.sidebar-main .navigation li ul li a i,
+.sidebar-main .navigation li ul li a .icon {
+    color: #d4af37 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
+}
+
+/* Sidebar text */
+.sidebar-main .navigation > li > a,
+.sidebar-main .navigation li ul li a {
+    color: #ffffff !important;
+}
+
+/* Sidebar hover */
+.sidebar-main .navigation > li > a:hover,
+.sidebar-main .navigation li ul li a:hover {
+    color: #d4af37 !important;
+    background: #191919 !important;
+}
+
+/* Top bar icons */
+.navbar .navbar-nav > li > a > i,
+.navbar .navbar-nav > li > a .icon,
+.navbar .navbar-nav > li > a > span > i,
+.navbar .navbar-nav > li > a > span > .icon,
+.navbar .navbar-nav .dropdown-toggle i,
+.navbar .navbar-nav .dropdown-toggle .icon {
+    color: #d4af37 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Top bar text */
+.navbar .navbar-nav > li > a {
+    color: #ffffff !important;
+}
+
+/* Top bar hover */
+.navbar .navbar-nav > li > a:hover,
+.navbar .navbar-nav > li > a:focus {
+    color: #d4af37 !important;
+}
+
+/* Phone icon */
+.sidebar-main .icon-phone-wave {
+    color: #d4af37 !important;
+}
+
+/* Avatar */
+.gememis-avatar {
+    background: #080808 !important;
+    border: 2px solid #d4af37 !important;
+    border-radius: 50% !important;
+    overflow: hidden;
+}
+
+/* Make sure icons are not hidden */
+.sidebar i,
+.navbar i {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================================
+   GEMEMIS SIDEBAR BLACK & GOLD
+========================================= */
+
+.gememis-sidebar {
+    background: #080808 !important;
+    border-right: 1px solid #d4af37 !important;
+}
+
+/* Sidebar navigation */
+.gememis-sidebar .navigation > li > a,
+.gememis-sidebar .navigation li ul li > a {
+    color: #ffffff !important;
+    background: transparent !important;
+    transition: all .25s ease;
+}
+
+/* ALL SIDEBAR ICONS */
+.gememis-sidebar .navigation i,
+.gememis-sidebar .navigation i[class*="icon-"],
+.gememis-sidebar .gememis-icon {
+    color: #d4af37 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Hover */
+.gememis-sidebar .navigation > li > a:hover,
+.gememis-sidebar .navigation li ul li > a:hover {
+    color: #f1d778 !important;
+    background: #191919 !important;
+}
+
+/* Active menu */
+.gememis-sidebar .navigation > li.active > a,
+.gememis-sidebar .navigation li ul li.active > a {
+    color: #f1d778 !important;
+    background: #202020 !important;
+    border-left: 3px solid #d4af37 !important;
+}
+
+/* Submenus */
+.gememis-sidebar .navigation li ul {
+    background: #111111 !important;
+}
+
+/* Navigation headers */
+.gememis-sidebar .navigation-header {
+    color: #d4af37 !important;
+}
+
+/* User profile */
+.gememis-sidebar .gememis-user {
+    background: #101010 !important;
+}
+
+.gememis-sidebar .gememis-avatar {
+    display: inline-block;
+    border: 2px solid #d4af37 !important;
+    border-radius: 50% !important;
+    background: #080808 !important;
+    overflow: hidden;
+}
+
+.gememis-sidebar .gememis-avatar img {
+    display: block;
+    border-radius: 50% !important;
+}
+
+/* User contact */
+.gememis-sidebar .media-heading,
+.gememis-sidebar .media-heading a,
+.gememis-sidebar .gememis-email {
+    color: #ffffff !important;
+}
+
+.gememis-sidebar .media-heading i {
+    color: #d4af37 !important;
+}
+
+/* Search */
+.gememis-sidebar .gememis-search {
+    padding: 10px;
+}
+
+.gememis-sidebar .gememis-search input {
+    background: #1b1b1b !important;
+    color: #ffffff !important;
+    border: 1px solid #d4af37 !important;
+    border-radius: 6px;
+}
+
+.gememis-sidebar .gememis-search input::placeholder {
+    color: #bbbbbb !important;
+}
+
+/* =========================================
+   TOPBAR AVATAR - MATCH SIDEBAR
+========================================= */
+
+#profile > a > img {
+    width: 30px !important;
+    height: 30px !important;
+    max-height: 30px !important;
+    min-width: 30px !important;
+    object-fit: cover !important;
+    display: inline-block !important;
+    border: 2px solid #d4af37 !important;
+    border-radius: 50% !important;
+    background: #080808 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    vertical-align: middle !important;
+}
+

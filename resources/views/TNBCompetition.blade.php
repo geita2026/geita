@@ -10,6 +10,7 @@
             background-color: rgb(214, 212, 212);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -48,13 +49,13 @@
         <div class="row">
             <div class=" col-md-12">
                 <p style="text-align:justify;color:black">
-                    Are you a creative mind with a passion for design? Here’s your chance to make a lasting impact! Join
+                    Are you a creative mind with a passion for design? Hereâ€™s your chance to make a lasting impact! Join
                     the Tanzania National Brand Logo Competition and showcase your talent by crafting a logo that
                     represents the heart and soul of Tanzania.
                 </p>
                 <p style="text-align:justify;color:black">
                     This competition invites designers, artists, and creatives with in the nation to design a brand logo
-                    that captures Tanzania’s unique identity, values, and future vision. The winning logo will be used
+                    that captures Tanzaniaâ€™s unique identity, values, and future vision. The winning logo will be used
                     as a national symbol, recognized both locally and globally, and will stand as an emblem of Tanzanian
                     pride.
                 </p>
@@ -76,14 +77,14 @@
                 </ol>
                 <ol>
                     4. The logo should be accompanied by a brief description explaining the design concept and its
-                    relevance to the “Made In Tanzania” brand.
+                    relevance to the â€œMade In Tanzaniaâ€ brand.
                 </ol>
                 <ol>
                     5. The selected three finalists shall be required to submit the original master copy of the design.
                 </ol>
                 <ol>
                     6. Submitting an entry, participants grant the organizers the right to use, reproduce, and modify
-                    the logo for promotional and marketing purposes related to the “Made In Tanzania” brand.
+                    the logo for promotional and marketing purposes related to the â€œMade In Tanzaniaâ€ brand.
                 </ol>
                 <ol>
                     7. The winning entry will become the property of the organizers, who will have exclusive rights to
@@ -210,3 +211,4 @@
 </html>
 
 <script></script>
+

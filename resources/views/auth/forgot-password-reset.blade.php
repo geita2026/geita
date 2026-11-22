@@ -33,6 +33,7 @@
             box-shadow: 0 30px 60px rgba(0,0,0,.35);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -74,3 +75,4 @@ $('#resetForm').on('submit', function () {
 
 </body>
 </html>
+

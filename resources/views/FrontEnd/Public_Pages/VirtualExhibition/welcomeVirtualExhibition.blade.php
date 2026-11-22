@@ -9,6 +9,7 @@
 
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
 
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <style>
@@ -137,3 +138,4 @@
 @include('FrontEnd.Public_Pages.Layouts.scripts')
 
 <script type="text/javascript" src="{{ asset('assets/js/pages/components_popups.js') }}"></script>
+

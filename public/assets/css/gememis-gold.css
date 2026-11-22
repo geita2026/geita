@@ -1,0 +1,138 @@
+﻿/* ============================================
+   GeMEMIS Gold Theme
+   ============================================ */
+:root {
+    --gold-primary: #D4AF37;
+    --gold-dark: #B8860B;
+    --gold-light: #F5E6B8;
+    --gold-accent: #FFD700;
+    --gold-shadow: rgba(212, 175, 55, 0.4);
+    --gold-shadow-strong: rgba(212, 175, 55, 0.8);
+}
+
+/* Vitufe */
+.btn-primary {
+    background-color: var(--gold-primary) !important;
+    border-color: var(--gold-dark) !important;
+    color: #1A1A1A !important;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--gold-dark) !important;
+    color: #FFFFFF !important;
+}
+
+/* Kiungo */
+a { color: var(--gold-dark); }
+a:hover { color: var(--gold-primary); }
+
+/* Navbar */
+.navbar-default, .navbar-fixed-top {
+    background-color: var(--gold-primary) !important;
+    border-color: var(--gold-dark) !important;
+}
+.navbar-brand, .navbar-brand:hover { color: #1A1A1A !important; }
+
+/* Sidebar active */
+.nav > li.active > a, .nav > li > a:hover {
+    background-color: var(--gold-light) !important;
+    border-left: 3px solid var(--gold-primary) !important;
+}
+
+/* Avatar */
+.avatar, .profile-image, img.rounded-circle, .dropdown-user > a > img {
+    border: 3px solid var(--gold-primary) !important;
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--gold-shadow-strong), inset 0 0 4px var(--gold-shadow);
+    transition: box-shadow 0.3s ease;
+}
+.avatar:hover, img.rounded-circle:hover, .dropdown-user > a > img:hover {
+    box-shadow: 0 0 20px var(--gold-shadow-strong);
+}
+
+/* Panel headers */
+.panel-heading {
+    background-color: var(--gold-light) !important;
+    border-bottom: 2px solid var(--gold-primary) !important;
+}
+
+/* Badges */
+.badge-primary, .label-primary {
+    background-color: var(--gold-primary) !important;
+    color: #1A1A1A !important;
+}
+
+/* Tables */
+.table > thead > tr > th {
+    background-color: var(--gold-light) !important;
+    border-bottom: 2px solid var(--gold-primary) !important;
+}
+
+/* Buttons secondary */
+.btn-default {
+    border-color: var(--gold-primary) !important;
+    color: var(--gold-dark) !important;
+}
+.btn-default:hover {
+    background-color: var(--gold-light) !important;
+}
+
+/* Pagination */
+.pagination > .active > a {
+    background-color: var(--gold-primary) !important;
+    border-color: var(--gold-dark) !important;
+    color: #1A1A1A !important;
+}
+
+/* Form focus */
+.form-control:focus {
+    border-color: var(--gold-primary) !important;
+    box-shadow: 0 0 0 0.2rem var(--gold-shadow) !important;
+}
+
+/* Tabs */
+.nav-tabs > li.active > a {
+    border-bottom-color: var(--gold-primary) !important;
+    color: var(--gold-dark) !important;
+}
+
+/* Dropdown hover */
+.dropdown-menu > li > a:hover {
+    background-color: var(--gold-light) !important;
+}
+
+/* GeMEMIS navigation and icon visibility */
+.sidebar.sidebar-main {
+    background-color: #202733 !important;
+    border-right: 1px solid #B8860B;
+}
+.sidebar.sidebar-main .sidebar-content,
+.sidebar.sidebar-main .sidebar-category {
+    background-color: transparent !important;
+}
+.sidebar.sidebar-main .navigation > li > a {
+    color: #F7F7F7 !important;
+    border-bottom: 1px solid rgba(212, 175, 55, .16);
+}
+.sidebar.sidebar-main .navigation > li > a > i,
+.sidebar.sidebar-main .navigation > li > ul > li > a > i {
+    color: #D4AF37 !important;
+    opacity: 1 !important;
+}
+.sidebar.sidebar-main .navigation > li.active > a,
+.sidebar.sidebar-main .navigation > li > a:hover,
+.sidebar.sidebar-main .navigation > li > ul > li.active > a {
+    color: #1A1A1A !important;
+    background-color: #F5E6B8 !important;
+    border-left: 3px solid #D4AF37 !important;
+}
+.sidebar.sidebar-main .navigation > li.active > a > i,
+.sidebar.sidebar-main .navigation > li > a:hover > i,
+.sidebar.sidebar-main .navigation > li > ul > li.active > a > i {
+    color: #8A6508 !important;
+}
+.sidebar.sidebar-main .navigation > li > ul {
+    background-color: rgba(0, 0, 0, .14);
+}
+.sidebar.sidebar-main .navigation-header {
+    color: #D4AF37 !important;
+}

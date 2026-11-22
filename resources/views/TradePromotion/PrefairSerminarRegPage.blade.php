@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="{{ asset('frontEndAssets/css/responsive.css') }}">
 
     <link rel="icon" href="{{ asset('images/Logo.png') }}">
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="">
@@ -171,3 +172,4 @@
 </body>
 
 </html>
+

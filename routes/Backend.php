@@ -108,7 +108,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('catalogue_settings',CatalogueSettingController::class);
     Route::resource('db_management',DbManagementController::class);
     Route::resource('products',ProductsController::class);
-    Route::get('download_permit{id}',[DownloadController::class,'DownloadPermit'])->name('download_permit');
+// [GEMEMIS-CLEANUP]     Route::get('download_permit{id}',[DownloadController::class,'DownloadPermit'])->name('download_permit');
     Route::resource('exhibitor_judging',ExhibitorJudgingController::class);
 });
 
@@ -130,7 +130,7 @@ Route::controller(SearchController::class)->group(function(){
     Route::get('search_off_fair_invoice','searchOffFairInvoice')->name('search_off_fair_invoice');
     Route::get('search_sectors','searchSectors')->name('search_sectors');
 });
-Route::get('search_approved_events',[SearchController::class,'searchApprovedEvents'])->name('search_approved_events');
+// [GEMEMIS-CLEANUP] Route::get('search_approved_events',[SearchController::class,'searchApprovedEvents'])->name('search_approved_events');
 Route::get('search-exhibitors',[SearchController::class,'searchExhibitor'])->name('search-exhibitors');
 //
 

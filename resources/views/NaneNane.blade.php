@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description"
-        content="Farmer’s Day dates back to the early 1980s when the Tanzanian Government initiated the celebration to recognize and appreciate the contributions of farmers to the national economy. The Nanenane exhibition is an annual event held in Tanzania to commemorate the founding of Farmers' Day, celebrating achievements in agriculture, livestock, and fisheries sectors. It takes place from August 1st to 8th each year and features displays and demonstrations from various sectors related to Agriculture, Livestock and Fisheries, including innovations, technologies, and practices aimed at improving productivity and sustainability.">
+        content="Farmerâ€™s Day dates back to the early 1980s when the Tanzanian Government initiated the celebration to recognize and appreciate the contributions of farmers to the national economy. The Nanenane exhibition is an annual event held in Tanzania to commemorate the founding of Farmers' Day, celebrating achievements in agriculture, livestock, and fisheries sectors. It takes place from August 1st to 8th each year and features displays and demonstrations from various sectors related to Agriculture, Livestock and Fisheries, including innovations, technologies, and practices aimed at improving productivity and sustainability.">
     <meta name="keywords"
         content="trade fair, sabasaba, DITF, maonesho, viwanja vya maonesho, fair grounds, tradefair,Tanzania,Exhibition">
     <meta name="author" content="Tanzania Trade Development Authority (TanTrade)">
@@ -15,6 +15,7 @@
        
     </style>
     @include('WelcomePageLayouts.welcomeCss')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>

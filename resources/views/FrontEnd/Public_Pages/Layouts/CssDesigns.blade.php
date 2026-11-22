@@ -1,10 +1,10 @@
 <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="sabasaba,Dar es salaam international Trade Fair,DITF,maonesho,Trade Fair, Tanzania Fair, Best Trade Fair">
-    <meta name="description" content="sabasaba,Dar es salaam international Trade Fair,DITF,maonesho,Trade Fair, Tanzania Fair, Best Trade Fair">
+    <meta name="keywords" content="GeMEMIS, Geita, digital platform, exhibition services, Tanzania, TanTrade">
+    <meta name="description" content="GeMEMIS - Integrated digital platform for accessing exhibition, trade and related digital services in Tanzania.">
     <meta name='copyright' content='Tanzania Trade Development Authority (TanTrade)'>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="icon" href="{{ asset('images/logo.jpg') }}">
+  <link rel="icon" href="{{ asset('images/tanzania-coat-of-arms.svg') }}">
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap"

@@ -1,16 +1,2 @@
-public/Advertisements/*
-public/ApprovalAttachments/*
-public/mail_files/*
-public/Members/*
-public/profile_images/*
-public/signatures/*
-public/VirtualImages/*
-public/CatalogueImages/*
-public/TradePromotionFiles/*
-public/floorPlanFiles/*
-public/OnlineBookingFiles/*
-public/ePermitFiles/uploadedFiles/*
-public/ProgramFiles/*
-public/uploadedFiles/*
-public/ExpoFolder/UploadedFile/*
+
 .env

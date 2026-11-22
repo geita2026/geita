@@ -11,6 +11,7 @@
             background-color: rgb(214, 212, 212);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -55,11 +56,11 @@
                         <p style=" text-align:justify;padding:1%" >
                             <b>Say goodbye to the hassle of manual bookings! With our Online Space Booking System, you
                                 can:</b><br>
-                            ✅ Explore Available Spaces – View layouts and choose your perfect space.<br>
-                            ✅ Instant Reservations – Secure your space with just a few clicks.<br>
-                            ✅ 24/7 Access – Book anytime, anywhere, at your convenience.<br>
-                            ✅ Transparent Pricing – See all costs upfront with no hidden fees.<br>
-                            🌟 Don’t Miss Out! Secure your exhibition space today by paing your bill and make your mark
+                            âœ… Explore Available Spaces â€“ View layouts and choose your perfect space.<br>
+                            âœ… Instant Reservations â€“ Secure your space with just a few clicks.<br>
+                            âœ… 24/7 Access â€“ Book anytime, anywhere, at your convenience.<br>
+                            âœ… Transparent Pricing â€“ See all costs upfront with no hidden fees.<br>
+                            ðŸŒŸ Donâ€™t Miss Out! Secure your exhibition space today by paing your bill and make your mark
                             at the event!
                         </p>
 
@@ -107,3 +108,4 @@
 </body>
 
 </html>
+

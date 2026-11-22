@@ -18,6 +18,7 @@
             background-color: rgb(214, 212, 212);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -106,3 +107,4 @@
 </body>
 
 </html>
+

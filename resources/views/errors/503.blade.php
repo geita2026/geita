@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Booking Countdown – 50th Dar es Salaam International Trade Fair</title>
+    <title>Booking Countdown â€“ 50th Dar es Salaam International Trade Fair</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/png">
@@ -168,6 +168,7 @@
             }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body class="login-container">
@@ -190,7 +191,7 @@
         </div>
 
         <div class="subtitle">
-            50<sup>th</sup> Dar es Salaam International Trade Fair – Golden Jubilee of Sabasaba
+            50<sup>th</sup> Dar es Salaam International Trade Fair â€“ Golden Jubilee of Sabasaba
         </div>
 
         <p class="text">
@@ -280,3 +281,4 @@
 
 </body>
 </html>
+

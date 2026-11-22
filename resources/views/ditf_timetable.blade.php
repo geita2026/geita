@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>50th DITF 2026 — Official Opening Ceremony</title>
+<title>50th DITF 2026 â€” Official Opening Ceremony</title>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700">
 <style>
@@ -19,14 +19,15 @@
   .now-row{box-shadow:inset 4px 0 0 #0b6e4f;}
   @media(max-width:600px){.cd-num{font-size:20px}.hide-sm{display:none}}
 </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
 
 <!-- HERO -->
 <header class="hero w3-text-white w3-center w3-padding-32">
   <div class="w3-content" style="max-width:900px">
-    <p class="w3-large w3-opacity">🇹🇿 Dar es Salaam International Trade Fair</p>
-    <h1 class="w3-jumbo w3-hide-small" style="font-weight:700;margin:6px 0">50<sup>th</sup> DITF · SabaSaba 2026</h1>
+    <p class="w3-large w3-opacity">ðŸ‡¹ðŸ‡¿ Dar es Salaam International Trade Fair</p>
+    <h1 class="w3-jumbo w3-hide-small" style="font-weight:700;margin:6px 0">50<sup>th</sup> DITF Â· SabaSaba 2026</h1>
     <h1 class="w3-hide-medium w3-hide-large" style="font-weight:700">50th DITF 2026</h1>
     <h3 id="subtitle" style="font-weight:400">Official Opening Ceremony</h3>
     <p id="eventmeta" class="w3-large"></p>
@@ -63,11 +64,11 @@
       <tbody id="rows"></tbody>
     </table>
   </div>
-  <p class="w3-small w3-text-grey w3-center w3-padding">Live countdowns based on your device's local time · Event time zone: EAT (UTC+3)</p>
+  <p class="w3-small w3-text-grey w3-center w3-padding">Live countdowns based on your device's local time Â· Event time zone: EAT (UTC+3)</p>
 </div>
 
 <footer class="hero w3-text-white w3-center w3-padding-16">
-  <p>“Dar es Salaam International Trade Fair · SabaSaba · Pride of Tanzania”</p>
+  <p>â€œDar es Salaam International Trade Fair Â· SabaSaba Â· Pride of Tanzaniaâ€</p>
 </footer>
 
 <script>
@@ -75,19 +76,19 @@
 const EVENT_DATE = "2026-07-03";
 
 const events = [
-  {start:"09:00", sw:{t:"09.00 - 10.00 Asubuhi", a:"Kuwasili kwa Waheshimiwa Mabalozi, Viongozi wa Serikali na Sekta Binafsi na Wageni Waalikwa – Ukumbi wa Ali Hassan Mwinyi", r:"Timu ya Itifaki"}, en:{t:"09:00 - 10:00 AM", a:"Arrival of Ambassadors, Government Officials, Private Sector Representatives and Invited Guests at Ali Hassan Mwinyi Hall", r:"Protocol Team"}},
-  {start:"10:00", sw:{t:"10.00 - 10.15 Asubuhi", a:"Kuwasili kwa Mgeni Rasmi – Uwanja wa Maonesho wa Mwl. J.K. Nyerere", r:"Mawaziri, Makatibu Wakuu, Mwenyekiti wa Bodi na Mkurugenzi Mkuu TanTrade"}, en:{t:"10:00 - 10:15 AM", a:"Arrival of Guest of Honor at the Mwl. J.K. Nyerere Trade Fair Ground", r:"Ministers, Permanent Secretaries, Board Chairperson & TanTrade DG"}},
+  {start:"09:00", sw:{t:"09.00 - 10.00 Asubuhi", a:"Kuwasili kwa Waheshimiwa Mabalozi, Viongozi wa Serikali na Sekta Binafsi na Wageni Waalikwa â€“ Ukumbi wa Ali Hassan Mwinyi", r:"Timu ya Itifaki"}, en:{t:"09:00 - 10:00 AM", a:"Arrival of Ambassadors, Government Officials, Private Sector Representatives and Invited Guests at Ali Hassan Mwinyi Hall", r:"Protocol Team"}},
+  {start:"10:00", sw:{t:"10.00 - 10.15 Asubuhi", a:"Kuwasili kwa Mgeni Rasmi â€“ Uwanja wa Maonesho wa Mwl. J.K. Nyerere", r:"Mawaziri, Makatibu Wakuu, Mwenyekiti wa Bodi na Mkurugenzi Mkuu TanTrade"}, en:{t:"10:00 - 10:15 AM", a:"Arrival of Guest of Honor at the Mwl. J.K. Nyerere Trade Fair Ground", r:"Ministers, Permanent Secretaries, Board Chairperson & TanTrade DG"}},
   {start:"10:15", sw:{t:"10.15 - 10.55 Asubuhi", a:"Kutembelea Banda la Kimataifa (Karume)", r:"Mawaziri, Makatibu Wakuu, Mwenyekiti wa Bodi na Mkurugenzi Mkuu TanTrade"}, en:{t:"10:15 - 10:55 AM", a:"Visit of the International Pavilion (Karume Hall)", r:"Ministers, Permanent Secretaries, Board Chairperson & TanTrade DG"}},
-  {start:"10:55", sw:{t:"10.55 - 11.00 Asubuhi", a:"Kuwasili kwa Mgeni Rasmi – Ukumbi wa Ali Hassan Mwinyi", r:"Mawaziri, Makatibu Wakuu, Mwenyekiti wa Bodi na Mkurugenzi Mkuu TanTrade"}, en:{t:"10:55 - 11:00 AM", a:"Arrival of the Guest of Honor at Ali Hassan Mwinyi Hall", r:"Ministers, Permanent Secretaries, Board Chairperson & TanTrade DG"}},
+  {start:"10:55", sw:{t:"10.55 - 11.00 Asubuhi", a:"Kuwasili kwa Mgeni Rasmi â€“ Ukumbi wa Ali Hassan Mwinyi", r:"Mawaziri, Makatibu Wakuu, Mwenyekiti wa Bodi na Mkurugenzi Mkuu TanTrade"}, en:{t:"10:55 - 11:00 AM", a:"Arrival of the Guest of Honor at Ali Hassan Mwinyi Hall", r:"Ministers, Permanent Secretaries, Board Chairperson & TanTrade DG"}},
   {start:"11:00", sw:{t:"11.00 - 11.05 Asubuhi", a:"Nyimbo za Taifa na Wimbo wa Jumuiya ya Afrika Mashariki", r:"Brass Band"}, en:{t:"11:00 - 11:05 AM", a:"National Anthems and East Africa Song", r:"Brass Band"}},
   {start:"11:05", sw:{t:"11.05 - 11.10 Asubuhi", a:"Wimbo Maalum wa Maonesho ya 50 ya DITF 2026", r:"Banana Zoro na Khadija Kopa"}, en:{t:"11:05 - 11:10 AM", a:"Special Song for the 50th DITF 2026", r:"Banana Zoro & Khadija Kopa"}},
   {start:"11:10", sw:{t:"11.10 - 11.15 Asubuhi", a:"Salamu kutoka kwa Mkuu wa Mkoa wa Dar es Salaam", r:"Mhe. Albert Chalamila"}, en:{t:"11:10 - 11:15 AM", a:"Remarks by the Dar es Salaam Regional Commissioner", r:"Hon. Albert Chalamila"}},
-  {start:"11:15", sw:{t:"11.15 - 11.20 Asubuhi", a:"Salamu za Mdhamini Mkuu wa Maonesho ya 50 ya Sabasaba 2026", r:"Cathy Wang – EACLC"}, en:{t:"11:15 - 11:20 AM", a:"Remarks by the Main 50th DITF 2026 Sponsor", r:"Cathy Wang – EACLC"}},
-  {start:"11:25", sw:{t:"11.25 - 11.30 Asubuhi", a:"Burudani kutoka kwa Wanafunzi", r:"“Watoto wetu Urithi Wetu”"}, en:{t:"11:25 - 11:30 AM", a:"Song Performance", r:"“Watoto wetu Urithi Wetu” students"}},
-  {start:"11:30", sw:{t:"11.30 - 11.40 Asubuhi", a:"Taarifa fupi ya Maonesho ya 50 ya DITF, 2026", r:"Dkt. Latifa M. Khamis – Mkurugenzi Mkuu, TanTrade"}, en:{t:"11:30 - 11:40 AM", a:"Brief Overview of 50th DITF, 2026", r:"Dr. Latifa M. Khamis – Director General, TanTrade"}},
-  {start:"11:40", sw:{t:"11.40 - 11.45 Asubuhi", a:"Salamu kutoka Serikali ya Mapinduzi ya Zanzibar", r:"Katibu Mkuu, Wizara ya Biashara na Maendeleo ya Viwanda"}, en:{t:"11:40 - 11:45 AM", a:"Remarks from Revolutionary Government of Zanzibar", r:"Permanent Secretary – Ministry of Trade and Industrial Development"}},
+  {start:"11:15", sw:{t:"11.15 - 11.20 Asubuhi", a:"Salamu za Mdhamini Mkuu wa Maonesho ya 50 ya Sabasaba 2026", r:"Cathy Wang â€“ EACLC"}, en:{t:"11:15 - 11:20 AM", a:"Remarks by the Main 50th DITF 2026 Sponsor", r:"Cathy Wang â€“ EACLC"}},
+  {start:"11:25", sw:{t:"11.25 - 11.30 Asubuhi", a:"Burudani kutoka kwa Wanafunzi", r:"â€œWatoto wetu Urithi Wetuâ€"}, en:{t:"11:25 - 11:30 AM", a:"Song Performance", r:"â€œWatoto wetu Urithi Wetuâ€ students"}},
+  {start:"11:30", sw:{t:"11.30 - 11.40 Asubuhi", a:"Taarifa fupi ya Maonesho ya 50 ya DITF, 2026", r:"Dkt. Latifa M. Khamis â€“ Mkurugenzi Mkuu, TanTrade"}, en:{t:"11:30 - 11:40 AM", a:"Brief Overview of 50th DITF, 2026", r:"Dr. Latifa M. Khamis â€“ Director General, TanTrade"}},
+  {start:"11:40", sw:{t:"11.40 - 11.45 Asubuhi", a:"Salamu kutoka Serikali ya Mapinduzi ya Zanzibar", r:"Katibu Mkuu, Wizara ya Biashara na Maendeleo ya Viwanda"}, en:{t:"11:40 - 11:45 AM", a:"Remarks from Revolutionary Government of Zanzibar", r:"Permanent Secretary â€“ Ministry of Trade and Industrial Development"}},
   {start:"11:45", sw:{t:"11.45 - 11.55 Asubuhi", a:"Kikundi cha Ngoma", r:"Wasanii"}, en:{t:"11:45 - 11:55 AM", a:"Traditional Dance Performance", r:"Performing Artists"}},
-  {start:"11:55", sw:{t:"11.55 - 12.00 Mchana", a:"Salamu kutoka Wizara ya Viwanda na Biashara na Kumkaribisha Mhe. Rais wa Tanzania", r:"Mhe. Judith Kapinga (Mb) – Waziri wa Viwanda na Biashara"}, en:{t:"11:55 - 12:00 PM", a:"Remarks from the Minister of Industry and Trade and Introduction of H.E. the President", r:"Hon. Judith Kapinga (MP) – Minister of Industry and Trade"}},
+  {start:"11:55", sw:{t:"11.55 - 12.00 Mchana", a:"Salamu kutoka Wizara ya Viwanda na Biashara na Kumkaribisha Mhe. Rais wa Tanzania", r:"Mhe. Judith Kapinga (Mb) â€“ Waziri wa Viwanda na Biashara"}, en:{t:"11:55 - 12:00 PM", a:"Remarks from the Minister of Industry and Trade and Introduction of H.E. the President", r:"Hon. Judith Kapinga (MP) â€“ Minister of Industry and Trade"}},
   {start:"12:00", sw:{t:"12.00 - 12.10 Mchana", a:"Rais wa Jamhuri ya Muungano wa Tanzania Kumkaribisha Mgeni Rasmi", r:"Mhe. Dkt. Samia Suluhu Hassan"}, en:{t:"12:00 - 12:10 PM", a:"H.E. the President to Introduce and Welcome the Guest of Honor", r:"H.E. Dr. Samia Suluhu Hassan"}},
   {start:"12:10", sw:{t:"12.10 - 12.20 Mchana", a:"Hotuba ya Mgeni Rasmi", r:"Mheshimiwa Mgeni Rasmi"}, en:{t:"12:10 - 12:20 PM", a:"Address by the Guest of Honor", r:"Guest of Honor"}},
   {start:"12:20", sw:{t:"12.20 - 12.30 Mchana", a:"Tuzo za Washindi wa Miaka 50 na Kutambua Michango ya Wadau", r:"Mheshimiwa Mgeni Rasmi"}, en:{t:"12:20 - 12:30 PM", a:"Presentation of 50th Anniversary Awards & Recognition of Stakeholders", r:"Guest of Honor"}},
@@ -98,13 +99,13 @@ const events = [
 ];
 
 const T = {
-  en:{title:"Official Opening Ceremony", meta:"Friday, 3 July 2026 · Ali Hassan Mwinyi Hall – Mbarouk Mwandoro Square, Dar es Salaam",
+  en:{title:"Official Opening Ceremony", meta:"Friday, 3 July 2026 Â· Ali Hassan Mwinyi Hall â€“ Mbarouk Mwandoro Square, Dar es Salaam",
       days:"Days",hrs:"Hours",min:"Min",sec:"Sec", time:"Time",prog:"Program",resp:"Responsible",cd:"Countdown",
-      before:"until the ceremony begins", live:"🔴 Ceremony in progress", done:"Ceremony concluded — Karibu tena!",
+      before:"until the ceremony begins", live:"ðŸ”´ Ceremony in progress", done:"Ceremony concluded â€” Karibu tena!",
       upcoming:"Upcoming",now:"NOW",ended:"Done"},
-  sw:{title:"Sherehe ya Ufunguzi Rasmi", meta:"Ijumaa, Tarehe 3 Julai 2026 · Ukumbi wa Ali Hassan Mwinyi – Mbarouk Mwandoro Square, Dar es Salaam",
+  sw:{title:"Sherehe ya Ufunguzi Rasmi", meta:"Ijumaa, Tarehe 3 Julai 2026 Â· Ukumbi wa Ali Hassan Mwinyi â€“ Mbarouk Mwandoro Square, Dar es Salaam",
       days:"Siku",hrs:"Saa",min:"Dak",sec:"Sek", time:"Muda",prog:"Shughuli",resp:"Mhusika",cd:"Hesabu",
-      before:"hadi sherehe kuanza", live:"🔴 Sherehe inaendelea", done:"Sherehe imekamilika — Karibu tena!",
+      before:"hadi sherehe kuanza", live:"ðŸ”´ Sherehe inaendelea", done:"Sherehe imekamilika â€” Karibu tena!",
       upcoming:"Inakuja",now:"SASA",ended:"Imeisha"},
 };
 
@@ -167,10 +168,10 @@ function update(){
     document.getElementById("s").textContent = pad(secs);
     document.getElementById("masterMsg").textContent = t.before;
   } else if(now <= last){
-    ["d","h","m","s"].forEach(id=>document.getElementById(id).textContent="—");
+    ["d","h","m","s"].forEach(id=>document.getElementById(id).textContent="â€”");
     document.getElementById("masterMsg").textContent = t.live;
   } else {
-    ["d","h","m","s"].forEach(id=>document.getElementById(id).textContent="✓");
+    ["d","h","m","s"].forEach(id=>document.getElementById(id).textContent="âœ“");
     document.getElementById("masterMsg").textContent = t.done;
   }
 
@@ -188,7 +189,7 @@ function update(){
       const str = dd>0 ? `${dd}d ${pad(hh)}:${pad(mm)}:${pad(ss)}` : `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
       cd.innerHTML = `<span class="w3-text-grey">${str}</span>`;
     } else if(now < next){
-      cd.innerHTML = `<span class="w3-tag w3-green w3-round">● ${t.now}</span>`;
+      cd.innerHTML = `<span class="w3-tag w3-green w3-round">â— ${t.now}</span>`;
       row.className = "w3-pale-green now-row";
     } else {
       cd.innerHTML = `<span class="w3-tag w3-light-grey w3-round">${t.ended}</span>`;
@@ -204,3 +205,4 @@ setInterval(update, 1000);
 </body>
 </html>
 @endverbatim
+

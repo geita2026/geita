@@ -12,9 +12,9 @@ Route::prefix('spaceAllocation')->middleware('auth')->group(function() {
     Route::resource('event-booking-spaces',eventBookingController::class);
     Route::resource('book-services',serviceBookingController::class);
     Route::resource('booking_transfer',BookingTransferController::class);
-    Route::resource('iopermits',PermitsController::class);
-    Route::get('search_permit',[PermitsController::class,'seachPermit'])->name('search_permit');
-    Route::post('exhibited_product_changes',[PermitsController::class,'UpdateProductExhibited'])->name('exhibited_product_changes');
+// [GEMEMIS-CLEANUP]     Route::resource('iopermits',PermitsController::class);
+// [GEMEMIS-CLEANUP]     Route::get('search_permit',[PermitsController::class,'seachPermit'])->name('search_permit');
+// [GEMEMIS-CLEANUP]     Route::post('exhibited_product_changes',[PermitsController::class,'UpdateProductExhibited'])->name('exhibited_product_changes');
     
     Route::get('confirm_participation',[CatalogueSettingController::class,'confirmParticipation'])->name('confirm_participation');
     Route::get('participation_form/{participationId}',[CatalogueSettingController::class,'getParticipationForm'])->name('participation_form');

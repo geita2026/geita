@@ -12,6 +12,7 @@
         type="text/css">
     <title>{{ config('app.name', 'Login') }}</title>
     @include('WelcomePageLayouts.welcomeCss')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -160,3 +161,4 @@
 </html>
 @include('FrontEnd.Public_Pages.Layouts.scripts')
 {{--  --}}
+

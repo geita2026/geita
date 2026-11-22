@@ -6,7 +6,7 @@
     <title>Print Car Stickers</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
     <style>
-        /* ── A4 page setup ─────────────────────────────────────────────── */
+        /* â”€â”€ A4 page setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         @page { size: A4 portrait; margin: 0; }
 
         * { box-sizing: border-box; }
@@ -16,7 +16,7 @@
         body.layout-4   { --grid-rows: 2; --sticker-w: 88mm;   --sticker-h: 120mm; }
         body.layout-4xl { --grid-rows: 2; --sticker-w: 86mm;   --sticker-h: 127mm; }
 
-        /* ── Sidebar — offer-card style ────────────────────────────────── */
+        /* â”€â”€ Sidebar â€” offer-card style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         :root {
             --sb-bg:          #0b0c10;
             --sb-bg-light:    #12141a;
@@ -122,7 +122,7 @@
         }
         .sb-option-arrow svg { width: 0.9em; height: 0.9em; }
 
-        /* ── Print button (Uiverse.io — animated, scaled & recoloured amber) ── */
+        /* â”€â”€ Print button (Uiverse.io â€” animated, scaled & recoloured amber) â”€â”€ */
         .print-btn-wrap { display: flex; justify-content: center; margin: 0.6em 0 0.4em; }
         .print-btn {
             --white:   #f0ebf0;
@@ -328,7 +328,7 @@
         .sb-btn-icon svg { width: 0.9em; height: 0.9em; }
         .sb-count { color: var(--sb-text-dim); font-size: 0.72em; }
 
-        /* ── Sheets area ───────────────────────────────────────────────── */
+        /* â”€â”€ Sheets area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .sheets-area {
             margin-left: 220px; padding: 20px;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
@@ -348,7 +348,7 @@
             position: relative;
         }
 
-        /* ── Sticker — 1590 × 2786 aspect (1.752) ────────────────────── */
+        /* â”€â”€ Sticker â€” 1590 Ã— 2786 aspect (1.752) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .sticker-wrap {
             position: relative;
             width:  var(--sticker-w, 56.5mm);
@@ -397,11 +397,11 @@
         }
         .qr-canvas svg { display: block; width: 100%; height: 100%; }
 
-        /* ── Print-mode visibility ─────────────────────────────────────── */
+        /* â”€â”€ Print-mode visibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         body.mode-front .sheet-back { display: none !important; }
         body.mode-back  .sheet-front { display: none !important; }
 
-        /* ── Print rules ───────────────────────────────────────────────── */
+        /* â”€â”€ Print rules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         @media print {
             html, body { background: white; }
             .sidebar { display: none !important; }
@@ -412,6 +412,7 @@
             body.mode-back  .sheet-front { display: none !important; }
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 @php
     $stickerFront = parse_url(asset('seasonal_car_sticker_front.png'), PHP_URL_PATH);
@@ -419,7 +420,7 @@
 @endphp
 <body class="layout-{{ $layout }}">
 
-    {{-- ── Sidebar ──────────────────────────────────────────────────── --}}
+    {{-- â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     <div class="sidebar">
         <div class="sidebar-inner">
             <div class="sb-progress">
@@ -604,7 +605,7 @@
         </div>
     </div>
 
-    {{-- ── Sheets ───────────────────────────────────────────────────── --}}
+    {{-- â”€â”€ Sheets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     <div class="sheets-area">
         @foreach (array_chunk($stickers, $perPage) as $page)
             {{-- Front sheet --}}
@@ -653,7 +654,7 @@
     </div>
 
     <script>
-        // ── Sticker image coord system: 1590 × 2786 ─────────────────────
+        // â”€â”€ Sticker image coord system: 1590 Ã— 2786 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const IMG_W = 1590, IMG_H = 2786;
         const PLATE_CX = 960,  PLATE_Y = 1380, PLATE_FS = 70;
         const ZONE_CX  = 960,  ZONE_Y  = 1560, ZONE_FS  = 50;
@@ -665,7 +666,7 @@
             const scaleX = bW / IMG_W;
             const scaleY = bH / IMG_H;
 
-            // ── Plate number ──────────────────────────────────────────
+            // â”€â”€ Plate number â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const plate = wrap.querySelector('.sticker-plate');
             if (plate) {
                 plate.textContent = wrap.dataset.plate || '';
@@ -674,7 +675,7 @@
                 plate.style.fontSize = (PLATE_FS * scaleX).toFixed(2) + 'px';
             }
 
-            // ── Parking-zone caption (SEASONAL {INSIDE|OUTSIDE} CAR PARKING) ──
+            // â”€â”€ Parking-zone caption (SEASONAL {INSIDE|OUTSIDE} CAR PARKING) â”€â”€
             const zone = wrap.querySelector('.sticker-zone');
             if (zone) {
                 const label = (wrap.dataset.zone || '').toUpperCase();
@@ -684,7 +685,7 @@
                 zone.style.fontSize = (ZONE_FS * scaleX).toFixed(2) + 'px';
             }
 
-            // ── QR ────────────────────────────────────────────────────
+            // â”€â”€ QR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const qr = wrap.querySelector('.qr-canvas');
             if (qr) {
                 const size = Math.round(QR_SIZE * scaleX);
@@ -707,3 +708,4 @@
 
 </body>
 </html>
+

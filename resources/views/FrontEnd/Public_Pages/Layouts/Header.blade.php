@@ -301,7 +301,7 @@
             <div class="col-6">
                 <div class="logo">
                     <a href="{{ route('index') }}">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="TanTrade Logo">
+                        <img src="{{ asset('images/tanzania-coat-of-arms.svg') }}" alt="Tanzania National Coat of Arms">
                     </a>
                 </div>
             </div>
@@ -316,48 +316,44 @@
                     <li><a href="{{ route('index') }}">Home</a></li>
 
                     <li>
-                        <a href="#">About SabaSaba <i class="fa fa-angle-down"></i></a>
+                        <a href="#">About GeMEMIS <i class="fa fa-angle-down"></i></a>
                         <div class="dropdown">
                             <ul>
-                                <li><a href="{{ route('About_ditf') }}">Understanding SabaSaba</a></li>
-                                <li><a href="{{ route('preview_programs.index') }}">Programs</a></li>
-                                <li><a href="{{ route('ditf_map') }}">Ground Map</a></li>
-                                <li><a href="{{ route('discover_exhibitor.index') }}">Discover Exhibitors</a></li>
-                                <li><a href="{{ route('exhibited_products.index') }}">Exhibited Products</a></li>
+                                <li><a href="{{ route('About_ditf') }}">About the System</a></li>
+                                <li><a href="{{ route('preview_programs.index') }}">Exhibition Services</a></li>
+                                <li><a href="{{ route('ditf_map') }}">Exhibition Information</a></li>
+                                <li><a href="{{ route('discover_exhibitor.index') }}">Exhibitors</a></li>
+                                <li><a href="{{ route('exhibited_products.index') }}">Mineral Products</a></li>
                             </ul>
                         </div>
                     </li>
 
-                    <li>
-                        <a href="#">Trade Promotion Events <i class="fa fa-angle-down"></i></a>
-                        <div class="dropdown">
-                            <ul>
-                                <li><a href="{{ route('/') }}">Apply Event Permit</a></li>
-                                <li><a href="{{ route('approved_events') }}">Approved Events</a></li>
-                            </ul>
-                        </div>
-                    </li>
+                    
 
                     <li>
-                        <a href="#">Online Booking <i class="fa fa-angle-down"></i></a>
+                        <a href="#">Online Services <i class="fa fa-angle-down"></i></a>
                         <div class="dropdown">
                             <ul>
-                                <li><a href="{{ route('exhibition_space_booking.index') }}">Exhibition Space</a></li>
-                                <li><a href="{{ route('sponsorship_package_groups') }}">Sponsorship Packages</a></li>
-                                <li><a href="{{ route('online_booking.index') }}">Halls & Offices</a></li>
+                                <li><a href="{{ route('exhibition_space_booking.index') }}">Exhibition Space Booking</a></li>
+                                <li><a href="{{ route('sponsorship_package_groups') }}">Exhibition Support</a></li>
+                                <li><a href="{{ route('online_booking.index') }}">Booking Information</a></li>
                             </ul>
                         </div>
                     </li>
 
                     <li>
                         <a href="{{ route('login') }}" class="p-10">
-                            Login<i class="fa fa-unlock"></i>
+                            Login <i class="fa fa-unlock"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('registration') }}" class="login-btn">
+                            Sign Up
                         </a>
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
 </header>
 <!-- ================= END HEADER ================= -->
 
@@ -369,7 +365,7 @@
         {{-- Sidebar Header --}}
         <div class="sidebar-header">
             <a href="{{ route('index') }}">
-                <img src="{{ asset('images/logo.jpg') }}" alt="TanTrade Logo">
+                <img src="{{ asset('images/tanzania-coat-of-arms.svg') }}" alt="Tanzania National Coat of Arms">
             </a>
             <button class="sidebar-close" onclick="closeMobileSidebar()">&times;</button>
         </div>
@@ -379,43 +375,40 @@
             <i class="fa fa-home" style="margin-right:8px;"></i> Home
         </a>
 
-        {{-- About SabaSaba --}}
+        {{-- About GeMEMIS --}}
         <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-info-circle" style="margin-right:8px;"></i> About SabaSaba</span>
+            <span><i class="fa fa-info-circle" style="margin-right:8px;"></i> About GeMEMIS</span>
             <i class="fa fa-angle-down"></i>
         </div>
         <div class="sidebar-submenu">
-            <a href="{{ route('About_ditf') }}" class="sidebar-item">Understanding SabaSaba</a>
-            <a href="{{ route('preview_programs.index') }}" class="sidebar-item">Programs</a>
-            <a href="{{ route('ditf_map') }}" class="sidebar-item">Ground Map</a>
-            <a href="{{ route('discover_exhibitor.index') }}" class="sidebar-item">Discover Exhibitors</a>
-            <a href="{{ route('exhibited_products.index') }}" class="sidebar-item">Exhibited Products</a>
+            <a href="{{ route('About_ditf') }}" class="sidebar-item">About the System</a>
+            <a href="{{ route('preview_programs.index') }}" class="sidebar-item">Exhibition Services</a>
+            <a href="{{ route('ditf_map') }}" class="sidebar-item">Exhibition Information</a>
+            <a href="{{ route('discover_exhibitor.index') }}" class="sidebar-item">Exhibitors</a>
+            <a href="{{ route('exhibited_products.index') }}" class="sidebar-item">Mineral Products</a>
         </div>
 
-        {{-- Trade Promotion Events --}}
-        <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-calendar" style="margin-right:8px;"></i> Trade Promotion Events</span>
-            <i class="fa fa-angle-down"></i>
-        </div>
-        <div class="sidebar-submenu">
-            <a href="{{ route('/') }}" class="sidebar-item">Apply Event Permit</a>
-            <a href="{{ route('approved_events') }}" class="sidebar-item">Approved Events</a>
-        </div>
+        
 
-        {{-- Online Booking --}}
+        {{-- Online Services --}}
         <div class="sidebar-group-title" onclick="toggleSubmenu(this)">
-            <span><i class="fa fa-bookmark" style="margin-right:8px;"></i> Online Booking</span>
+            <span><i class="fa fa-bookmark" style="margin-right:8px;"></i> Online Services</span>
             <i class="fa fa-angle-down"></i>
         </div>
         <div class="sidebar-submenu">
-            <a href="{{ route('exhibition_space_booking.index') }}" class="sidebar-item">Exhibition Space</a>
-            <a href="{{ route('sponsorship_package_groups') }}" class="sidebar-item">Sponsorship Packages</a>
-            <a href="{{ route('online_booking.index') }}" class="sidebar-item">Halls & Offices</a>
+            <a href="{{ route('exhibition_space_booking.index') }}" class="sidebar-item">Exhibition Space Booking</a>
+            <a href="{{ route('sponsorship_package_groups') }}" class="sidebar-item">Exhibition Support</a>
+            <a href="{{ route('online_booking.index') }}" class="sidebar-item">Booking Information</a>
         </div>
 
         {{-- Login --}}
         <a href="{{ route('login') }}" class="sidebar-login">
             <i class="fa fa-unlock" style="margin-right:6px;"></i> Login
+        </a>
+
+        {{-- Sign Up --}}
+        <a href="{{ route('registration') }}" class="sidebar-login">
+            <i class="fa fa-user-plus" style="margin-right:6px;"></i> Sign Up
         </a>
     </div>
 </div>

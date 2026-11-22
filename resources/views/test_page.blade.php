@@ -51,6 +51,7 @@ body {
     margin-top: 10px;
 }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
     <div class="logo-container">

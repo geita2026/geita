@@ -8,6 +8,7 @@
     <title>{{ env('APP_NAME') }} | Exhibitor Info</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
     @include('WelcomePageLayouts.welcomeCss')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -159,3 +160,4 @@
 </body>
 
 </html>
+

@@ -1,111 +1,269 @@
-
+﻿
 <style>
-    #logo{
-    font-size:250%; padding:5%; text-shadow: 1px 1px 1px rgb(0, 0, 0), 2px 2px 1px rgb(0, 0, 0);
-    text-align: center;
-}
+    #logo {
+        font-size: 250%;
+        padding: 5%;
+        text-shadow: 1px 1px 1px rgb(0, 0, 0),
+                     2px 2px 1px rgb(0, 0, 0);
+        text-align: center;
+    }
+
+    #name:hover {
+        color: black;
+    }
+
+    /* Top Bar avatar - same appearance as Sidebar */
+    #profile .dropdown-toggle img.img-circle.img-sm {
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 35px;
+        max-width: 35px;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 50%;
+        display: inline-block;
+        vertical-align: middle;
+    }
 </style>
 
 <!-- Main navbar -->
-<div class=" navbar navbar-default navbar-fixed-top header-highlight" style="background-color: rgb(16, 140, 230);">
-    <div class="navbar-header" style="background-color: rgb(16, 140, 230);">
-        <a class="navbar-brand text-bold text-white" href="{{ route('startApp') }}" id="h1">SAMS</a>
+<div class="navbar navbar-default navbar-fixed-top header-highlight"
+     style="background-color: rgb(16, 140, 230);">
+
+    <div class="navbar-header"
+         style="background-color: rgb(16, 140, 230);">
+
+        <a class="navbar-brand text-bold text-white"
+           href="{{ route('startApp') }}"
+           id="h1">
+            GeMEMIS
+        </a>
+
         <ul class="nav navbar-nav visible-xs-block">
-            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class=" icon-user"></i></a></li>
-            <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+
+            <li>
+                <a data-toggle="collapse" data-target="#navbar-mobile">
+                    <i class="icon-user"></i>
+                </a>
+            </li>
+
+            <li>
+                <a class="sidebar-mobile-main-toggle">
+                    <i class="icon-paragraph-justify3"></i>
+                </a>
+            </li>
+
         </ul>
     </div>
 
     <div class="navbar-collapse collapse row" id="navbar-mobile">
-        <ul class="nav navbar-nav ">
-            <li><a class="sidebar-control sidebar-main-toggle hidden-xs text-white"><i class="icon-paragraph-justify3"></i></a></li>
 
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="icon-grid6 text-white"></i>
-                    <span class="visible-xs-inline-block position-right">System Modules</span>
-                    
+        <ul class="nav navbar-nav">
+
+            <li>
+                <a class="sidebar-control sidebar-main-toggle hidden-xs text-white">
+                    <i class="icon-paragraph-justify3"></i>
                 </a>
-                
-                <div class="dropdown-menu dropdown-content">
-                    <div class="dropdown-content-heading">
+            </li>
+
+            <!-- System Modules -->
+            <li class="dropdown">
+
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                    <i class="icon-grid6 text-white"></i>
+
+                    <span class="visible-xs-inline-block position-right">
                         System Modules
+                    </span>
+
+                </a>
+
+                <div class="dropdown-menu dropdown-content">
+
+                    <div class="dropdown-content-heading">
+
+                        System Modules
+
                         <ul class="icons-list">
-                            <li><a href="#"><i class="icon-sync"></i></a></li>
+                            <li>
+                                <a href="#">
+                                    <i class="icon-sync"></i>
+                                </a>
+                            </li>
                         </ul>
+
                     </div>
 
                     <ul class="media-list dropdown-content-body width-350">
-                        
-                        <li class="media">
-                            <div class="media-left">
-                                <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
-                            </div>
-
-                            <div class="media-body" title="click to shift Module">
-                                 <a href="{{ route('dashboard') }}">{{ config('global.MODULE_ONE') }}
-                                <div class="media-annotation"> {{ config('global.MODULE_ONE_DESCRIPTION') }}</div>
-                            </a>
-                            </div>
-                        </li>
 
                         <li class="media">
+
                             <div class="media-left">
-                                <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
+                                <a href="#"
+                                   class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm">
+                                    <i class="icon icon-certificate"></i>
+                                </a>
                             </div>
 
-                            <div class="media-body" title="click to shift Module">
-                                 <a href="{{ route('permitDashboard') }}">{{ config('global.MODULE_TWO') }}
-                                <div class="media-annotation"> {{ config('global.MODULE_TWO_DESCRIPTION') }}</div>
-                            </a>
+                            <div class="media-body"
+                                 title="click to shift Module">
+
+                                <a href="{{ route('dashboard') }}">
+
+                                    {{ config('global.MODULE_ONE') }}
+
+                                    <div class="media-annotation">
+                                        {{ config('global.MODULE_ONE_DESCRIPTION') }}
+                                    </div>
+
+                                </a>
+
                             </div>
+
                         </li>
+
                     </ul>
 
                     <div class="dropdown-content-footer">
-                        <a href="{{ route('startApp') }}" data-popup="tooltip" title="This shows the list of all Modules availabe in this system."><i class="icon-menu display-block"></i></a>
+
+                        <a href="{{ route('startApp') }}"
+                           data-popup="tooltip"
+                           title="This shows the list of all Modules available in this system.">
+
+                            <i class="icon-menu display-block"></i>
+
+                        </a>
+
                     </div>
+
                 </div>
             </li>
+
         </ul>
-       
 
-        {{-- header profile collupse --}}
-        <div class=" ">
+        <!-- Header profile -->
+        <div>
+
             <ul class="nav navbar-nav navbar-right">
-                <style>
-                    #name:hover{
-                        color: black;
-                    }
 
-                </style>
-                <li class="dropdown dropdown-user" id="profile">
-                    <a class="dropdown-toggle text-bold" data-toggle="dropdown">
-                        @if(empty(Auth::user()->profile_image))
-                        <img src="{{ asset('assets/images/placeholder.jpg') }}">
-                        @else
-                        <img src="{{ asset('profile_images/'.Auth::user()->profile_image) }}">
-                        @endif
-                    <span class=" text-black">
-                        {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
+                <!-- Language -->
+                <li class="dropdown">
+
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                        <i class="icon-earth text-white"></i>
+
+                        <span class="text-white">
+                            {{ app()->getLocale() == 'sw' ? 'Kiswahili' : 'English' }}
                         </span>
-                        <i class="caret "></i>
+
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="{{ route('profiles.index')}}"><i class="icon-user-plus"></i> My profile</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{{ route('profiles.show',['profile'])}}"><i class=" icon-user-lock"></i> Change Password</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{{ route('logout') }}" onclick=" event.preventDefault();document.getElementById('form').submit();"><i class="icon-switch2"></i> Logout </a>
-                            <form action="{{ route('logout') }}" method="post" id="form">@csrf
-                            </form>
+
+                        <li>
+                            <a href="{{ route('lang.switch', 'en') }}">
+                                English
+                            </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('lang.switch', 'sw') }}">
+                                Kiswahili
+                            </a>
+                        </li>
+
                     </ul>
+
                 </li>
+
+                <!-- User Profile -->
+                @auth
+
+                <li class="dropdown dropdown-user" id="profile">
+
+                    <a href="#"
+                       class="dropdown-toggle text-bold"
+                       data-toggle="dropdown">
+
+                        @if (empty(Auth::user()->profile_image))
+
+                            <img
+                                src="{{ asset('assets/images/placeholder.jpg') }}"
+                                class="img-circle img-sm"
+                                alt="Profile">
+
+                        @else
+
+                            <img
+                                src="{{ asset('profile_images/' . Auth::user()->profile_image) }}"
+                                class="img-circle img-sm"
+                                alt="Profile">
+
+                        @endif
+
+                        <span class="text-black">
+                            {{ Auth::user()->first_name }}
+                            {{ Auth::user()->last_name }}
+                        </span>
+
+                        <i class="caret"></i>
+
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+
+                        <li>
+                            <a href="{{ route('profiles.index') }}">
+                                <i class="icon-user-plus"></i>
+                                My Profile
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="{{ route('profiles.show', ['profile' => Auth::user()->user_uuid]) }}">
+                                <i class="icon-user-lock"></i>
+                                Change Password
+                            </a>
+                        </li>
+
+                        <li class="divider"></li>
+
+                        <li>
+
+                            <a href="{{ route('logout') }}"
+                               onclick="event.preventDefault(); document.getElementById('form').submit();">
+
+                                <i class="icon-switch2"></i>
+                                Logout
+
+                            </a>
+
+                            <form action="{{ route('logout') }}"
+                                  method="POST"
+                                  id="form"
+                                  style="display: none;">
+
+                                @csrf
+
+                            </form>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                @endauth
+
             </ul>
+
         </div>
-        {{-- header profile collupse --}}
+
     </div>
+
 </div>
 <!-- /main navbar -->

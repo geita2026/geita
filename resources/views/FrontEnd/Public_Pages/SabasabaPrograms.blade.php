@@ -9,6 +9,7 @@
             background-color: rgb(214, 212, 212);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -58,7 +59,7 @@
                             An exhibition event program plays a vital role in ensuring the success and smooth
                             operation of
                             an exhibition or similar event. It serves as a guide for attendees, organizers, and
-                            participants, providing important information about the event’s structure, schedule, and
+                            participants, providing important information about the eventâ€™s structure, schedule, and
                             activities.Here are key reasons why an exhibition event program is important.
                         </h5>
                     </div>
@@ -142,3 +143,4 @@
 </body>
 
 </html>
+

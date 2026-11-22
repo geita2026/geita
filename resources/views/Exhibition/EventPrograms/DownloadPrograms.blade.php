@@ -41,6 +41,7 @@
             padding: 1%;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -107,3 +108,4 @@
 </body>
 
 </html>
+

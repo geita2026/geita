@@ -14,7 +14,8 @@
     <link href="{{ asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
-    </head>
+    <link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+</head>
 <body class="login-container">
     <img src="{{ asset('images/tz-flag.jpg') }}" style="position:absolute; width:100%; height:100%; opacity:10%;">
 <!-- Page container -->
@@ -74,3 +75,4 @@
     });
     </script>
     <script type="text/javascript" src="{{ asset('assets/js/plugins/notifications/pnotify.min.js') }}"></script>
+

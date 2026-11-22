@@ -17,6 +17,7 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
     <title>{{ config('app.name', 'Login') }}</title>
     @include('WelcomePageLayouts.welcomeCss')
 
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -215,3 +216,4 @@ Fair in Tanzania, such as Dar es salaam International Trade Fair (DITF), Tanzani
     </div>
 
 </div>
+

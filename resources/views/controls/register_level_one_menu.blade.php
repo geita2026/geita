@@ -76,7 +76,7 @@
                             data-live-search="true" data-width="100%" placehoder="Select menu status">
                             <option>- - - Select System Module - - -</option>
                             <option value="1">SAMS</option>
-                            <option value="2">ePermit</option>
+                            {{-- [GEMEMIS-CLEANUP] ePermit option removed --}}
                         </select>
                         <span class="text-danger"> @error('moduleNo')
                                 {{ $message }}

@@ -13,6 +13,7 @@
             padding: 50px;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
     <h1>Error</h1>

@@ -221,33 +221,4 @@ class DownloadController extends Controller
     }
     #Download Invoice
 
-    public function DownloadPermit($id){
-
-        $permit1=Permit::find($id);
-        $downloadNumber=random_int(1000,9999).'-'.date('dm').'-'.date('Y');
-        $permit1->update(['downloadNumber'=>$downloadNumber]);
-        $companyId=$permit1->company_id;
-
-        $permit=Permit::leftJoin('companies','permits.company_id','=','companies.companyID')
-        ->leftJoin('users','permits.approvedBy','=','users.user_uuid')
-        ->leftJoin('roles','users.role','=','roles.id')->where('permit_id',$id)->get();
-
-        $products=exhibition_products::leftJoin('events','exhibition_products.event','=','events.event_id')
-        ->where('event_status',1)->where('exhibitor_id',$companyId)->get();
-
-        $pdf = PDF::loadView('IOPermits.DownloadablePermit',compact('permit','products'));
-                 $pdf->getDomPDF()->setHttpContext(
-            stream_context_create([
-                'ssl' => [
-                    'allow_self_signed'=> true,
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ]
-            ])
-        );
-        $pdf->render();
-        
-            // return $pdf->download($id.'.pdf');
-            return $pdf->stream($id);
-    }
 }

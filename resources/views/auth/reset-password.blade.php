@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{{ asset('images/nembo.png') }}">
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body style="padding:40px;">
 <div class="container" style="max-width:420px;">
@@ -33,3 +34,4 @@
 </div>
 </body>
 </html>
+

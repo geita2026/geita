@@ -4,6 +4,7 @@
     <!-- Title -->
     <title>Expo2025</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -67,3 +68,4 @@
         animatedDiv.classList.remove('animate');
     });
 </script>
+

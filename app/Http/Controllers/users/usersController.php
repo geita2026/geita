@@ -1,325 +1,377 @@
 <?php
 
 namespace App\Http\Controllers\users;
+
 use App\Http\Controllers\Controller;
 use App\Models\companies;
 use App\Models\Companies\CompanyAdmin;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\NotificationTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
+use App\Traits\NotificationTrait;;
 
 class usersController extends Controller
 {
     use NotificationTrait;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function __construct(){
 
+    public function __construct()
+    {
         $this->middleware('auth');
     }
+
+    /**
+     * Display users.
+     */
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('View Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
 
-        $users=User::leftJoin('roles','users.role','=','roles.id')
-        ->orderBy('user_created_at','DESC')
-        ->orderBy('first_name','ASC')
-        ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        $users = User::leftJoin('roles', 'users.role', '=', 'roles.id')
+            ->select([
+                'users.id',
+                'users.first_name',
+                'users.middle_name',
+                'users.last_name',
+                'users.name',
+                'users.email',
+                'users.user_uuid',
+                'users.user_ip_address',
+                'users.role',
+                'users.phone_number',
+                'users.account_status',
+                'users.account_type',
+                'users.myCompany',
+                'roles.name as role_name',
+            ]);
 
-        if($request->userName!=Null)
-        {
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('email','LIKE','%'.$request->userName.'%')
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if ($request->filled('userName')) {
+            $users->where('users.email', 'LIKE', '%' . $request->userName . '%');
         }
 
-        if($request->user_type!=null){
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('account_type',$request->user_type)
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if ($request->filled('user_type')) {
+            $users->where('users.account_type', $request->user_type);
         }
 
-       
-        $roles=Role::get();
-        $companies=companies::orderBy('companyName','ASC')->where('status',1)->get();
+        $users = $users
+            ->orderBy('users.first_name', 'ASC')
+            ->orderBy('users.id', 'DESC')
+            ->paginate(25)
+            ->appends($request->query());
 
-        return view('users.users',compact('users','roles','companies'));
+        $roles = Role::all();
+
+        $companies = companies::where('status', 1)
+            ->orderBy('companyName', 'ASC')
+            ->get();
+
+        return view('users.users', compact('users', 'roles', 'companies'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Show create user form.
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Create Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
-        $roles=DB::table('roles')->get();
-        return view('users.add_user',compact('roles'));
+
+        $roles = Role::all();
+
+        return view('users.add_user', compact('roles'));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Store new user.
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Create Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
 
-        #validating user inputs
-        if (!empty($request->TSRN)) {
-            $request->validate([
-                'TSRN'=>'exists:companies,registrationID',
-            ]);
-        }
         $request->validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'phone_number'=>'required|numeric|digits:12|unique:users,phone_number',
-            'email'=>'required|email|unique:users,email',
-            'profile_image'=>'mimes:jpg,png,jpeg',
-            'signature_image'=>'mimes:jpg,png,jpeg',   
+            'TSRN' => 'nullable|exists:companies,registrationID',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone_number' => 'required|numeric|digits:12|unique:users,phone_number',
+            'email' => 'required|email|max:255|unique:users,email',
+            'role' => 'required|exists:roles,id',
+            'profile_image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'signature_image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ]);
-        #end of validation
+
         try {
-         $user_sign=Null; 
-         $name=Null;
-         $userCompany=Null;
-         $accountType=1;
-        if(!empty($request->signature_image))
-        {
-            $user_sign=Str::uuid().".".$request->signature_image->extension(); #if available crates new sign name
-            $request->signature_image->move(public_path('signatures'), $user_sign); #move sign to storing folder
-        }
+            $userSign = null;
+            $profileImage = null;
+            $userCompany = null;
+            $accountType = 1;
 
-        if(!empty($request->profile_image)) #check if profile image submitted
-        {
-            $name=time().".".$request->profile_image->extension(); #if available crates new image name
-            $request->profile_image->move(public_path('profile_images'), $name); #move image to storing folder
-        }
+            if ($request->hasFile('signature_image')) {
+                $userSign = Str::uuid() . '.' .
+                    $request->file('signature_image')->extension();
 
-             if($request->TSRN){
-                $userCompany=companies::where('registrationID',$request->TSRN)->first()->companyID;
-                $accountType=2;
-             }
-             $user_uuid=Str::uuid(); #create user uuid
-             $default_password=$request->phone_number;
-             $user = User::create(['user_uuid'=>$user_uuid,
-             'first_name'=>$request->first_name,
-             'middle_name'=>$request->middle_name,
-             'last_name'=>$request->last_name,
-             'phone_number'=>$request->phone_number,
-             'email'=>$request->email,
-             'profile_image'=>$name,
-             'user_signature'=>$user_sign,
-             'role'=>$request->role,
-             'account_type'=>$accountType,
-             'password'=>hash::make($default_password),
-             'myCompany'=>$userCompany,
+                $request->file('signature_image')->move(
+                    public_path('signatures'),
+                    $userSign
+                );
+            }
 
+            if ($request->hasFile('profile_image')) {
+                $profileImage = Str::uuid() . '.' .
+                    $request->file('profile_image')->extension();
+
+                $request->file('profile_image')->move(
+                    public_path('profile_images'),
+                    $profileImage
+                );
+            }
+
+            if ($request->filled('TSRN')) {
+                $company = companies::where(
+                    'registrationID',
+                    $request->TSRN
+                )->firstOrFail();
+
+                $userCompany = $company->companyID;
+                $accountType = 2;
+            }
+
+            $defaultPassword = $request->phone_number;
+
+            $user = User::create([
+                'user_uuid' => (string) Str::uuid(),
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'phone_number' => $request->phone_number,
+                'email' => $request->email,
+                'profile_image' => $profileImage,
+                'user_signature' => $userSign,
+                'role' => $request->role,
+                'account_type' => $accountType,
+                'password' => Hash::make($defaultPassword),
+                'myCompany' => $userCompany,
             ]);
-            $user->assignRole($request->role);//assign role to user if selected
-         //    end of registration
 
-             #if User creation EmailPasswordNotification with default password.
-             if (config('global.APP_STATUS')==1) {
-                $email=$request->email;  $first_name=$request->first_name; $last_name=$request->last_name;
-                $this->EmailPasswordNotification($email,$first_name,$last_name,$default_password); // send email.
-                $recipients=$request->phone_number;
-                $cutomer_name=$first_name.' '.$last_name;
-                $this->SendDefaultPassSMS($recipients,$default_password,$cutomer_name); // send Bulk sms
-             }
-             # end send default password;
+            $role = Role::findOrFail($request->role);
+            $user->assignRole($role->name);
 
-            return redirect()->route('users.index')->with('success',"$request->first_name $request->last_name Informations registered successfully!");
+            if (config('global.APP_STATUS') == 1) {
+                $this->EmailPasswordNotification(
+                    $request->email,
+                    $request->first_name,
+                    $request->last_name,
+                    $defaultPassword
+                );
 
+                $customerName = $request->first_name . ' ' . $request->last_name;
+
+                $this->SendDefaultPassSMS(
+                    $request->phone_number,
+                    $defaultPassword,
+                    $customerName
+                );
+            }
+
+            return redirect()
+                ->route('users.index')
+                ->with(
+                    'success',
+                    $request->first_name . ' ' .
+                    $request->last_name .
+                    ' Information registered successfully!'
+                );
 
         } catch (\Throwable $th) {
-            //throw $th;
-            return back()->with('fail','Default password Notification Failed, This might be due to internet problems.'.$th->getMessage());
+            return back()
+                ->withInput()
+                ->with('fail', 'User registration failed: ' . $th->getMessage());
         }
-
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Display specified user.
      */
-    public function show(Request $request,$id)
+    public function show(Request $request, $id)
     {
-        //
-        if($request->user()->cannot('View Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('View Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
-        else
-        {
-            return back()->with('fail','We did not understand your request!');
-        }
+
+        return back()->with('fail', 'We did not understand your request!');
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Show edit user form.
      */
     public function edit(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Update Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
-        // return $id;
-        // $users=DB::table('users')->leftJoin('roles','users.role','=','roles.id')->where('user_uuid',$id)->get();
-        $users=User::LeftJoin('roles','users.role','=','roles.id')->where('users.id',$id)->get(['users.id','user_name','name','email','user_uuid','phone_number','role','user_signature']);
-        $roles=DB::table('roles')->get();
-        return view('users.edit_user',compact('users','roles'));
+
+        $users = User::leftJoin('roles', 'users.role', '=', 'roles.id')
+            ->where('users.id', $id)
+            ->select([
+                'users.id',
+                'users.first_name',
+                'users.middle_name',
+                'users.last_name',
+                'users.name',
+                'users.email',
+                'users.user_uuid',
+                'users.phone_number',
+                'users.role',
+                'users.user_signature',
+                'roles.name as role_name',
+            ])
+            ->get();
+
+        $roles = Role::all();
+
+        return view('users.edit_user', compact('users', 'roles'));
     }
+
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update user.
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Update Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
-        #validating user inputs
+
         $request->validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'phone_number'=>'required|numeric',
-            'email'=>'required|email',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone_number' => 'required|numeric|digits:12|unique:users,phone_number,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+            'role_name' => 'required|exists:roles,id',
+            'TSRN' => 'nullable|exists:companies,registrationID',
         ]);
-        #end of validation
+
         try {
-            $user = User::find($id);
-            if (!empty($request->TSRN)) {
-                $company=companies::where('registrationID',$request->TSRN)->first();
-                  
-                if ($company) { 
-                  $exist=CompanyAdmin::where('companyId',$company->companyID)
-                  ->where('adminId',$user->user_uuid);
-                  
-                  if (!$exist) {
-                   CompanyAdmin::create([
-                       'referenceId'=>Str::uuid(),
-                       'adminId'=>$id,
-                       'companyId'=>$company->companyID
-                   ]);
-                  }
-                  }
-               }
+            DB::beginTransaction();
 
-           User::find($id)->update([
-           'first_name'=>$request->first_name,
-            'middle_name'=>$request->middle_name,
-            'last_name'=>$request->last_name,
-            'phone_number'=>$request->phone_number,
-            'role'=>$request->role_name,
-            'account_status'=>1,
-        ]);
-            DB::table('model_has_roles')->where('model_id',$id)->delete();
-            $name=Role::where('id',$request->role_name)->first()->name;
-            $user->assignRole($name);
+            $user = User::findOrFail($id);
 
-            return back()->with('success',config('Messages.200'));
+            if ($request->filled('TSRN')) {
+                $company = companies::where(
+                    'registrationID',
+                    $request->TSRN
+                )->firstOrFail();
+
+                $exists = CompanyAdmin::where(
+                    'companyId',
+                    $company->companyID
+                )
+                    ->where('adminId', $user->user_uuid)
+                    ->exists();
+
+                if (!$exists) {
+                    CompanyAdmin::create([
+                        'referenceId' => (string) Str::uuid(),
+                        'adminId' => $user->user_uuid,
+                        'companyId' => $company->companyID,
+                    ]);
+                }
+            }
+
+            $role = Role::findOrFail($request->role_name);
+
+            $user->update([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'phone_number' => $request->phone_number,
+                'email' => $request->email,
+                'role' => $role->id,
+                'account_status' => 1,
+            ]);
+
+            $user->syncRoles([$role->name]);
+
+            DB::commit();
+
+            return back()->with('success', config('Messages.200'));
+
         } catch (\Throwable $th) {
-            return back()->with('fail',config('Messages.500').$th->getMessage());
-        }
+            DB::rollBack();
 
+            return back()
+                ->withInput()
+                ->with('fail', config('Messages.500') . ' ' . $th->getMessage());
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Disable or suspend user account.
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
-        if($request->user()->cannot('Delete Users',User::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('Delete Users', User::class)) {
+            return back()->with('fail', config('Messages.401'));
         }
 
-        #------- DISABLE ACCOUNT -----#
+        if ((int) $id === (int) Auth::id()) {
+            return back()->with(
+                'fail',
+                'Restricted! You cannot disable or delete your own account.'
+            );
+        }
+
         try {
-            if($request->disable_ccount){
-                //disable to disable your own account.
-                if($id==Auth::user()->id)
-                {
-                    return back()->with('fail','Restricted! you can not disable or delete your own Account.');
-                }
-                //
-                $user=User::find($id);
-                $user->update(['account_status'=>0]);
-                return back()->with('success','Account disabled successfully this terminate user from accessing system!');
+            $user = User::findOrFail($id);
+
+            $user->update([
+                'account_status' => 0,
+            ]);
+
+            if ($request->boolean('disable_ccount')) {
+                return back()->with(
+                    'success',
+                    'Account disabled successfully. User can no longer access the system!'
+                );
             }
+
+            return back()->with('success', 'Account suspended successfully!');
+
         } catch (\Throwable $th) {
-            //throw $th;
-            return back()->with('fail','Something went wrong: '.$th->getMessage());
+            return back()->with(
+                'fail',
+                'Something went wrong: ' . $th->getMessage()
+            );
         }
-        #------- END DISABLE ACCOUNT -----#
-
-
-
-        #------- DELETE ACCOUNT -----#
-       try {
-        if($id==Auth::user()->id)
-        {
-            return back()->with('fail','Restricted! you can not disable or delete your own Account.');
-        }
-        //
-        $user=User::find($id);
-        $user->update(['account_status'=>0]); // sunspend Account.
-        return redirect()->back()->with('success','Account Sunspended successfully!');
-       } catch (\Throwable $th) {
-        //throw $th;
-        return redirect()->back()->with('fail','something went wrong!');
-       }
-       #------- END DELETE ACCOUNT ----- #
-
     }
 
- public function SendDefaultPassSMS($recipients,$default_password,$cutomer_name){
-$sms_content="Dear , $cutomer_name
-You have been registered to SAMS, bellow is your Login Credentials.
+    /**
+     * Send default password SMS.
+     */
+    public function SendDefaultPassSMS(
+        $recipients,
+        $default_password,
+        $customer_name
+    ) {
+        $smsContent = "Dear, {$customer_name}
+You have been registered to GeMEMIS. Below are your login credentials.
 Username: Your registered email.
-Password: $default_password.";
+Password: {$default_password}.";
 
-$datetime = date('Y-m-d H:i:s'); // date time
+        $datetime = now()->format('Y-m-d H:i:s');
 
-        $this->Notification($recipients,$sms_content,$datetime);
+        $this->Notification(
+            $recipients,
+            $smsContent,
+            $datetime
+        );
     }
-
-
 }

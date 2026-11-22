@@ -40,7 +40,8 @@
 
     </style>
 
-    </head>
+    <link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
+</head>
 <body>
     {{-- <div id="loading"></div> --}}
 <img src="{{ asset('images/tz-flag.jpg') }}" style="position:absolute; width:100%; height:100%; opacity:10%;">

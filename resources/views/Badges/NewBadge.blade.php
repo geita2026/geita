@@ -17,7 +17,7 @@
             overflow-y: auto;
         }
 
-        /* ── Left sidebar — action buttons ─────────────────────────── */
+        /* â”€â”€ Left sidebar â€” action buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .sidebar {
             position: sticky;
             top: 0;
@@ -72,7 +72,7 @@
             font-size: 12px;
         }
 
-        /* ── Badge area — scrollable, takes remaining width ────────── */
+        /* â”€â”€ Badge area â€” scrollable, takes remaining width â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         .badge-area {
             flex: 1;
             display: flex;
@@ -82,10 +82,10 @@
             min-height: 100vh;
         }
 
-        /* Badge wrapper — full viewport height */
+        /* Badge wrapper â€” full viewport height */
         .badge-wrap {
             position: relative;
-            /* SVG aspect ratio: 576 × 864.16 → width = height / 1.5003 */
+            /* SVG aspect ratio: 576 Ã— 864.16 â†’ width = height / 1.5003 */
             height: calc(100vh - 40px);
             width:  calc((100vh - 40px) / 1.5003);
             box-shadow: 0 12px 48px rgba(0,0,0,0.35);
@@ -102,18 +102,18 @@
         }
 
         /*
-            QR overlay — pixel-precise.
-            Badge display width = min(520px, 90vw) — using 520px as base.
+            QR overlay â€” pixel-precise.
+            Badge display width = min(520px, 90vw) â€” using 520px as base.
             Scale factor: 520 / 576 = 0.90278
-            Badge height: 520 × 1.5003 = 780.15px
+            Badge height: 520 Ã— 1.5003 = 780.15px
 
             QR in SVG: x=310.94, y=298.46, w=156.49, h=156.49
             In pixels (scale 0.90278):
-              left  = 310.94 × 0.90278 = 280.8px
-              top   = 298.46 × (780.15/864.16) = 269.4px
-              size  = 156.49 × 0.90278 = 141.3px  → use 150px (slightly larger)
+              left  = 310.94 Ã— 0.90278 = 280.8px
+              top   = 298.46 Ã— (780.15/864.16) = 269.4px
+              size  = 156.49 Ã— 0.90278 = 141.3px  â†’ use 150px (slightly larger)
         */
-        /* All overlays — positioned by JS */
+        /* All overlays â€” positioned by JS */
         #qr-canvas, .badge-text {
             position: absolute;
             white-space: nowrap;
@@ -151,10 +151,11 @@
             transform: translate(-50%, -50%);
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 <body>
 
-    {{-- ── Sidebar ──────────────────────────────────────────────── --}}
+    {{-- â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     @unless($isPdf)
     <div class="sidebar">
         <h4>Actions</h4>
@@ -162,20 +163,20 @@
         <a class="btn btn-pdf"
            href="{{ url('badgesManagement/badge_pdf/' . $memberId) }}"
            target="_blank">
-            ⬇ Download PDF
+            â¬‡ Download PDF
         </a>
 
         <button class="btn btn-print" onclick="window.print()">
-            🖨 Print
+            ðŸ–¨ Print
         </button>
 
         <a class="btn btn-back" href="javascript:history.back()">
-            ← Go Back
+            â† Go Back
         </a>
     </div>
     @endunless
 
-    {{-- ── Badge ────────────────────────────────────────────────── --}}
+    {{-- â”€â”€ Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
     <div class="badge-area">
         <div class="badge-wrap">
             <img class="badge-bg"
@@ -197,7 +198,7 @@
         const PADDING  = 4;
         const QR_SCALE = 1.3;
 
-        // ── Text anchor points (SVG coords) ──────────────────────────────
+        // â”€â”€ Text anchor points (SVG coords) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         // NAME: centered at x=379.8, baseline y=184.31, font-size=15.65
         const NAME_CX = 379.8, NAME_BY = 184.31, NAME_FS = 15.65;
         // COMPANY: centered at x=379.8, baseline y=193.5, font-size=8
@@ -263,7 +264,7 @@
             });
             qrCode.append(canvas);
 
-            // ── Group colour strip ────────────────────────────────────────
+            // â”€â”€ Group colour strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             const strip = document.getElementById('badge-strip');
             strip.style.left            = Math.round(STRIP_X * scaleX) + 'px';
             strip.style.top             = Math.round(STRIP_Y * scaleY) + 'px';
@@ -271,16 +272,16 @@
             strip.style.height          = Math.round(STRIP_H * scaleY) + 'px';
             strip.style.backgroundColor = '{{ $badgeGroupColor }}';
 
-            // ── Text overlays ─────────────────────────────────────────────
-            // NAME — baseline positioning: top = baseline_y - font_size
+            // â”€â”€ Text overlays â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+            // NAME â€” baseline positioning: top = baseline_y - font_size
             positionText(
                 document.getElementById('badge-name'),
                 NAME_CX,
-                NAME_BY - NAME_FS,   // baseline → top of element
+                NAME_BY - NAME_FS,   // baseline â†’ top of element
                 NAME_FS, scaleX, scaleY
             );
 
-            // COMPANY — baseline positioning
+            // COMPANY â€” baseline positioning
             positionText(
                 document.getElementById('badge-company'),
                 CO_CX,
@@ -288,7 +289,7 @@
                 CO_FS, scaleX, scaleY
             );
 
-            // GROUP — centered on strip (uses translate(-50%,-50%) in CSS)
+            // GROUP â€” centered on strip (uses translate(-50%,-50%) in CSS)
             positionText(
                 document.getElementById('badge-group'),
                 GRP_CX,
@@ -310,3 +311,4 @@
 
 </body>
 </html>
+

@@ -152,6 +152,7 @@
             top: 23.5%;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/tantrade-theme.css') }}">
 </head>
 
 <body>
@@ -179,7 +180,7 @@
                 <h2 style="font-size:12px">TANZANIA TRADE DEVELOPMENT AUTHORITY (TANTRADE)</h2>
                 <h3 style="font-size:10px">THE 49<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR</h3>
                 <p class="dates">
-                    <b>28<sup>th</sup> June – 13<sup>th</sup> July 2025</b>
+                    <b>28<sup>th</sup> June â€“ 13<sup>th</sup> July 2025</b>
                 </p>
             </div>
 
@@ -235,3 +236,4 @@
 </body>
 
 </html>
+
