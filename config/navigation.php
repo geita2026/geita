@@ -185,12 +185,6 @@ return [
             'Cancel Invoices' => 'CANCEL_INVOICES',
             'approve-discount' => 'APPROVE_ADVICE_NOTE',
         ]],
-        'CONTROL_NO_REQUEST' => ['Control No Requests', 'controlNoRequests.index', [
-            'View ConfirmedInvoice' => 'VIEW_CONTROL_NO_REQUEST_SUBMENU',
-            'View Confirmed Invoice' => 'VIEW_CONTROL_NO_REQUEST',
-            'Approve Invoice' => 'APPROVE_CONTROL_NO_REQUEST',
-            'Reject Invoice' => 'REJECT_CONTROL_NO_REQUEST',
-        ]],
         'PAYMENT' => ['Payments', 'payments.index', [
             'Manage Payments' => 'MANAGE_PAYMENT',
             'Update Payment Receipt' => 'UPDATE_PAYMENT',

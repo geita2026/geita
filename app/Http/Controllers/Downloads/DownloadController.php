@@ -11,7 +11,6 @@ use App\Models\setting\BankAccount;
 use App\Models\setting\DefaultSettings;
 use App\Models\settings\events;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class DownloadController extends Controller
@@ -39,13 +38,8 @@ class DownloadController extends Controller
      * @return \Illuminate\Http\Response
      */
     function DownloadInvoice(Request $request){
-        if($request->user()->cannot('DOWNLOAD_INVOICE',Role::class))
-        {
-            return back()->with('fail',$this->permissionDeniedMessage('DOWNLOAD_INVOICE'));
-        }
-
         $id = $request->validate(['id' => 'required|string'])['id'];
-        $invoice = advice_notes::findOrFail($id, ['advice_note_id', 'company_id']);
+        $invoice = advice_notes::findOrFail($id, ['advice_note_id', 'company_id', 'advice_note_status']);
         abort_unless($invoice->canDownload($request->user()), 403);
 
         //advice note details
@@ -62,13 +56,6 @@ class DownloadController extends Controller
             'balance','amount_paid','account_type','registrationID','sp_invoice_no'
             ]);
         //end
-
-        foreach ($adviceNotes as $key) {
-           if($key->advice_note_deadline==null)
-           {
-            return back()->with('fail','Sor your required to set deadline to open advice note');
-           }
-        }
 
         // Item  booked
         $particulars=advice_notes::leftJoin('particulars','advice_notes.advice_note_id','=','particulars.advice_note_id')
@@ -109,15 +96,7 @@ class DownloadController extends Controller
                 ]
             ])
         );
-        $pdf->render();
-        if(Auth::user()->account_type==2)
-        {
-            return $pdf->download($id.'.pdf');
-        }
-        else
-        {
-            return $pdf->stream($id);
-        }
+        return $pdf->download($id.'.pdf');
     }
 
 

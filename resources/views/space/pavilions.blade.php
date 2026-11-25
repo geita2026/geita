@@ -42,7 +42,6 @@
                             <tr>
                                 <th scope="col">Space name</th>
                                 <th scope="col">Category</th>
-                                <th scope="col">Street</th>
                                 <th scope="col" class="text-right">Area (m²)</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Actions</th>
@@ -53,7 +52,6 @@
                                 <tr>
                                     <td class="text-bold">{{ $item->pavilionName }}</td>
                                     <td>{{ $item->category_name }}</td>
-                                    <td>{{ $item->streetName ?: '—' }}</td>
                                     <td class="text-right">{{ number_format($item->pavilion_size, 2) }}</td>
                                     <td>{{ $item->space_status === 'UNRESERVED' ? 'Open for booking' : ucfirst(strtolower($item->space_status)) }}</td>
                                     <td>
@@ -63,7 +61,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6">No spaces have been registered.</td></tr>
+                                <tr><td colspan="5">No spaces have been registered.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

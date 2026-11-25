@@ -1,16 +1,16 @@
 .geita-invoice {
     max-width: 920px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 20px;
     border: 1px solid #e3d9c8;
     border-radius: 14px;
     background: #fff;
     color: #241e16;
-    font: 13px/1.5 "DejaVu Sans", Arial, sans-serif;
+    font: 12px/1.45 Arial, "DejaVu Sans", sans-serif;
 }
 
 .geita-invoice .invoice-letterhead {
-    padding-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 3px solid #d6a54f;
     text-align: center;
 }
@@ -25,7 +25,7 @@
 .geita-invoice .invoice-letterhead h2 {
     margin: 4px 0 1px;
     color: #241e16;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
     line-height: 1.25;
 }
@@ -44,12 +44,12 @@
 }
 
 .geita-invoice .invoice-title-row {
-    margin: 17px 0 12px;
+    margin: 12px 0 10px;
 }
 
 .geita-invoice .invoice-title-row h3 {
     margin: 0 0 3px;
-    font-size: 23px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -70,6 +70,9 @@
 .geita-invoice .invoice-totals {
     width: 100%;
     border-collapse: collapse;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 .geita-invoice .invoice-meta td {
@@ -95,8 +98,12 @@
 
 .geita-invoice .invoice-items th,
 .geita-invoice .invoice-items td {
-    padding: 8px;
+    padding: 6px 8px;
     border-bottom: 1px solid #e9e1d6;
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 1.4;
+    vertical-align: top;
 }
 
 .geita-invoice .invoice-items th {
@@ -186,6 +193,12 @@
     .geita-invoice .invoice-totals {
         width: 100%;
     }
+}
+
+.advice-note-download {
+    max-width: 920px;
+    margin: 0 auto 16px;
+    text-align: right;
 }
 
 .invoice-toolbar {

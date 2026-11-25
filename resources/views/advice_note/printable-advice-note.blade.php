@@ -22,6 +22,13 @@
 
     <!-- Content area -->
     <div class="content">
+        @if ($adviceNotes->first()->isApproved())
+            <div class="advice-note-download hidden-print">
+                <a class="btn btn-primary" href="{{ route('download_invoice', ['id' => $adviceNotes->first()->advice_note_id]) }}">
+                    <i class="icon-download position-left" aria-hidden="true"></i> Download Advice Note
+                </a>
+            </div>
+        @endif
         <div class="panel panel-flat">
             <div class=" panel-body table-responsive">
 
@@ -48,7 +55,6 @@
                         $waitingForBilling = $needsControlNumber && filled($item->sp_invoice_no);
                         $canRequestControl = $needsControlNumber && !$waitingForBilling
                             && $user->can('REQUEST_ADVICE_NOTE', $role);
-                        $canDownload = filled($item->control_number) && $item->canDownload($user);
                         $canPreviewForm = $user->account_type == 1 && filled($exhibitor?->participationCommitimentFile);
                         $canApplyDiscount = !$canceled && blank($item->sp_invoice_no) && $user->can('APPLY_DISCOUNT', $role);
                         $canExtendDeadline = !$canceled && filled($item->control_number) && $item->advice_note_deadline
@@ -68,20 +74,13 @@
                         </p>
                     @endif
 
-                    @if ($canRequestControl || $canDownload || $canPreviewForm || $canApplyDiscount || $canExtendDeadline || $canCancel)
+                    @if ($canRequestControl || $canPreviewForm || $canApplyDiscount || $canExtendDeadline || $canCancel)
                         <div class="invoice-toolbar" role="group" aria-label="Invoice actions">
                             @if ($canRequestControl)
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
                                     data-target="#requestControlNumber{{ $item->advice_note_id }}">
                                     <i class="icon-arrow-right13" aria-hidden="true"></i> Request control number
                                 </button>
-                            @endif
-                            @if ($canDownload)
-                                <a class="btn btn-primary"
-                                    href="{{ route('download_invoice', ['id' => $item->advice_note_id]) }}"
-                                    target="_blank" rel="noopener">
-                                    <i class="icon-download" aria-hidden="true"></i> Download invoice
-                                </a>
                             @endif
                             @if ($canPreviewForm)
                                 <a href="{{ $exhibitor->participationCommitimentFile }}" class="btn btn-default">

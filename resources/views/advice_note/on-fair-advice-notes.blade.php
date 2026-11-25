@@ -39,6 +39,7 @@
                                     <th class=" text-bold text-center">INVOICE ID</th>
                                     <th class=" text-bold text-center">CUSTOMER NAME</th>
                                     <th class=" text-bold text-center">CONTROL NO</th>
+                                    <th class="text-bold text-center">PAYMENT MODE</th>
                                     <th class=" text-center text-bold">INVOICED AMOUNT</th>
                                     <th class=" text-center text-bold">AMOUNT PAID</th>
                                     <th class=" text-center text-bold">BALANCE</th>
@@ -68,6 +69,14 @@
                                             </a>
                                         </td>
 
+                                        <td class="text-center">
+                                            {{ match ((string) $item->payment_mode) {
+                                                '1' => 'Full',
+                                                '2' => 'Partial',
+                                                '3' => 'Exact',
+                                                default => '—',
+                                            } }}
+                                        </td>
                                         <td class=" text-right"> {{ number_format($item->total_amount, 2) }}
                                             {{ $item->currency }}</td>
                                         <td class=" text-right">{{ number_format($item->amount_paid, 2) }}
@@ -77,10 +86,27 @@
                                             {{ number_format($item->balance, 2) }} {{ $item->currency }}</td>
 
                                         <td class=" text-center">
-                                            <a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}"
-                                                class=" text-bold btn btn-default text-primary"
-                                                title="Click here to view {{ $item->advice_note_id }} Advice Note details">View
-                                                Invoice <i class=" icon-file-empty2"></i></a>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-default dropdown-toggle"
+                                                    data-toggle="dropdown" aria-expanded="false"
+                                                    aria-label="Actions for {{ $item->advice_note_id }}">
+                                                    Actions <span class="caret" aria-hidden="true"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    <li>
+                                                        <a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}">
+                                                            <i class="icon-file-empty2" aria-hidden="true"></i> View Invoice
+                                                        </a>
+                                                    </li>
+                                                    @if ($item->isApproved())
+                                                        <li>
+                                                            <a href="{{ route('download_invoice', ['id' => $item->advice_note_id]) }}">
+                                                                <i class="icon-download" aria-hidden="true"></i> Download Advice Note
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                </ul>
+                                            </div>
                                         </td>
 
 

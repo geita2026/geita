@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\accounts\controlNoRequestController;
 use App\Http\Controllers\advice_note\adviceNoteController;
 use App\Http\Controllers\advice_note\adviceNoteDeadlineController;
 use App\Http\Controllers\advice_note\CanceledInvoiceController;
@@ -24,7 +23,6 @@ Route::prefix('accountingManagement')->middleware('auth')->group(function() {
     Route::resource('income_list',IncomeController::class);
     Route::get('incomes',[IncomeController::class,'index'])->name('incomes');
     Route::post('add_income',[IncomeController::class,'store'])->name('add_income');
-    Route::resource('controlNoRequests',controlNoRequestController::class);
 
     Route::get('review_invoice_discount/{id}',[adviceNoteController::class,'reviewInvoiceDiscount'])->name('review_invoice_discount');
     Route::post('apply_discount',[adviceNoteController::class,'applyDiscount'])->name('apply_discount');

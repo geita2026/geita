@@ -39,9 +39,15 @@ class advice_notes extends Model implements Auditable
         return $query->whereIn('advice_notes.company_id', []);
     }
 
+    public function isApproved(): bool
+    {
+        return $this->advice_note_status === 'APPROVED';
+    }
+
     public function canDownload(User $user): bool
     {
-        return $user->can('DOWNLOAD_INVOICE', Role::class)
+        return $this->isApproved()
+            && $user->canAny(['MANAGE_INVOICES', 'DOWNLOAD_INVOICE'], Role::class)
             && ((int) $user->account_type === 1 || $this->newQuery()->visibleTo($user)->whereKey($this->getKey())->exists());
     }
 
