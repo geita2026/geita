@@ -85,6 +85,7 @@ trait BillingTrait
             'expire_date'=>$advice_note_deadline,'items'=>$items,'description'=>$descriptions,); // data array must be of this type to get control number
 
         ######### SAVE JSON TO DATABASE ###############
+        $jsonData = json_encode($data);
         #END SAVING JSON TO DATABASE ##################
         $this->RequestInvoiceToBilling($id,$data); // requesting invoice to billing
         
