@@ -106,10 +106,10 @@ class FirstCompanyRegistrationController extends Controller
         }, 3);
 
         if (!$company) {
-            return redirect()->route('startApp');
+            return redirect()->route('dashboard');
         }
 
-        return redirect()->route($firstCompanyOnly ? 'startApp' : 'companies.index')->with(
+        return redirect()->route($firstCompanyOnly ? 'dashboard' : 'companies.index')->with(
             'success',
             'Company registered successfully. Your registration ID is ' . $company->registrationID . '.'
         );

@@ -8,7 +8,7 @@
         </div>
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li><a href="{{ route('startApp') }}"><i class="icon-home position-left"></i> GeMEMIS</a></li>
+                <li><a href="{{ route('dashboard') }}"><i class="icon-home position-left"></i> GeMEMIS</a></li>
                 <li class="active">Book Services</li>
             </ul>
             <ul class="breadcrumb-elements">

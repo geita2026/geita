@@ -8,6 +8,7 @@ use Database\Seeders\CountrySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -58,8 +59,9 @@ class FirstCompanyRegistrationTest extends TestCase
         }
 
         $first = $this->customer('first@example.test');
-        $this->actingAs($first)->get(route('startApp'))
+        $this->actingAs($first)->get(route('dashboard'))
             ->assertOk()
+            ->assertSee('No exhibition event is active.')
             ->assertSee('id="NoCompany"', false)
             ->assertSee('name="tinNo"', false)
             ->assertSee('Mining Equipment and Supplies')
@@ -77,15 +79,15 @@ class FirstCompanyRegistrationTest extends TestCase
             'companyCategory' => 'Small Traders',
             'isAcceptedTerms' => '1',
         ];
-        $this->from(route('startApp'))->post(route('companies.first.store'), $form)
+        $this->from(route('dashboard'))->post(route('companies.first.store'), $form)
             ->assertSessionHasErrorsIn('firstCompany', ['tinNo']);
-        $this->get(route('startApp'))->assertOk()
+        $this->get(route('dashboard'))->assertOk()
             ->assertSee('aria-invalid="true"', false)
             ->assertSee('id="first-company-tinNo-error"', false);
 
         $form['tinNo'] = '012345678';
         $this->post(route('companies.first.store'), $form)
-            ->assertRedirect(route('startApp'))
+            ->assertRedirect(route('dashboard'))
             ->assertSessionHas('success', 'Company registered successfully. Your registration ID is GMMS260009.');
         $companyId = $first->fresh()->myCompany;
         $this->assertDatabaseHas('companies', [
@@ -94,19 +96,51 @@ class FirstCompanyRegistrationTest extends TestCase
             'tinNo' => '012345678',
         ]);
         $this->assertDatabaseHas('company_admins', ['companyId' => $companyId, 'adminId' => $first->user_uuid]);
-        $this->get(route('startApp'))->assertOk()->assertDontSee('id="NoCompany"', false);
+        $this->get(route('dashboard'))->assertOk()->assertDontSee('id="NoCompany"', false);
 
         $second = $this->customer('second@example.test');
-        $this->actingAs($second)->from(route('startApp'))->post(route('companies.first.store'), $form)
+        $this->actingAs($second)->from(route('dashboard'))->post(route('companies.first.store'), $form)
             ->assertSessionHasErrorsIn('firstCompany', ['tinNo']);
         $form['companyName'] = 'Geita Equipment';
         $form['tinNo'] = '123456789';
         $this->post(route('companies.first.store'), $form)
             ->assertSessionHas('success', 'Company registered successfully. Your registration ID is GMMS260010.');
 
-        $this->post(route('companies.first.store'), $form)->assertRedirect(route('startApp'));
+        $this->post(route('companies.first.store'), $form)->assertRedirect(route('dashboard'));
         $this->assertDatabaseCount('companies', 6);
         Http::assertNothingSent();
+    }
+
+    public function test_login_goes_directly_to_the_exhibition_dashboard()
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\NetworkMaintenance::class);
+        $user = $this->customer('login@example.test');
+        $user->update(['password' => Hash::make('unused-for-this-test'), 'account_status' => 1]);
+
+        $this->withSession(['url.intended' => route('companies.index')])
+            ->post(route('login'), ['user_name' => $user->email, 'password' => 'unused-for-this-test'])
+            ->assertRedirect(route('dashboard'))
+            ->assertSessionMissing('url.intended');
+        $this->assertAuthenticatedAs($user);
+        $this->get(route('dashboard'))->assertOk()->assertSee('No exhibition event is active.');
+
+        DB::table('events')->insert([
+            'event_id' => (string) Str::uuid(),
+            'event_name' => 'Geita Mineral Exhibition',
+            'event_start_date' => '2026-11-21',
+            'event_end_date' => '2026-11-22',
+            'event_status' => 1,
+        ]);
+        DB::table('companies')->insert([
+            'companyID' => $user->user_uuid,
+            'companyName' => 'Legacy Company',
+        ]);
+
+        $this->get(route('dashboard'))->assertOk()
+            ->assertSee('Geita Mineral Exhibition')
+            ->assertDontSee('id="NoCompany"', false);
+        $this->assertDatabaseHas('company_admins', ['adminId' => $user->user_uuid, 'companyId' => $user->user_uuid]);
+        $this->assertSame($user->user_uuid, $user->fresh()->myCompany);
     }
 
     private function customer(string $email): User

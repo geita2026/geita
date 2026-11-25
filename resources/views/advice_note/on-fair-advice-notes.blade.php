@@ -18,6 +18,9 @@
     <!-- /page header -->
 
     <!-- Content area -->
+    @php
+        $canCancelInvoices = Auth::user()->can('CANCEL_INVOICES', \Spatie\Permission\Models\Role::class);
+    @endphp
     <div class="content">
         <div class="panel panel-white">
             <div class=" panel-body">
@@ -47,7 +50,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $i=1; @endphp
                                 @foreach ($advice_note as $item)
                                     <tr>
                                         <td><a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}"
@@ -105,13 +107,20 @@
                                                             </a>
                                                         </li>
                                                     @endif
+                                                    @if ($canCancelInvoices && $item->isCancelable())
+                                                        <li>
+                                                            <a href="#cancelAdviceNote{{ $loop->index }}" class="text-danger"
+                                                                data-toggle="modal">
+                                                                <i class="icon-cross2" aria-hidden="true"></i> Cancel Advice Note
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </td>
 
 
                                     </tr>
-                                    @php $i++; @endphp
                                 @endforeach
                             </tbody>
 
@@ -129,6 +138,13 @@
     </div>
     <!-- /content area -->
     <!-- /main content -->
+    @if ($canCancelInvoices)
+        @foreach ($advice_note as $item)
+            @if ($item->isCancelable())
+                @include('advice_note.cancel-modal', ['modalId' => 'cancelAdviceNote'.$loop->index])
+            @endif
+        @endforeach
+    @endif
 </x-app-layout>
 
 <script>

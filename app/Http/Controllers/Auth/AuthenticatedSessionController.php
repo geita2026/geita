@@ -66,7 +66,9 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Successfully logged in');
+            $request->session()->forget('url.intended');
+
+            return redirect(RouteServiceProvider::HOME)->with('success', 'Successfully logged in');
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->onlyInput('user_name');
         } catch (\Throwable $th) {

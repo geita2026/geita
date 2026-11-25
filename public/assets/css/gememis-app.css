@@ -123,26 +123,3 @@ body.gememis-app {
 .gememis-app .breadcrumb-line {
     background: #faf7f2;
 }
-
-.gememis-app .gememis-module-notice {
-    background: #fff4d5;
-    border-color: #e5c976;
-    color: #4b360a;
-}
-
-.gememis-app .gememis-module-card {
-    display: block;
-    height: 100%;
-    padding: 20px;
-    border: 1px solid #e3d9c8;
-    border-top: 4px solid var(--gem-app-gold);
-    border-radius: 12px;
-    background: #fff;
-    color: #251e16;
-}
-
-.gememis-app .gememis-module-card:is(:hover, :focus) {
-    border-color: #b88700;
-    color: #251e16;
-    text-decoration: none;
-}

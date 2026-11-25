@@ -1,7 +1,7 @@
 <!-- Main navbar -->
 <div class="navbar navbar-default navbar-fixed-top header-highlight gememis-navbar">
     <div class="navbar-header">
-        <a class="navbar-brand gememis-brand" href="{{ route('startApp') }}" aria-label="GeMEMIS home">
+        <a class="navbar-brand gememis-brand" href="{{ route('dashboard') }}" aria-label="GeMEMIS home">
             <img src="{{ asset('images/coat-of-arms.svg') }}" alt="">
             <span>GeMEMIS</span>
         </a>
@@ -14,56 +14,6 @@
     <div class="navbar-collapse collapse" id="navbar-mobile">
         <ul class="nav navbar-nav ">
             <li><a class="sidebar-control sidebar-main-toggle hidden-xs text-white"><i class="icon-paragraph-justify3"></i></a></li>
-
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="icon-grid6 text-white"></i>
-                    <span class="visible-xs-inline-block position-right">System Modules</span>
-                    
-                </a>
-                
-                <div class="dropdown-menu dropdown-content">
-                    <div class="dropdown-content-heading">
-                        System Modules
-                        <ul class="icons-list">
-                            <li><a href="#"><i class="icon-sync"></i></a></li>
-                        </ul>
-                    </div>
-
-                    <ul class="media-list dropdown-content-body width-350">
-                        
-                        <li class="media">
-                            <div class="media-left">
-                                <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
-                            </div>
-
-                            <div class="media-body" title="click to shift Module">
-                                 <a href="{{ route('dashboard') }}">{{ config('global.MODULE_ONE') }}
-                                <div class="media-annotation"> {{ config('global.MODULE_ONE_DESCRIPTION') }}</div>
-                            </a>
-                            </div>
-                        </li>
-
-                        @unless (request()->routeIs('startApp'))
-                            <li class="media">
-                                <div class="media-left">
-                                    <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
-                                </div>
-
-                                <div class="media-body" title="click to shift Module">
-                                    <a href="{{ route('permitDashboard') }}">{{ config('global.MODULE_TWO') }}
-                                        <div class="media-annotation">{{ config('global.MODULE_TWO_DESCRIPTION') }}</div>
-                                    </a>
-                                </div>
-                            </li>
-                        @endunless
-                    </ul>
-
-                    <div class="dropdown-content-footer">
-                        <a href="{{ route('startApp') }}" data-popup="tooltip" title="This shows the list of all Modules availabe in this system."><i class="icon-menu display-block"></i></a>
-                    </div>
-                </div>
-            </li>
         </ul>
        
 

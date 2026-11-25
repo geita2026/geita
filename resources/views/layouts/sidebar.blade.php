@@ -39,11 +39,7 @@
                             <input type="text" class="form-control gememis-menu-search" placeholder=" search menu">
                         </div>
                         
-                        @if (session('moduleNo') ==false)
-                        <li class="@if(request()->is('startApp')) active  @endif " ><a href="{{ route('startApp') }}"><i class=" icon-grid6" style="font-size:23px" ></i> <span>Start System</span></a></li>
-                        @endif
-                        
-                        @if (session('moduleNo')==1)
+                        @if (session('moduleNo', 1)==1)
                         <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
                         @endif
 
@@ -53,7 +49,7 @@
 
                         
                         @php
-                        $level_one_menu=App\Models\setting\level_one_menus::orderBy('level_one_common_name','ASC')->where('level_one_menu_status',1)->where('moduleNo',session('moduleNo'))->get();
+                        $level_one_menu=App\Models\setting\level_one_menus::orderBy('level_one_common_name','ASC')->where('level_one_menu_status',1)->where('moduleNo',session('moduleNo', 1))->get();
                         $level_two_menu = App\Models\setting\level_two_menus::orderBy('level_two_common_name')
                             ->where('level_two_menu_status', 1)->get()
                             ->filter(fn ($menu) => filled($menu->level_two_menu_link) && Route::has($menu->level_two_menu_link))

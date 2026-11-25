@@ -3,31 +3,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/exhibition-dashboard.css') }}">
     <script src="{{ asset('assets/js/core/exhibition-dashboard.js') }}" defer></script>
 
-    @php
-        $canBook = Auth::user()->can('BOOK_SPACE');
-        $canBrowseSpaces = $canBook || Auth::user()->can('VIEW_BOOKING_SUBMENU');
-        $invoiceCount = $invoiceTotals->sum('invoice_count');
-        $bookingBars = [
-            ['label' => 'Awaiting invoice', 'value' => $draftSpaces],
-            ['label' => 'Invoiced', 'value' => $invoicedSpaces],
-        ];
-        $metrics = [];
-        if ($canViewBookings) {
-            $metrics[] = ['Awaiting invoice', $draftSpaces, 'icon-hour-glass', 'Spaces held in the booking cart'];
-            $metrics[] = ['Invoiced spaces', $invoicedSpaces, 'icon-grid6', 'Spaces with an active invoice'];
-        }
-        if ($canViewCollections) {
-            $metrics[] = ['Invoices issued', $invoiceCount, 'icon-file-text2', 'Active invoices for this event'];
-        }
-    @endphp
-
     <div class="page-header">
         <div class="page-header-content">
             @include('layouts.heading-elements')
         </div>
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
-                <li><a href="{{ route('startApp') }}"><i class="icon-home position-left" aria-hidden="true"></i>Home</a></li>
                 <li class="active" aria-current="page">Dashboard</li>
             </ul>
             <ul class="breadcrumb-elements">
@@ -39,6 +20,33 @@
     <div class="content">
         <div class="panel panel-white">
             <div class="panel-body exhibition-dashboard">
+                @if (!$event)
+                    <h1>Exhibition dashboard</h1>
+                    <p>No exhibition event is active.</p>
+                    @can('VIEW_EXHIBITION_EVENT_SUBMENU', \Spatie\Permission\Models\Role::class)
+                        <a class="btn btn-primary" href="{{ route('Exhibition-Events.index') }}">Manage exhibition events</a>
+                    @else
+                        <p>Ask an administrator to activate an exhibition event.</p>
+                    @endcan
+                @else
+                @php
+                    $canBook = Auth::user()->can('BOOK_SPACE');
+                    $canBrowseSpaces = $canBook || Auth::user()->can('VIEW_BOOKING_SUBMENU');
+                    $invoiceCount = $invoiceTotals->sum('invoice_count');
+                    $bookingBars = [
+                        ['label' => 'Awaiting invoice', 'value' => $draftSpaces],
+                        ['label' => 'Invoiced', 'value' => $invoicedSpaces],
+                    ];
+                    $metrics = [];
+                    if ($canViewBookings) {
+                        $metrics[] = ['Awaiting invoice', $draftSpaces, 'icon-hour-glass', 'Spaces held in the booking cart'];
+                        $metrics[] = ['Invoiced spaces', $invoicedSpaces, 'icon-grid6', 'Spaces with an active invoice'];
+                    }
+                    if ($canViewCollections) {
+                        $metrics[] = ['Invoices issued', $invoiceCount, 'icon-file-text2', 'Active invoices for this event'];
+                    }
+                @endphp
+
                 <header class="dashboard-heading">
                     <div>
                         <p class="dashboard-context">{{ $isStaff ? 'Exhibition operations' : 'Exhibitor workspace' }}</p>
@@ -214,6 +222,7 @@
                 @endif
 
                 @include('Dashboards.QuickActions')
+                @endif
             </div>
         </div>
     </div>

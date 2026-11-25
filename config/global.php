@@ -14,10 +14,7 @@ return[
     'INVOICE_DUE_DAYS'=>env('INVOICE_DUE_DAYS',7),
     // Module visibility & branding (safe to cache)
     'PERMIT_STATUS'=>env('PERMIT_STATUS', 0),
-    'MODULE_ONE'=>env('MODULE_ONE', 'Trade Fair'),
-    'MODULE_ONE_DESCRIPTION'=>env('MODULE_ONE_DESCRIPTION', ''),
     'MODULE_TWO'=>env('MODULE_TWO', 'e-Permit'),
-    'MODULE_TWO_DESCRIPTION'=>env('MODULE_TWO_DESCRIPTION', ''),
     'CALL_CENTER'=>env('CALL_CENTER', ''),
     'APP_VERSION'=>env('APP_VERSION', ''),
     'COMPANY_EXCEPTION'=>env('COMPANY_EXCEPTION', null),

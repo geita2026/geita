@@ -37,63 +37,37 @@ class userDashboardController extends Controller
         $this->middleware('auth');
     }
 
-    public function StartApplication(Request $request)
-    {
-       
-        $request->session()->forget('moduleNo');
-        // $ExchangeRate = ExchangeRate::where('lastUpdatedAt','LIKE','%'.date('Y-m-d ').'%')->first();
-        // if (!$ExchangeRate && config('global.APP_STATUS')==1) {
-        //     $this->getAllExchageRate();
-        // }
-
-        $myCompany=companies::find(Auth::user()->user_uuid);
-        $exists=CompanyAdmin::where('companyId',$myCompany->companyID ?? Null)
-        ->where('adminId',Auth::user()->user_uuid)->first();
-        if ($myCompany) {
-            if (!$exists) {
-                CompanyAdmin::create([
-                    'referenceId'=>Str::uuid(),
-                    'adminId'=>Auth::user()->user_uuid,
-                    'companyId'=>$myCompany->companyID,
-                ]);
-            }
-        }
-        $myCompany =CompanyAdmin::where('adminId',Auth::user()->user_uuid)->count();
-        session(['myCompany'=>$myCompany]);
-
-        // Auto-fix: if users.myCompany is NULL but company_admins has a record, backfill it
-        if (!Auth::user()->myCompany) {
-            $companyAdmin = CompanyAdmin::where('adminId', Auth::user()->user_uuid)->first();
-            if ($companyAdmin) {
-                Auth::user()->update(['myCompany' => $companyAdmin->companyId]);
-            }
-        }
-
-        return view('FrontEnd.Dashboard.StartDashboard');
-    }
     public function index(Request $request)
     {
         try {
             $user = $request->user();
             $request->session()->put('moduleNo', 1);
-            $event = events::where('event_status', 1)->first();
+            $companyAdmins = CompanyAdmin::where('adminId', $user->user_uuid);
+            if (companies::whereKey($user->user_uuid)->exists()
+                && !(clone $companyAdmins)->where('companyId', $user->user_uuid)->exists()) {
+                $user->getConnection()->transaction(function () use ($user) {
+                    $user->newQuery()->whereKey($user->getKey())->lockForUpdate()->firstOrFail();
+                    CompanyAdmin::firstOrCreate([
+                        'adminId' => $user->user_uuid,
+                        'companyId' => $user->user_uuid,
+                    ], ['referenceId' => Str::uuid()]);
+                });
+            }
 
+            $companyIds = $companyAdmins->whereNotNull('companyId')->distinct()->pluck('companyId');
+            if (!$user->myCompany && $companyIds->isNotEmpty()) {
+                $user->update(['myCompany' => $companyIds->first()]);
+            }
+            $request->session()->put('myCompany', $companyIds->count());
+
+            $event = events::where('event_status', 1)->first();
             if (!$event) {
                 $request->session()->forget('liveEvent');
 
-                if ($user->can('VIEW_EXHIBITION_EVENT_SUBMENU', Role::class)) {
-                    return redirect()->route('Exhibition-Events.index')
-                        ->with('info', 'Create or activate an exhibition event to open the Trade Fair dashboard.');
-                }
-
-                return redirect()->route('startApp')
-                    ->with('fail', 'Ask an administrator to activate an exhibition event.');
+                return view('dashboard', ['event' => null]);
             }
 
-            $companyIds = CompanyAdmin::where('adminId', $user->user_uuid)
-                ->whereNotNull('companyId')->distinct()->pluck('companyId');
             $request->session()->put('liveEvent', $event->event_id);
-            $request->session()->put('myCompany', $companyIds->count());
 
             $isStaff = (int) $user->account_type === 1;
             $canViewInvoices = $user->can('MANAGE_INVOICES', Role::class);

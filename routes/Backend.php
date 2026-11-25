@@ -52,7 +52,6 @@ Route::get('user-manual', function () {
 
 
 
-Route::get('startApp',[userDashboardController::class,'StartApplication'])->name('startApp');
 Route::get('dashboard',[userDashboardController::class,'index'])->name('dashboard');
 
 //resource controllers.

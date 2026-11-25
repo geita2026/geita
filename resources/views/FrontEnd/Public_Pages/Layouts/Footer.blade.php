@@ -41,7 +41,7 @@
                 <ul class="list-unstyled" style="font-size:13.5px;line-height:2.1;">
                     <li><a href="{{ route('index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Home</a></li>
                     <li><a href="{{ route('About_ditf') }}"><i class="fa fa-angle-right text-warning me-2"></i> About the exhibition</a></li>
-                    <li><a href="{{ route('ditf_map') }}"><i class="fa fa-angle-right text-warning me-2"></i> Site map</a></li>
+                    <li><a href="{{ route('ditf_map') }}"><i class="fa fa-angle-right text-warning me-2"></i> Map of Geita</a></li>
                     <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Book space</a></li>
                     <li><a href="{{ route('discover_exhibitor.index') }}"><i class="fa fa-angle-right text-warning me-2"></i> Discover exhibitors</a></li>
                 </ul>
@@ -60,16 +60,13 @@
             </div>
         </div>
 
-        <!-- Divider with Gold Glow -->
-        <div style="height:1px;background:linear-gradient(90deg, transparent, rgba(255, 191, 0,0.35), transparent);margin:35px 0 25px;"></div>
+        @if (empty($simpleFooter))
+            <div style="height:1px;background:linear-gradient(90deg, transparent, rgba(255, 191, 0,0.35), transparent);margin:35px 0 25px;"></div>
+        @else
+            <hr class="geita-footer-divider">
+        @endif
 
-        <!-- Signature Shimmer Text Slogan & Copyright -->
         <div class="text-center">
-            <p class="mb-2" style="font-size:15px;">
-                <span class="shimmer-text">
-                    “Every exhibition space, accounted for.”
-                </span>
-            </p>
             <p style="font-size:12px;color:rgba(255,255,255,0.45);margin:0;">
                 &copy; {{ date('Y') }} Geita Mineral Exhibition Secretariat. All Rights Reserved.
                 Geita Mineral Exhibition Management Information System (GeMEMIS).

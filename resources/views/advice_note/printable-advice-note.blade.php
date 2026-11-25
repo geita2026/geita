@@ -256,43 +256,7 @@
                     @endif
 
                     @if ($canCancel)
-                        {{-- delete modal --}}
-                        <div id="cancelInvoice{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
-                            <div class="modal-dialog modal-md">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-danger">
-                                        <h5 class="modal-title">Are you sure you whant to Cancel
-                                            <b><q>{{ $item->advice_note_id }} ({{ $item->control_number }})</q></b>
-                                            Invoice ?
-                                        </h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form
-                                            action="{{ route('adviceNotes.destroy', ['adviceNote' => $item->advice_note_id]) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <div class=" form-group ">
-                                                <p><b class=" text-danger">NOTE!</b> This process is irrevesible,
-                                                    please confirm your details before canceling this invoice</p>
-                                                <label>Give reasons for Canceling this Invoice<i
-                                                        class=" text-danger">*</i></label>
-                                                <textarea name="reasons" class=" form-control" placeholder="Write your Cancelation reasons here" required></textarea>
-
-                                            </div>
-
-                                            <div class=" text-right">
-                                                <button type="button" data-dismiss="modal"
-                                                    class=" btn btn-secondary">Close</button>
-                                                <button type="submit" class="btn btn-danger ml-20">Yes,
-                                                    Cancel</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- delete modal --}}
+                        @include('advice_note.cancel-modal', ['modalId' => 'cancelInvoice'.$item->advice_note_id])
                     @endif
                         {{-- *********** Upload Participation Form ******** --}}
                         <div id="participationForm{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
