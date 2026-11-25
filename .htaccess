@@ -19,6 +19,9 @@ RewriteRule ^\.well-known/(?:acme-challenge|pki-validation)/[A-Za-z0-9_-]+(?:\.t
 RewriteRule (^|/)\. - [F]
 RewriteRule ^public(?:/|$) - [F,NC]
 
+# Let Apache execute the root Laravel entry point after an internal rewrite.
+RewriteRule ^index\.php$ - [L]
+
 # Block script extensions, including filenames with more than one extension.
 RewriteRule \.(?:php[0-9]*|phar|phtml|pht|cgi|fcgi|pl|shtml)(?:[./]|$) - [F,NC]
 
@@ -30,5 +33,5 @@ RewriteRule ^(.+\.(?:avif|css|csv|eot|gif|html?|ico|jpe?g|js|json|mjs|otf|pdf|pn
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [F]
 
-# Send application routes to Laravel.
-RewriteRule ^ public/index.php [END]
+# Send application routes through the document root's PHP entry point.
+RewriteRule ^ index.php [L]
