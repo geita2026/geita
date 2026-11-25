@@ -26,7 +26,7 @@
 
                 @foreach ($categories as $item)
                     <form action="{{ route('spaceCategories.update', ['spaceCategory' => $item->category_id]) }}"
-                        method="POST" enctype="multipart/form-data">
+                        method="POST">
                         @method('PUT')
                         @csrf
                         <div class=" row form-group">
@@ -87,23 +87,6 @@
                                 <textarea name="category_descriptions" placeholder="Category descriptions here" class=" form-control">{{ $item->category_descriptions }}</textarea>
                             </div>
                         </div>
-
-                        <div class="form-group row">
-                            <div class="  col-md-6">
-                                <label>Space Category Poster<i class=" text-danger">*</i></label>
-                                <input type="file" name="categoryPoster" class=" form-control"
-                                    placeholder="Category Name" value="{{ old('category_name') }}">
-                                <span class="text-danger"> @error('categoryPoster')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <div class=" col-md-6">
-                                <img src="{{ $item->category_icon }}" height="50" width="50">
-                            </div>
-                        </div>
-
 
                         <div class=" row form-group">
                             <div class=" text-right col-md-12">

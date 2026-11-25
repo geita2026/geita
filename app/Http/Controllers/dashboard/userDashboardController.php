@@ -9,24 +9,22 @@ use App\Models\exhibition\exhibitors;
 use App\Models\sectors;
 use App\Models\settings\events;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\System;
 use App\Traits\UserRegistrationTrait;
-use App\Models\booking\booked_booths;
 use App\Models\booking\booked_pavilions;
 use App\Models\Companies\CompanyAdmin;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
 use App\Models\ePermit\PromotionEventType;
 use App\Models\exhibition\exhibition_products;
-use App\Models\Inquiry\BookingInquiry;
-use App\Models\setting\ExchangeRate;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 use App\Traits\ThirdPartIntergrationTraits;
 
 class userDashboardController extends Controller
 {
+    use System;
     use UserRegistrationTrait;
     use ThirdPartIntergrationTraits;
     /**
@@ -76,106 +74,115 @@ class userDashboardController extends Controller
     public function index(Request $request)
     {
         try {
-            session(['moduleNo' => 1]); // for GeMEMIS;
-        $activeEvent = events::where('event_status', 1)->first();
-        if (!$activeEvent) {
-            $request->session()->forget('liveEvent');
+            $user = $request->user();
+            $request->session()->put('moduleNo', 1);
+            $event = events::where('event_status', 1)->first();
 
-            if ($request->user()->can('VIEW_EXHIBITION_EVENT_SUBMENU', Role::class)) {
-                return redirect()->route('Exhibition-Events.index')
-                    ->with('info', 'Create or activate an exhibition event to open the Trade Fair dashboard.');
+            if (!$event) {
+                $request->session()->forget('liveEvent');
+
+                if ($user->can('VIEW_EXHIBITION_EVENT_SUBMENU', Role::class)) {
+                    return redirect()->route('Exhibition-Events.index')
+                        ->with('info', 'Create or activate an exhibition event to open the Trade Fair dashboard.');
+                }
+
+                return redirect()->route('startApp')
+                    ->with('fail', 'Ask an administrator to activate an exhibition event.');
             }
 
-            return redirect()->route('startApp')
-                ->with('fail', 'Ask an administrator to activate an exhibition event.');
-        }
+            $companyIds = CompanyAdmin::where('adminId', $user->user_uuid)
+                ->whereNotNull('companyId')->distinct()->pluck('companyId');
+            $request->session()->put('liveEvent', $event->event_id);
+            $request->session()->put('myCompany', $companyIds->count());
 
-        $event_id = $activeEvent->event_id;
-        $request->session()->put('liveEvent', $event_id);
-        $companies = companies::where('status', 1)->get()->count(); // return all registered companies
-        $sectorCount = sectors::get()->count();
+            $isStaff = (int) $user->account_type === 1;
+            $canViewInvoices = $user->can('MANAGE_INVOICES', Role::class);
+            $canViewCollections = $canViewInvoices
+                || ($isStaff && $user->can('VIEW_COLLECTION_REPORTS'));
+            $canViewBookings = !$isStaff
+                || $user->can('VIEW_PENDING_BOOKING', Role::class)
+                || $user->can('VIEW_SAMMARY_REPORT');
+            $bookingOpen = $this->checkApplicationStatus();
 
-        $total_events = events::get()->count();
+            $invoices = advice_notes::query()
+                ->where('advice_notes.event', $event->event_id)
+                ->where('advice_notes.advice_note_status', '!=', 'CANCELED')
+                ->when(!$isStaff, fn ($query) => $query->whereIn('advice_notes.company_id', $companyIds));
 
-        $events = events::orderBy('event_start_date', 'DESC')->get(['event_name', 'event_id']);
-        $exhibitors = exhibitors::get(['exhibitor_event']);
-        $currentExhibitors = exhibitors::where('exhibitor_event', session('liveEvent'))->count();
-        $allExhibitors = exhibitors::count();
+            $invoiceTotals = collect();
+            $recentInvoices = collect();
+            if ($canViewCollections) {
+                $invoiceTotals = (clone $invoices)
+                    ->selectRaw('currency, COUNT(*) AS invoice_count, SUM(total_amount) AS billed, SUM(amount_paid) AS paid')
+                    ->selectRaw('SUM(CASE
+                        WHEN balance > 0 THEN balance
+                        WHEN balance IS NULL AND total_amount > COALESCE(amount_paid, 0)
+                            THEN total_amount - COALESCE(amount_paid, 0)
+                        ELSE 0
+                    END) AS outstanding')
+                    ->groupBy('currency')
+                    ->get()
+                    ->keyBy('currency');
+            }
 
-        $accounts = User::where('user_uuid', Auth::user()->user_uuid)->get();
-        foreach ($accounts as $key) {
-            $account_type = $key->account_type;
-        }
+            if ($canViewInvoices) {
+                $recentInvoices = (clone $invoices)
+                    ->leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
+                    ->orderByDesc('advice_notes.advice_note_created_at')
+                    ->orderByDesc('advice_notes.advice_note_id')
+                    ->limit(5)
+                    ->get([
+                        'advice_notes.advice_note_id', 'advice_notes.advice_note_created_at',
+                        'advice_notes.advice_note_status', 'advice_notes.control_number', 'advice_notes.total_amount',
+                        'advice_notes.amount_paid', 'advice_notes.balance',
+                        'advice_notes.currency', 'companies.companyName',
+                    ]);
+            }
 
-        $myCompany = companies::where('companyID', Auth::user()->myCompany)->get();
+            $draftSpaces = 0;
+            $invoicedSpaces = 0;
+            if ($canViewBookings) {
+                $spaces = booked_pavilions::where('exhibition_year', $event->event_id);
+                $draftSpaces = (clone $spaces)->whereNull('advice_note_id')
+                    ->when(!$isStaff, fn ($query) => $query->where('userID', $user->user_uuid))
+                    ->count();
+                $invoicedSpaces = $spaces
+                    ->whereIn('advice_note_id', (clone $invoices)->select('advice_notes.advice_note_id'))
+                    ->count();
+            }
 
-        $exhibited_products = exhibition_products::where('event', $event_id)->count(); // count all products exhibited
+            $exhibitionStats = [];
+            if ($isStaff && $user->can('VIEW_SAMMARY_REPORT')) {
+                $exhibitionStats = [
+                    ['Exhibitors this event', exhibitors::where('exhibitor_event', $event->event_id)->count(), 'discover_exhibitor.index'],
+                    ['Exhibitors across events', exhibitors::count(), 'exhibitors.index'],
+                    ['Exhibited products', exhibition_products::where('event', $event->event_id)->count(), 'products.index'],
+                    ['Registered companies', companies::where('status', 1)->count(), 'companies.index'],
+                    ['Exhibition events', events::count(), 'Exhibition-Events.index'],
+                    ['Company sectors', sectors::count(), 'sectors.index'],
+                ];
+            }
 
-        $total_invoices = advice_notes::leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('event_status', 1)->where('advice_note_status', '!=','CANCELED')->count(); // count all invoice Produced.
+            $participation = collect();
+            if ($isStaff && $user->can('VIEW_PARTICIPATION_REPORTS')) {
+                $recentEvents = events::orderByDesc('event_start_date')->orderBy('event_id')->limit(6)
+                    ->get(['event_id', 'event_name']);
+                $exhibitorCounts = exhibitors::whereIn('exhibitor_event', $recentEvents->pluck('event_id'))
+                    ->selectRaw('exhibitor_event, COUNT(*) AS exhibitor_count')
+                    ->groupBy('exhibitor_event')
+                    ->pluck('exhibitor_count', 'exhibitor_event');
+                $participation = $recentEvents->map(fn ($edition) => [
+                    'label' => $edition->event_name,
+                    'value' => (int) ($exhibitorCounts[$edition->event_id] ?? 0),
+                ]);
+            }
 
-        $expected_tzs = advice_notes::leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('event_status', 1)->where('advice_note_status', '!=','CANCELED')->where('currency', 'TZS')->sum('total_amount'); // Collection TZS.
-
-        $expected_usd = advice_notes::leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('event_status', 1)->where('advice_note_status', '!=','CANCELED')->where('currency', 'USD')->sum('total_amount'); // COLLECTION USD.
-
-        $amount_paid_tzs = advice_notes::leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('event_status', 1)->where('advice_note_status', '!=','CANCELED')->where('currency', 'TZS')->sum('amount_paid'); // Amount Paid TZS.
-
-        $amount_paid_usd = advice_notes::leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('event_status', 1)->where('advice_note_status', '!=','CANCELED')->where('currency', 'USD')->sum('amount_paid'); // Amount Paid USD.
-
-
-        $booths = booked_booths::leftJoin('booths', 'booked_booths.boothID', '=', 'booths.boothID')
-            ->leftJoin('pavilions', 'booths.pavilionID', '=', 'pavilions.pavilionID')
-            ->where('companyID', Auth::user()->user_uuid)->orderBy('boothNo', 'ASC')->get();
-
-        $pavilions = booked_pavilions::leftJoin('pavilions', 'booked_pavilions.pavilionID', '=', 'pavilions.pavilionID')
-            ->leftJoin('advice_notes', 'booked_pavilions.advice_note_id', '=', 'advice_notes.advice_note_id')
-            ->leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
-            ->where('advice_note_status', '!=','CANCELED')->where('companyID', Auth::user()->user_uuid)
-            ->where('companyID', Auth::user()->user_uuid)->get();
-
-        $sectors = sectors::get();
-        $eventName = $activeEvent->event_name;
-
-        // $judging = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-        //     ->leftJoin('judging_categories', 'exhibitors.judgingCategory', '=', 'judging_categories.categoryId')
-        //     ->whereIn('exhibitor_id',CompanyAdmin::where('adminId',Auth::user()->user_uuid)->get(['companyId']))
-        //     ->where('judging_status',1)
-        //     ->where('exhibitor_event', session('liveEvent'))->get();
-
-        $newRequest = BookingInquiry::where('eventId', $event_id)->where('inquiryStatus', 0)->count();
-        $attendedRequest = BookingInquiry::where('eventId', $event_id)->where('inquiryStatus', '!=','CANCELED')->count();
-        $myCompany =CompanyAdmin::where('adminId',Auth::user()->user_uuid)->get();
-        $myCompanyCount =CompanyAdmin::where('adminId',Auth::user()->user_uuid)->count();
-        session(['myCompany'=>$myCompanyCount]);
-        return view('dashboard', compact(
-            'allExhibitors',
-            'companies',
-            'sectors',
-            'booths',
-            'pavilions',
-            'total_events',
-            'events',
-            'exhibitors',
-            'companies',
-            'myCompany',
-            'currentExhibitors',
-            'exhibited_products',
-            'total_invoices',
-            'expected_tzs',
-            'expected_usd',
-            'amount_paid_tzs',
-            'amount_paid_usd',
-            'sectorCount',
-            'eventName',
-            'newRequest',
-            'attendedRequest'
-        ));
+            return view('dashboard', compact(
+                'event', 'isStaff', 'bookingOpen', 'canViewBookings', 'canViewInvoices', 'canViewCollections',
+                'draftSpaces', 'invoicedSpaces', 'invoiceTotals', 'recentInvoices', 'exhibitionStats', 'participation'
+            ));
         } catch (\Throwable $th) {
-            return back()->with('fail',config('Messages.500').$th->getMessage());
+            return back()->with('fail', config('Messages.500').$th->getMessage());
         }
     }
 

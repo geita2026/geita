@@ -56,5 +56,5 @@
                 @include('space.FloorPlans.BoothFormat')
             @endif
         @endforeach
-        </di>
+        </div>
     </div>

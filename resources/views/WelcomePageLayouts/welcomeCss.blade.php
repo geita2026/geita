@@ -12,6 +12,7 @@
 
 <!-- GeMEMIS design system -->
 <link rel="stylesheet" href="{{ asset('assets/css/gememis-theme.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 
 <style>

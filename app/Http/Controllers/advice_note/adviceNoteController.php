@@ -328,13 +328,15 @@ class adviceNoteController extends Controller
             return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
         //advice note details
-        $adviceNotes = advice_notes::leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
+        $adviceNotes = advice_notes::visibleTo($request->user())
+            ->leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
             ->leftJoin('users', 'advice_notes.user_id', '=', 'users.user_uuid')
             ->leftJoin('roles', 'users.role', '=', 'roles.id')
             ->leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
             ->where('advice_notes.advice_note_id', $id)
             ->get([
                 'advice_notes.advice_note_id',
+                'advice_notes.company_id',
                 'companyName',
                 'advice_note_created_at',
                 'companyAddress',
@@ -512,8 +514,12 @@ class adviceNoteController extends Controller
             if (empty($request->reasons)) {
                 return back()->with('fail', 'Please, give reasons why do you cancel this Advice Note');
             }
-            $value = advice_notes::leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')
-                ->where('advice_note_id', $id)->first(); // get bill relating to invoice id
+            $value = advice_notes::visibleTo($request->user())
+                ->leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')
+                ->where('advice_note_id', $id)->first(['advice_notes.*', 'companies.sp_customer_no']);
+            if (!$value || !$value->isCancelable()) {
+                return back()->with('fail', 'Only unpaid, active invoices can be canceled.');
+            }
             $customer_no = $value->sp_customer_no;
             $invoice_no = $value->sp_invoice_no;
             $canceledby = Auth::user()->first_name . " " . Auth::user()->last_name;
@@ -560,7 +566,8 @@ class adviceNoteController extends Controller
             if ($request->user()->cannot('APPLY_DISCOUNT', Role::class)) {
                 return back()->with('fail', $this->permissionDeniedMessage('APPLY_DISCOUNT'));
             }
-            $adviceNotes = advice_notes::leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
+            $adviceNotes = advice_notes::visibleTo($request->user())
+                ->leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
                 ->leftJoin('users', 'advice_notes.user_id', '=', 'users.user_uuid')
                 ->leftJoin('roles', 'users.role', '=', 'roles.id')
                 ->leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
@@ -606,6 +613,9 @@ class adviceNoteController extends Controller
                     'registrationID',
                     'discountAmount'
                 ]);
+            if ($adviceNotes->isEmpty()) {
+                return back()->with('fail', 'Invoice not found.');
+            }
             $comments = Comment::leftJoin('users', 'comments.commentedBy', '=', 'users.user_uuid')
                 ->leftJoin('roles', 'users.role', '=', 'roles.id')
                 ->where('referenceId', $id)->get();

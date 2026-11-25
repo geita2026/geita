@@ -20,14 +20,6 @@
     <!-- Content area -->
     <div class="content">
 
-        <div class="alert gememis-module-notice">
-            This system has two modules, <a href="{{ route('dashboard') }}">Exhibition</a> and <a
-                href="{{ route('permitDashboard') }}">e-Permit</a>.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>Exhibition</b> runs the Geita Mineral Exhibition.<br>
-            <i class=" icon-arrow-right13 ml-20"></i> <b>e-Permit</b> involves managing the provision of Trade Promotion
-            Event Permits.
-        </div>
-
         <div class="row">
             <div class="col-sm-6 col-lg-4 form-group">
                 <a class="gememis-module-card" href="{{ route('dashboard') }}">
@@ -38,15 +30,6 @@
                     </p>
                 </a>
             </div>
-
-            @if (config('global.PERMIT_STATUS') == 1)
-                <div class="col-sm-6 col-lg-4 form-group">
-                    <a class="gememis-module-card" href="{{ route('permitDashboard') }}">
-                        <h2 class="h4 no-margin-top">e-Permit</h2>
-                        <p class="no-margin-bottom">{{ config('global.MODULE_TWO_DESCRIPTION') }}</p>
-                    </a>
-                </div>
-            @endif
         </div>
     </div>
 </x-app-layout>

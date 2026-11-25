@@ -179,6 +179,9 @@ return [
         'ADVICE_NOTE' => ['Advice Notes', 'adviceNotes.index', [
             'Manage Invoices' => 'MANAGE_INVOICES',
             'Request ControlNumber' => 'REQUEST_ADVICE_NOTE',
+            'Download Invoice' => 'DOWNLOAD_INVOICE',
+            'Apply Discount' => 'APPLY_DISCOUNT',
+            'Extend Deadline' => 'EXTEND_DEADLINE',
             'Cancel Invoices' => 'CANCEL_INVOICES',
             'approve-discount' => 'APPROVE_ADVICE_NOTE',
         ]],

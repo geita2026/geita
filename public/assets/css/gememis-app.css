@@ -94,23 +94,6 @@ body.gememis-app {
     margin: 0;
 }
 
-.gememis-app .modal-header:not([class*="bg-"]),
-.gememis-app .gememis-registration-modal .registration-header {
-    background: var(--gem-app-ink);
-    border-bottom-color: var(--gem-app-gold);
-    color: #fff;
-}
-
-.gememis-app .modal-header:not([class*="bg-"]) .close {
-    color: #fff;
-    opacity: .85;
-}
-
-.gememis-app .modal-footer {
-    background-color: #faf7f2;
-    border-top-color: #e7dfd2;
-}
-
 .gememis-app .select2-results__option--highlighted[aria-selected] {
     background: #75520a;
     color: #fff;
@@ -129,14 +112,6 @@ body.gememis-app {
     .gememis-app.sidebar-xs .gememis-navbar .gememis-brand span {
         display: none;
     }
-}
-
-.gememis-app .modal-header:not([class*="bg-"]) {
-    padding-bottom: 12px;
-}
-
-.gememis-app .modal-header .close + .modal-title {
-    padding-right: 24px;
 }
 
 .gememis-app .breadcrumb-line,

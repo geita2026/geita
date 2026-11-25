@@ -1,5 +1,6 @@
 <x-app-layout>
-    <title>{{ env('APP_NAME') }} | Pavilions</title>
+    <title>{{ config('app.name') }} | Pavilions</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/pavilion-editor.css') }}">
     <!-- dashboard -->
     <div class="page-header">
         <div class="page-header-content">
@@ -8,7 +9,7 @@
         <div class="breadcrumb-line breadcrumb-line-component">
             <ul class="breadcrumb">
                 <li><a href="{{ route('pavilions.index') }}"><i class=" icon-home9 position-left"></i>PAVILIONS</a></li>
-                <li class="active">View All pavilion</li>
+                <li class="active" aria-current="page">Registered spaces</li>
             </ul>
 
             <ul class="breadcrumb-elements">
@@ -20,66 +21,55 @@
     <!-- Content area -->
     <div class="content">
         <div class="panel panel-white">
-           
-            <div class=" panel-body table-responsive">
-                <div class=" row">
-                    
-                    <div class=" col-md-12 form-group text-right">
-                        <a href="{{ route('pavilions.create') }}" class="btn btn-default border-success text-bold">Register Space <i class=" icon-plus2"></i></a>
-                    </div>
+            <div class="panel-body">
+                <div class="pavilion-heading">
+                    <h1>Registered spaces</h1>
+                    <a href="{{ route('pavilions.create') }}" class="btn btn-primary">
+                        <i class="icon-plus2" aria-hidden="true"></i> Register space
+                    </a>
                 </div>
-                <div class=" form-group col-md-12">
-                    <table data-table-paginated class="table  table-striped table-bordered  table-responsive">
+
+                <div class="form-group">
+                    <label for="search-select">Find a space</label>
+                    <select id="search-select" class="form-control">
+                        <option value=""></option>
+                    </select>
+                </div>
+
+                <div class="table-responsive" tabindex="0" role="region" aria-label="Registered spaces">
+                    <table data-table-paginated class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th colspan="7">
-                                    <select id="search-select" name="search" class=" form-control"
-                                    onchange="location = this.value;">
-                                   </select>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th colspan="7" style="background-color: rgb(198, 198, 204);">
-                                    <h4 class=" text-bold text-center text-uppercase">LIST OF REGISTERED SPACES.</h4>
-                                </th>
-                            </tr>
-                            <tr>
-                                {{-- <th>S/N</th> --}}
-                                <th class=" text-bold text-center">SPACE NAME</th>
-                                <th class=" text-bold text-center">CATEGORY NAME</th>
-                                <th class=" text-bold text-center">STREET NAME</th>
-                                <th class=" text-bold text-center"> SPACE SIZE (M<sup>2</sup> / Units)</th>
-                                <th class=" text-bold text-center">SPACE STATUS</th>
-                                <th class=" text-bold text-center">ACTIONS</th>
+                                <th scope="col">Space name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Street</th>
+                                <th scope="col" class="text-right">Area (m²)</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                            $i=1;
-                            @endphp
-                            @foreach ($pavilions as  $item)
-                            <tr>
-                                {{-- <td>{{ $i }}</td> --}}
-                                <td class=" text-uppercase">{{ $item->pavilionName }}</td>
-                                <td>{{ $item->category_name }}</td>
-                                <td>{{ $item->streetName }}</td>
-                                <td class=" text-center">{{ number_format($item->pavilion_size,2) }} </td>
-                                <td class=" text-center text-bold"><label class=" label label-info">{{ $item->space_status }}</label></td>
-                                <td class=" text-center">
-                                    <a href="{{ route('pavilions.edit',['pavilion'=>$item->pavilionID]) }}" title="Add booths if exists" class=" btn btn-primary">View Space <i class=" icon-arrow-right13"></i></a>
-                                </td>
-                                
-                                 
-                               
-                            </tr>
-                            @php
-                            $i++;
-                            @endphp
-                            @endforeach
+                            @forelse ($pavilions as $item)
+                                <tr>
+                                    <td class="text-bold">{{ $item->pavilionName }}</td>
+                                    <td>{{ $item->category_name }}</td>
+                                    <td>{{ $item->streetName ?: '—' }}</td>
+                                    <td class="text-right">{{ number_format($item->pavilion_size, 2) }}</td>
+                                    <td>{{ $item->space_status === 'UNRESERVED' ? 'Open for booking' : ucfirst(strtolower($item->space_status)) }}</td>
+                                    <td>
+                                        <a href="{{ route('pavilions.edit', ['pavilion' => $item->pavilionID]) }}" class="btn btn-primary">
+                                            View space <i class="icon-arrow-right13" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6">No spaces have been registered.</td></tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class=" col-md-12 form-group text-right">
+
+                <div class="text-right">
                     {{ $pavilions->withQueryString()->links() }}
                 </div>
             </div>
@@ -88,32 +78,30 @@
 </x-app-layout>
 
 <script>
-    $(document).ready(function() {
+    $(function () {
+        const editUrl = @json(route('pavilions.edit', ['pavilion' => '__PAVILION_ID__']));
         $('#search-select').select2({
+            width: '100%',
             ajax: {
-                url: '{{ route('pavilions.create') }}', // URL for the AJAX request
+                url: @json(route('pavilions.create')),
                 dataType: 'json',
                 delay: 250,
-                data: function(params) {
-                    return {
-                        q: params.term // Search query
-                    };
+                data: function (params) {
+                    return {q: params.term};
                 },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                id: '{{ env('APP_URL') }}/spaceManagement/pavilions/' +
-                                    item.pavilionID+'/edit',
-                                text: item.pavilionName+' || '+item.category_name+' || '+ item.space_status,
-                            };
-                        })
-                    };
+                processResults: function (data) {
+                    const pavilions = Array.isArray(data) ? data : [];
+                    return {results: pavilions.map(pavilion => ({
+                        id: editUrl.replace('__PAVILION_ID__', encodeURIComponent(pavilion.pavilionID)),
+                        text: [pavilion.pavilionName, pavilion.category_name].filter(Boolean).join(' · '),
+                    }))};
                 },
-                cache: true
+                cache: true,
             },
-            placeholder: 'Search Data here . . .',
-            minimumInputLength: 0,
+            placeholder: 'Search by space name or category',
+            minimumInputLength: 1,
+        }).on('select2:select', function () {
+            window.location.assign(this.value);
         });
     });
 </script>

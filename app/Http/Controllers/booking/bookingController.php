@@ -14,7 +14,6 @@ use App\Models\companies;
 use App\Models\booking\booked_booths;
 use App\Models\advice_note\service_charges;
 use App\Models\exhibition\exhibition_products;
-use App\Models\exhibition\Product;
 use App\Models\space\additional_services;
 use App\Models\space\space_categories;
 use App\Models\settings\events;
@@ -26,6 +25,7 @@ use Spatie\Permission\Models\Role;
 use App\Traits\BookingTimeController;
 use App\Traits\System;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class bookingController extends Controller
 {
@@ -142,9 +142,14 @@ class bookingController extends Controller
         else {
             try {
                
-                $request->validate([
-                    'company_name' => 'required'
+                $validator = Validator::make($request->all(), [
+                    'company_name' => 'required',
+                    'spaceName' => 'required|array|min:1',
+                    'spaceName.*' => 'required|string|distinct',
                 ]);
+                if ($validator->fails()) {
+                    return back()->withErrors($validator)->withInput();
+                }
 
                 $event = session('liveEvent');
                 $user_id = Auth::user()->user_uuid; # user id
@@ -271,9 +276,6 @@ class bookingController extends Controller
                 ->where('status', 1)->where('adminId', Auth::user()->user_uuid)
                 ->get(['companies.companyID', 'companyName']);
         }
-        $uid = Auth::user()->user_uuid;
-        $booked_pavilion = pavilions::leftJoin('booked_pavilions', 'pavilions.pavilionID', '=', 'booked_pavilions.pavilionID')
-            ->where('booked_pavilions.userID', $uid)->where('advice_note_id', Null)->count();
         $number_of_booths = booths::query()
             ->where('pavilionID', $id)
             ->where('bookingStatus', '!=', 'SUNSPENDED')
@@ -324,56 +326,24 @@ class bookingController extends Controller
                 'booth_categories.booth_category_id',
             ]);
 
-        $boothIdsInPavilion = $booths->pluck('boothID');
+        $event = events::find(session('liveEvent'));
+        if (!$event) {
+            return redirect()->route('booking.index')->with('fail', 'Select an active exhibition before booking.');
+        }
 
-        $bookedBooths = booked_pavilions::query()
-            ->where('exhibition_year', session('liveEvent'))
-            ->whereIn('pavilionID', $boothIdsInPavilion)
-            ->pluck('pavilionID')
-            ->unique()
-            ->values()
-            ->map(fn (string $boothId) => (object) ['boothID' => $boothId]);
-
-        $event = events::where('event_status', 1)->first();
-        $activeEvent = ['event_id' => $event->event_id, 'event_name' => $event->event_name];
-
-        $bookedSpace = booked_pavilions::query()
-            ->leftJoin('companies', 'booked_pavilions.companyID', '=', 'companies.companyID')
-            ->whereIn('booked_pavilions.pavilionID', $boothIdsInPavilion)
-            ->where('booked_pavilions.exhibition_year', $event->event_id)
-            ->get([
-                'booked_pavilions.pavilionID as boothID',
-                'companies.companyName',
-            ]);
-
-        $products = Product::get(['product_name', 'product_id']);
-
-        $bookingStatus = booked_pavilions::query()
-            ->leftJoin('companies', 'booked_pavilions.companyID', '=', 'companies.companyID')
-            ->leftJoin('advice_notes', 'booked_pavilions.advice_note_id', '=', 'advice_notes.advice_note_id')
-            ->whereIn('booked_pavilions.pavilionID', $boothIdsInPavilion)
-            ->where('booked_pavilions.exhibition_year', $event->event_id)
-            ->get([
-                'booked_pavilions.pavilionID as boothID',
-                'companies.companyName',
-                'advice_notes.advice_note_id',
-                'advice_notes.total_amount',
-                'advice_notes.balance',
-                'advice_notes.currency',
-                'companies.companyID',
-            ]);
+        $heldSpaceIds = booked_pavilions::where('exhibition_year', $event->event_id)
+            ->whereIn('pavilionID', $booths->pluck('boothID')->push($id))
+            ->distinct()->pluck('pavilionID')->flip();
+        $pavilionAvailable = $pavilion->space_status === 'UNRESERVED' && !$heldSpaceIds->has($id);
+        $availableBoothCount = $pavilionAvailable
+            ? $booths->filter(fn ($booth) =>
+                $booth->bookingStatus !== 'RESERVED' && !$heldSpaceIds->has($booth->boothID))->count()
+            : 0;
+        $spaceAvailable = $pavilionAvailable && ($number_of_booths === 0 || $availableBoothCount > 0);
 
         return view('booking.booth-booking', compact(
-            'booths',
-            'companies',
-            'pavilion',
-            'number_of_booths',
-            'products',
-            'bookedSpace',
-            'activeEvent',
-            'id',
-            'bookedBooths',
-            'bookingStatus'
+            'booths', 'companies', 'pavilion', 'number_of_booths',
+            'event', 'heldSpaceIds', 'availableBoothCount', 'spaceAvailable'
         ));
     }
 

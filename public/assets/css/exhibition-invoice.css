@@ -190,26 +190,23 @@
 
 .invoice-toolbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     max-width: 920px;
     margin: 0 auto 16px;
+    overflow-x: auto;
 }
 
 .invoice-toolbar .btn {
     display: inline-flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     gap: 8px;
     min-height: 44px;
     padding: 8px 14px;
-    white-space: normal;
+    white-space: nowrap;
     text-align: center;
-}
-
-.invoice-toolbar .invoice-toolbar-cancel {
-    margin-inline-start: auto;
 }
 
 .invoice-action-status {
@@ -223,13 +220,7 @@
     }
 
     .invoice-toolbar .btn {
-        flex: 0 1 auto;
-        max-width: 100%;
         padding-inline: 10px;
-    }
-
-    .invoice-toolbar .invoice-toolbar-cancel {
-        margin-inline-start: 0;
     }
 }
 

@@ -12,7 +12,6 @@ use App\Models\settings\events;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
-use Intervention\Image\Facades\Image;
 
 class spaceCategoryController extends Controller
 {
@@ -86,20 +85,6 @@ class spaceCategoryController extends Controller
                 return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
             }
 
-            $categoryPoster = Null;
-            if ($request->categoryPoster) {
-                $validator = Validator::make($request->all(), [
-                    'categoryPoster' => 'required|mimes:png,jpg,jpeg'
-                ]);
-                if ($validator->fails()) {
-                    return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
-                }
-                $fileName =  'category_poster' . date('shdmY') . '.' . $request->categoryPoster->extension();
-                $path = public_path('uploadedFiles/');
-                $image = Image::make($request->categoryPoster)->resize(1000, 500);
-                $image->save($path . $fileName);
-                $categoryPoster = env('APP_URL') . '/public/uploadedFiles/' . $fileName;
-            }
             space_categories::create([
                 'category_id' => Str::uuid(),
                 'user_id' => Auth::user()->user_uuid,
@@ -109,7 +94,6 @@ class spaceCategoryController extends Controller
                 'category_event' => $request->event_name,
                 'background_color' => 'bg-info',
                 'category_descriptions' => $request->category_descriptions,
-                'category_icon' => $categoryPoster,
             ]);
             return redirect()->route('spaceCategories.index')->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
@@ -131,7 +115,7 @@ class spaceCategoryController extends Controller
             }
             $events = events::orderBy('event_status', 'DESC')->orderBy('event_start_date', 'DESC')->get();
             $categories = space_categories::leftJoin('events', 'space_categories.category_event', '=', 'events.event_id')
-                ->get(['category_id', 'category_name', 'cost_one_msq', 'type_of_currency', 'event_name', 'category_event', 'category_descriptions', 'category_icon'])
+                ->get(['category_id', 'category_name', 'cost_one_msq', 'type_of_currency', 'event_name', 'category_event', 'category_descriptions'])
                 ->where('category_id', $id);
             return view('space.edit-space-category', compact('categories', 'events'));
         } catch (\Throwable $th) {
@@ -164,23 +148,6 @@ class spaceCategoryController extends Controller
             }
 
             $category = space_categories::find($id);
-            $categoryPoster = $category->category_icon ?? Null;
-            if ($request->categoryPoster) {
-                $validator = Validator::make($request->all(), [
-                    'categoryPoster' => 'required|mimes:png,jpg,jpeg'
-                ]);
-                if ($validator->fails()) {
-                    return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
-                }
-                $img = str_replace(env('APP_URL') . '/public/uploadedFiles/','',$categoryPoster);
-                $deletePath = public_path('uploadedFiles/' . $img);
-                File::delete($deletePath);
-                $fileName =  'category_poster_' . date('shdmY') . '.' . $request->categoryPoster->extension();
-                $path = public_path('uploadedFiles/');
-                $image = Image::make($request->categoryPoster)->resize(1000, 500);
-                $image->save($path . $fileName);
-                $categoryPoster = env('APP_URL') . '/public/uploadedFiles/' . $fileName;
-            }
             $category->update([
                 'user_id' => Auth::user()->user_uuid,
                 'category_name' => $request->category_name,
@@ -188,7 +155,6 @@ class spaceCategoryController extends Controller
                 'type_of_currency' => $request->type_of_currency,
                 'category_event' => $request->event_name,
                 'background_color' => 'bg-info',
-                'category_icon' => $categoryPoster,
                 'category_descriptions' => $request->category_descriptions,
             ]);
             if (!PriceConfiguration::where('eventId', session('liveEvent'))->where('referenceId', $id)->exists()) {

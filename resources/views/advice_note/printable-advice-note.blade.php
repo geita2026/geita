@@ -41,16 +41,32 @@
                 {{--  message  --}}
                 @foreach ($adviceNotes as $item)
                     @php
+                        $user = Auth::user();
+                        $role = \Spatie\Permission\Models\Role::class;
                         $canceled = $item->advice_note_status === 'CANCELED';
-                        $canRequestControl = !$canceled && !$item->control_number && !$item->sp_invoice_no
-                            && Auth::user()->can('REQUEST_ADVICE_NOTE');
-                        $canDownload = $item->control_number && Auth::user()->can('DOWNLOAD_INVOICE');
-                        $canPreviewForm = Auth::user()->account_type == 1 && $exhibitor?->participationCommitimentFile;
-                        $canApplyDiscount = !$canceled && !$item->sp_invoice_no && Auth::user()->can('APPLY_DISCOUNT');
-                        $canExtendDeadline = !$canceled && $item->control_number && $item->advice_note_deadline
-                            && strtotime($item->advice_note_deadline) < strtotime('today') && Auth::user()->can('EXTEND_DEADLINE');
-                        $canCancel = !$canceled && $item->amount_paid == 0 && Auth::user()->can('CANCEL_INVOICES');
+                        $needsControlNumber = !$canceled && blank($item->control_number);
+                        $waitingForBilling = $needsControlNumber && filled($item->sp_invoice_no);
+                        $canRequestControl = $needsControlNumber && !$waitingForBilling
+                            && $user->can('REQUEST_ADVICE_NOTE', $role);
+                        $canDownload = filled($item->control_number) && $item->canDownload($user);
+                        $canPreviewForm = $user->account_type == 1 && filled($exhibitor?->participationCommitimentFile);
+                        $canApplyDiscount = !$canceled && blank($item->sp_invoice_no) && $user->can('APPLY_DISCOUNT', $role);
+                        $canExtendDeadline = !$canceled && filled($item->control_number) && $item->advice_note_deadline
+                            && strtotime($item->advice_note_deadline) < strtotime('today') && $user->can('EXTEND_DEADLINE', $role);
+                        $canCancel = $item->isCancelable() && $user->can('CANCEL_INVOICES', $role);
                     @endphp
+
+                    @if ($needsControlNumber)
+                        <p class="alert alert-info invoice-action-status" role="status">
+                            @if ($waitingForBilling)
+                                The request was sent to billing. The control number will appear here once billing issues it.
+                            @elseif ($canRequestControl)
+                                Request a control number before making a payment.
+                            @else
+                                A control number has not been requested. Contact the accounts team to request one.
+                            @endif
+                        </p>
+                    @endif
 
                     @if ($canRequestControl || $canDownload || $canPreviewForm || $canApplyDiscount || $canExtendDeadline || $canCancel)
                         <div class="invoice-toolbar" role="group" aria-label="Invoice actions">
@@ -61,7 +77,7 @@
                                 </button>
                             @endif
                             @if ($canDownload)
-                                <a class="btn {{ $canRequestControl ? 'btn-default' : 'btn-primary' }}"
+                                <a class="btn btn-primary"
                                     href="{{ route('download_invoice', ['id' => $item->advice_note_id]) }}"
                                     target="_blank" rel="noopener">
                                     <i class="icon-download" aria-hidden="true"></i> Download invoice
@@ -74,7 +90,7 @@
                             @endif
                             @if ($canApplyDiscount)
                                 <a href="{{ route('review_invoice_discount', ['id' => $item->advice_note_id]) }}" class="btn btn-default">
-                                    <i class="icon-pencil7" aria-hidden="true"></i> Manage discount
+                                    <i class="icon-pencil7" aria-hidden="true"></i> Apply discount
                                 </a>
                             @endif
                             @if ($canExtendDeadline)
@@ -84,7 +100,7 @@
                                 </button>
                             @endif
                             @if ($canCancel)
-                                <button type="button" class="btn btn-danger invoice-toolbar-cancel" data-toggle="modal"
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#cancelInvoice{{ $item->advice_note_id }}">
                                     <i class="icon-cross2" aria-hidden="true"></i> Cancel invoice
                                 </button>
@@ -92,26 +108,22 @@
                         </div>
                     @endif
 
-                    @if ($exhibitor && !$item->control_number && !$canceled)
-                        <p class="alert alert-info invoice-action-status" role="status">
-                            The control number for this Geita Mineral Exhibition invoice is pending.
-                        </p>
-                    @endif
-
+                    @if ($canRequestControl)
                         {{-- *********** INVOICE Control Number ******** --}}
-                        <div id="requestControlNumber{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
-                            <div class="modal-dialog modal-lg">
+                        <div id="requestControlNumber{{ $item->advice_note_id }}" class="modal fade"
+                            role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="requestControlNumberTitle{{ $item->advice_note_id }}">
+                            <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary">
-                                        <h5 class="modal-title text-bold text-center"> CONTROL NUMBER REQUEST</h5>
+                                    <div class="modal-header">
+                                        <h2 id="requestControlNumberTitle{{ $item->advice_note_id }}" class="modal-title">Request control number</h2>
                                     </div>
-                                    <div class="modal-body">
-                                        <form
-                                            action="{{ route('adviceNotes.update', ['adviceNote' => $item->advice_note_id]) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="source" value="1">
+                                    <form
+                                        action="{{ route('adviceNotes.update', ['adviceNote' => $item->advice_note_id]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="source" value="1">
+                                        <div class="modal-body">
                                             @if ($item->currency == 'USD')
                                                 <div class=" form-group">
                                                     <label>What type of currency will you use to pay ? <b
@@ -165,19 +177,19 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class=" text-right form-group">
-                                                <button type="button" data-dismiss="modal"
-                                                    class=" btn btn-secondary">Close</button>
-                                                <button type="submit"
-                                                    class="btn btn-primary ml-20 btn-ladda btn-ladda-spinner">Get
-                                                    Control Number <i class=" icon icon-arrow-right13"></i></button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                                            <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner">
+                                                Get control number <i class="icon-arrow-right13" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                         {{-- ******** END INVOICE DESCRIPTIONS --}}
+                    @endif
 
                         {{-- REQUEST DISCOUNT --}}
                         <div id="Discount{{ $item->advice_note_id }}" class="modal fade text-left"
@@ -198,6 +210,7 @@
 
 
 
+                    @if ($canExtendDeadline)
                         {{-- Extend deadline modal --}}
                         <div id="Extend{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
                             <div class="modal-dialog modal-lg">
@@ -241,7 +254,9 @@
                             </div>
                         </div>
                         {{-- End extend modal --}}
+                    @endif
 
+                    @if ($canCancel)
                         {{-- delete modal --}}
                         <div id="cancelInvoice{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
                             <div class="modal-dialog modal-md">
@@ -279,7 +294,7 @@
                             </div>
                         </div>
                         {{-- delete modal --}}
-
+                    @endif
                         {{-- *********** Upload Participation Form ******** --}}
                         <div id="participationForm{{ $item->advice_note_id }}" class="modal fade" aria-modal="true">
                             <div class="modal-dialog modal-lg">

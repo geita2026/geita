@@ -44,7 +44,10 @@ class DownloadController extends Controller
             return back()->with('fail',$this->permissionDeniedMessage('DOWNLOAD_INVOICE'));
         }
 
-        $id=$request->id;
+        $id = $request->validate(['id' => 'required|string'])['id'];
+        $invoice = advice_notes::findOrFail($id, ['advice_note_id', 'company_id']);
+        abort_unless($invoice->canDownload($request->user()), 403);
+
         //advice note details
         $adviceNotes=advice_notes::leftJoin('companies','companies.companyID','=','advice_notes.company_id')
         ->leftJoin('users','advice_notes.user_id','=','users.user_uuid')

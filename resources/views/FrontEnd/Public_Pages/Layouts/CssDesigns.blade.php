@@ -89,15 +89,4 @@
     body.gememis-theme .bg-white {
         background-color: transparent !important;
     }
-    body.gememis-theme .modal-content {
-        background: #0c0a0e !important;
-        border: 1.5px solid rgba(255, 191, 0, 0.35) !important;
-        color: #fff !important;
-        border-radius: 24px !important;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 30px rgba(255, 191, 0, 0.15) !important;
-    }
-    body.gememis-theme .modal-header,
-    body.gememis-theme .modal-footer {
-        border-color: rgba(255, 191, 0, 0.2) !important;
-    }
 </style>

@@ -1,284 +1,165 @@
 <x-app-layout>
-    <title>{{ env('APP_NAME') }} | Booking</title>
+    <title>{{ config('app.name') }} | {{ $pavilion->pavilionName }}</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/exhibition-booking.css') }}">
+    <script src="{{ asset('assets/js/core/exhibition-booking.js') }}" defer></script>
+    @include('booking.navigation', [
+        'bookingCategory' => ['id' => $pavilion->pavilionCategory, 'name' => $pavilion->category_name ?? 'Spaces'],
+        'bookingPavilion' => $pavilion->pavilionName,
+    ])
 
-    <style>
-        .booking-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.08);
-            margin-bottom: 25px;
-        }
+    @php
+        $hasBooths = $number_of_booths > 0;
+        $selectedBooths = (array) old('spaceName', []);
+        $floorPlanTemplate = match (strtoupper($pavilion->pavilionName)) {
+            'KARUME HALL' => 'KarumeHall',
+            'MANYARA PAVILION', 'MIKUMI PAVILION' => '40StandPavilions',
+            'KILIMANJARO HALL' => 'KilimanjaroHall',
+            'KIJIJI CHA WIZARA YA UTAMADUNI SANAA NA MICHEZO' => '117Booth',
+            default => 'FourTierFloorMap',
+        };
+    @endphp
 
-        .legend span {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-right: 8px;
-            display: inline-block;
-        }
-
-        .legend-available { background:#c8e6c9; color:#1b5e20; }
-        .legend-booked { background:#e0e0e0; color:#424242; }
-
-        .floating-confirm-wrapper {
-            position: fixed;
-            right: 24px;
-            bottom: 120px;
-            z-index: 9999;
-            text-align: right;
-        }
-
-        .floating-confirm-wrapper .btn {
-            min-width: 320px;
-            box-shadow: 0 12px 28px rgba(0,0,0,.25);
-        }
-
-        .pulse {
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .clear-selection {
-            margin-top: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            color: #d32f2f;
-        }
-    </style>
-
-    <!-- ===================== PAGE HEADER ===================== -->
-    <div class="page-header">
-        <div class="page-header-content">
-            @include('layouts.heading-elements')
-        </div>
-
-        <div class="breadcrumb-line breadcrumb-line-component">
-            <ul class="breadcrumb">
-                <li><a href="#"><i class="icon-home position-left"></i> Home</a></li>
-                <li class="active">Make Booking</li>
-            </ul>
-            <ul class="breadcrumb-elements">
-                @include('layouts.help')
-            </ul>
-        </div>
-    </div>
-
-    <!-- ===================== CONTENT ===================== -->
     <div class="content">
         <div class="panel panel-white">
-            <div class="panel-body">
-
-                <!-- ===================== PAVILION INFO ===================== -->
-                <div class="booking-card text-center">
-                    <h2 class="text-uppercase text-muted">
-                        SELECTED PAVILION
-                    </h2>
-                    <h1 class="text-bold">
-                        {{ $pavilion->pavilionName }}
-                    </h1>
-
-                    <div class="legend mt-10">
-                        <span class="legend-available">Available Space</span>
-                        <span class="legend-booked">Booked Space</span>
-                    </div>
-                </div>
-
-                <!-- ===================== ALLOWED CATEGORIES ===================== -->
-                <div class="booking-card">
-                    <div class="media-link cursor-pointer"
-                         data-toggle="collapse"
-                         data-target="#allowedCategories"
-                         style="border:1px solid #d5eeeb;padding:15px">
-                        <h5 class="text-warning text-bold">
-                            <i class="icon-warning"></i>
-                            NOTE! Allowed Sectors
-                        </h5>
-                        <p class="text-muted">
-                            Ensure your company category is allowed before booking.
+            <div class="panel-body exhibition-booking">
+                <header class="booking-heading">
+                    <div>
+                        <p class="text-muted">{{ $event->event_name }}</p>
+                        <h1>{{ $pavilion->pavilionName }}</h1>
+                        <p>
+                            {{ number_format($pavilion->pavilion_size, 2) }} m²
+                            · {{ $hasBooths ? number_format($availableBoothCount) . ' booths available' : 'Whole space' }}
                         </p>
                     </div>
+                    <a class="btn btn-default" href="{{ $pavilion->pavilionCategory ? route('event-booking-spaces.show', $pavilion->pavilionCategory) : route('booking.index') }}">Back to spaces</a>
+                </header>
 
-                    <div class="collapse" id="allowedCategories">
-                        <hr>
-                        <div class="text-uppercase">
-                            {{ $pavilion->allowedForBooking }}
-                        </div>
+                @if ($pavilion->pavilionDescription)
+                    <p>{{ $pavilion->pavilionDescription }}</p>
+                @endif
+                @if ($pavilion->allowedForBooking)
+                    <details class="booking-details">
+                        <summary>Eligible exhibitor sectors</summary>
+                        <p>{{ $pavilion->allowedForBooking }}</p>
+                    </details>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                </div>
+                @endif
 
-                <!-- ===================== BOOKING FORM ===================== -->
-                <form id="bookingForm"
-                      action="{{ route('booking.store') }}"
-                      method="POST">
+                @if (!$spaceAvailable)
+                    <p class="alert alert-info">This space is currently unavailable for booking.</p>
+                @elseif ($companies->isEmpty())
+                    <p class="alert alert-info">You need an active company linked to your account before you can book this space.</p>
+                @endif
+
+                @if ($hasBooths && $booths->isNotEmpty())
+                    <details class="booking-details">
+                        <summary>View the floor plan</summary>
+                        <p class="text-muted">Use the floor plan to find booth numbers, then select them in the list below.</p>
+                        <div class="table-responsive booking-map" tabindex="0" role="region" aria-label="Pavilion floor plan">
+                            @include('space.FloorPlans.' . $floorPlanTemplate, ['readOnlyBookingMap' => true])
+                        </div>
+                    </details>
+                @endif
+
+                <form id="exhibition-booking-form" action="{{ route('booking.store') }}" method="POST" data-has-booths="{{ $hasBooths ? 'true' : 'false' }}">
                     @csrf
-
-                    <!-- ===================== COMPANY ===================== -->
-                    <div class="booking-card">
-                        <label>
-                            Company / Institution
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select id="search-select"
-                                name="company_name"
-                                required></select>
-                    </div>
-
-                    <!-- ===================== BOOTHS ===================== -->
-                    @if ($number_of_booths > 0)
-                        <div class="booking-card">
-                            <h4 class="text-bold text-uppercase">
-                                Select Booth(s)
-                            </h4>
-
-                            <div class="table-responsive">
-                                @if (strtoupper($pavilion->pavilionName)=='KARUME HALL')
-                                    @include('space.FloorPlans.KarumeHall')
-                                @elseif (strtoupper($pavilion->pavilionName)=='MANYARA PAVILION' || strtoupper($pavilion->pavilionName)=='MIKUMI PAVILION')
-                                    @include('space.FloorPlans.40StandPavilions')
-                                @elseif (strtoupper($pavilion->pavilionName)=='KILIMANJARO HALL')
-                                    @include('space.FloorPlans.KilimanjaroHall')
-                                @elseif (strtoupper($pavilion->pavilionName)=='KIJIJI CHA WIZARA YA UTAMADUNI SANAA NA MICHEZO')
-                                    @include('space.FloorPlans.117Booth')
-                                @else
-                                    @include('space.FloorPlans.FourTierFloorMap')
-                                @endif
-                            </div>
-                        </div>
-                    @else
-                        <!-- ===================== WHOLE PAVILION ===================== -->
-                        <input type="hidden"
-                               name="spaceName[]"
-                               value="{{ $id }}">
-                    @endif
-
-                    <!-- IMPORTANT: ORIGINAL INPUT PRESERVED -->
                     <input type="hidden" name="space" value="booth">
 
-                    <!-- ===================== FLOATING CONFIRM ===================== -->
-                    <div class="floating-confirm-wrapper">
-                        <button type="button"
-                                id="confirmBookingBtn"
-                                class="btn btn-primary btn-lg btn-ladda btn-ladda-spinner"
-                                {{ $number_of_booths > 0 ? 'disabled' : '' }}>
-                            Confirm Booking
-                        </button>
+                    @if ($spaceAvailable && $companies->isNotEmpty())
+                        <div class="form-group booking-company">
+                            <label for="booking-company">Company or institution <span class="text-danger" aria-hidden="true">*</span></label>
+                            <select id="booking-company" name="company_name" class="form-control" required>
+                                <option value="">Select a company</option>
+                                @foreach ($companies as $company)
+                                    <option value="{{ $company->companyID }}"
+                                        {{ old('company_name', $companies->count() === 1 ? $company->companyID : '') == $company->companyID ? 'selected' : '' }}>
+                                        {{ $company->companyName }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
 
-                        @if ($number_of_booths > 0)
-                            <div id="clearSelection"
-                                 class="clear-selection">
-                                Clear Selection
+                    @if ($hasBooths && $booths->isNotEmpty())
+                        <section class="booking-related" aria-labelledby="booking-booths-title">
+                            <h2 id="booking-booths-title">{{ $spaceAvailable && $companies->isNotEmpty() ? 'Select booths' : 'Booths' }}</h2>
+                            <div class="table-responsive booking-table" tabindex="0" role="region" aria-label="Booth availability">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            @if ($spaceAvailable && $companies->isNotEmpty())
+                                                <th scope="col">Select</th>
+                                            @endif
+                                            <th scope="col">Booth</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col" class="text-right">Area (m²)</th>
+                                            <th scope="col" class="text-right">Rate / m²</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($booths as $booth)
+                                            @php
+                                                $reserved = $booth->bookingStatus === 'RESERVED';
+                                                $booked = $heldSpaceIds->has($booth->boothID) || $heldSpaceIds->has($pavilion->pavilionID);
+                                                $canSelect = !$reserved && !$booked;
+                                            @endphp
+                                            <tr>
+                                                @if ($spaceAvailable && $companies->isNotEmpty())
+                                                    <td>
+                                                        @if ($canSelect)
+                                                            <input type="checkbox" name="spaceName[]" value="{{ $booth->boothID }}"
+                                                                class="booking-booth-select" aria-label="Select booth {{ $booth->boothNo }}"
+                                                                {{ in_array($booth->boothID, $selectedBooths, true) ? 'checked' : '' }}>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                                <th scope="row">{{ $booth->boothNo }}</th>
+                                                <td>{{ $booth->category_name ?? '—' }}</td>
+                                                <td class="text-right">{{ number_format($booth->boothSize, 2) }}</td>
+                                                <td class="text-right booking-money">
+                                                    {{ $booth->category_cost !== null ? $booth->type_of_currency . ' ' . number_format($booth->category_cost, 2) : '—' }}
+                                                </td>
+                                                <td>
+                                                    <span class="booking-status {{ $canSelect ? 'is-available' : '' }}">
+                                                        {{ $reserved ? 'Reserved' : ($booked ? 'Booked' : 'Available') }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
+                        </section>
+                    @elseif ($spaceAvailable && $companies->isNotEmpty())
+                        <input type="hidden" name="spaceName[]" value="{{ $pavilion->pavilionID }}">
+                        @if ($pavilion->cost_one_msq !== null && $pavilion->type_of_currency)
+                            <p><strong>{{ $pavilion->type_of_currency }} {{ number_format($pavilion->cost_one_msq, 2) }}</strong> / m²</p>
                         @endif
-                    </div>
+                    @endif
 
+                    @if ($spaceAvailable && $companies->isNotEmpty())
+                        <div class="booking-footer">
+                            <div aria-live="polite" id="booking-selection">{{ $hasBooths ? 'Select at least one available booth.' : 'Whole space selected.' }}</div>
+                            <div class="booking-actions">
+                                @if ($hasBooths)
+                                    <button type="button" id="booking-clear" class="btn btn-default" hidden>Clear selection</button>
+                                @endif
+                                <button type="submit" id="booking-submit" class="btn btn-primary">Add to booking cart</button>
+                            </div>
+                        </div>
+                    @endif
                 </form>
-
             </div>
         </div>
     </div>
 </x-app-layout>
-
-<!-- ===================== SCRIPTS ===================== -->
-<script src="{{ asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
-
-<script>
-$(document).ready(function () {
-
-    /* ===================== SELECT2 ===================== */
-    $('#search-select').select2({
-        ajax: {
-            url: '{{ route('search_companies') }}',
-            dataType: 'json',
-            delay: 250,
-            data: params => ({ q: params.term }),
-            processResults: data => ({
-                results: $.map(data, function(item) {
-                    return {
-                        id: item.companyID,
-                        text: item.registrationID + ' || ' +
-                              item.companyName + ' || ' +
-                              item.companyPhone + ' || ' +
-                              item.companyEmail
-                    };
-                })
-            }),
-            cache: true
-        },
-        placeholder: 'Search company by name or TSRN',
-        minimumInputLength: 0,
-        width: '100%'
-    });
-
-    const hasBooths = {{ $number_of_booths > 0 ? 'true' : 'false' }};
-
-    function selectedCount() {
-        return $('.booth-select:checked').length;
-    }
-
-    function updateButton() {
-        const btn = $('#confirmBookingBtn');
-        const count = selectedCount();
-
-        if (!hasBooths) {
-            btn.prop('disabled', false).text('Confirm Booking');
-            return;
-        }
-
-        if (count > 0) {
-            btn.prop('disabled', false)
-               .addClass('pulse')
-               .text(`Confirm Booking`);
-        } else {
-            btn.prop('disabled', true)
-               .removeClass('pulse')
-               .text('Confirm Booking');
-        }
-    }
-
-    $(document).on('change', '.booth-select', updateButton);
-
-    $('#clearSelection').on('click', function () {
-        $('.booth-select:not(:disabled)').prop('checked', false);
-        updateButton();
-    });
-
-    $('#confirmBookingBtn').on('click', function () {
-
-        if (!$('#search-select').val()) {
-            window.gememisToast({
-                title: 'Company required',
-                text: 'Select a company before confirming your booking.',
-                icon: 'error',
-            });
-            return;
-        }
-
-        swal({
-            title: 'Confirm Booking',
-            text: hasBooths
-                ? `You are about to confirm selected booth(s).`
-                : 'You are about to confirm this booking.',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#1a73e8',
-            confirmButtonText: 'Yes, Confirm',
-            cancelButtonText: 'Cancel'
-        }, function (isConfirm) {
-            if (isConfirm) {
-                $('#confirmBookingBtn')
-                    .prop('disabled', true)
-                    .removeClass('pulse');
-                $('#bookingForm').submit();
-            }
-        });
-    });
-
-});
-</script>

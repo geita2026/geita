@@ -44,17 +44,19 @@
                             </div>
                         </li>
 
-                        <li class="media">
-                            <div class="media-left">
-                                <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
-                            </div>
+                        @unless (request()->routeIs('startApp'))
+                            <li class="media">
+                                <div class="media-left">
+                                    <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
+                                </div>
 
-                            <div class="media-body" title="click to shift Module">
-                                 <a href="{{ route('permitDashboard') }}">{{ config('global.MODULE_TWO') }}
-                                <div class="media-annotation"> {{ config('global.MODULE_TWO_DESCRIPTION') }}</div>
-                            </a>
-                            </div>
-                        </li>
+                                <div class="media-body" title="click to shift Module">
+                                    <a href="{{ route('permitDashboard') }}">{{ config('global.MODULE_TWO') }}
+                                        <div class="media-annotation">{{ config('global.MODULE_TWO_DESCRIPTION') }}</div>
+                                    </a>
+                                </div>
+                            </li>
+                        @endunless
                     </ul>
 
                     <div class="dropdown-content-footer">

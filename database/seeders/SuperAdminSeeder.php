@@ -36,9 +36,9 @@ class SuperAdminSeeder extends Seeder
                 return;
             }
 
-            if (strlen($password) < 16 || strlen($password) > 72
+            if (mb_strlen($password, 'UTF-8') < 8 || strlen($password) > 72
                 || trim($password) !== $password || str_contains($password, "\0")) {
-                throw new RuntimeException('Set a SUPER_ADMIN_PASSWORD of 16 to 72 bytes without surrounding whitespace.');
+                throw new RuntimeException('Set a SUPER_ADMIN_PASSWORD with at least 8 characters, at most 72 bytes, and no surrounding whitespace or null bytes.');
             }
 
             $role = Role::findOrCreate('Super Admin', 'web');
