@@ -23,9 +23,9 @@ class VirtualMessagesController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Virtual Messages',Role::class))
+        if($request->user()->cannot('VIEW_VIRTUAL_MESSAGES',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_VIRTUAL_MESSAGES'));
         }
 
         $messages=VirtualMessages::orderBy('message_sent_on','DESC')->where('message_from',Auth::user()->user_uuid)->get();
@@ -43,9 +43,9 @@ class VirtualMessagesController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Send Virtual Messages',Role::class))
+        if($request->user()->cannot('SEND_VIRTUAL_MESSAGES',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('SEND_VIRTUAL_MESSAGES'));
         }
 
         try {
@@ -101,9 +101,9 @@ class VirtualMessagesController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View Virtual Message',Role::class))
+        if($request->user()->cannot('VIEW_VIRTUAL_MESSAGE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_VIRTUAL_MESSAGE'));
         }
        try {
         session(['message_to'=>$id]);
@@ -125,9 +125,9 @@ class VirtualMessagesController extends Controller
      */
     public function destroy(Request $request ,$id)
     {
-        if($request->user()->cannot('Delete Virtual Messages',Role::class))
+        if($request->user()->cannot('DELETE_VIRTUAL_MESSAGES',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_VIRTUAL_MESSAGES'));
         }
        try
        {

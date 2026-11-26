@@ -18,6 +18,9 @@
     <!-- /page header -->
 
     <!-- Content area -->
+    @php
+        $canCancelInvoices = Auth::user()->can('CANCEL_INVOICES', \Spatie\Permission\Models\Role::class);
+    @endphp
     <div class="content">
         <div class="panel panel-white">
             <div class=" panel-body">
@@ -33,12 +36,13 @@
                     </div>
 
                     <div class=" form-group col-md-12">
-                        <table class="table table-bordered table-striped table-responsive">
+                        <table data-table-paginated class="table table-bordered table-striped table-responsive">
                             <thead>
                                 <tr>
                                     <th class=" text-bold text-center">INVOICE ID</th>
                                     <th class=" text-bold text-center">CUSTOMER NAME</th>
                                     <th class=" text-bold text-center">CONTROL NO</th>
+                                    <th class="text-bold text-center">PAYMENT MODE</th>
                                     <th class=" text-center text-bold">INVOICED AMOUNT</th>
                                     <th class=" text-center text-bold">AMOUNT PAID</th>
                                     <th class=" text-center text-bold">BALANCE</th>
@@ -46,7 +50,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $i=1; @endphp
                                 @foreach ($advice_note as $item)
                                     <tr>
                                         <td><a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}"
@@ -68,6 +71,14 @@
                                             </a>
                                         </td>
 
+                                        <td class="text-center">
+                                            {{ match ((string) $item->payment_mode) {
+                                                '1' => 'Full',
+                                                '2' => 'Partial',
+                                                '3' => 'Exact',
+                                                default => '—',
+                                            } }}
+                                        </td>
                                         <td class=" text-right"> {{ number_format($item->total_amount, 2) }}
                                             {{ $item->currency }}</td>
                                         <td class=" text-right">{{ number_format($item->amount_paid, 2) }}
@@ -77,15 +88,39 @@
                                             {{ number_format($item->balance, 2) }} {{ $item->currency }}</td>
 
                                         <td class=" text-center">
-                                            <a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}"
-                                                class=" text-bold btn btn-default text-primary"
-                                                title="Click here to view {{ $item->advice_note_id }} Advice Note details">View
-                                                Invoice <i class=" icon-file-empty2"></i></a>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-default dropdown-toggle"
+                                                    data-toggle="dropdown" aria-expanded="false"
+                                                    aria-label="Actions for {{ $item->advice_note_id }}">
+                                                    Actions <span class="caret" aria-hidden="true"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    <li>
+                                                        <a href="{{ route('adviceNotes.show', ['adviceNote' => $item->advice_note_id]) }}">
+                                                            <i class="icon-file-empty2" aria-hidden="true"></i> View Invoice
+                                                        </a>
+                                                    </li>
+                                                    @if ($item->isApproved())
+                                                        <li>
+                                                            <a href="{{ route('download_invoice', ['id' => $item->advice_note_id]) }}">
+                                                                <i class="icon-download" aria-hidden="true"></i> Download Advice Note
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($canCancelInvoices && $item->isCancelable())
+                                                        <li>
+                                                            <a href="#cancelAdviceNote{{ $loop->index }}" class="text-danger"
+                                                                data-toggle="modal">
+                                                                <i class="icon-cross2" aria-hidden="true"></i> Cancel Advice Note
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                </ul>
+                                            </div>
                                         </td>
 
 
                                     </tr>
-                                    @php $i++; @endphp
                                 @endforeach
                             </tbody>
 
@@ -93,7 +128,7 @@
                     </div>
 
                     <div class=" col-md-12 text-right form-group">
-                        {{ $advice_note->links() }}
+                        {{ $advice_note->withQueryString()->links() }}
                     </div>
 
                 </div>
@@ -103,10 +138,18 @@
     </div>
     <!-- /content area -->
     <!-- /main content -->
+    @if ($canCancelInvoices)
+        @foreach ($advice_note as $item)
+            @if ($item->isCancelable())
+                @include('advice_note.cancel-modal', ['modalId' => 'cancelAdviceNote'.$loop->index])
+            @endif
+        @endforeach
+    @endif
 </x-app-layout>
 
 <script>
     $(document).ready(function() {
+        const invoiceUrl = @json(route('adviceNotes.show', ['adviceNote' => '__INVOICE_ID__']));
         $('#search-select').select2({
             ajax: {
                 url: '{{ route('search_invoices') }}', // URL for the AJAX request
@@ -121,8 +164,7 @@
                     return {
                         results: $.map(data, function(item) {
                             return {
-                                id: '{{ env('APP_URL') }}/accountingManagement/adviceNotes/' +
-                                    item.advice_note_id,
+                                id: invoiceUrl.replace('__INVOICE_ID__', encodeURIComponent(item.advice_note_id)),
                                 text: item.advice_note_id + ' || ' + item.companyName +
                                     ' || ' + item.control_number + ' || ' +
                                     numberWithCommas(item.total_amount) + ' ' + item

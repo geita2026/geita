@@ -163,7 +163,7 @@
 
                                             </li>
                                             <li>
-                                                @can('Update Advice Note')
+                                                @can('UPDATE_ADVICE_NOTE')
                                                 @if($item->advice_note_status=='SAC')
                                                 <a href="{{ route('update_adviceNotes.show',['update_adviceNote'=>$item->advice_note_id]) }}" class=" text-primary text-bold">Update Advice Note<i class=" icon-pencil7"></i></a>
                                                 @else
@@ -174,7 +174,7 @@
 
 
                                                 @if($item->advice_note_status=='SAC')
-                                                @can('delete-adviceNote')
+                                                @can('DELETE_ADVICE_NOTE')
                                                 <a href="" data-toggle="modal" data-target="#d{{ $item->advice_note_id }}"  class="text-danger" data-popup="tooltip" title="Cancel AdviceNote">Cancel Advice Note <i class=" icon-cancel-square"></i></a>
                                                 @endcan
                                                 @endif

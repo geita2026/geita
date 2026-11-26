@@ -2,9 +2,13 @@
 
 namespace App\Models\advice_note;
 
+use App\Models\Companies\CompanyAdmin;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Permission\Models\Role;
 
 class advice_notes extends Model implements Auditable
 {
@@ -21,4 +25,34 @@ class advice_notes extends Model implements Auditable
         'discount','discount_reasons','discount_attachment','initially_assessed_by','finally_assessed_by','rejection_reasons'
         ,'change_currency','exchange_rate','notification_date','payment_mode','discountAmount'
     ];
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ((int) $user->account_type === 1) {
+            return $query;
+        }
+
+        if ((int) $user->account_type === 2) {
+            return $query->whereIn('advice_notes.company_id', CompanyAdmin::where('adminId', $user->user_uuid)->select('companyId'));
+        }
+
+        return $query->whereIn('advice_notes.company_id', []);
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->advice_note_status === 'APPROVED';
+    }
+
+    public function canDownload(User $user): bool
+    {
+        return $this->isApproved()
+            && $user->canAny(['MANAGE_INVOICES', 'DOWNLOAD_INVOICE'], Role::class)
+            && ((int) $user->account_type === 1 || $this->newQuery()->visibleTo($user)->whereKey($this->getKey())->exists());
+    }
+
+    public function isCancelable(): bool
+    {
+        return $this->advice_note_status !== 'CANCELED' && (float) $this->amount_paid === 0.0;
+    }
 }

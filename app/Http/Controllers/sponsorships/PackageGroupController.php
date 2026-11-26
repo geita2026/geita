@@ -24,8 +24,8 @@ class PackageGroupController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage PackageGroups', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PACKAGE_GROUP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PACKAGE_GROUP'));
             }
             $packageCategories = PackageGroup::get();
             return view('sponsorship.PackageGroups', compact('packageCategories'));
@@ -43,8 +43,8 @@ class PackageGroupController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage PackageGroups', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_PACKAGE_GROUP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PACKAGE_GROUP'));
             }
             $packageCategories = PackageGroup::where('packageGroupId', $id)->get();
             return view('sponsorship.UpdatePackageGroups', compact('packageCategories'));
@@ -62,8 +62,8 @@ class PackageGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage PackageGroups', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PACKAGE_GROUP', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PACKAGE_GROUP'));
         }
         $request->validate([
             'packageGroupName' => 'required',

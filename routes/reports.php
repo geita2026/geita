@@ -29,7 +29,6 @@ Route::resource('exhibitors',exhibitorsReports::class);
 Route::resource('adviceNote-reports',adviceNoteReports::class);
 Route::resource('collection_reports',exhibitionCollectionController::class);
 Route::resource('exhibition_products',ProductReportController::class);
-Route::get('downloadoffFairInvoice',[DownloadController::class,'DownloadOffFairInvoice'])->name('downloadOffFairInvoice');
 #---TEST FUNCTION ------#
 Route::get('test_function',[bookedUnbookedReportController::class,'testFunction'])->name('test_funtion');
 Route::resource('ground_visitors',GroundVisitorsCountController::class);

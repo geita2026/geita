@@ -19,8 +19,8 @@ class StreetController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $streets=Street::get();
             return view('space.Street',compact('streets'));
@@ -38,8 +38,8 @@ class StreetController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $validetor=Validator::make($request->all(),[
                 'streetName'=>'required'
@@ -68,8 +68,8 @@ class StreetController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $validetor=Validator::make($request->all(),[
                 'streetName'=>'required'
@@ -96,8 +96,8 @@ class StreetController extends Controller
     public function destroy(Request $request,$id)
     {
         try {
-            if ($request->user()->cannot('Delete Street', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_STREET', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_STREET'));
             }
             Street::find($id)->delete();
             return back()->with('success',config('Messages.200'));

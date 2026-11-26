@@ -16,16 +16,24 @@ class CustomerPasswordResertController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->cannot('Resert Customer Password',User::class))
+        if($request->user()->cannot('RESET_CUSTOMER_PASSWORD_RESET',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('RESET_CUSTOMER_PASSWORD_RESET'));
         }
-    $event=events::where('event_status',1)->first();
-    $users=User::orderBy('first_name','ASC')->leftJoin('roles','users.role','=','roles.id')
-    ->leftJoin('exhibitors','users.user_uuid','=','exhibitors.exhibitor_id')->where('exhibitor_event',$event->event_id)
-    ->where('roles.name', 'Customer')->where('roles.guard_name', 'web')->get(['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role',
-    'phone_number','account_status']);
-    return view('users.CustomerResertPassword',compact('users'));
+        $event = events::where('event_status', 1)->first();
+        $users = User::orderBy('users.first_name')
+            ->leftJoin('roles', 'users.role', '=', 'roles.id')
+            ->leftJoin('exhibitors', 'users.user_uuid', '=', 'exhibitors.exhibitor_id')
+            ->where('exhibitors.exhibitor_event', $event->event_id)
+            ->where('roles.name', 'Customer')
+            ->where('roles.guard_name', 'web')
+            ->get([
+                'users.id', 'users.first_name', 'users.middle_name', 'users.last_name',
+                'users.name', 'users.email', 'users.user_uuid', 'users.user_ip_address',
+                'users.role', 'users.phone_number', 'users.account_status',
+            ]);
+
+        return view('users.CustomerResertPassword', compact('users'));
 
     }
 

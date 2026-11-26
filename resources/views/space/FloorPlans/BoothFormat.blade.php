@@ -1,3 +1,12 @@
+@if (!empty($readOnlyBookingMap))
+    @php
+        $mapBoothUnavailable = $stand->bookingStatus === 'RESERVED'
+            || $heldSpaceIds->has($stand->boothID) || $heldSpaceIds->has($pavilion->pavilionID);
+    @endphp
+    <span class="booking-map-booth {{ $mapBoothUnavailable ? '' : 'is-available' }}">
+        {{ $stand->boothNo }}<span class="sr-only"> {{ $mapBoothUnavailable ? 'Unavailable' : 'Available' }}</span>
+    </span>
+@else
 <style>
     .booth{
         font-size: 8px;
@@ -53,3 +62,5 @@
         <b>{{ $stand->boothNo }}</b>
     </label>
 </a>
+
+@endif

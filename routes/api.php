@@ -18,7 +18,6 @@ Route::post('/auth/forgot_password', [ApiAuthController::class, 'ForgotPassword'
 
 # ************* PRIVATE APIs *********** #
 Route::prefix('')->group(function() {
-    Route::post('gfs_codes',[IntergrationController::class,'PostGfsCode']);
     Route::post('control_number',[IntergrationController::class,'PostControlNumber']);
     Route::post('payments',[IntergrationController::class,'PostPayments']);
     Route::resource('data_migration',DataMigrationController::class);

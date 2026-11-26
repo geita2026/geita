@@ -82,7 +82,6 @@
                            <option value=""> - - - Select Sidebar Season - - -</option>
                            <optgroup label="sidebar season">
                               <option value="On-Fair">On-Fair</option>
-                              <option value="Off-Fair">Off-Fair</option>
                            </optgroup>
                        </select>
                        <span class="text-danger"> @error('menu_status'){{ $message }}@enderror</span>

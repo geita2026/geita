@@ -1,4 +1,5 @@
 
+<link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
 <link rel="icon" href="{{ asset('images/nembo.png') }}" type="image/gif" sizes="16x16">
     <link href="{{ asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css">

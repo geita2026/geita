@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="{{ asset('frontEndAssets/css/responsive.css') }}">
 
     <link rel="icon" href="{{ $event->eventPoster }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 </head>
 
 <body class="">

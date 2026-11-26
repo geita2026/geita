@@ -36,7 +36,8 @@
                             <tr>
                                 <th class=" text-bold text-center">S/N</th>
                                 <th class=" text-bold text-center">USER NAME</th>
-                                <th class=" text-bold text-center">USER PHONE</th>
+                                <th class=" text-bold text-center">COMPANY</th>
+                                <th class="text-bold text-center">USER PHONE</th>
                                 <th class=" text-bold text-center">USER EMAIL</th>
                                 <th class=" text-bold text-center">USER STATUS</th>
                                 <th class=" text-bold text-center">ACTIONS</th>
@@ -45,7 +46,8 @@
                         <tbody>
 
                             @php $i=1; @endphp
-                            @foreach ($users as $item)
+                            @forelse ($users as $item)
+                                @php $rowId = $item->user_uuid . '-' . $item->companyID; @endphp
                                 <tr>
                                     <td>{{ $i }}</td>
                                     <td class=" text-capitalize">
@@ -53,6 +55,7 @@
                                             href="{{ route('company_users.edit', ['company_user' => $item->user_uuid]) }}">{{ $item->first_name }}
                                             {{ $item->last_name }} </a>
                                     </td>
+                                    <td>{{ $item->companyName }}</td>
                                     <td>{{ $item->phone_number }}</td>
                                     <td>{{ $item->email }}</td>
                                     <td class=" text-center">
@@ -69,7 +72,7 @@
                                                     <i class="icon-menu4"></i>
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-menu-right">
-                                                    @can('Update Company User')
+                                                    @can('UPDATE_COMPANY_USER')
                                                         <li>
                                                             <a href="{{ route('company_users.edit', ['company_user' => $item->user_uuid]) }}"
                                                                 class=" text-primary"><b><i class=" icon-pencil7"></i>
@@ -77,10 +80,10 @@
                                                                     User</b></a>
                                                         </li>
                                                     @endcan
-                                                    @can('Sunspend User Account')
+                                                    @can('SUNSPEND_USER_ACCOUNT')
                                                         <li>
                                                             <a data-toggle="modal"
-                                                                data-target="#SunspendAccount{{ $item->user_uuid }}">
+                                                                data-target="#SunspendAccount{{ $rowId }}">
                                                                 @if ($item->account_status == 1)
                                                                     <b class=" text-danger"><i class=" icon-user-block"></i>
                                                                         Sunspend Account</b>
@@ -100,7 +103,7 @@
 
 
                                 {{-- update company --}}
-                                <div id="updateUser{{ $item->user_uuid }}" class="modal fade" aria-modal="true">
+                                <div id="updateUser{{ $rowId }}" class="modal fade" aria-modal="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header bg-info-400">
@@ -207,7 +210,7 @@
                                 </div>
 
                                 {{-- update company --}}
-                                <div id="SunspendAccount{{ $item->user_uuid }}" class="modal fade"
+                                <div id="SunspendAccount{{ $rowId }}" class="modal fade"
                                     aria-modal="true">
                                     <div class="modal-dialog modal-md">
                                         <div class="modal-content">
@@ -246,7 +249,9 @@
                                     </div>
                                 </div>
                                 @php $i++; @endphp
-                            @endforeach
+                            @empty
+                                <tr><td colspan="7" class="text-center text-muted">No company users found.</td></tr>
+                            @endforelse
                         </tbody>
                     </table>
                     <div id="p1"></div>

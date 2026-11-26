@@ -39,8 +39,8 @@ class BadgesAllocationController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('view-badge-allocation', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_BADGE_ALLOCATION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGE_ALLOCATION'));
             }
             $allocations = BadgesAllocation::leftJoin('companies', 'badges_allocations.company_id', '=', 'companies.companyID')
                 ->leftJoin('events', 'badges_allocations.event_id', '=', 'events.event_id')
@@ -93,8 +93,8 @@ class BadgesAllocationController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('update-badges-allocations', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('UPDATE_BADGES_ALLOCATIONS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('UPDATE_BADGES_ALLOCATIONS'));
             }
 
             $allocations = BadgesAllocation::where('badge_allocation_id', $id)
@@ -122,8 +122,8 @@ class BadgesAllocationController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Clear Badge Allocation', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CLEAR_BADGE_ALLOCATION', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CLEAR_BADGE_ALLOCATION'));
         }
     }
 }

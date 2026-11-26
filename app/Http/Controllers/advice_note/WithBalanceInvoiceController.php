@@ -22,8 +22,8 @@ class WithBalanceInvoiceController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Invoice Balances', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_INVOICE_WITH_BALANCE_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_INVOICE_WITH_BALANCE_SUBMENU'));
         }
 
         $totalBalance = advice_notes::leftJoin('companies', 'advice_notes.company_id', 'companies.companyID')
@@ -46,8 +46,8 @@ class WithBalanceInvoiceController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if ($request->user()->cannot('View Invoice Balances', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_INVOICE_WITH_BALANCE_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_INVOICE_WITH_BALANCE_SUBMENU'));
         }
         $totalBalance = advice_notes::leftJoin('companies', 'advice_notes.company_id', 'companies.companyID')
         ->orderBy('advice_note_deadline','DESC')

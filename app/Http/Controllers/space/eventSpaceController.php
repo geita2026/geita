@@ -19,9 +19,9 @@ class eventSpaceController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Registered Spaces',Role::class))
+        if($request->user()->cannot('VIEW_EVENT_SPACE_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_EVENT_SPACE_SUBMENU'));
         }
         //
         $events=events::orderBy('event_start_date','ASC')->get()->where('event_status',1);

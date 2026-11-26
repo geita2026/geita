@@ -84,13 +84,13 @@
                                             <i class="icon-menu4"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @can('Update Virtual Services')
+                                            @can('UPDATE_VIRTUAL_SERVICES')
                                             <li>
                                                 <a data-toggle="modal" data-target="#Update{{ $item->virtual_service_id }}" class=" text-primary"><i class="icon-arrow-right13"></i>Update Service</a>
                                             </li>
                                             @endcan
 
-                                            @can('Delete Virtual Service')
+                                            @can('DELETE_VIRTUAL_SERVICE')
                                             <li>
                                                 <a  data-toggle="modal" data-target="#delete{{ $item->virtual_service_id }}"  class=" text-danger"><i class="icon-arrow-right13"></i> Delete Service</a>
                                             </li>

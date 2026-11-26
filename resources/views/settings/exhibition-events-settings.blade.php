@@ -76,7 +76,7 @@
             <div class="panel-body">
 
                 {{-- ADD EVENT --}}
-                @can('Create Events')
+                @can('CREATE_EXHIBITION_EVENT')
                 <div class="form-group text-right">
                     <button class="btn btn-default border-primary text-primary"
                             data-toggle="modal"
@@ -131,7 +131,7 @@
                                                 <i class="icon-menu4"></i>
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                @can('Update Events')
+                                                @can('UPDATE_EXHIBITION_EVENT')
                                                 <li>
                                                     <a data-toggle="modal"
                                                        data-target="#edit{{ $item->event_id }}">
@@ -139,7 +139,7 @@
                                                     </a>
                                                 </li>
                                                 @endcan
-                                                @can('Delete Events')
+                                                @can('DELETE_EXHIBITION_EVENT')
                                                 <li>
                                                     <a data-toggle="modal"
                                                        data-target="#delete{{ $item->event_id }}"
@@ -235,7 +235,7 @@
     </div>
 
     {{-- CREATE MODAL --}}
-    @can('Create Events')
+    @can('CREATE_EXHIBITION_EVENT')
     <div id="new_event" class="modal fade">
         <div class="modal-dialog modal-lg">
             <form action="{{ route('Exhibition-Events.store') }}" method="POST">

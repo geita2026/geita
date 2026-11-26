@@ -34,7 +34,7 @@
                 @include('Badges.BadgeLayouts.BadgeUploadLogic')
                 {{-- END UPLOAD LOGICS --}}
 
-               @can('search-badges')
+               @can('SEARCH_BADGES')
                     <div class=" form-group">
                     <form action="{{ route('exhibitors_list.edit',['exhibitors_list'=>session('companyID')]) }}" method="POST">
                         @csrf
@@ -49,7 +49,7 @@
                 </div>
                @endcan
                 <div class=" col-md-12 form-group table-responsive">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
 
                             <tr>
@@ -142,7 +142,7 @@
                                                         </a>
                                                     </li>
                                                     @if ($item->badge_status == 'UNPRINTED')
-                                                        @can('Update Member Badges')
+                                                        @can('UPDATE_MEMBER_BADGES')
                                                             @if (Auth::user()->account_type == 1 || $item->badge_status == 'UNPRINTED')
                                                                 <li>
                                                                     <a data-toggle="modal"
@@ -152,7 +152,7 @@
                                                                 </li>
                                                             @endif
                                                         @endcan
-                                                        @can('Delete Member Badges')
+                                                        @can('DELETE_EXHIBITOR_BADGE')
                                                             @if (Auth::user()->account_type == 1 || $item->badge_status == 'UNPRINTED')
                                                                 <li>
                                                                     <a data-toggle="modal"
@@ -162,7 +162,7 @@
                                                                 </li>
                                                             @endif
                                                         @endcan
-                                                        @can('Block Member Badges')
+                                                        @can('BLOCK_EXHIBITOR_BADGE')
                                                             <li>
                                                                 <a data-toggle="modal"
                                                                     data-target="#Block{{ $item->member_id }}"
@@ -171,7 +171,7 @@
                                                             </li>
                                                         @endcan
                                                     @else
-                                                        @can('UnBlock Member Badges')
+                                                        @can('UN_BLOCK_MEMBER_BADGES')
                                                             <li>
                                                                 <a data-toggle="modal"
                                                                     data-target="#UnBlock{{ $item->member_id }}"
@@ -179,7 +179,7 @@
                                                                         class=" icon-user-check"></i></a>
                                                             </li>
 
-                                                            @can('Revert Badges')
+                                                            @can('REVERT_BADGES')
                                                                 <li>
                                                                     <a data-toggle="modal"
                                                                         data-target="#edit_member{{ $item->member_id }}"
@@ -440,7 +440,7 @@
                         </table>
 
                         <div class=" form-group text-right">
-                            {{ $members->links() }}
+                            {{ $members->withQueryString()->links() }}
                         </div>
                     </div>
                 </div>

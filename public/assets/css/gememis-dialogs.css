@@ -1,0 +1,177 @@
+.modal {
+    --gem-dialog-space: 24px;
+    --gem-dialog-height: calc(100vh - 2 * var(--gem-dialog-space));
+    --gem-dialog-height: calc(100dvh - 2 * var(--gem-dialog-space));
+}
+
+.modal > .modal-dialog {
+    width: auto;
+    max-width: calc(100% - 2 * var(--gem-dialog-space));
+    margin: var(--gem-dialog-space) auto;
+}
+
+.modal.fade > .modal-dialog {
+    transform: none;
+    transition: none;
+}
+
+.modal:not(.gememis-registration-modal) > .modal-dialog:not(.modal-sm, .modal-lg, .modal-xl, .modal-full) {
+    width: 600px;
+}
+
+.modal > .modal-dialog.modal-sm { width: 360px; }
+.modal > .modal-dialog.modal-lg { width: 900px; }
+.modal > .modal-dialog.modal-xl { width: 1140px; }
+.modal > .modal-dialog.modal-full { width: 100%; }
+
+.modal > .modal-dialog > .modal-content {
+    max-height: var(--gem-dialog-height);
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.modal .modal-content {
+    border: 0;
+    border-radius: 18px;
+    background: #fff;
+    color: #24211e;
+    box-shadow: 0 18px 60px rgba(16, 13, 10, .32);
+}
+
+.modal-content :is(.modal-header, .registration-header) {
+    display: block;
+    padding: 24px 28px;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 3px solid #d6a54f;
+    background: #252019;
+    color: #fff;
+    text-align: left;
+}
+
+.modal-content :is(.modal-header, .registration-header) .modal-title {
+    margin: 0;
+    color: inherit;
+    font-size: clamp(23px, 4vw, 29px);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.modal-content :is(.modal-header, .registration-header) .close {
+    color: #fff;
+    opacity: .9;
+    text-shadow: none;
+}
+
+.modal-content .modal-header .close {
+    top: 24px;
+    right: 28px;
+    margin: 0;
+}
+
+.modal-content .modal-header:has(.close) {
+    padding-inline-end: 60px;
+}
+
+.modal-content :is(.modal-body, .registration-body) {
+    padding: 20px 28px;
+}
+
+/* Keep legacy dialogs with unconventional markup scrollable as a whole. */
+.modal-content > .modal-header,
+.modal-content > .modal-footer {
+    position: sticky;
+    z-index: 2;
+}
+
+.modal-content > .modal-header { top: 0; }
+.modal-content > .modal-footer { bottom: 0; }
+
+.modal-content:has(> .modal-body, > form > .modal-body),
+.gememis-registration-modal .modal-content,
+.modal-content > form:has(> .modal-body),
+.gememis-registration-modal .modal-content > form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.modal-content > form:has(> .modal-body),
+.gememis-registration-modal .modal-content > form {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
+.modal-content > .modal-body,
+.modal-content > form > .modal-body,
+.gememis-registration-modal .registration-body {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: 12px;
+}
+
+.modal-content :is(.modal-header, .modal-footer),
+.gememis-registration-modal :is(.registration-header, .registration-footer) {
+    flex: 0 0 auto;
+    max-height: 32vh;
+    max-height: 32dvh;
+    overflow: auto;
+    overflow-wrap: anywhere;
+    overscroll-behavior: contain;
+}
+
+.modal-content :is(.modal-footer, .registration-footer) {
+    padding: 14px 28px;
+    border-top: 1px solid #e5ddd2;
+    border-radius: 0 0 18px 18px;
+    background: #faf7f2;
+    white-space: normal;
+}
+
+.modal-content .modal-footer .btn {
+    max-width: 100%;
+    white-space: normal;
+}
+
+.modal > .select2-container--open {
+    z-index: 1;
+}
+
+.modal:has(> .select2-container--open) {
+    overflow-anchor: none;
+}
+
+.gememis-registration-modal {
+    --gem-dialog-space: 28px;
+}
+
+.swal2-popup {
+    max-height: calc(100dvh - 24px);
+    overflow: auto;
+}
+
+@media (max-width: 575px) {
+    .modal {
+        --gem-dialog-space: 8px;
+    }
+
+    .modal-content :is(.modal-header, .modal-body, .modal-footer, .registration-header, .registration-body, .registration-footer) {
+        padding-inline: 16px;
+    }
+
+    .modal-content .modal-header .close {
+        right: 16px;
+    }
+
+    .gememis-registration-modal {
+        --gem-dialog-height: 100vh;
+        --gem-dialog-height: 100dvh;
+    }
+
+    .gememis-registration-modal > .modal-dialog {
+        max-width: none;
+        width: 100%;
+    }
+}

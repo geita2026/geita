@@ -24,8 +24,8 @@ class rolesController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Roles', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ROLE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ROLE'));
         }
         $roles = DB::table('roles')->orderBy('id')->get();
         return view('controls.controls', compact('roles'));
@@ -38,8 +38,8 @@ class rolesController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Manage Roles', Role::class,)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ROLE', Role::class,)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ROLE'));
         }
 
         $roles = DB::table('roles')->get();
@@ -55,8 +55,8 @@ class rolesController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage Roles', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ROLE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ROLE'));
         }
         $request->validate([
             'role_name' => 'required|string|max:100|unique:roles,name',
@@ -81,8 +81,8 @@ class rolesController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Roles', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_ROLE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_ROLE'));
         }
         //
         $roles = Role::where('roles.id', $id)->get();
@@ -104,8 +104,8 @@ class rolesController extends Controller
     public function edit(Request $request, $id)
     {
         //
-        if ($request->user()->cannot('View Roles', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ROLE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ROLE'));
         }
 
         $roles = Role::where('roles.id', $id)
@@ -128,8 +128,8 @@ class rolesController extends Controller
     {
 
         try {
-            if ($request->user()->cannot('Update Roles', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('UPDATE_ROLE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('UPDATE_ROLE'));
             }
             $validator = Validator::make($request->all(), [
                 'role_name' => 'required|string|max:100'
@@ -155,12 +155,12 @@ class rolesController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Roles', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_ROLE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_ROLE'));
             }
             $role = role::find($id);
             if ($role->name == 'Super Admin') {
-                return back()->with('fail', config('Messages.401'));
+                return back()->with('fail', 'The Super Admin role cannot be deleted.');
             }
             $role->delete();
             return back()->with('success', config('Messages.200'));

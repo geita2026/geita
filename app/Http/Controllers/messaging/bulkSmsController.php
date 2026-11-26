@@ -28,9 +28,9 @@ class bulkSmsController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Bulk Sms',Role::class))
+        if($request->user()->cannot('VIEW_BULK_SMS_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BULK_SMS_SUBMENU'));
         }
 
         $draft_messages=BulkSms::where('sms_status',0)->get(); //return draft messages
@@ -50,9 +50,9 @@ class bulkSmsController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Bulk Sms',Role::class))
+        if($request->user()->cannot('CREATE_BULK_SMS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_BULK_SMS'));
         }
         try {
         $sms_content=$request->sms_body;
@@ -142,9 +142,9 @@ class bulkSmsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Bulk Sms',Role::class))
+        if($request->user()->cannot('UPDATE_BULK_SMS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_BULK_SMS'));
         }
         $request->validate([
             'companyPhone'=>'required|starts_with:255|digits:12',
@@ -180,9 +180,9 @@ class bulkSmsController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Bulk Sms',Role::class))
+        if($request->user()->cannot('DELETE_BULK_SMS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_BULK_SMS'));
         }
 
         try {

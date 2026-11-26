@@ -29,8 +29,8 @@ class packageContentController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage Sponsorship', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPONSORSHIP', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPONSORSHIP'));
         }
         //
 
@@ -75,8 +75,8 @@ class packageContentController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete PackageBenefits', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_PACKAGE_BENEFITS', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_PACKAGE_BENEFITS'));
             }
             $benefit = sponsorship_package_contents::leftJoin('sponsorship_benefits', 'sponsorship_package_contents.benefitId', '=', 'sponsorship_benefits.benefitId')
                 ->find($id);

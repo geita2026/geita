@@ -41,23 +41,22 @@
 
             <div class="panel-body table-responsive">
 
-                <!-- COMPANY REGISTRATION FORM -->
-                <div class="row mb-15">
-                    <div class="col-md-12">
-                        @include('company.NewCompanyRegistration')
-                    </div>
-                </div>
-
-                <!-- SEARCH -->
-                <div class="row mb-20">
-                    <div class="col-md-6">
-                        <select id="search-select" class="form-control" onchange="location=this.value">
-                        </select>
-                    </div>
-                </div>
+                <form action="{{ route('companies.index') }}" method="GET" class="gememis-table-toolbar">
+                    <label class="sr-only" for="company-table-search">Search companies</label>
+                    <input type="search" class="form-control" id="company-table-search" name="search"
+                        value="{{ request('search') }}" placeholder="Search companies">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    @if (request()->filled('search'))
+                        <a href="{{ route('companies.index') }}" class="btn btn-default">Clear</a>
+                    @endif
+                    <button type="button" class="btn btn-primary gememis-table-register"
+                        data-toggle="modal" data-target="#NoCompany" aria-haspopup="dialog">
+                        Register Company
+                    </button>
+                </form>
 
                 <!-- TABLE -->
-                <table class="table table-hover table-bordered">
+                <table data-table-paginated data-table-search="server" class="table table-hover table-bordered">
                     <thead style="background:#f5f7fa">
                         <tr>
                             <th class="text-center text-bold" style="width:60px">#</th>
@@ -72,7 +71,7 @@
                     <tbody>
                         @php $i = ($companies->currentPage() - 1) * $companies->perPage() + 1; @endphp
 
-                        @foreach ($companies as $item)
+                        @forelse ($companies as $item)
                             @php
                                 $currentYear = date('Y');
                                 $isCurrent = $item->lastUpdatedOn == $currentYear;
@@ -129,14 +128,16 @@
                             </tr>
 
                             @php $i++; @endphp
-                        @endforeach
+                        @empty
+                            <tr><td colspan="6" class="text-center text-muted">No companies match your search.</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
 
 
                 <!-- PAGINATION -->
                 <div class="text-right mt-15">
-                    {{ $companies->links() }}
+                    {{ $companies->withQueryString()->links() }}
                 </div>
 
             </div>
@@ -145,68 +146,3 @@
     <!-- ===================== /CONTENT ===================== -->
 
 </x-app-layout>
-
-<!-- ===================== SEARCH SCRIPT ===================== -->
-<script>
-$(document).ready(function () {
-
-    function formatCompanyResult(item) {
-        if (!item.id) {
-            return item.text;
-        }
-
-        const parts = item.text.split(' | ');
-
-        return $(`
-            <div style="line-height:1.4">
-                <div class="text-bold text-primary">
-                    ${parts[0]} <span class="text-muted">— ${parts[1]}</span>
-                </div>
-                <div class="text-muted" style="font-size:12px">
-                    <i class="icon-phone"></i> ${parts[2]}
-                    &nbsp;&nbsp;
-                    <i class="icon-mail5"></i> ${parts[3]}
-                </div>
-            </div>
-        `);
-    }
-
-    function formatCompanySelection(item) {
-        return item.text;
-    }
-
-    $('#search-select').select2({
-        ajax: {
-            url: '{{ route('search_companies') }}',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return { q: params.term };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            id: '{{ env('APP_URL') }}/customerReg/company_profile/' +
-                                item.registrationID,
-                            text: item.registrationID + ' | ' +
-                                  item.companyName + ' | ' +
-                                  item.companyPhone + ' | ' +
-                                  item.companyEmail
-                        };
-                    })
-                };
-            },
-            cache: true
-        },
-        placeholder: 'Search by TSRN, company name, phone, or email…',
-        minimumInputLength: 0,
-        width: '100%',
-        templateResult: formatCompanyResult,
-        templateSelection: formatCompanySelection,
-        escapeMarkup: function (m) { return m; }
-    });
-
-});
-</script>
-

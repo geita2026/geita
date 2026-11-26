@@ -36,6 +36,7 @@
 	<!-- /theme JS files -->
 
     <!-- /core JS files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 </head>
 
 <body class="login-container" style="background-image: url({{ asset('ExpoFolder/Expobackground.png') }})">

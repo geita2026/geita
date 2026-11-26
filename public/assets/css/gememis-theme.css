@@ -171,74 +171,6 @@ body.reset-page-body {
 /* =========================================================
    BUTTONS
    ========================================================= */
-.btn-brand,
-button.btn-brand,
-a.btn-brand,
-.btn-primary:not(.btn-close) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #FFBF00 0%, #E5A900 100%) !important;
-  color: #000000 !important;
-  font-weight: 700 !important;
-  font-size: 14.5px;
-  border: none !important;
-  border-radius: 9999px !important;
-  padding: 11px 26px !important;
-  box-shadow: 0 4px 18px rgba(255, 191, 0, 0.4) !important;
-  text-decoration: none !important;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.btn-brand:hover,
-button.btn-brand:hover,
-a.btn-brand:hover,
-.btn-primary:not(.btn-close):hover {
-  background: linear-gradient(135deg, #FFD033 0%, #FFBF00 100%) !important;
-  color: #000000 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(255, 191, 0, 0.6) !important;
-}
-
-.btn-brand:disabled,
-button.btn-brand:disabled,
-.btn-primary:disabled {
-  opacity: 0.45 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-.btn-brand-outline,
-button.btn-brand-outline,
-a.btn-brand-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(255, 191, 0, 0.05) !important;
-  border: 1.5px solid #FFBF00 !important;
-  color: #FFBF00 !important;
-  font-weight: 600 !important;
-  font-size: 14.5px;
-  border-radius: 9999px !important;
-  padding: 10px 24px !important;
-  text-decoration: none !important;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.btn-brand-outline:hover,
-button.btn-brand-outline:hover,
-a.btn-brand-outline:hover {
-  background: #FFBF00 !important;
-  color: #000000 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255, 191, 0, 0.45) !important;
-}
-
 .btn-brand-ghost {
   display: inline-flex;
   align-items: center;
@@ -255,42 +187,6 @@ a.btn-brand-outline:hover {
 .btn-brand-ghost:hover {
   color: #FFE9A8 !important;
   text-decoration: underline;
-}
-
-/* =========================================================
-   FORM CONTROLS (Dark Glass + Amber Focus)
-   ========================================================= */
-.brand-input,
-.form-control.brand-field,
-.form-control {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1.5px solid rgba(255, 191, 0, 0.25) !important;
-  border-radius: 12px !important;
-  color: #ffffff !important;
-  padding: 12px 16px !important;
-  font-size: 14.5px !important;
-  transition: all 0.2s ease !important;
-}
-
-.brand-input:focus,
-.form-control.brand-field:focus,
-.form-control:focus {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: #FFBF00 !important;
-  box-shadow: 0 0 16px rgba(255, 191, 0, 0.35) !important;
-  outline: none !important;
-  color: #ffffff !important;
-}
-
-.form-control::placeholder {
-  color: rgba(255, 255, 255, 0.38) !important;
-}
-
-/* Checkboxes */
-.brand-checkbox,
-input[type="checkbox"] {
-  accent-color: #FFBF00;
-  cursor: pointer;
 }
 
 /* =========================================================

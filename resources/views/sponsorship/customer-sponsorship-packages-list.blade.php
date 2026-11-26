@@ -40,7 +40,7 @@
                     </div>
 
                 <div class=" form-group col-md-12">
-                    <table class="table  table-responsive table-bordered table-striped">
+                    <table data-table-paginated class="table  table-responsive table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class=" text-bold">Company Name</th>
@@ -72,7 +72,7 @@
                     </table>
                 </div>
                 <div class=" col-md-12 text-right">
-                    {{ $packages->links() }}
+                    {{ $packages->withQueryString()->links() }}
                 </div>
             </div>
         </div>

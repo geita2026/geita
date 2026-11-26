@@ -1,246 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Invoice {{ $item->advice_note_id }}</title>
-
-    <style>
-        @page {
-            margin: 25mm 15mm 18mm 15mm;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
-            color: #111827;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .right { text-align: right; }
-        .center { text-align: center; }
-        .muted { color: #6b7280; font-size: 10px; }
-
-        .header-line-blue { height: 5px; background: #1d4ed8; }
-        .header-line-green { height: 5px; background: #16a34a; margin-bottom: 14px; }
-
-        .invoice-title {
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        .box {
-            border: 1px solid #e5e7eb;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .items th {
-            background: #f1f5f9;
-            font-size: 11px;
-            text-transform: uppercase;
-            border: 1px solid #d1d5db;
-            padding: 6px;
-        }
-
-        .items td {
-            border: 1px solid #e5e7eb;
-            padding: 6px;
-        }
-
-        .totals td {
-            padding: 5px;
-            font-size: 12px;
-        }
-
-        .totals .grand {
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .watermark {
-            position: fixed;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 80px;
-            font-weight: bold;
-            color: rgba(0,0,0,0.07);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 12mm;
-            font-size: 9px;
-            color: #374151;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .footer-table td {
-            padding: 2px 6px;
-            vertical-align: middle;
-        }
-
-        .pagenum:before { content: counter(page); }
-        .pagecount:before { content: counter(pages); }
-    </style>
-</head>
-
-<body>
-
-{{-- ================= WATERMARK ================= --}}
-@if ($item->advice_note_status === 'CANCELED')
-    <div class="watermark">CANCELLED</div>
-@elseif ($item->amount_paid >= $item->total_amount && $item->total_amount > 0)
-    <div class="watermark">PAID</div>
+@if (empty($invoicePdf) && empty($invoiceStylesLoaded))
+    @once
+        <link rel="stylesheet" href="{{ asset('assets/css/exhibition-invoice.css') }}">
+    @endonce
 @endif
 
-{{-- ================= HEADER ================= --}}
-<table>
-    @include('reports.reports_layouts.report_header')
-</table>
+@php
+    $emblem = 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('images/nembo.png')));
+    $subtotal = $particulars->sum(fn ($line) => $line->particular_quantity * $line->cost_for_one_particular);
+    $vat = $item->vat ? round($subtotal * 0.18, 2) : 0;
+    $invoiceTotal = (float) ($item->total_amount ?? ($subtotal + $vat));
+    $paid = (float) $item->amount_paid;
+    $status = $item->advice_note_status === 'CANCELED' ? 'Canceled'
+        : ($invoiceTotal > 0 && $paid >= $invoiceTotal ? 'Paid' : ucfirst(strtolower(str_replace('_', ' ', $item->advice_note_status ?? ''))));
+    $bankAccounts = $item->control_number
+        ? collect($transfer ?? [])->where('account_currency', $item->currency)
+        : collect();
+@endphp
 
-<div class="header-line-blue"></div>
-<div class="header-line-green"></div>
+<article class="geita-invoice" aria-label="Invoice {{ $item->advice_note_id }}">
+    <header class="invoice-letterhead">
+        <img class="invoice-emblem" src="{{ $emblem }}" alt="National emblem of Tanzania">
+        <div class="invoice-country">United Republic of Tanzania</div>
+        <h2>Geita Mineral Exhibition</h2>
+        <p>GeMEMIS - Geita Mineral Exhibition Management Information System</p>
+    </header>
 
-{{-- ================= META ================= --}}
-<table>
-    <tr>
-        <td>
-            <div class="invoice-title">INVOICE</div>
-            <div class="muted">Invoice #: {{ $item->advice_note_id }}</div>
-            <div class="muted">
-                Control No:
-                <strong style="letter-spacing:2px;color:#1d4ed8;">
-                    {{ $item->control_number ?? 'Not Issued' }}
-                </strong>
-            </div>
-        </td>
-        <td class="right">
-            <div class="box">
-                <b>Issue Date:</b> {{ date('M d, Y', strtotime($item->advice_note_created_at)) }}<br>
-                <b>Deadline:</b> {{ date('M d, Y', strtotime($item->advice_note_deadline)) }}<br>
-                <b>Total:</b> {{ number_format($item->total_amount,2) }} {{ $item->currency }}<br>
-                <b>Paid:</b> {{ number_format($item->amount_paid,2) }} {{ $item->currency }}<br>
-                <b>Balance:</b>
-                <span style="color:#dc2626">
-                    {{ number_format($item->total_amount - $item->amount_paid,2) }}
-                    {{ $item->currency }}
-                </span>
-            </div>
-        </td>
-    </tr>
-</table>
-
-<br>
-
-{{-- ================= BILL TO ================= --}}
-<div class="box">
-    <b>Invoiced To</b><br>
-    {{ $item->companyName }}<br>
-    TSRN: {{ $item->registrationID }}<br>
-    {{ $item->companyAddress ?? '' }} {{ $item->companyLocation }}<br>
-    Email: {{ $item->companyEmail ?? '-' }} |
-    Tel: {{ $item->companyPhone ?? '-' }}<br>
-    TIN: {{ $item->tinNo ?? '-' }}
-</div>
-
-<br>
-
-<p><b>Description:</b> Charges for participation in {{ $item->event_name }}.</p>
-
-{{-- ================= ITEMS ================= --}}
-<table class="items">
-    <thead>
-        <tr>
-            <th>Particular</th>
-            <th class="center">Qty</th>
-            <th class="right">Unit Price</th>
-            <th class="right">Sub Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php $total = 0; @endphp
-        @foreach ($particulars as $p)
-            @php
-                $line = $p->particular_quantity * $p->cost_for_one_particular;
-                $total += $line;
-            @endphp
-            <tr>
-                <td>
-                    {{ $p->particular_name }}
-                    <div class="muted">{{ $p->particular_category }} @if ($p->particular_description) [{{ $p->particular_description }}] @endif</div>
-                </td>
-                <td class="center">{{ number_format($p->particular_quantity,2) }}</td>
-                <td class="right">{{ number_format($p->cost_for_one_particular,2) }} {{ $p->type_of_currency }}</td>
-                <td class="right">{{ number_format($line,2) }} {{ $p->type_of_currency }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
-<br>
-
-{{-- ================= TOTALS ================= --}}
-@php $vat = $item->vat ? $total * 0.18 : 0; @endphp
-<table class="totals">
-    <tr>
-        <td class="right" width="80%">Sub Total</td>
-        <td class="right">{{ number_format($total,2) }} {{ $item->currency }}</td>
-    </tr>
-    @if ($vat > 0)
-    <tr>
-        <td class="right">VAT (18%)</td>
-        <td class="right">{{ number_format($vat,2) }} {{ $item->currency }}</td>
-    </tr>
-    @endif
-    <tr class="grand">
-        <td class="right">TOTAL</td>
-        <td class="right">{{ number_format($total + $vat,2) }} {{ $item->currency }}</td>
-    </tr>
-</table>
-
-<br>
-
-{{-- ================= PAYMENT CHANNEL (PRESERVED) ================= --}}
-@if ($item->control_number)
-    @include('advice_note.InvoiceLayouts.BankDetails')
-@endif
-
-<br>
-
-{{-- ================= QR ================= --}}
-<div class="center">
-    <img src="data:image/png;base64,{{ base64_encode(
-        QrCode::size(55)->generate(env('APP_URL').'/verify/'.$item->advice_note_id)
-    ) }}">
-    <div class="muted" style="letter-spacing:5px">
-        {{ $item->advice_note_id }}
+    <div class="invoice-title-row">
+        <h3>Invoice @if ($status)<span class="invoice-status">{{ $status }}</span>@endif</h3>
+        <strong>{{ $item->advice_note_id }}</strong>
     </div>
-</div>
 
-{{-- ================= FOOTER (OWNERSHIP ADDED – SMALL) ================= --}}
-<footer>
-    <table class="footer-table" width="100%">
+    <table class="invoice-meta">
         <tr>
             <td>
-                © {{ date('Y') }} Geita Mineral Exhibition • System Generated
+                <div class="invoice-label">Billed to</div>
+                <strong>{{ $item->companyName }}</strong><br>
+                @if ($item->registrationID) Registration ID {{ $item->registrationID }}<br> @endif
+                @if ($item->companyAddress || $item->companyLocation)
+                    {{ $item->companyAddress }} {{ $item->companyLocation }}<br>
+                @endif
+                @if ($item->companyEmail) {{ $item->companyEmail }}<br> @endif
+                @if ($item->companyPhone) {{ $item->companyPhone }}<br> @endif
+                @if ($item->tinNo) TIN {{ $item->tinNo }} @endif
             </td>
-            <td class="right">
-                Page <span class="pagenum"></span>/<span class="pagecount"></span>
+            <td>
+                <div class="invoice-label">Invoice details</div>
+                <strong>Issue date</strong> {{ $item->advice_note_created_at ? date('d M Y', strtotime($item->advice_note_created_at)) : 'Pending' }}<br>
+                <strong>Payment deadline</strong> {{ $item->advice_note_deadline ? date('d M Y', strtotime($item->advice_note_deadline)) : 'Pending' }}<br>
+                <strong>Control number</strong> {{ $item->control_number ?? 'Pending' }}
             </td>
         </tr>
     </table>
-</footer>
 
-</body>
-</html>
+    <p class="invoice-description">{{ $item->advice_note_description ?: 'Charges for ' . ($item->event_name ?: 'the Geita Mineral Exhibition') . '.' }}</p>
+
+    <table class="invoice-items">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col" class="invoice-quantity">Qty</th>
+                <th scope="col" class="invoice-amount">Unit price</th>
+                <th scope="col" class="invoice-amount">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($particulars as $line)
+                <tr>
+                    <td>
+                        {{ $line->particular_name }}
+                        @if ($line->particular_category || $line->particular_description)
+                            <div class="invoice-muted">{{ $line->particular_category }} {{ $line->particular_description }}</div>
+                        @endif
+                    </td>
+                    <td class="invoice-quantity">{{ number_format($line->particular_quantity, 2) }}</td>
+                    <td class="invoice-amount">{{ $line->type_of_currency }} {{ number_format($line->cost_for_one_particular, 2) }}</td>
+                    <td class="invoice-amount">{{ $line->type_of_currency }} {{ number_format($line->particular_quantity * $line->cost_for_one_particular, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <table class="invoice-totals">
+        <tr><td>Subtotal</td><td class="invoice-amount">{{ $item->currency }} {{ number_format($subtotal, 2) }}</td></tr>
+        @if ($vat > 0)
+            <tr><td>VAT (18%)</td><td class="invoice-amount">{{ $item->currency }} {{ number_format($vat, 2) }}</td></tr>
+        @endif
+        <tr><td>Total</td><td class="invoice-amount">{{ $item->currency }} {{ number_format($invoiceTotal, 2) }}</td></tr>
+        <tr><td>Amount paid</td><td class="invoice-amount">{{ $item->currency }} {{ number_format($paid, 2) }}</td></tr>
+        <tr class="invoice-total"><td>Balance due</td><td class="invoice-amount">{{ $item->currency }} {{ number_format($invoiceTotal - $paid, 2) }}</td></tr>
+    </table>
+
+    @if ($item->control_number)
+        <div class="invoice-payment">
+            <h4 class="invoice-label">Payment</h4>
+            <p>Use control number <strong>{{ $item->control_number }}</strong> as the payment reference.</p>
+            @foreach ($bankAccounts as $account)
+                <p>{{ $account->bank_name }} · {{ $account->account_name }} · {{ $account->account_number }}
+                    @if ($account->swift_code) · SWIFT {{ $account->swift_code }} @endif
+                </p>
+            @endforeach
+        </div>
+    @endif
+
+    <footer class="invoice-footer">
+        <img src="data:image/png;base64,{{ base64_encode(QrCode::size(65)->generate(route('verify', ['data' => $item->advice_note_id]))) }}"
+            alt="Invoice verification QR code">
+        <div>{{ $item->advice_note_id }}</div>
+        <div>Generated by GeMEMIS for the Geita Mineral Exhibition</div>
+    </footer>
+</article>

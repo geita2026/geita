@@ -83,7 +83,7 @@
                                     <i class="icon-menu4"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                   @can('Update Space Category')
+                                   @can('UPDATE_SPACE_CATEGORY')
                                 <li>
                                     <a  data-toggle="modal" data-target="#SetBenefit{{ $item->advice_note_id }}" class=" text-primary"><i class=" icon-pencil7"></i>Set Benefits</a>
                                 </li>

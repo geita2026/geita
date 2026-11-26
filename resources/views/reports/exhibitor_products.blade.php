@@ -92,14 +92,14 @@
                                     <i class="icon-menu4"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                   @can('Update Products')
+                                   @can('UPDATE_PRODUCT')
                                 <li>
                                     <a  class=" text-primary"><i class=" icon-pencil7"></i> Edit Products</a>
                                 </li>
                                    @endcan
 
 
-                                    @can('Delete Products')
+                                    @can('DELETE_PRODUCT')
                                     <li>
                                         <a  data-toggle="modal" data-target="#delete_product{{ $value->exhibition_product_id}}" class=" text-danger"><i class="icon-bin"></i> Delete Products</a>
                                     </li>

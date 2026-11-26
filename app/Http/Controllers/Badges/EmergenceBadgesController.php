@@ -20,8 +20,8 @@ class EmergenceBadgesController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Badges List', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BADGES_LIST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
       
         $badges = PDF::loadView('Badges.VIP')->setPaper('A4', 'portrait');

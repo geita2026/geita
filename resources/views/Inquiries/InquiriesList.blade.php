@@ -29,7 +29,7 @@
                 <div class=" col-md-12 table-header form-group">
                     <h4 class=" text-center">SPACE BOOKING REQUESTS</h4>
                 </div>
-                <table class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
+                <table data-table-paginated class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
                     <thead>
                         <tr>
                             <th class=" text-bold">#</th>
@@ -165,7 +165,7 @@
                 </table>
             </div>
             <div class=" form-group">
-                {{ $inquiries->links() }}
+                {{ $inquiries->withQueryString()->links() }}
             </div>
         </div>
     </div>

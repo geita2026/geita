@@ -29,7 +29,7 @@
                    </select>
                 </div>
                 <div class="form-group">
-                    <table class=" table table-bordered table-striped">
+                    <table data-table-paginated class=" table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class=" text-center">TSRN#</th>
@@ -54,7 +54,7 @@
                     </table>
                 </div>
                 <div class=" text-right">
-                    {{ $companies->links() }}
+                    {{ $companies->withQueryString()->links() }}
                 </div>
 
             </div>

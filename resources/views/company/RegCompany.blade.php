@@ -35,12 +35,13 @@
 
     <div class=" form-group row">
         <div class="  col-md-4">
-            <label>Company Sector</label>
-            <select name="company_sector" class="bootstrap-select " data-live-search="true" data-width="100%"
-                placehoder="Select Company category" required>
-                <option value="{{ old('company_sector') }}"> {{ old('company_sector') ?? '- - - Select Company Sector - - -' }}</option>
+            <label for="associate-company-sector">Company Sector</label>
+            <select id="associate-company-sector" name="company_sector" class="form-control" required>
+                <option value="">Select company sector</option>
                 @foreach ($sectors as $sector)
-                    <option value="{{ $sector->sectorID }}">{{ $sector->sectorName }}</option>
+                    <option value="{{ $sector->sectorID }}" {{ old('company_sector') == $sector->sectorID ? 'selected' : '' }}>
+                        {{ $sector->sectorName }}
+                    </option>
                 @endforeach
             </select>
             <span class="text-danger"> @error('company_sector')
@@ -49,13 +50,14 @@
             </span>
         </div>
         <div class="  col-md-4">
-            <label>Company Category</label>
-            <select name="company_category" class="bootstrap-select " data-live-search="true" data-width="100%"
-                placehoder="Select Company category" required>
-                <option value="{{ old('company_category') }}">{{ old('company_category') ?? '- - - Select company category - - -' }} </option>
-                <option value="Government Institution">Government Institution</option>
-                <option value="Private Companies">Private Companies</option>
-                <option value="SMEs">SMEs</option>
+            <label for="associate-company-category">Company Category</label>
+            <select id="associate-company-category" name="company_category" class="form-control" required>
+                <option value="">Select company category</option>
+                @foreach (['Government Institution', 'Private Companies', 'SMEs'] as $category)
+                    <option value="{{ $category }}" {{ old('company_category') === $category ? 'selected' : '' }}>
+                        {{ $category }}
+                    </option>
+                @endforeach
             </select>
             <span class="text-danger"> @error('company_category')
                     {{ $message }}
@@ -64,13 +66,12 @@
         </div>
 
         <div class="col-md-4">
-            <label>Company Originality (Country)</label>
-            <select name="country" id="country" class=" bootstrap-select" data-live-search="true" data-width="100%"
-                placehoder="Select Company category" required>
-                <option value="{{ old('country') }}">{{ old('country') ?? '- - - Select Country - - -' }}</option>
+            <label for="country">Company Originality (Country)</label>
+            <select name="country" id="country" class="form-control" required>
+                <option value="">Select country</option>
                 @foreach ($countries as $country)
-                    <option value="{{ $country->country_name }}">{{ $country->country_name }}
-                        ({{ $country->country_short_code }})
+                    <option value="{{ $country->country_name }}" {{ old('country') === $country->country_name ? 'selected' : '' }}>
+                        {{ $country->country_name }} ({{ $country->country_short_code }})
                     </option>
                 @endforeach
             </select>

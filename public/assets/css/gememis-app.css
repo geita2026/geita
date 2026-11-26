@@ -1,0 +1,125 @@
+:root {
+    --gem-app-ink: #070506;
+    --gem-app-surface: #141117;
+    --gem-app-gold: #ffbf00;
+    --gem-app-gold-soft: #ffe9a8;
+    --gem-app-divider: rgba(255, 191, 0, .3);
+}
+
+body.gememis-app {
+    background: #f6f3ed;
+    color: #251e16;
+}
+
+.gememis-app .gememis-navbar,
+.gememis-app .gememis-navbar .navbar-header,
+.gememis-app .gememis-sidebar,
+.gememis-footer {
+    background: var(--gem-app-ink);
+    color: #fff;
+}
+
+.gememis-app .gememis-navbar {
+    border-bottom: 1px solid var(--gem-app-divider);
+}
+
+.gememis-app .gememis-navbar .gememis-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-image: none;
+    color: var(--gem-app-gold);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+.gememis-app .gememis-brand img {
+    display: block;
+    height: 28px;
+    width: auto;
+}
+
+.gememis-app .gememis-navbar .nav > li > a,
+.gememis-app .gememis-navbar #profile > a > span {
+    color: #fff;
+}
+
+.gememis-app .gememis-navbar .nav > li > a:is(:hover, :focus),
+.gememis-app .gememis-navbar .nav > .open > a,
+.gememis-app .gememis-sidebar .navigation li > a:is(:hover, :focus),
+.gememis-app .gememis-sidebar .navigation li.active > a {
+    background: var(--gem-app-surface);
+    color: var(--gem-app-gold-soft);
+}
+
+.gememis-app .gememis-sidebar .navigation li.active > a {
+    box-shadow: inset 3px 0 var(--gem-app-gold);
+}
+
+.gememis-app .gememis-sidebar .navigation > li > a {
+    border-bottom: 1px solid var(--gem-app-divider);
+}
+
+.gememis-app .gememis-sidebar .navigation-header,
+.gememis-app .gememis-sidebar .text-muted {
+    color: #d7cbbc;
+}
+
+.gememis-app .gememis-sidebar .media-body {
+    overflow-wrap: anywhere;
+}
+
+.gememis-app .gememis-sidebar .gememis-menu-search {
+    background: var(--gem-app-surface);
+    border-color: var(--gem-app-divider);
+    color: #fff;
+}
+
+.gememis-app .gememis-sidebar .gememis-menu-search::placeholder {
+    color: #c9beb0;
+}
+
+.gememis-footer {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 12px 20px;
+    border: 0;
+    border-top: 1px solid var(--gem-app-divider);
+    color: var(--gem-app-gold-soft);
+    margin: 0;
+}
+
+.gememis-app .select2-results__option--highlighted[aria-selected] {
+    background: #75520a;
+    color: #fff;
+}
+
+@media (min-width: 769px) {
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand {
+        display: flex;
+        justify-content: center;
+    }
+
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand img {
+        display: block;
+    }
+
+    .gememis-app.sidebar-xs .gememis-navbar .gememis-brand span {
+        display: none;
+    }
+}
+
+.gememis-app .breadcrumb-line,
+.gememis-app .panel,
+.gememis-app .panel-default > .panel-heading {
+    border-color: #e3d9c8;
+}
+
+.gememis-app .breadcrumb-line {
+    background: #faf7f2;
+}

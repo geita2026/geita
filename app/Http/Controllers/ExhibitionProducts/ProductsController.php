@@ -21,9 +21,9 @@ class ProductsController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Products',Role::class))
+        if($request->user()->cannot('VIEW_PRODUCT_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_PRODUCT_SUBMENU'));
         }
         //
         $products=Product::get();
@@ -41,9 +41,9 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         //
-        if($request->user()->cannot('Create Products',Role::class))
+        if($request->user()->cannot('CREATE_PRODUCT',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_PRODUCT'));
         }
 
         try {
@@ -70,9 +70,9 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Products',Role::class))
+        if($request->user()->cannot('UPDATE_PRODUCT',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_PRODUCT'));
         }
         //
 
@@ -99,9 +99,9 @@ class ProductsController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Products',Role::class))
+        if($request->user()->cannot('DELETE_PRODUCT',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_PRODUCT'));
         }
         //
 

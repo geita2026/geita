@@ -32,7 +32,7 @@
                     </div>
 
                     <div class=" form-group col-md-12">
-                        <table class="table table-striped table-bordered  table-responsive">
+                        <table data-table-paginated class="table table-striped table-bordered  table-responsive">
                             <thead>
                                 <tr>
                                     <th colspan="8">
@@ -101,7 +101,7 @@
 
                 </div>
                 <div class=" col-md-12 text-right">
-                    {{ $invoices->links() }}
+                    {{ $invoices->withQueryString()->links() }}
                 </div>
 
             </div>

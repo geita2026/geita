@@ -28,8 +28,8 @@ class sponsorshipBookingController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Book Sponsorship', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('BOOK_SPONSORSHIP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPONSORSHIP'));
             }
             //
             $companies = companies::orderBy('companyName', 'ASC')->get(['companyID', 'companyName']);
@@ -56,8 +56,8 @@ class sponsorshipBookingController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Book Sponsorship Package', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('BOOK_SPONSORSHIP_PACKAGE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPONSORSHIP_PACKAGE'));
         }
 
         // add data to sponsorship booking table
@@ -96,8 +96,8 @@ class sponsorshipBookingController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Book Sponsorship', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('BOOK_SPONSORSHIP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPONSORSHIP'));
             }
             //
             $packages = sponsorship_packages::orderBy('package_name', 'ASC')
@@ -131,8 +131,8 @@ class sponsorshipBookingController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('View Sponsorship Packages', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_SPONSORSHIP_BOOKING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_SPONSORSHIP_BOOKING'));
         }
 
         session(['event_id' => $id]); // save event id session.
@@ -157,8 +157,8 @@ class sponsorshipBookingController extends Controller
     public function destroy(Request $request, $id)
     {
 
-        if ($request->user()->cannot('Delete Sponsorship Packages', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('DELETE_SPONSORSHIP_BOOKING', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_SPONSORSHIP_BOOKING'));
         }
         //
         $sponsor = booked_sponsorship_packages::find($id);

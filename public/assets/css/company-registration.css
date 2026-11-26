@@ -1,0 +1,146 @@
+.gememis-registration-modal .modal-dialog {
+    width: auto;
+    max-width: 760px;
+    margin: 28px auto;
+    padding: 0 16px;
+}
+
+.gememis-registration-modal .registration-brand {
+    margin: 0 0 6px;
+    color: #ffda91;
+    font-size: 13px;
+}
+
+.gememis-registration-modal .modal-title {
+    outline: none;
+}
+
+.gememis-registration-modal .registration-intro {
+    margin: 8px 0 0;
+    color: #eee5d8;
+    font-size: 14px;
+}
+
+.gememis-registration-modal .registration-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+}
+
+.gememis-registration-modal .registration-field {
+    min-width: 0;
+}
+
+.gememis-registration-modal .registration-wide {
+    grid-column: 1 / -1;
+}
+
+.gememis-registration-modal label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.gememis-registration-modal .registration-required,
+.gememis-registration-modal .registration-error {
+    color: #a52a22;
+}
+
+.gememis-registration-modal .registration-hint,
+.gememis-registration-modal .registration-error {
+    display: block;
+    margin: 4px 0 0;
+    font-size: 13px;
+}
+
+.gememis-registration-modal .registration-error:empty {
+    margin: 0;
+}
+
+.gememis-registration-modal .registration-hint {
+    color: #645d53;
+}
+
+.gememis-registration-modal .registration-optional {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #e5ddd2;
+}
+
+.gememis-registration-modal .registration-optional h3 {
+    margin: 0 0 12px;
+    color: #5e410c;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.gememis-registration-modal .registration-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 18px;
+}
+
+.gememis-registration-modal .registration-consent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.gememis-registration-modal .registration-consent input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #5e410c;
+}
+
+.gememis-registration-modal .registration-consent a {
+    color: #684707;
+    text-decoration: underline;
+}
+
+.gememis-registration-modal .registration-submit {
+    padding: 10px 20px;
+}
+
+@media (max-width: 575px) {
+    .gememis-registration-modal .modal-dialog {
+        margin: 0;
+        padding: 0;
+    }
+
+    .gememis-registration-modal .modal-content {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+
+    .modal.gememis-registration-modal :is(.modal-content, .registration-header, .registration-footer) {
+        border-radius: 0;
+    }
+
+    .gememis-registration-modal .registration-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gememis-registration-modal .registration-footer {
+        align-items: stretch;
+        flex-direction: column;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    .gememis-registration-modal .registration-submit {
+        width: 100%;
+    }
+}
+
+.gememis-registration-modal .registration-close {
+    float: right;
+    min-width: 40px;
+    min-height: 40px;
+}

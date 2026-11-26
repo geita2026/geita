@@ -56,8 +56,18 @@
                                     </div>
                         @endforeach
 
+                        <div id="permission-search-controls" class="col-md-12 form-group hidden">
+                            <label for="permission-search">Search permissions</label>
+                            <input type="search" id="permission-search" class="form-control"
+                                placeholder="Search by permission name" autocomplete="off">
+                            <p id="permission-search-empty" class="help-block hidden" role="status">
+                                No matching permissions.
+                            </p>
+                        </div>
+
                         @foreach ($allPermission as $permission)
-                            <div class="checkbox checkbox-switchery switchery-lg col-md-3">
+                            <div class="checkbox checkbox-switchery switchery-lg col-md-3"
+                                data-permission-name="{{ $permission->name }}">
                                 <label>
                                     <input type="checkbox" name="permission[]" value="{{ $permission->id }}"
                                         class=" switchery"
@@ -83,13 +93,37 @@
     </div>
 </x-app-layout>
 
-<script type="text/javascript">
-    $('#selectall').change(function() {
-        if ($(this).prop('checked')) {
-            $('input').prop('checked', true);
-        } else {
-            $('input').prop('checked', false);
-        }
-    });
-    $('#selectall').trigger('change');
+<script>
+    (() => {
+        const controls = document.getElementById('permission-search-controls');
+        const search = document.getElementById('permission-search');
+        const empty = document.getElementById('permission-search-empty');
+        const permissions = document.querySelectorAll('[data-permission-name]');
+        const normalize = value => value.toLowerCase().replace(/[_-]/g, ' ').trim();
+        const entries = Array.from(permissions, row => ({
+            row,
+            name: normalize(row.dataset.permissionName),
+        }));
+
+        search.addEventListener('input', () => {
+            const terms = normalize(search.value).split(/\s+/).filter(Boolean);
+            let matches = 0;
+
+            for (const { row, name } of entries) {
+                const visible = terms.every(term => name.includes(term));
+                row.classList.toggle('hidden', !visible);
+                matches += Number(visible);
+            }
+
+            empty.classList.toggle('hidden', matches > 0 || terms.length === 0);
+        });
+
+        search.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+
+        controls.classList.remove('hidden');
+    })();
 </script>

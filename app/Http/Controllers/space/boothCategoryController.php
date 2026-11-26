@@ -22,9 +22,9 @@ class boothCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            if($request->user()->cannot('Manage Spaces',Role::class))
+            if($request->user()->cannot('MANAGE_SPACES',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         //
         $boothCategories=booth_categories::orderBy('created_at','DESC')->get(['booth_category_id','category_name','type_of_currency','category_cost','created_at','updated_at','categoryCode']);
@@ -41,9 +41,9 @@ class boothCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Booth Categories',Role::class))
+        if($request->user()->cannot('CREATE_BOOTH_CATEGORY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_BOOTH_CATEGORY'));
         }
         //
         $request->validate([
@@ -77,9 +77,9 @@ class boothCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Booth Categories',Role::class))
+        if($request->user()->cannot('UPDATE_BOOTH_CATEGORY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_BOOTH_CATEGORY'));
         }
         //
         $request->validate([
@@ -124,9 +124,9 @@ class boothCategoryController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Booth Categories',Role::class))
+        if($request->user()->cannot('DELETE_BOOTH_CATEGORY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_BOOTH_CATEGORY'));
         }
         //
            try {

@@ -15,6 +15,6 @@ class Income extends Model implements Auditable
     public $incrementing=false;
     protected $keyType='string';
     public $fillable=[
-        'gfs_code','income_name', 'description','is_space_fee','is_joint_payment'
+        'gfs_code','income_name', 'description','is_space_fee'
     ];
 }

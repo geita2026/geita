@@ -22,9 +22,9 @@ class CountriesController extends Controller
     public function index(Request $request)
     {
 
-        if($request->user()->cannot('Company Registration',Role::class))
+        if($request->user()->cannot('CREATE_COMPANY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_COMPANY'));
         }
 
         $countries=Country::orderBy('country_name','ASC')->get(['country_id','country_name','country_short_code','phone_code']);
@@ -48,9 +48,9 @@ class CountriesController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Company Registration',Role::class))
+        if($request->user()->cannot('CREATE_COMPANY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_COMPANY'));
         }
         //
 
@@ -81,9 +81,9 @@ class CountriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Countries',Role::class))
+        if($request->user()->cannot('UPDATE_COUNTRY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_COUNTRY'));
         }
         //
         $request->validate([
@@ -111,9 +111,9 @@ class CountriesController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Countries',Role::class))
+        if($request->user()->cannot('DELETE_COUNTRY',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_COUNTRY'));
         }
         //
         try {

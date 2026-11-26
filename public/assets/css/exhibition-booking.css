@@ -1,0 +1,151 @@
+.exhibition-booking {
+    min-width: 0;
+}
+
+.booking-heading,
+.booking-actions,
+.booking-footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+}
+
+.booking-heading,
+.booking-footer {
+    justify-content: space-between;
+}
+
+.booking-heading {
+    margin-bottom: 20px;
+}
+
+.booking-heading h1 {
+    margin: 4px 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.booking-heading p {
+    margin: 0;
+}
+
+.booking-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: 14px;
+}
+
+.booking-option {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--gem-field-disabled);
+    border-radius: var(--gem-control-radius);
+    overflow-wrap: anywhere;
+}
+
+.booking-option h2,
+.booking-related h2 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.booking-option .btn {
+    margin-top: auto;
+}
+
+.booking-rate {
+    color: var(--gem-field-muted);
+}
+
+.booking-status,
+.booking-map-booth {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: var(--gem-field-text);
+    background: var(--gem-field-disabled);
+}
+
+.booking-status.is-available,
+.booking-map-booth.is-available {
+    color: var(--gem-button-ink);
+    background: var(--gem-app-gold-soft);
+}
+
+.booking-related,
+.booking-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gem-field-disabled);
+}
+
+.booking-details {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--gem-field-disabled);
+    border-radius: var(--gem-control-radius);
+}
+
+.booking-details summary {
+    color: var(--gem-field-focus);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.booking-details p,
+.booking-map {
+    margin: 10px 0 0;
+}
+
+.booking-map,
+.booking-table {
+    contain: inline-size paint;
+    overflow: auto;
+    max-height: min(50vh, 480px);
+}
+
+.booking-table .table {
+    margin-bottom: 0;
+}
+
+.booking-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--gem-field-bg);
+}
+
+.booking-map .mvl {
+    margin-left: 3%;
+}
+
+.booking-map-booth {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.booking-company {
+    max-width: 560px;
+}
+
+.booking-money {
+    white-space: nowrap;
+}
+
+.booking-booth-select {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--gem-field-focus);
+    vertical-align: middle;
+}
+
+.exhibition-booking :is(a, button, summary, input):focus-visible {
+    outline: 2px solid var(--gem-field-focus);
+    outline-offset: 3px;
+}

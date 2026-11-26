@@ -32,9 +32,9 @@ class CustomerBookingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
     }
 
@@ -45,9 +45,9 @@ class CustomerBookingController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
     }
 
@@ -59,9 +59,9 @@ class CustomerBookingController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
 
         $event=session('event_id'); // get event selected
@@ -215,9 +215,9 @@ class CustomerBookingController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
         //
         $companies=companies::get(['companyID','companyName']);
@@ -270,9 +270,9 @@ class CustomerBookingController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
 
             $bookedBooths=booths::leftJoin('pavilions','booths.pavilionID','=','pavilions.pavilionID')
@@ -319,9 +319,9 @@ class CustomerBookingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
     }
 
@@ -333,9 +333,9 @@ class CustomerBookingController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Book Space',Role::class))
+        if($request->user()->cannot('BOOK_SPACE',Role::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('BOOK_SPACE'));
         }
 
         try {

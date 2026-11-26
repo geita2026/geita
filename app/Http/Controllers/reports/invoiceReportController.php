@@ -32,8 +32,8 @@ class invoiceReportController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage InvoiceReports', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICE_REPORTS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICE_REPORTS'));
         }
 
         $events = events::orderBy('event_created_at', 'DESC')
@@ -187,8 +187,8 @@ class invoiceReportController extends Controller
 
     public function collectionReport(Request $request)
     {
-        if ($request->user()->cannot('Manage CollectionReports', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_COLLECTION_REPORTS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_COLLECTION_REPORTS'));
         }
         $events = events::orderBy('event_status', 'DESC')
             ->orderBy('event_created_at', 'DESC')

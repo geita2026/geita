@@ -28,9 +28,9 @@ class sacPolicyController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Create Policy',User::class))
+        if($request->user()->cannot('CREATE_POLICY',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_POLICY'));
         }
         $content=policies::get(['policy_id','policy_content']);
         return view('guideline.add-policy',compact('content'));
@@ -44,9 +44,9 @@ class sacPolicyController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Policy',User::class))
+        if($request->user()->cannot('CREATE_POLICY',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_POLICY'));
         }
         //
 

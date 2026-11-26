@@ -19,8 +19,6 @@ trait InvoiceTrait{
         $checking=advice_notes::where('advice_note_id',$id)->get();
         foreach ($checking as $value) { $include_vat=$value->vat; }
 
-        $gfs_code=Income::where('is_space_fee',1)->first()->gfs_code; // space gfs code.
-
         $booked_pavilions = pavilions::leftJoin('booked_pavilions', 'pavilions.pavilionID', '=', 'booked_pavilions.pavilionID')
         ->leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
         ->where('advice_note_id', $id)->get();
@@ -28,6 +26,13 @@ trait InvoiceTrait{
          $booked_booths=booths::leftJoin('booked_pavilions', 'booths.boothID', '=', 'booked_pavilions.pavilionID')
          ->leftJoin('booth_categories', 'booths.booth_category', '=', 'booth_categories.booth_category_id')
          ->where('advice_note_id', $id)->get();
+         $gfs_code = null;
+         if ($booked_pavilions->isNotEmpty() || $booked_booths->isNotEmpty()) {
+             $gfs_code = Income::where('is_space_fee', 1)->value('gfs_code');
+             if ($gfs_code === null) {
+                 return 0;
+             }
+         }
          //  space return booked booths details
 
 

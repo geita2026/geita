@@ -17,6 +17,10 @@ class NetworkMaintenance
      */
     public function handle(Request $request, Closure $next)
 {
+    if ($request->is('/') && ($request->isMethod('GET') || $request->isMethod('HEAD'))) {
+        return $next($request);
+    }
+
     if (app()->environment('local') && in_array($request->ip(), ['127.0.0.1', '::1'], true)) {
         return $next($request);
     }

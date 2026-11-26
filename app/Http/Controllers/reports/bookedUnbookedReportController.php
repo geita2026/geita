@@ -33,8 +33,8 @@ class bookedUnbookedReportController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('view-space-booking-report', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_SPACE_BOOKING_REPORT_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_SPACE_BOOKING_REPORT_SUBMENU'));
         }
         $event = $request->event;
         $pavilionCategories = space_categories::where('category_event', session('liveEvent'))
@@ -175,8 +175,8 @@ class bookedUnbookedReportController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage SpaceReports', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACE_BOOKING_REPORT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACE_BOOKING_REPORT'));
         }
         $data = session('data');
         $rate = ExchangeRate::where('currencyCode', 'USD')->first()->SELLING;

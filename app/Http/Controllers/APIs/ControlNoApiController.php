@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
 use App\Models\advice_note\advice_notes;
-use App\Models\Collections\OffFairBill;
 use Illuminate\Support\Facades\Mail;
 
 class ControlNoApiController extends Controller
@@ -53,19 +52,6 @@ class ControlNoApiController extends Controller
             }
 
 
-
-
-
-            // for off fair
-            $off_fair_bill=OffFairBill::where('advice_note_id',$reference)->get();
-            foreach ($off_fair_bill as $value) {
-                OffFairBill::find($value->bill_id)->update(['control_number'=>$control_no]); // filling control numbers
-                $this->SentControlNoNotification($reference); //this methode send control number to user Bulk Sms.
-                $this->sendControlNoToCustomer($reference); // send control number to user (Email).
-
-                $response=array('code'=>200,'message'=>'Control number posted successfully!'); // response
-                return response()->json(['response'=>$response]); // set success message.
-            }
 
 
 
@@ -133,7 +119,7 @@ $sms_content ="Dear, ".$customer_name.", $msg, Control No: $control_no, Total Am
            'advice_notes.advice_note_id','companyName','advice_note_created_at','companyAddress','companyLocation',
            'companyPhone','personalPhone','first_name','last_name','companyEmail','roles.name','advice_note_deadline'
            ,'advice_note_description','tinNo','users.user_signature','registrationNo','advice_note_status',
-           'advice_notes.updated_at','event_name','event_descriptions','vat','total_amount','currency','control_number'
+           'event_name','event_descriptions','vat','total_amount','currency','control_number'
            ]);
 
            foreach ($adviceNotes as  $value) {

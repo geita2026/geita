@@ -64,7 +64,7 @@
                         <td>{{ date('d-m-Y h:i:s',strtotime($item->created_at)) }}</td>
 
                         <td class="text-center">
-                           @can('Delete User Logs')
+                           @can('DELETE_AUDIT')
                            <a data-toggle="modal" data-target="#delete{{ $item->id }}" class=" text-danger"> <i class="icon-bin"></i></a>
                            @endcan
                         </td>

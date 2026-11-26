@@ -22,8 +22,8 @@ class sectorController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Sectors', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SECTOR', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SECTOR'));
         }
 
         $search = trim((string) $request->get('search', ''));
@@ -65,8 +65,8 @@ class sectorController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Manage Sectors', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SECTOR', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SECTOR'));
         }
 
         $validator = Validator::make($request->all(), [
@@ -103,8 +103,8 @@ class sectorController extends Controller
 
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Sectors', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SECTOR', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SECTOR'));
         }
 
         $sector = sectors::find($id);
@@ -153,8 +153,8 @@ class sectorController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Sector', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_SECTOR', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_SECTOR'));
         }
 
         try {

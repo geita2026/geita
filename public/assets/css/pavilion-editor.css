@@ -1,0 +1,82 @@
+.pavilion-heading,
+.pavilion-actions,
+.pavilion-danger {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+}
+
+.pavilion-heading {
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.pavilion-heading h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.pavilion-heading p {
+    margin: 6px 0 0;
+}
+
+.pavilion-actions,
+.pavilion-danger {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gem-field-disabled);
+}
+
+.pavilion-danger h2 {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pavilion-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 20px;
+}
+
+.pavilion-fields label {
+    display: block;
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+
+.pavilion-sectors-heading {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 12px;
+}
+
+.pavilion-actions {
+    justify-content: flex-end;
+}
+
+.pavilion-danger {
+    justify-content: space-between;
+}
+
+.pavilion-danger h2 {
+    margin-bottom: 4px;
+}
+
+.pavilion-danger p {
+    margin: 0;
+}
+
+@media (max-width: 575px) {
+    .pavilion-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pavilion-actions > * {
+        flex: 1 1 auto;
+    }
+}

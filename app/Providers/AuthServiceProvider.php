@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\PermissionNames;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,19 +28,14 @@ class AuthServiceProvider extends ServiceProvider
 
         // Implicitly grant "Super Admin" role all permissions
         // This works in the app by using gate-related functions like auth()->user->can() and @can()
-        $permissionAliases = [];
-        foreach (config('navigation') as [, , , $submenus]) {
-            foreach ($submenus as [, , $actions]) {
-                $permissionAliases += $actions;
-            }
-        }
+        $permissionAliases = PermissionNames::aliases();
 
         Gate::before(function ($user, $ability) use ($permissionAliases) {
             if ($user->hasRole('Super Admin')) {
                 return true;
             }
 
-            $permission = $permissionAliases[$ability] ?? null;
+            $permission = PermissionNames::canonical($ability, $permissionAliases);
 
             return $permission && $user->checkPermissionTo($permission, 'web') ? true : null;
         });

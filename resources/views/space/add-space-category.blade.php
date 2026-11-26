@@ -33,7 +33,7 @@
             </div>
             <div class=" panel-body">
                 <div class=" form-group">
-                    <form action="{{ route('spaceCategories.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('spaceCategories.store') }}" method="POST">
                         @csrf
                         <div class=" row">
                             <div class=" form-group col-md-6">
@@ -88,22 +88,6 @@
                                 <textarea name="category_descriptions" placeholder="Category descriptions here" class=" form-control"></textarea>
                             </div>
                         </div>
-                        <div class=" row form-group">
-                            <div class="  col-md-12">
-                                <label>Space Category Poster<i class=" text-danger">*</i></label>
-                                <input type="file" name="categoryPoster" class=" form-control"
-                                    placeholder="Category Name" value="{{ old('category_name') }}">
-                                <span class="text-danger"> @error('categoryPoster')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-                            <div class=" col-md-6">
-                                
-                            </div>
-                        </div>
-
-
                         <div class=" text-right col-md-12 form-group">
                             <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner"><span
                                     class="ladda-label">Register Space Category</span></button>

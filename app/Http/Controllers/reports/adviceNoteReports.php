@@ -19,9 +19,9 @@ class adviceNoteReports extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Invoice Reports',Role::class))
+        if($request->user()->cannot('VIEW_ADVICE_NOTE_REPORT_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_ADVICE_NOTE_REPORT_SUBMENU'));
         }
         //
         if($request->exhibition_year)

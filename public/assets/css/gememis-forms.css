@@ -1,0 +1,214 @@
+:root {
+    --gem-control-height: 44px;
+    --gem-control-radius: 8px;
+    --gem-field-bg: #fff;
+    --gem-field-text: #24211e;
+    --gem-field-muted: #645d53;
+    --gem-field-border: #a8a096;
+    --gem-field-disabled: #f2eee8;
+    --gem-field-focus: #85590c;
+    --gem-field-ring: rgba(184, 134, 11, .2);
+    --gem-field-error: #a52a22;
+    --gem-button-gold: #ffbf00;
+    --gem-button-hover: #ffe9a8;
+    --gem-button-ink: #201806;
+}
+
+:is(.gememis-theme, .login-page-body, .register-page-body, .recovery-page-body,
+    .challenge-page-body, .reset-page-body, .brand-card) {
+    --gem-field-bg: #1c1822;
+    --gem-field-text: #fff;
+    --gem-field-muted: #c8bdad;
+    --gem-field-border: #816938;
+    --gem-field-disabled: #28232c;
+    --gem-field-focus: #ffbf00;
+    --gem-field-ring: rgba(255, 191, 0, .24);
+    --gem-field-error: #ff8b94;
+}
+
+.gememis-registration-modal {
+    --gem-field-bg: #fff;
+    --gem-field-text: #24211e;
+    --gem-field-muted: #645d53;
+    --gem-field-border: #a8a096;
+    --gem-field-disabled: #f2eee8;
+    --gem-field-focus: #85590c;
+    --gem-field-ring: rgba(184, 134, 11, .2);
+    --gem-field-error: #a52a22;
+}
+
+:is(.form-control, .form-select, .brand-input, :where(form) select, :where(form) textarea,
+    :where(form) input:is(:not([type]), [type="text"], [type="search"], [type="email"],
+        [type="password"], [type="tel"], [type="url"], [type="number"],
+        [type="date"], [type="time"], [type="datetime-local"], [type="month"],
+        [type="week"], [type="file"])):where(:not(.select2-hidden-accessible, .select2-search__field, [type="hidden"])),
+.select2-container .select2-selection,
+.bootstrap-select > .dropdown-toggle {
+    min-height: var(--gem-control-height);
+    height: auto;
+    max-width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--gem-field-border);
+    border-radius: var(--gem-control-radius);
+    background-color: var(--gem-field-bg);
+    color: var(--gem-field-text);
+    font-size: 16px;
+}
+
+:is(.form-control, .form-select, .brand-input, form input, form textarea)::placeholder {
+    color: var(--gem-field-muted);
+    opacity: 1;
+}
+
+select:is(.form-control, .form-select),
+form select:not(.select2-hidden-accessible) {
+    padding-right: 24px;
+}
+
+select option {
+    background-color: var(--gem-field-bg);
+    color: var(--gem-field-text);
+}
+
+textarea:is(.form-control, .brand-input),
+form textarea {
+    resize: vertical;
+}
+
+.select2-container .select2-selection--single {
+    padding-right: 30px;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding: 0;
+    line-height: 24px;
+    color: var(--gem-field-text);
+}
+
+.select2-container .select2-selection--single .select2-selection__placeholder {
+    color: var(--gem-field-muted);
+}
+
+.select2-container .select2-selection--multiple {
+    padding: 4px 8px;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    color: var(--gem-field-text);
+}
+
+:is(.form-control, .form-select, .brand-input, form select, form textarea, form input):focus:not([type="checkbox"], [type="radio"]),
+.select2-container--focus .select2-selection,
+.select2-container--open .select2-selection,
+.bootstrap-select > .dropdown-toggle:focus {
+    border-color: var(--gem-field-focus);
+    box-shadow: 0 0 0 2px var(--gem-field-ring);
+}
+
+:is(.is-invalid, [aria-invalid="true"]):is(input, select, textarea, .select2-selection),
+.has-error :is(.form-control, .select2-selection) {
+    border-color: var(--gem-field-error);
+}
+
+:is(.form-control, .form-select, .brand-input, form select, form textarea, form input):disabled,
+:is(.form-control, .brand-input, form input, form textarea)[readonly],
+.select2-container--disabled .select2-selection,
+.bootstrap-select > .dropdown-toggle.disabled {
+    background-color: var(--gem-field-disabled);
+    color: var(--gem-field-muted);
+}
+
+input:is([type="checkbox"], [type="radio"], [type="range"]) {
+    accent-color: var(--gem-field-focus);
+}
+
+:is(.btn, .btn-brand, .btn-brand-outline, .registration-submit),
+form :is(button[type="submit"], input[type="submit"]),
+input[type="file"]::file-selector-button {
+    min-height: var(--gem-control-height);
+    border-radius: var(--gem-control-radius);
+    font-weight: 600;
+}
+
+:is(.btn-sm, .btn-xs, .btn-icon, .btn-link):not(.registration-submit) {
+    min-height: 32px;
+}
+
+:is(.btn-primary, .btn-brand, .registration-submit),
+form :is(button, input)[type="submit"]:not([class*="btn-"]),
+input[type="file"]::file-selector-button {
+    border: 1px solid #b88700;
+    background: var(--gem-button-gold);
+    color: var(--gem-button-ink);
+}
+
+:is(.btn-primary, .btn-brand, .registration-submit):is(:hover, :focus, :active),
+form :is(button, input)[type="submit"]:not([class*="btn-"]):is(:hover, :focus),
+input[type="file"]::file-selector-button:hover {
+    border-color: #b88700;
+    background: var(--gem-button-hover);
+    color: var(--gem-button-ink);
+}
+
+:is(.btn-brand, .btn-brand-outline) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 18px;
+    text-decoration: none;
+}
+
+.btn-brand-outline {
+    border: 1px solid var(--gem-field-focus);
+    background: transparent;
+    color: var(--gem-field-focus);
+}
+
+.btn-brand-outline:is(:hover, :focus) {
+    background: var(--gem-button-hover);
+    color: var(--gem-button-ink);
+}
+
+input[type="file"]::file-selector-button {
+    min-height: 32px;
+    margin-inline-end: 8px;
+    padding: 4px 10px;
+}
+
+:is(button, .btn, .btn-brand, .btn-brand-outline, input, select, textarea, .select2-selection):focus-visible {
+    outline: 2px solid var(--gem-field-focus);
+    outline-offset: 2px;
+}
+
+.btn-default,
+.btn-secondary {
+    border-color: var(--gem-field-border);
+    background-color: var(--gem-field-bg);
+    color: var(--gem-field-text);
+}
+
+:is(.btn-default, .btn-secondary):is(:hover, :focus, :active) {
+    border-color: var(--gem-field-focus);
+    background-color: var(--gem-field-disabled);
+    color: var(--gem-field-text);
+}
+
+:is(.btn-brand, .btn-brand-outline, .registration-submit):disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.select2-dropdown {
+    border-color: var(--gem-field-border);
+    background-color: var(--gem-field-bg);
+    color: var(--gem-field-text);
+}
+
+.select2-search--dropdown .select2-search__field {
+    min-height: 36px;
+    border: 1px solid var(--gem-field-border);
+    border-radius: var(--gem-control-radius);
+    background-color: var(--gem-field-bg);
+    color: var(--gem-field-text);
+}

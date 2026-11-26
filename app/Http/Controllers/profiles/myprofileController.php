@@ -33,8 +33,8 @@ class myprofileController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Profile', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PROFILE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PROFILE'));
         }
         $user = User::find(Auth::user()->id);
         $role = $user->getRoleNames();
@@ -69,8 +69,8 @@ class myprofileController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Change My Password', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CHANGE_MY_PASSWORD', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CHANGE_MY_PASSWORD'));
         }
 
         // return $request;
@@ -105,8 +105,8 @@ class myprofileController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Change My Password', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CHANGE_MY_PASSWORD', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CHANGE_MY_PASSWORD'));
         }
         $user = User::find(Auth::user()->id);
         $role = $user->getRoleNames();
@@ -124,8 +124,8 @@ class myprofileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Profile', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_PROFILE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PROFILE'));
         }
         $request->validate([
             'first_name'=>'required',

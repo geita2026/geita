@@ -7,11 +7,14 @@ use App\Models\booking\booked_pavilions;
 use Illuminate\Http\Request;
 use App\Models\settings\events;
 use App\Models\space\space_categories;
+use App\Models\space\booths;
 use App\Models\space\pavilions;
+use App\Traits\System;
 use Spatie\Permission\Models\Role;
 
 class eventBookingController extends Controller
 {
+    use System;
     /**
      * Display a listing of the resource.
      *
@@ -23,20 +26,12 @@ class eventBookingController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('Book Space',Role::class))
-        {
-            return back()->with('fail',config('Messages.401'));
+        if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
         }
-        $events=Events::where('event_id',session('liveEvent'))->get();
-        foreach ($events as $key) {
-            $event_name=$key->event_name;
-        }
-        $space_categories=space_categories::orderBy('category_name','ASC')->where('category_event',session('event_id'))->get();
-        $spaces=pavilions::get();
-            return view('booking.space-category-booking',compact('space_categories','event_id','event_name','spaces'));
 
+        return redirect()->route('booking.index');
     }
-
 
     /**
      * Display the specified resource.
@@ -44,37 +39,40 @@ class eventBookingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request,$id)
+    public function show(Request $request, $id)
     {
-        try {
-            if($request->user()->cannot('Book Space',Role::class))
-        {
-            return back()->with('fail',config('Messages.401'));
-        }
-        $spaces=pavilions::leftJoin('space_categories','pavilions.pavilionCategory','=','space_categories.category_id')
-        ->where('space_status','UNRESERVED')->orderBy('pavilionName','ASC')->distinct()
-        ->where('pavilionCategory',$id)->get([
-            'pavilionName','pavilions.pavilionID','pavilion_size','category_name','cost_one_msq','type_of_currency',
-        'numberOfPartitions'
-        ]);
-        
-        $bookedPavilions=pavilions::where('pavilionCategory',$id)
-        ->whereIn('pavilionID',booked_pavilions::where('exhibition_year',session('liveEvent'))->get(['pavilionID']))->get(['pavilionID']);
-        $pavilionCategories=space_categories::where('category_id','!=',$id)
-        ->where('category_event',session('liveEvent'))->get(['category_id','category_name']);
-
-        $bookedBooths=booked_pavilions::leftJoin('booths','booked_pavilions.pavilionID','=','booths.boothID')
-        ->leftJoin('pavilions','booths.pavilionID','=','pavilions.pavilionID')
-        ->where('pavilions.pavilionCategory',$id)
-        ->where('booked_pavilions.exhibition_year',session('liveEvent'))
-        ->where('advice_note_id','!=',Null)
-        ->get('pavilions.pavilionID');
-
-        return view('booking.space_list',compact('spaces','bookedPavilions','pavilionCategories','bookedBooths'));
-        } catch (\Throwable $th) {
-           return back()->with('fail',config('Messages.500').$th->getMessage());
+        if ($request->user()->cannot('BOOK_SPACE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('BOOK_SPACE'));
         }
 
+        $eventId = session('liveEvent');
+        $category = space_categories::where('category_event', $eventId)->findOrFail($id);
+        $event = events::find($eventId);
+        $bookingOpen = $this->checkApplicationStatus();
+        $pavilionCategories = space_categories::where('category_event', $eventId)
+            ->where('category_id', '!=', $id)->orderBy('category_name')
+            ->get(['category_id', 'category_name']);
+
+        $spaces = pavilions::where('pavilionCategory', $id)
+            ->where('space_status', '!=', 'SUNSPENDED')
+            ->orderBy('pavilionName')->orderBy('pavilionID')
+            ->get(['pavilionID', 'pavilionName', 'pavilion_size', 'pavilionDescription', 'space_status']);
+
+        $heldSpaceIds = booked_pavilions::where('exhibition_year', $eventId)
+            ->select('pavilionID')->distinct();
+
+        $heldPavilions = (clone $heldSpaceIds)->whereIn('pavilionID', $spaces->pluck('pavilionID'))
+            ->pluck('pavilionID')->flip();
+
+        $boothCounts = booths::whereIn('booths.pavilionID', $spaces->pluck('pavilionID'))
+            ->where('booths.bookingStatus', '!=', 'SUNSPENDED')
+            ->leftJoinSub($heldSpaceIds, 'held_spaces', 'booths.boothID', '=', 'held_spaces.pavilionID')
+            ->groupBy('booths.pavilionID')
+            ->selectRaw('booths.pavilionID, COUNT(*) AS total, SUM(CASE WHEN held_spaces.pavilionID IS NULL AND booths.bookingStatus != ? THEN 1 ELSE 0 END) AS available', ['RESERVED'])
+            ->get()->keyBy('pavilionID');
+
+        return view('booking.space_list', compact(
+            'category', 'event', 'bookingOpen', 'spaces', 'pavilionCategories', 'heldPavilions', 'boothCounts'
+        ));
     }
-
 }

@@ -33,7 +33,7 @@
 
 
                 <div class=" col-md-12 form-group">
-                    <table
+                    <table data-table-paginated
                         class=" table table-sm datatable-button-html5-columns table-bordered table-striped table-responsive">
                         <thead>
                             <tr>
@@ -103,7 +103,7 @@
                     </table>
                 </div>
                 <div class=" form-group col-md-12">
-                    {{ $data->links() }}
+                    {{ $data->withQueryString()->links() }}
                 </div>
 
             </div>

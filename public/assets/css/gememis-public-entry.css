@@ -1,0 +1,535 @@
+.geita-home,
+.geita-login {
+    --geita-gold: #ffbf00;
+    --geita-ink: #25221d;
+    --geita-muted: #575149;
+    --geita-line: #ddd5c9;
+    background: #f7f5f0;
+    color: var(--geita-ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.geita-primary {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: var(--geita-gold);
+    color: var(--geita-ink);
+    font: inherit;
+    font-weight: 650;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.geita-primary:hover {
+    background: #f1b500;
+    color: var(--geita-ink);
+}
+
+.geita-primary:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.geita-link,
+.geita-service-list a {
+    color: #634713;
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+.geita-link:hover,
+.geita-service-list a:hover {
+    color: var(--geita-ink);
+}
+
+.geita-home :focus-visible,
+.geita-login :focus-visible {
+    outline: 2px solid #8c621a;
+    outline-offset: 3px;
+}
+
+.geita-home .gem-header,
+.geita-home .gem-dropdown,
+.geita-home .gem-sidebar {
+    background: var(--geita-ink);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    transition: none;
+}
+
+.geita-home .gem-header {
+    border-bottom: 2px solid var(--geita-gold);
+}
+
+.geita-home .gem-brand img {
+    filter: none;
+}
+
+.geita-home .gem-dropdown {
+    border-radius: 4px;
+}
+
+.geita-home .btn-header-login,
+.geita-home .btn-header-login:hover {
+    background: var(--geita-gold);
+    border-radius: 4px;
+    box-shadow: none;
+    transform: none;
+    transition: none;
+}
+
+.geita-intro {
+    padding: clamp(24px, 5vw, 56px) 0;
+    background: #fff;
+    border-bottom: 1px solid var(--geita-line);
+}
+
+.geita-intro-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(20px, 4vw, 56px);
+}
+
+.geita-location {
+    margin: 0 0 8px;
+    color: #634713;
+    font-weight: 650;
+}
+
+.geita-intro h1 {
+    margin: 0 0 12px;
+    color: var(--geita-ink);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.geita-intro h1 + p {
+    margin: 0;
+    max-width: 44ch;
+    color: var(--geita-muted);
+}
+
+.geita-intro-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+    margin-top: 24px;
+}
+
+.geita-intro-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+}
+
+.geita-home-section {
+    padding-top: 32px;
+}
+
+.geita-home-section h2 {
+    margin: 0 0 12px;
+    color: var(--geita-ink);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.geita-map-frame {
+    display: block;
+    width: 100%;
+    height: clamp(340px, 65vh, 560px);
+    border: 1px solid var(--geita-line);
+}
+
+.geita-booking-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--geita-muted);
+    font-size: .875rem;
+}
+
+.geita-booking-header {
+    margin-bottom: 24px;
+}
+
+.geita-booking-header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+}
+
+.geita-booking-header p,
+.geita-booking-category p {
+    margin: 0;
+    color: var(--geita-muted);
+}
+
+.geita-booking-list,
+.geita-booking-empty {
+    margin: 0;
+    border: 1px solid var(--geita-line);
+    background: #fff;
+}
+
+.geita-booking-list {
+    padding: 0;
+    list-style: none;
+}
+
+.geita-booking-category {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 15rem) auto;
+    align-items: center;
+    gap: 12px 24px;
+    padding: 20px;
+    overflow-wrap: anywhere;
+}
+
+.geita-booking-category + .geita-booking-category {
+    border-top: 1px solid var(--geita-line);
+}
+
+.geita-booking-category h2 {
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.geita-booking-category p {
+    margin-top: 4px;
+    white-space: pre-line;
+}
+
+.geita-booking-rate {
+    color: var(--geita-muted);
+    font-size: .9375rem;
+}
+
+.geita-booking-rate strong {
+    color: var(--geita-ink);
+}
+
+.geita-booking-empty {
+    padding: 20px;
+}
+
+.geita-service-list,
+.geita-sponsor-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.geita-service-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 24px;
+}
+
+.geita-service-list li {
+    padding: 14px 0;
+    border-top: 1px solid var(--geita-line);
+}
+
+.geita-service-list a {
+    font-weight: 650;
+}
+
+.geita-service-list p {
+    margin: 4px 0 0;
+    color: var(--geita-muted);
+    font-size: .9375rem;
+}
+
+.geita-sponsor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.geita-sponsor-list li {
+    display: grid;
+    place-items: center;
+    width: 126px;
+    height: 72px;
+    padding: 10px;
+    border: 1px solid var(--geita-line);
+    background: #fff;
+}
+
+.geita-sponsor-list img {
+    max-width: 100%;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+.geita-home .gememis-footer {
+    background: var(--geita-ink);
+    border-top: 2px solid var(--geita-gold);
+}
+
+.geita-home .gememis-footer a {
+    color: #fff2c8;
+}
+
+.geita-footer-divider {
+    margin: 28px 0 20px;
+    border: 0;
+    border-top: 1px solid #6e6457;
+    opacity: 1;
+}
+
+.geita-home .gem-sidebar .btn-brand,
+.geita-home .gem-sidebar .btn-brand-outline,
+.geita-home .gem-sidebar .btn-brand:hover,
+.geita-home .gem-sidebar .btn-brand-outline:hover {
+    border-radius: 4px;
+    box-shadow: none;
+    transform: none;
+}
+
+.geita-login {
+    box-sizing: border-box;
+    min-height: 100vh;
+    margin: 0;
+    padding: clamp(20px, 5vw, 56px) 16px;
+}
+
+.geita-login-panel {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 436px;
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 32px);
+    border: 1px solid #e7e5e2;
+    background: #fff;
+}
+
+.geita-registration-panel {
+    max-width: 660px;
+}
+
+.geita-registration-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+}
+
+.geita-registration-hint {
+    margin: 4px 0 0;
+    color: var(--geita-muted);
+    font-size: .875rem;
+}
+
+.geita-recovery-intro {
+    margin: 0 0 16px;
+    color: var(--geita-muted);
+}
+
+.geita-recovery-alternative {
+    margin-top: 16px;
+    color: var(--geita-muted);
+    font-size: .875rem;
+}
+
+.geita-recovery-link-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.geita-login-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.geita-login-header img {
+    display: block;
+    margin-inline: auto;
+    object-fit: contain;
+}
+
+.geita-login-header p {
+    margin: 12px 0 16px;
+    color: var(--geita-muted);
+    font-size: .875rem;
+}
+
+.geita-login-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.2;
+}
+
+.geita-login-field {
+    margin-bottom: 16px;
+}
+
+.geita-login-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: .9375rem;
+    font-weight: 650;
+}
+
+.geita-login-field input {
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid #a59c90;
+    border-radius: 4px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+}
+
+.geita-login-field input {
+    width: 100%;
+    min-width: 0;
+}
+
+.geita-password-field {
+    position: relative;
+}
+
+.geita-login-field .geita-password-field input {
+    padding-inline-end: 48px;
+}
+
+.geita-password-toggle {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 3px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.geita-password-toggle:hover {
+    background: rgba(127, 112, 84, .12);
+}
+
+.geita-password-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -3px;
+}
+
+.geita-password-toggle svg {
+    display: block;
+    margin: auto;
+}
+
+.geita-password-slash {
+    display: none;
+}
+
+.geita-password-toggle.is-visible .geita-password-slash {
+    display: block;
+}
+
+.geita-login-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 20px;
+    font-size: .875rem;
+}
+
+.geita-login-options input {
+    margin: 0 4px 0 0;
+    vertical-align: middle;
+    accent-color: #996b14;
+}
+
+.geita-login-submit {
+    width: 100%;
+}
+
+.geita-login-footer {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--geita-line);
+    color: var(--geita-muted);
+    font-size: .875rem;
+}
+
+.geita-login-footer p {
+    margin: 0 0 10px;
+}
+
+.geita-login-error,
+.geita-login-success {
+    padding: 8px 12px;
+    border-left: 3px solid currentColor;
+    background: #faf6ed;
+}
+
+.geita-login-error,
+.geita-field-error {
+    color: #9b241e;
+}
+
+.geita-login-success {
+    color: #205c38;
+}
+
+.geita-field-error {
+    margin: 4px 0 0;
+    font-size: .875rem;
+}
+
+@media (max-width: 767px) {
+    .geita-intro-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .geita-service-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .geita-booking-category {
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 16px;
+    }
+
+    .geita-booking-category > :first-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 420px) {
+    .geita-service-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .geita-booking-category {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .geita-booking-category .geita-primary {
+        justify-self: start;
+    }
+}
+
+@media (max-width: 560px) {
+    .geita-registration-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

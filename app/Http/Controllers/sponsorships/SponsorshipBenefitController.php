@@ -21,8 +21,8 @@ class SponsorshipBenefitController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Sponsorship', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPONSORSHIP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPONSORSHIP'));
             }
             $benefits = SponsorshipBenefit::get();
             return view('sponsorship.PackagesBenefits', compact('benefits'));
@@ -40,8 +40,8 @@ class SponsorshipBenefitController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Sponsorship', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPONSORSHIP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPONSORSHIP'));
             }
             $validator = Validator::make($request->all(), [
                 'benefitTitle' => 'required|unique:sponsorship_benefits,benefitTitle',
@@ -71,8 +71,8 @@ class SponsorshipBenefitController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Sponsorship', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPONSORSHIP', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPONSORSHIP'));
             }
             $validator = Validator::make($request->all(), [
                 'benefitTitle' => 'required',

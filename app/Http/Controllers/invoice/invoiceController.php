@@ -17,9 +17,9 @@ class invoiceController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Any Invoice',Role::class))
+        if($request->user()->cannot('VIEW_ANY_INVOICE',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_ANY_INVOICE'));
         }
         //
         return view('invoice.invoices');

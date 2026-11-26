@@ -3,7 +3,6 @@
     |  ******************* INTERGRATION FILE CONTROLLER *****************
     |
     | This file define all endpoint logics for posting
-    |-->All gfs Codes created from Billing system
     |-->All control numbers from billing system
     |-->All payments being made.
     |
@@ -14,64 +13,17 @@ namespace App\Http\Controllers\APIs;
 use App\Http\Controllers\Controller;
 use App\Models\advice_note\advice_notes;
 use Illuminate\Http\Request;
-use App\Models\Collections\Income;
 use App\Models\Collections\PaymentDetails;
 use App\Models\ePermit\ApplicationInvoice;
 use App\Models\ePermit\ePermitApplication;
-use App\Models\off_fair\advice_notes\off_fair_advice_notes;
-use App\Traits\CollectionSettingTraits;
 use App\Traits\APITraits;
 use App\Traits\NotificationTrait;
 use Illuminate\Support\Str;
 
 class IntergrationController extends Controller
 {
-    use  CollectionSettingTraits;
     use APITraits;
     use NotificationTrait;
-
-
-    # ************  POST GFSCODE FUNCTION **************#
-    function PostGfsCode(Request $request)
-    {
-        try {
-            $request_name = $request->response['sp_code'];
-            $token = $request->response['token'];
-            $status = $this->AuthenticateRequest($request_name, $token);
-            if ($status == 0) {
-                return response()->json([
-                    'code' => '401',
-                    'message' => 'You are not Authenticated to Access this Resource!'
-                ]);
-            }
-
-            foreach ($request->data as $key) {
-                $gfs_code = $key['item_code'];
-                $income_name = $key['name'];
-                $gfs_codes = Income::get();
-                foreach ($gfs_codes as $value) {
-                    if ($gfs_code == $value->gfs_code) {
-                        continue;
-                    }
-                }
-
-                $this->SaveNewGfsCode($gfs_code, $income_name); // method to register new Iterm
-
-            }
-
-            return response()->json([
-                'code' => 200,
-                'message' => 'Item added successfully!',
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'code' => 500,
-                'message' => 'Something went wrong!'
-            ]);
-        }
-    }
-    # ******** END POST GFSCODE FUNCTION ***********#
-
 
 
     # ********* POST CONTROL NUMBER FUNCTION *******#
@@ -99,16 +51,6 @@ class IntergrationController extends Controller
                 return response()->json(['response' => $response]); // return response to Service Provider
             }
             #------- END DITF INVOICES POST CONTROL NUMBER API------#
-
-            #------- OFF FAIR INVOICES POST CONTROL NUMBER API------#
-            if (off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->exists()) {
-                off_fair_advice_notes::find($reference)->update(['control_number' => $control_no]); // set control no to invoice
-                $this->SentControlNoNotification($reference); //this methode send control number to user(BulkSms).
-                $response = array('code' => 200, 'message' => 'Request Processed successfully!');
-                return response()->json(['response' => $response]); // return response to Service Provider
-            }
-            #------- END OFF FAIR INVOICES POST CONTROL NUMBER API------#
-
 
             #---- e_Permit Invoices ----- #
             if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
@@ -209,22 +151,6 @@ class IntergrationController extends Controller
             return 1;
         }
         #---END UPDATE PAYMENTS IN INFAIR INVOICES---#
-
-        #--- UPDATE PAYMENTS IN OFF FAIR INVOICES---#
-        if (off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->exists()) {
-            $invoice = off_fair_advice_notes::where('off_fair_advice_note_id', $reference)->first();
-            $total_amount = $invoice->total_amount;
-            $amount_paid = 0;
-            $payments = PaymentDetails::where('referenceId', $reference)->get();
-            foreach ($payments as $item) {
-                $amount_paid = $amount_paid + $item->amount_paid;
-            }
-            $balance = $total_amount - $amount_paid;
-            $invoice->update(['amount_paid' => $amount_paid, 'balance' => $balance]);
-            return 1;
-        }
-        #--- END UPDATE PAYMENTS IN OFF FAIR INVOICES---#
-
 
         if (ApplicationInvoice::where('invoiceNo', $reference)->exists()) {
             $invoice=ApplicationInvoice::find($reference);

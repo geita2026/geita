@@ -24,7 +24,7 @@
             <div class=" panel-body table-responsive">
 
                 {{-- <div class=" row form-group col-md-12">
-                    @can('Allocate Stickers')
+                    @can('ALLOCATE_STICKERS')
                         <div class="form-group col-md-6 text-right">
                             <a data-toggle="modal" data-target="#AddFreeStickers"
                                 class=" btn btn-default border-primary text-primary"> Free Sticker <i
@@ -50,7 +50,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        @can('allocate-badges')
+                        @can('ALLOCATE_BADGES')
                             <div class=" col-md-2">
                                 <br>
                                 <a data-toggle="modal" data-target="#stickerAllocation" class=" btn btn-primary">Provission
@@ -243,7 +243,7 @@
                                                     @if ($item->sticker_status != 2)
                                                         @if (Auth::user()->account_type == 2 && $item->sticker_status == 1)
                                                         @else
-                                                            @can('Update Stickers')
+                                                            @can('UPDATE_STICKER')
                                                                 <li>
                                                                     <a data-toggle="modal"
                                                                         data-target="#EditSticker{{ $item->sticker_id }}"
@@ -251,7 +251,7 @@
                                                                             class=" icon-pencil"></i></a>
                                                                 </li>
                                                             @endcan
-                                                            @can('Delete Stickers')
+                                                            @can('DELETE_STICKER')
                                                                 <li>
                                                                     <a data-toggle="modal"
                                                                         data-target="#DeleteSticker{{ $item->sticker_id }}"
@@ -260,7 +260,7 @@
                                                                 </li>
                                                             @endcan
                                                         @endif
-                                                        @can('Block Stickers')
+                                                        @can('BLOCK_STICKERS')
                                                             <li>
                                                                 <a data-toggle="modal"
                                                                     data-target="#Block{{ $item->sticker_id }}"

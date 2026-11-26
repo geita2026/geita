@@ -21,9 +21,9 @@ class facialNameGroupController extends Controller
 
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Facial Names Group',Permission::class))
+        if($request->user()->cannot('VIEW_FACIAL_NAME_GROUP_SUBMENU',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_FACIAL_NAME_GROUP_SUBMENU'));
         }
 
         $groups=FacialNameGroup::get();
@@ -38,9 +38,9 @@ class facialNameGroupController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Facial Names Group',Permission::class))
+        if($request->user()->cannot('CREATE_FACIAL_NAME_GROUP',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_FACIAL_NAME_GROUP'));
         }
         //
         try {
@@ -71,9 +71,9 @@ class facialNameGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Facial Names Group',Permission::class))
+        if($request->user()->cannot('UPDATE_FACIAL_NAME_GROUP',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_FACIAL_NAME_GROUP'));
         }
 
         try {
@@ -102,9 +102,9 @@ class facialNameGroupController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Facial Names Group',Permission::class))
+        if($request->user()->cannot('DELETE_FACIAL_NAME_GROUP',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_FACIAL_NAME_GROUP'));
         }
         try {
             $group=FacialNameGroup::find($id);

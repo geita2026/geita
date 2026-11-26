@@ -21,9 +21,9 @@ class EventSponsorController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Event Sponsors',Role::class))
+        if($request->user()->cannot('VIEW_RECOGNIZED_SPONSOR_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_RECOGNIZED_SPONSOR_SUBMENU'));
         }
 
         $sponsors=EventSponsor::get();
@@ -38,9 +38,9 @@ class EventSponsorController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('View Event Sponsors',Role::class))
+        if($request->user()->cannot('VIEW_RECOGNIZED_SPONSOR_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_RECOGNIZED_SPONSOR_SUBMENU'));
         }
 
         $request->validate([
@@ -75,9 +75,9 @@ class EventSponsorController extends Controller
      */
     public function update(Request $request,$id)
     {
-        if($request->user()->cannot('View Event Sponsors',Role::class))
+        if($request->user()->cannot('VIEW_RECOGNIZED_SPONSOR_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_RECOGNIZED_SPONSOR_SUBMENU'));
         }
 
         $request->validate([
@@ -104,9 +104,9 @@ class EventSponsorController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Event Sponsors',Role::class))
+        if($request->user()->cannot('DELETE_RECOGNIZED_SPONSOR',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_RECOGNIZED_SPONSOR'));
         }
 
         try

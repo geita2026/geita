@@ -27,11 +27,16 @@ class AssociateCompanyController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('view-associate-companies', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ASSOCIATE_COMPANY_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ASSOCIATE_COMPANY_SUBMENU'));
         }
         $associates = companies::where('associate_company', '!=', Null)->get();
-        return view('company.associate_companies', compact('associates'));
+        return view('company.associate_companies', [
+            'associates' => $associates,
+            'countries' => Country::orderBy('country_name')->get(['country_name', 'country_short_code']),
+            'sectors' => sectors::orderBy('sectorName')->get(['sectorID', 'sectorName']),
+            'associateWithAllocations' => collect(),
+        ]);
     }
 
 
@@ -43,8 +48,8 @@ class AssociateCompanyController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('view-associate-companies', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ASSOCIATE_COMPANY_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ASSOCIATE_COMPANY_SUBMENU'));
         }
         $sectors = sectors::orderBy('sectorName', 'ASC')
             ->get(['sectorID', 'sectorName']);
@@ -92,8 +97,8 @@ class AssociateCompanyController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('view-associate-companies', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_ASSOCIATE_COMPANY_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ASSOCIATE_COMPANY_SUBMENU'));
         }
 
         $sectors = sectors::orderBy('sectorName', 'ASC')
@@ -150,8 +155,7 @@ class AssociateCompanyController extends Controller
             $usedBadges = $totalChildBadges + $usedBadges;
             session(['allowedAllocation' => $value->badges_allocated - $usedBadges]);
         }
-        $countries = Country::get(['country_name', 'country_short_code']);
-        $sectors = sectors::get(['sectorID', 'sectorName']);
+        $countries = Country::orderBy('country_name')->get(['country_name', 'country_short_code']);
 
         return view('company.associate_companies', compact('associates', 'main_company', 'company_id', 'countries', 'sectors', 'associateWithAllocations'));
     }
@@ -159,8 +163,8 @@ class AssociateCompanyController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('allocate-associates-badges', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('ALLOCATE_ASSOCIATE_COMPANY', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('ALLOCATE_ASSOCIATE_COMPANY'));
             }
             $validator = Validator::make($request->all(), [
                 'parentCompany' => 'required|exists:companies,companyID',

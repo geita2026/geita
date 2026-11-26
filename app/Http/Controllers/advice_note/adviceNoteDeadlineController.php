@@ -23,8 +23,8 @@ class adviceNoteDeadlineController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create AdviceNote Deadline', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_ADVICE_NOTE_DEADLINE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_ADVICE_NOTE_DEADLINE'));
         }
         //
         $today = date('Y-m-d');
@@ -57,8 +57,8 @@ class adviceNoteDeadlineController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Extend Deadline', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('EXTEND_DEADLINE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('EXTEND_DEADLINE'));
             }
             $request->validate([
                 'reasons' => 'required',

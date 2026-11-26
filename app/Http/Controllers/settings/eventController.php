@@ -21,8 +21,8 @@ class eventController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View Events', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this action.');
+        if ($request->user()->cannot('VIEW_EXHIBITION_EVENT_SUBMENU', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_EXHIBITION_EVENT_SUBMENU'));
         }
 
         $events = events::orderBy('event_start_date', 'DESC')->get([
@@ -61,8 +61,8 @@ class eventController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create Events', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this action.');
+        if ($request->user()->cannot('CREATE_EXHIBITION_EVENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_EXHIBITION_EVENT'));
         }
 
         $makeActive = $request->event_status === 'on';
@@ -94,8 +94,8 @@ class eventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Events', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this action.');
+        if ($request->user()->cannot('UPDATE_EXHIBITION_EVENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_EXHIBITION_EVENT'));
         }
 
         $event      = events::findOrFail($id);
@@ -141,8 +141,8 @@ class eventController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Events', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this action.');
+        if ($request->user()->cannot('DELETE_EXHIBITION_EVENT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_EXHIBITION_EVENT'));
         }
 
         $event = events::findOrFail($id);

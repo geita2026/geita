@@ -29,7 +29,7 @@
                     <button type="submit" class=" btn btn-success" data-toggle="modal" data-target="#add_role">Add permission <i class=" icon-plus2"></i></button>
                 </div>
                 <div class=" form-group col-md-12">
-                    <table class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
+                    <table data-table-paginated class="table datatable-button-html5-columns table-responsive table-bordered table-striped">
                     <thead>
                         <tr>
                             <th class=" text-bold">#</th>
@@ -111,7 +111,7 @@
                 </table>
                 </div>
                 <div class=" form-group col-md-12 text-right">
-                    {{ $permissions->links() }}
+                    {{ $permissions->withQueryString()->links() }}
                 </div>
             </div>
         </div>

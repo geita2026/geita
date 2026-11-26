@@ -161,7 +161,7 @@
                     of {{ $sectors->total() }} sector(s)
                 </p>
 
-                <table class="table table-hover table-bordered sector-table">
+                <table data-table-paginated data-table-search="server" class="table table-hover table-bordered sector-table">
                     <thead>
                         <tr>
                             <th class="text-center" style="width:60px">#</th>
@@ -228,7 +228,7 @@
                     <span class="text-muted text-size-small">
                         Page {{ $sectors->currentPage() }} of {{ $sectors->lastPage() ?: 1 }}
                     </span>
-                    {{ $sectors->links() }}
+                    {{ $sectors->withQueryString()->links() }}
                 </div>
             </div>
         </div>

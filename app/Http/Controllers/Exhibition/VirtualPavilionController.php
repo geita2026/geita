@@ -28,9 +28,9 @@ class VirtualPavilionController extends Controller
 
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Virtual Pavilions',Role::class))
+        if($request->user()->cannot('VIEW_VIRTUAL_PAVILIONS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_VIRTUAL_PAVILIONS'));
         }
 
         try {
@@ -69,9 +69,9 @@ class VirtualPavilionController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Virtual Pavilions',Role::class))
+        if($request->user()->cannot('CREATE_VIRTUAL_PAVILIONS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_VIRTUAL_PAVILIONS'));
         }
         //
        $id=session('participation_id');
@@ -125,9 +125,9 @@ class VirtualPavilionController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('Update Virtual Pavilions',Role::class))
+        if($request->user()->cannot('UPDATE_VIRTUAL_PAVILIONS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_VIRTUAL_PAVILIONS'));
         }
         //
         session(['participation_id'=>$id]);
@@ -148,9 +148,9 @@ class VirtualPavilionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Virtual Pavilions',Role::class))
+        if($request->user()->cannot('UPDATE_VIRTUAL_PAVILIONS',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_VIRTUAL_PAVILIONS'));
         }
 
         // return $request;
@@ -188,7 +188,7 @@ class VirtualPavilionController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        // if($request->user()->cannot('Delete Virtual Pavilions',Role::class))
+        // if($request->user()->cannot('DELETE_VIRTUAL_PAVILIONS',Role::class))
         // {
         //     return back()->with('fail','You do not have permission to perform this Action');
         // }

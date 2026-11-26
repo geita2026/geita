@@ -49,7 +49,7 @@
                         @foreach ($content as $data)
                         <input type="hidden" name="id" value="{{ $data->policy_id }}">
                         @endforeach
-                        <textarea name="policy_content" cols="18" rows="18" class="wysihtml5 wysihtml5-default form-control" placeholder="Enter text here ..." @can('Create Policy') @else disabled @endcan >
+                        <textarea name="policy_content" cols="18" rows="18" class="wysihtml5 wysihtml5-default form-control" placeholder="Enter text here ..." @can('CREATE_POLICY') @else disabled @endcan >
                             @foreach ($content as $data)
                             {{ $data->policy_content }}
                             @endforeach
@@ -57,7 +57,7 @@
                         </textarea>
                         </div>
 
-                        @can('Create Policy')
+                        @can('CREATE_POLICY')
                         <div class="text-right">
 
                             <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner">Save Changes</button>
@@ -101,7 +101,7 @@
                     @foreach ($content as $data)
                     <input type="hidden" name="id" value="{{ $data->policy_id }}">
                     @endforeach
-                    <textarea name="policy_content" cols="18" rows="18" class="wysihtml5 wysihtml5-default form-control" placeholder="Enter text here ..." @can('Create Policy') @else disabled @endcan >
+                    <textarea name="policy_content" cols="18" rows="18" class="wysihtml5 wysihtml5-default form-control" placeholder="Enter text here ..." @can('CREATE_POLICY') @else disabled @endcan >
                         @foreach ($content as $data)
                         {{ $data->policy_content }}
                         @endforeach
@@ -109,7 +109,7 @@
                     </textarea>
                     </div>
 
-                    @can('Create Policy')
+                    @can('CREATE_POLICY')
                     <div class="text-right">
 
                         <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner">Save Changes</button>

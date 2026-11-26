@@ -28,7 +28,7 @@
                 </div>
 
 
-                <table class="table table-striped table-bordered  table-responsive">
+                <table data-table-paginated class="table table-striped table-bordered  table-responsive">
                     <thead>
                         <tr>
                             <th class=" text-center text-bold">#</th>
@@ -63,7 +63,7 @@
 
             </div>
             <div class=" text-right form-group mb-3">
-                {{ $payments->links() }}
+                {{ $payments->withQueryString()->links() }}
             </div>
         </div>
     </div>

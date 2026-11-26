@@ -28,7 +28,7 @@
                     @endforeach
                 @endif
                 <div class=" form-group table-responsive">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
                             <tr>
                                 <th class=" text-bold text-center">SN#</th>
@@ -112,7 +112,7 @@
                     </table>
                 </div>
                 <div class=" form-group text-right">
-                    {{ $allocations->links() }}
+                    {{ $allocations->withQueryString()->links() }}
                 </div>
 
             </div>

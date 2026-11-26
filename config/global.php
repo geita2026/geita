@@ -13,12 +13,11 @@ return[
     ],
     'INVOICE_DUE_DAYS'=>env('INVOICE_DUE_DAYS',7),
     // Module visibility & branding (safe to cache)
-    'MODULE_ONE'=>env('MODULE_ONE', 'Trade Fair'),
+    'MODULE_ONE'=>env('MODULE_ONE', 'GeMEMIS'),
     'MODULE_ONE_DESCRIPTION'=>env('MODULE_ONE_DESCRIPTION', ''),
     'CALL_CENTER'=>env('CALL_CENTER', ''),
     'APP_VERSION'=>env('APP_VERSION', ''),
     'COMPANY_EXCEPTION'=>env('COMPANY_EXCEPTION', null),
-    'MAINTENANCE_END_TIME'=>env('MAINTENANCE_END_TIME', ''),
     // Integration feature flags
     'APP_STATUS'=>env('APP_STATUS', 0),
     'APP_VASSION'=>env('APP_VASSION', 0),

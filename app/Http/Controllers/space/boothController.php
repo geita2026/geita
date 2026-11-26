@@ -29,8 +29,8 @@ class boothController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             return view('space.add-booth');
         } catch (\Throwable $th) {
@@ -47,8 +47,8 @@ class boothController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             //
             $validator = Validator::make($request->all(), [
@@ -117,8 +117,8 @@ class boothController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
             $booth_categories = booth_categories::get(['booth_category_id', 'category_name']);
             $pav = pavilions::get(['pavilionName', 'pavilionID'])->where('pavilionID', $id);
@@ -174,8 +174,8 @@ class boothController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Booths', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_BOOTH', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_BOOTH'));
         }
         //
         $request->validate([
@@ -239,8 +239,8 @@ class boothController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Booths', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_BOOTH', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_BOOTH'));
             }
             $booth = booths::find($id);
             if (booked_pavilions::where('pavilionID', $id)->exists()) {

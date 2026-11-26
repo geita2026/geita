@@ -42,8 +42,8 @@ class ReUseBadgesController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Reuse Badges', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('REUSE_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('REUSE_BADGES'));
         }
         try {
             CompanyMember::create([
@@ -72,8 +72,8 @@ class ReUseBadgesController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('View Member Badges', Role::class)) {
-            return back()->with('fail', 'Not allowed to access this resource!');
+        if ($request->user()->cannot('VIEW_MEMBER_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_MEMBER_BADGES'));
         }
         $events = events::where('event_status', 1)->first();
         $badges = BadgesAllocation::where('company_id', $id)->where('event_id', $events->event_id)->get();
@@ -141,8 +141,8 @@ class ReUseBadgesController extends Controller
     public function update(Request $request, $id)
     {
 
-        if ($request->user()->cannot('View Member Badges', Role::class)) {
-            return back()->with('fail', 'Not allowed to perform this Activity!');
+        if ($request->user()->cannot('VIEW_MEMBER_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_MEMBER_BADGES'));
         }
         $request->validate([
             'first_name' => 'required',
@@ -192,8 +192,8 @@ class ReUseBadgesController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('View Member Badges', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_MEMBER_BADGES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_MEMBER_BADGES'));
             }
             $badge = CompanyMember::find($id);
             if ($badge) {

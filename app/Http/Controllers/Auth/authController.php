@@ -42,7 +42,7 @@ class authController extends Controller
         $request->session()->regenerate();
         $ip_address = request()->ip();
         DB::update("update users set user_ip_address=? where email=?", [$ip_address, $request->user_name]);
-        return redirect()->route('startApp');
+        return redirect()->route('dashboard');
     }
 
     //logout

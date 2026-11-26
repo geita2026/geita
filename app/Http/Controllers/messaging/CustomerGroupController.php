@@ -20,9 +20,9 @@ class CustomerGroupController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Customer Group',Role::class))
+        if($request->user()->cannot('VIEW_CUSTOMER_GROUP_SUBMENU',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_CUSTOMER_GROUP_SUBMENU'));
         }
 
         //
@@ -38,9 +38,9 @@ class CustomerGroupController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Customer Group',Role::class))
+        if($request->user()->cannot('CREATE_CUSTOMER_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_CUSTOMER_GROUP'));
         }
         try {
             $request->validate([
@@ -68,9 +68,9 @@ class CustomerGroupController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Customer Group',Role::class))
+        if($request->user()->cannot('UPDATE_CUSTOMER_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_CUSTOMER_GROUP'));
         }
 
         try {
@@ -94,9 +94,9 @@ class CustomerGroupController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Customer Group',Role::class))
+        if($request->user()->cannot('DELETE_CUSTOMER_GROUP',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_CUSTOMER_GROUP'));
         }
 
         try {

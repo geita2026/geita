@@ -34,21 +34,21 @@
                     <!-- Main -->
                     <li class="navigation-header"><span>Main-Sidebar</span> <i class="icon-menu" title="Main pages"></i></li>
                     <li><a href="{{ route('dashboard') }}"><i class="icon-home4"></i> <span>Dashboard</span></a></li>
-                    {{-- @can('viewAny-permission') --}}
-                    @can('viewAny-permission')
+                    {{-- @can('VIEW_ANY_PERMISSION') --}}
+                    @can('VIEW_ANY_PERMISSION')
                     <li><a href="{{ route('permissions.index') }}"><i class=" icon-lock2"></i> <span>Permissions</span></a></li>
                     @endcan
                     {{-- @endcan --}}
-                    @can('viewAny-role')
+                    @can('VIEW_ANY_ROLE')
                     <li><a href="{{ route('roles.index') }}"><i class=" icon-accessibility"></i> <span>Roles</span></a></li>
                     @endcan
-                    @can('viewAny-user')
+                    @can('VIEW_ANY_USER')
                     <li><a href="{{ route('users.index') }}"><i class=" icon-users4"></i> <span>Users</span></a></li>
                     @endcan
-                    @can('viewAny-audit')
+                    @can('VIEW_ANY_AUDIT')
                     <li><a href="{{ route('audits.index') }}"><i class=" icon-repo-forked"></i> <span>User-Audit</span></a></li>
                     @endcan
-                    @can('viewAny-company')
+                    @can('VIEW_ANY_COMPANY')
                     <li><a href="{{ route('companies.index') }}"><i class=" icon-office"></i> <span>Companies</span></a></li>
                     @endcan
 

@@ -20,4 +20,8 @@
   <!-- Template Stylesheet -->
   <link href="FrontEnd/css/style.css" rel="stylesheet">
 
-  
+
+  <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">

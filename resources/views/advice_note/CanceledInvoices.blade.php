@@ -25,7 +25,7 @@
             <div class=" col-md-12 table-header">
                 <h4 class=" p-15 text-center text-default text-bold">LIST OF CANCELED INVOICES</h4>
             </div>
-            <table class="table table-bordered datatable-button-html5-columns">
+            <table data-table-paginated class="table table-bordered datatable-button-html5-columns">
                 <thead>
                     
                     <tr>
@@ -76,7 +76,7 @@
             </table>
             
                 <div class=" text-right">
-                    {{ $advice_note->links() }}
+                    {{ $advice_note->withQueryString()->links() }}
                 </div>
            
 
@@ -112,14 +112,16 @@
                         <td colspan="4">No data.</td>
                     </tr>`;
                         } else {
+                            const invoiceUrl = @json(route('adviceNotes.show', ['adviceNote' => '__INVOICE_ID__']));
                             for (let i = 0; i < response.data.length; i++) {
+                                const invoiceLink = invoiceUrl.replace('__INVOICE_ID__', encodeURIComponent(response.data[i].advice_note_id));
                                 htmlView += `
                         <tr>
                             <td>
-                                <a href="{{ env('APP_URL') }}/adviceNotes/` + response.data[i].advice_note_id + `" class=" text-primary text-bold">` + response.data[i].advice_note_id +`</a>
+                                <a href="${invoiceLink}" class=" text-primary text-bold">` + response.data[i].advice_note_id +`</a>
                             </td>
                             <td class=" text-uppercase">
-                                <a href="{{ env('APP_URL') }}/adviceNotes/` + response.data[i].advice_note_id + `" title="Click to update company">
+                                <a href="${invoiceLink}" title="Click to update company">
                                     ` + response.data[i].companyName + `
                                 </a>
                             </td>
@@ -128,7 +130,7 @@
                             <td class=" text-success text-bold">` + new Intl.NumberFormat().format(response.data[i].amount_paid)   + " " + response.data[i].currency + `</td>
                             <td class="text-warning text-bold">` + new Intl.NumberFormat().format((response.data[i].total_amount-response.data[i].amount_paid))  + " " + response.data[i].currency + `</td>
                             <td class="text-center">
-                              <a href="{{ env('APP_URL') }}/adviceNotes/` + response.data[i].advice_note_id + `" class=" text-primary text-bold btn btn-block border-primary">View Invoice <i class=" icon-file-empty2"></i></a>
+                              <a href="${invoiceLink}" class=" text-primary text-bold btn btn-block border-primary">View Invoice <i class=" icon-file-empty2"></i></a>
                             </td></tr>`;
                             }
                             $('tbody').html(htmlView);

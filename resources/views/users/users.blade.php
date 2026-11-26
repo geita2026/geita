@@ -48,43 +48,21 @@
 
 
 
-                {{-- search --}}
-                <div class=" col-md-12 form-group">
-                    <form action="{{ route('users.index') }}" method="POST">
-                        @csrf
-                        @method('GET')
-                        <div class=" row">
-                            <div class="col-md-3 form-group" id="usersType">
-                                <select name="user_type" class=" form-control" onchange="this.form.submit()">
-                                    <option value=""> - - - Filter By Type of Users - - - </option>
-                                    <option value="1" class=" text-capitalize"> Internal System Users (Exhibition Staff)</option>
-                                    <option value="2" class=" text-capitalize">External System Users (Exhibitors)</option>
-                                </select>
-                                <span class="text-danger"> @error('role')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-
-                            <div class="col-md-5 form-group" id="userRole">
-                                
-                                <input type="text" name="userName" class=" form-control" placeholder="Enter Email">
-                                <span class="text-danger"> @error('role')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-                           
-
-                            <div class="col-md-3 form-group text-right">
-                                <button class=" btn btn-default text-primary btn-ladda btn-ladda-spinner">Load Data <i
-                                        class=" icon-database-refresh"></i></button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-                {{-- //search --}}
+                <form action="{{ route('users.index') }}" method="GET" class="gememis-table-toolbar">
+                    <label class="sr-only" for="user-table-search">Search users</label>
+                    <input type="search" id="user-table-search" name="userName" class="form-control"
+                        placeholder="Search users by name, email or phone" value="{{ request('userName') }}">
+                    <label class="sr-only" for="user-table-type">Account type</label>
+                    <select name="user_type" id="user-table-type" data-native-select class="form-control">
+                        <option value="">All account types</option>
+                        <option value="1" {{ request('user_type') == 1 ? 'selected' : '' }}>Internal users</option>
+                        <option value="2" {{ request('user_type') == 2 ? 'selected' : '' }}>Exhibitors</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    @if (request()->filled('userName') || request()->filled('user_type'))
+                        <a href="{{ route('users.index') }}" class="btn btn-default">Clear</a>
+                    @endif
+                </form>
 
                 <div class=" col-md-12 row form-group">
                     <div class=" text-right">
@@ -94,7 +72,7 @@
                 </div>
 
                 <div class=" col-md-12 form-group">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated data-table-search="server" class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
                             <tr class=" text-bold">
                                 <th>#</th>
@@ -112,13 +90,13 @@
                             @endphp
                             @foreach ($users as $key => $item)
                                 <tr>
-                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $users->firstItem() + $key }}</td>
                                     <td>{{ $item->first_name }} {{ $item->middle_name }} {{ $item->last_name }}</td>
                                     <td><a
                                             href="tel:{{ $item->phone_number }}">{{ trim(strrev(chunk_split(strrev($item->phone_number), 3, ' '))) }}</a>
                                     </td>
                                     <td><a href="mailto:{{ $item->email }}">{{ $item->email }}</a></td>
-                                    <td class=" text-bold text-uppercase">{{ $item->name }}</td>
+                                    <td class=" text-bold text-uppercase">{{ $item->role_name }}</td>
                                     <td class=" text-center">
                                        
                                         @if ($item->account_status == 1)
@@ -141,7 +119,7 @@
                                                     <i class="icon-menu4"></i>
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-menu-right">
-                                                    @can('Update Users')
+                                                    @can('UPDATE_USER')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#editUser{{ $item->id }}"
@@ -150,7 +128,7 @@
                                                         </li>
                                                     @endcan
 
-                                                    @can('Resert Password')
+                                                    @can('RESERT_PASSWORD')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#ResertPassword{{ $item->user_uuid }}"
@@ -160,7 +138,7 @@
                                                     @endcan
 
                                                     @if ($item->account_type==2 && $item->myCompany!=Null)
-                                                    @can('View Companies')
+                                                    @can('VIEW_COMPANIES')
                                                     <li>
                                                         <a href="{{ route('companies.edit',['company'=>$item->myCompany]) }}"
                                                             
@@ -171,7 +149,7 @@
                                                     @endif
                                                     
 
-                                                    @can('Delete Users')
+                                                    @can('DELETE_USER')
                                                         <li>
                                                             <a data-toggle="modal"
                                                                 data-target="#delete_user{{ $item->user_uuid }}"
@@ -269,7 +247,7 @@
                                                                 <select name="role_name"
                                                                     class=" form-control input-lg">
                                                                     <option value="{{ $item->role }}">
-                                                                        {{ $item->name }}</option>
+                                                                        {{ $item->role_name }}</option>
                                                                     @foreach ($roles as $role)
                                                                         <option value="{{ $role->id }}">
                                                                             {{ $role->name }}</option>
@@ -429,7 +407,7 @@
                     </table>
                 </div>
                 <div class=" col-md-12 form-group text-right">
-                    {{ $users->links() }}
+                    {{ $users->withQueryString()->links() }}
                 </div>
 
             </div>

@@ -43,7 +43,7 @@
                     @csrf
                     @method('GET')
                     <input type="hidden" name="badges" value="badges">
-                    <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                    <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
                             <tr>
                                 <th class=" text-bold text-center">
@@ -124,7 +124,7 @@
                 </tbody>
                 </table>
                 {{-- <div class=" form-group text-right">
-                    {{ $badges->links() }}
+                    {{ $badges->withQueryString()->links() }}
                 </div> --}}
 
             </div>

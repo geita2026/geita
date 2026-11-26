@@ -24,9 +24,9 @@ class PrepareBadgeController extends Controller
         $this->middleware('auth');
     }
     public function index(Request $request)
-    {  if($request->user()->cannot('View Badges List',Role::class))
+    {  if($request->user()->cannot('VIEW_BADGES_LIST',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
         //
 
@@ -62,9 +62,9 @@ class PrepareBadgeController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('View Badges List',Role::class))
+        if($request->user()->cannot('VIEW_BADGES_LIST',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
         //
         if (Auth::user()->account_type==1) {
@@ -107,9 +107,9 @@ class PrepareBadgeController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->user()->cannot('View Badges List',Role::class))
+        if($request->user()->cannot('VIEW_BADGES_LIST',Role::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
         //
         $SearchSessionId=Str::uuid();

@@ -31,8 +31,8 @@ class StickerAllocationController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Allocate Stickers', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('ALLOCATE_STICKERS', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('ALLOCATE_STICKERS'));
         }
         $request->validate([
             'attachment' => 'mimes:png,jpg,jpeg,pdf'

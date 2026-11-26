@@ -55,8 +55,8 @@ class adviceNoteController extends Controller
     {
         #---------------------------------- INTERNAL USERS--------------------------#
         if (Auth::user()->account_type == 1) {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
 
             $advice_note = advice_notes::orderBy('advice_note_created_at', 'DESC')
@@ -88,8 +88,8 @@ class adviceNoteController extends Controller
 
         #------------------------- EXTERNAL USERS----------------------------#
         elseif (Auth::user()->account_type == 2) {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
             //CURRENT EVENT INVOICES
             $advice_note = advice_notes::orderBy('advice_note_created_at', 'DESC')
@@ -132,8 +132,8 @@ class adviceNoteController extends Controller
     {
         #---------------------------------- INTERNAL USERS--------------------------#
         if (Auth::user()->account_type == 1) {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
 
             $advice_note = advice_notes::orderBy('advice_note_created_at', 'DESC')
@@ -165,8 +165,8 @@ class adviceNoteController extends Controller
 
         #------------------------- EXTERNAL USERS----------------------------#
         elseif (Auth::user()->account_type == 2) {
-            if ($request->user()->cannot('Manage Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
             }
             // CURRENT EVENT INVOICES
             $advice_note = advice_notes::orderBy('advice_note_created_at', 'DESC')
@@ -209,13 +209,13 @@ class adviceNoteController extends Controller
      */
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        if ($request->user()->cannot('Manage Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
         $request->validate([
             'company_id' => 'required',
         ]);
+        $transactionLevel = DB::transactionLevel();
         try {
             #----- DEADLINE ------#
             $today = Carbon::now();
@@ -254,6 +254,7 @@ class adviceNoteController extends Controller
 
             # ------generate advice note  for customer Booking.-----#
             if ($request->advice_note) {
+                DB::beginTransaction();
                 $vat = $request->vat;
                 $adviceNote = "INV-" . random_int(5000, 9999) . "-" . random_int(1000, 4999) . "-00" . date('y'); //advice note id created here
                 advice_notes::create([
@@ -264,7 +265,7 @@ class adviceNoteController extends Controller
                     'event' => $event_id,
                     'advice_note_deadline' => $defaultDeadline,
                     'vat' => $vat,
-                    'change_currency' => $request->currencyRequested ?? 'TZS',
+                    'change_currency' => $request->input('currencyRequested') === 'TZS',
                     'advice_note_description' => $request->advice_note_description
                 ]);
 
@@ -275,7 +276,7 @@ class adviceNoteController extends Controller
                     advice_notes::find($adviceNote)->update([
                         'invoice_type' => 'SPONSORSHIP',
                         'currency'=>$packageCurrency,
-                        'change_currency'=>$packageCurrency,
+                        'change_currency' => false,
                     ]);
                     $booked->update(['advice_note_id' => $adviceNote]);
                 }
@@ -299,15 +300,19 @@ class adviceNoteController extends Controller
 
                 #END EXHIBITORS#
                 $id = $adviceNote;
-                $this->CreateParticulars($id); // this methode help to add particulars to particular table
+                if (!$this->CreateParticulars($id)) {
+                    DB::rollBack();
+                    return back()->with('fail', 'The invoice could not be created. Check the booking and its GFS codes.');
+                }
                 $this->CreateBill($id); // create bill for this particulars with specified Advice note ID
                 DB::commit();
 
                 return redirect()->route('adviceNotes.show', ['adviceNote' => $id])->with('success', 'Invoice generated successfully!');
             }
         } catch (\Throwable $th) {
-            DB::rollback();
-            return redirect()->route('booking.index')->with('fail', config('Messages.500') . $th->getMessage());
+            DB::rollBack($transactionLevel);
+            report($th);
+            return back()->with('fail', config('Messages.500'));
         }
     }
 
@@ -319,17 +324,19 @@ class adviceNoteController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_INVOICES'));
         }
         //advice note details
-        $adviceNotes = advice_notes::leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
+        $adviceNotes = advice_notes::visibleTo($request->user())
+            ->leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
             ->leftJoin('users', 'advice_notes.user_id', '=', 'users.user_uuid')
             ->leftJoin('roles', 'users.role', '=', 'roles.id')
             ->leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
             ->where('advice_notes.advice_note_id', $id)
             ->get([
                 'advice_notes.advice_note_id',
+                'advice_notes.company_id',
                 'companyName',
                 'advice_note_created_at',
                 'companyAddress',
@@ -346,7 +353,6 @@ class adviceNoteController extends Controller
                 'users.user_signature',
                 'registrationNo',
                 'advice_note_status',
-                'advice_notes.updated_at',
                 'event_name',
                 'event_descriptions',
                 'vat',
@@ -371,6 +377,8 @@ class adviceNoteController extends Controller
                 'discountAmount'
             ]);
         //end
+
+        abort_if($adviceNotes->isEmpty(), 404);
 
         foreach ($adviceNotes as $key) {
             #----- CREATE BILL FOR INVOICE WITH NO BILL ----#
@@ -420,8 +428,8 @@ class adviceNoteController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('Mapp Invoices', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MAPP_INVOICES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MAPP_INVOICES'));
         }
         try {
             advice_notes::find($id)->update([
@@ -456,8 +464,8 @@ class adviceNoteController extends Controller
 
             #----- APPROVE INVOICE -----#
             if ($request->source == 1) {
-                if ($request->user()->cannot('Request ControlNumber', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('REQUEST_ADVICE_NOTE', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('REQUEST_ADVICE_NOTE'));
                 }
                 #------- CHANGING CURRENCY ------#
                 $rate = DefaultSettings::first()->exchangeRate ?? 2700;
@@ -500,14 +508,18 @@ class adviceNoteController extends Controller
     {
 
         try {
-            if ($request->user()->cannot('Cancel Invoices', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CANCEL_INVOICES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CANCEL_INVOICES'));
             }
             if (empty($request->reasons)) {
                 return back()->with('fail', 'Please, give reasons why do you cancel this Advice Note');
             }
-            $value = advice_notes::leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')
-                ->where('advice_note_id', $id)->first(); // get bill relating to invoice id
+            $value = advice_notes::visibleTo($request->user())
+                ->leftJoin('companies', 'advice_notes.company_id', '=', 'companies.companyID')
+                ->where('advice_note_id', $id)->first(['advice_notes.*', 'companies.sp_customer_no']);
+            if (!$value || !$value->isCancelable()) {
+                return back()->with('fail', 'Only unpaid, active invoices can be canceled.');
+            }
             $customer_no = $value->sp_customer_no;
             $invoice_no = $value->sp_invoice_no;
             $canceledby = Auth::user()->first_name . " " . Auth::user()->last_name;
@@ -551,10 +563,11 @@ class adviceNoteController extends Controller
     public function reviewInvoiceDiscount(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('apply-discount', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('APPLY_DISCOUNT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('APPLY_DISCOUNT'));
             }
-            $adviceNotes = advice_notes::leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
+            $adviceNotes = advice_notes::visibleTo($request->user())
+                ->leftJoin('companies', 'companies.companyID', '=', 'advice_notes.company_id')
                 ->leftJoin('users', 'advice_notes.user_id', '=', 'users.user_uuid')
                 ->leftJoin('roles', 'users.role', '=', 'roles.id')
                 ->leftJoin('events', 'advice_notes.event', '=', 'events.event_id')
@@ -577,7 +590,6 @@ class adviceNoteController extends Controller
                     'users.user_signature',
                     'registrationNo',
                     'advice_note_status',
-                    'advice_notes.updated_at',
                     'event_name',
                     'event_descriptions',
                     'vat',
@@ -601,6 +613,9 @@ class adviceNoteController extends Controller
                     'registrationID',
                     'discountAmount'
                 ]);
+            if ($adviceNotes->isEmpty()) {
+                return back()->with('fail', 'Invoice not found.');
+            }
             $comments = Comment::leftJoin('users', 'comments.commentedBy', '=', 'users.user_uuid')
                 ->leftJoin('roles', 'users.role', '=', 'roles.id')
                 ->where('referenceId', $id)->get();
@@ -614,8 +629,8 @@ class adviceNoteController extends Controller
     public function applyDiscount(Request $request)
     {
         try {
-            if ($request->user()->cannot('Apply Discount', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('APPLY_DISCOUNT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('APPLY_DISCOUNT'));
             }
             $validator = Validator::make($request->all(), [
                 'discount' => 'required|numeric',
@@ -651,8 +666,8 @@ class adviceNoteController extends Controller
     public function approveDiscount(Request $request)
     {
         try {
-            if ($request->user()->cannot('apply-discount', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('APPLY_DISCOUNT', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('APPLY_DISCOUNT'));
             }
             $validator = Validator::make($request->all(), [
                 'comment' => 'required',
@@ -672,8 +687,8 @@ class adviceNoteController extends Controller
             ]);
 
             if ($request->descision == 'APPROVED') {
-                if ($request->user()->cannot('approve-discount', Role::class)) {
-                    return back()->with('fail', config('Messages.401'));
+                if ($request->user()->cannot('APPROVE_ADVICE_NOTE', Role::class)) {
+                    return back()->with('fail', $this->permissionDeniedMessage('APPROVE_ADVICE_NOTE'));
                 }
                 if (Auth::user()->user_uuid != $invoice->initially_assessed_by) {
                     return back()->with('fail', 'The Discount Approver must be different from dicount Requester');

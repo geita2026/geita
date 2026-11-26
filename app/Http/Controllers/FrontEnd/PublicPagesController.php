@@ -41,19 +41,9 @@ class PublicPagesController extends Controller
         return view('FrontEnd.Public_Pages.about_ditf', compact('exhibitors', 'sectors'));
     }
 
-    public function ditf_map(Request $request)
+    public function ditf_map()
     {
-        // $this->Vistors($ip = $request->ip()); // save new vistor
-        $exhibitors = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->leftJoin('events', 'exhibitors.exhibitor_event', '=', 'events.event_id')
-            // ->leftJoin('company_details','companies.companyID','=','company_details.companyID')
-            ->where('event_status', 1)->get();
-            $event=events::where('event_status',1)->first();
-
-        $categories = sectors::get();
-        return view('FrontEnd.Public_Pages.DitfMap', compact('exhibitors', 'categories','event'));
-
-        return view('FrontEnd.Public_Pages.ditf_map', compact('exhibitors', 'categories'));
+        return view('FrontEnd.Public_Pages.DitfMap');
     }
 
 

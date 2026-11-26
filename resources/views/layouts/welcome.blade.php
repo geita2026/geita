@@ -14,6 +14,11 @@
     <link href="{{ asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
+    @include('layouts.sweet-alerts')
     </head>
 <body class="login-container">
     <img src="{{ asset('images/tz-flag.jpg') }}" style="position:absolute; width:100%; height:100%; opacity:10%;">
@@ -46,31 +51,5 @@
  <!-- Theme JS files -->
  <script type="text/javascript" src="{{ asset('assets/js/core/app.js') }}"></script>
 
- <script>
-
-    $(function() {
-    @if(Session::get('success'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'Success!',
-            text: '{{ session::get("success") }}',
-            icon: 'icon-info3',
-            type: 'success'
-        });
-        });
-    @endif
-
-    @if(Session::get('fail'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'Ooops!',
-            text: '{{ session::get("fail") }}',
-            icon: 'icon-warning',
-            type: 'error',
-        });
-        });
-    @endif
-
-    });
-    </script>
+ @include('layouts.flash-toasts')
     <script type="text/javascript" src="{{ asset('assets/js/plugins/notifications/pnotify.min.js') }}"></script>

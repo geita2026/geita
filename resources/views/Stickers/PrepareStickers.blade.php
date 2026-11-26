@@ -52,7 +52,7 @@
                     @method('GET')
                     <input type="hidden" name="source" value="2">
 
-                <table class="table datatable-save-state table-striped table-bordered  table-responsive">
+                <table data-table-paginated class="table datatable-save-state table-striped table-bordered  table-responsive">
                     <thead>
                         <tr>
                             <th class=" text-bold text-center">
@@ -102,7 +102,7 @@
                 </table>
             </div>
             <div class=" form-group text-right">
-                {{ $stickers->links() }}
+                {{ $stickers->withQueryString()->links() }}
             </div>
         </div>
     </div>

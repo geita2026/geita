@@ -67,3 +67,6 @@
 
 	<script type="text/javascript" src="{{ asset('assets/js/pages/form_multiselect.js') }}"></script>
 	<!-- /theme JS files -->
+<script src="{{ asset('assets/js/core/gememis-selects.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+ <script src="{{ asset('assets/js/pages/datatables_basic.js') }}"></script>

@@ -28,8 +28,8 @@ class CompanyRegistrationController extends Controller
     public function myCompanyList(Request $request)
     {
         try {
-            if ($request->user()->cannot('Company Registration', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
             }
             $myCompanies = CompanyAdmin::leftJoin('companies', 'company_admins.companyId', '=', 'companies.companyID')
                 ->where('adminId', Auth::user()->user_uuid)
@@ -52,8 +52,8 @@ class CompanyRegistrationController extends Controller
     {
         try {
 
-            if ($request->user()->cannot('Company Registration', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
             }
             if ($request->TSRN) {
                 $localCompany = companies::where('registrationID', $request->TSRN)->first();
@@ -141,8 +141,8 @@ class CompanyRegistrationController extends Controller
     {
 
         try {
-            if ($request->user()->cannot('Company Registration', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('CREATE_COMPANY', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('CREATE_COMPANY'));
             }
             $validator = Validator::make($request->all(), [
                 'TIN' => 'nullable',

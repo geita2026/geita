@@ -92,7 +92,7 @@
 									</div>
                             </form>
                         <div>
-                           @can('export booking report')
+                           @can('EXPORT_BOOKING_REPORT')
                            <div class=" text-right p-20">
                             <a  href="/bookedUnbookedSpaces" download="{{date('d-m-Y')}}-ditf-booking-status.xlsx" class=" btn btn-default text-primary">Export To Excel <i class=" icon-file-excel"></i></a>
                         </div>

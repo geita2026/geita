@@ -13,8 +13,8 @@ $cat=$booths+$space+$services;
     </div>
     <div class="heading-elements">
         <div class="heading-btn-group">
-           @if (session('moduleNo')==1)
-           @can('Book Space')
+           @if (session('moduleNo', 1)==1)
+           @can('BOOK_SPACE')
            <a href="{{ route('booking.index') }}" class="btn btn-link btn-float has-text"><i class=" icon-cart-add text-primary"></i><span>Book Space</span></a>
            <a href="{{ route('booking.edit',['booking']) }}" class="btn btn-link btn-float has-text"><i class=" icon-cart5 text-primary"></i> <span class=" text-warning text-bold">{{ $cat }}</span></a>
               

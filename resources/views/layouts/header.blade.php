@@ -1,73 +1,25 @@
-
-<style>
-    #logo{
-    font-size:250%; padding:5%; text-shadow: 1px 1px 1px rgb(0, 0, 0), 2px 2px 1px rgb(0, 0, 0);
-    text-align: center;
-}
-</style>
-
 <!-- Main navbar -->
-<div class=" navbar navbar-default navbar-fixed-top header-highlight" style="background-color: rgb(16, 140, 230);">
-    <div class="navbar-header" style="background-color: rgb(16, 140, 230);">
-        <a class="navbar-brand text-bold text-white" href="{{ route('startApp') }}" id="h1">GeMEMIS</a>
+<div class="navbar navbar-default navbar-fixed-top header-highlight gememis-navbar">
+    <div class="navbar-header">
+        <a class="navbar-brand gememis-brand" href="{{ route('dashboard') }}" aria-label="GeMEMIS home">
+            <img src="{{ asset('images/coat-of-arms.svg') }}" alt="">
+            <span>GeMEMIS</span>
+        </a>
         <ul class="nav navbar-nav visible-xs-block">
             <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class=" icon-user"></i></a></li>
             <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
         </ul>
     </div>
 
-    <div class="navbar-collapse collapse row" id="navbar-mobile">
+    <div class="navbar-collapse collapse" id="navbar-mobile">
         <ul class="nav navbar-nav ">
             <li><a class="sidebar-control sidebar-main-toggle hidden-xs text-white"><i class="icon-paragraph-justify3"></i></a></li>
-
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="icon-grid6 text-white"></i>
-                    <span class="visible-xs-inline-block position-right">System Modules</span>
-                    
-                </a>
-                
-                <div class="dropdown-menu dropdown-content">
-                    <div class="dropdown-content-heading">
-                        System Modules
-                        <ul class="icons-list">
-                            <li><a href="#"><i class="icon-sync"></i></a></li>
-                        </ul>
-                    </div>
-
-                    <ul class="media-list dropdown-content-body width-350">
-                        
-                        <li class="media">
-                            <div class="media-left">
-                                <a href="#" class="btn border-primary text-primary btn-flat btn-rounded btn-icon btn-sm"><i class=" icon icon-certificate"></i></a>
-                            </div>
-
-                            <div class="media-body" title="click to shift Module">
-                                 <a href="{{ route('dashboard') }}">{{ config('global.MODULE_ONE') }}
-                                <div class="media-annotation"> {{ config('global.MODULE_ONE_DESCRIPTION') }}</div>
-                            </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                    <div class="dropdown-content-footer">
-                        <a href="{{ route('startApp') }}" data-popup="tooltip" title="This shows the list of all Modules availabe in this system."><i class="icon-menu display-block"></i></a>
-                    </div>
-                </div>
-            </li>
         </ul>
        
 
         {{-- header profile collupse --}}
         <div class=" ">
             <ul class="nav navbar-nav navbar-right">
-                <style>
-                    #name:hover{
-                        color: black;
-                    }
-
-                </style>
                 <li class="dropdown dropdown-user" id="profile">
                     <a class="dropdown-toggle text-bold" data-toggle="dropdown">
                         @if(empty(Auth::user()->profile_image))

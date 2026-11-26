@@ -29,9 +29,9 @@ class resendPasswordController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        if($request->user()->cannot('Resend Password',User::class))
+        if($request->user()->cannot('RESEND_PASSWORD',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('RESEND_PASSWORD'));
         }
 
         $password=str::random(8);
@@ -72,9 +72,9 @@ class resendPasswordController extends Controller
     }
 
     public function update(Request $request,$id){
-        if($request->user()->cannot('Resert Password',User::class))
+        if($request->user()->cannot('RESERT_PASSWORD',User::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('RESERT_PASSWORD'));
         }
 
         try

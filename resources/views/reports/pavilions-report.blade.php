@@ -74,6 +74,4 @@
 </x-app-layout>
 
 
-<script type="text/javascript" src="{{ asset('assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/js/pages/datatables_basic.js') }}"></script>

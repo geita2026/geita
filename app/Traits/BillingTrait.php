@@ -4,7 +4,6 @@ namespace App\Traits;
 use App\Models\advice_note\advice_notes;
 use App\Models\advice_note\particulars;
 use App\Models\Collections\Bill;
-use App\Models\Collections\OffFairBill;
 use App\Models\Collections\PaymentDetails;
 use App\Models\Logs\ApiLogs;
 use App\Traits\IntergrationTraits;
@@ -86,6 +85,7 @@ trait BillingTrait
             'expire_date'=>$advice_note_deadline,'items'=>$items,'description'=>$descriptions,); // data array must be of this type to get control number
 
         ######### SAVE JSON TO DATABASE ###############
+        $jsonData = json_encode($data);
         #END SAVING JSON TO DATABASE ##################
         $this->RequestInvoiceToBilling($id,$data); // requesting invoice to billing
         
@@ -99,37 +99,11 @@ trait BillingTrait
     // function to update balance in bills table
     function updateBillWithPayments($reference)
     {
-        // from DITF
-        $bills=Bill::where('advice_note_id',$reference)->get();
-        $i=0;
-        foreach ($bills as $value) {
-            $total_amount=$value->total_amount;
-            $bill_id=$value->bill_id;
-            $i++;
+        $bill = Bill::where('advice_note_id', $reference)->get()->last();
+        if ($bill) {
+            $amountPaid = PaymentDetails::where('advice_note_id', $reference)->sum('amount_paid');
+            $bill->update(['balance' => $bill->total_amount - $amountPaid]);
         }
-
-        // from off fair
-        $off_fair_bills=OffFairBill::where('advice_note_id',$reference)->get();
-        foreach ($off_fair_bills as $value) {
-            $total_amount=$value->total_amount;
-            $bill_id=$value->bill_id;
-        }
-
-            $amount_paid=0;
-            $payments=PaymentDetails::where('advice_note_id',$reference)->get();
-            foreach ($payments as $item) {
-                $amount_paid=$amount_paid+$item->amount_paid;
-            }
-
-            $balance=$total_amount - $amount_paid; // calculate bill balance
-
-            if($i==0){
-                OffFairBill::find($bill_id)->update(['balance'=>$balance]); // update balance to off fair bills
-            }
-            else{
-                Bill::find($bill_id)->update(['balance'=>$balance]); // update bill balance
-            }
-
     }
     // end of methode to update balance in bills table
 

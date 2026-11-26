@@ -1,0 +1,323 @@
+.exhibition-dashboard {
+    display: grid;
+    gap: 20px;
+}
+
+.dashboard-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px 20px;
+}
+
+.dashboard-heading h1 {
+    margin: 4px 0 8px;
+    font-size: 24px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-context,
+.dashboard-booking-status {
+    margin: 0;
+    color: var(--gem-field-muted);
+}
+
+.dashboard-booking-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-booking-status span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--gem-field-border);
+}
+
+.dashboard-booking-status .is-open {
+    background: var(--gem-app-gold);
+}
+
+.dashboard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dashboard-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    border-radius: 8px;
+    white-space: normal;
+}
+
+.dashboard-metrics,
+.dashboard-charts {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+
+.dashboard-metrics {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.dashboard-metric,
+.dashboard-panel,
+.dashboard-services {
+    min-width: 0;
+    padding: clamp(16px, 2.5vw, 24px);
+    background: var(--gem-field-bg);
+    border: 1px solid var(--gem-field-disabled);
+    border-radius: var(--gem-control-radius);
+}
+
+.dashboard-metric {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.dashboard-metric-icon {
+    display: grid;
+    flex: 0 0 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--gem-field-focus);
+    background: var(--gem-app-gold-soft);
+}
+
+.dashboard-metric h2 {
+    margin: 0 0 3px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dashboard-count {
+    margin: 0 0 2px;
+    font-size: clamp(27px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+
+.dashboard-muted {
+    margin: 0;
+    color: var(--gem-field-muted);
+}
+
+.dashboard-panel h2,
+.dashboard-services h2 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.dashboard-panel-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 16px;
+}
+
+.dashboard-bars,
+.dashboard-overview,
+.dashboard-services ul {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dashboard-bars {
+    display: grid;
+    gap: 15px;
+}
+
+.dashboard-bar-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--gem-field-disabled);
+}
+
+.dashboard-fill {
+    display: block;
+    width: var(--dashboard-bar-size);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--gem-app-gold);
+    transform-origin: left;
+}
+
+.dashboard-fill.is-paid {
+    background: var(--gem-field-focus);
+}
+
+.dashboard-charts.is-animated .dashboard-fill {
+    animation: dashboard-bar-in 800ms cubic-bezier(.2, .7, .3, 1) both;
+}
+
+@keyframes dashboard-bar-in {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.dashboard-amounts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 8px 0 0;
+}
+
+.dashboard-amounts dt {
+    color: var(--gem-field-muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.dashboard-amounts dd {
+    margin: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-collections li + li {
+    padding-top: 14px;
+    border-top: 1px solid var(--gem-field-disabled);
+}
+
+.dashboard-panel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 36px;
+    margin-top: 10px;
+    color: var(--gem-field-focus);
+    font-weight: 600;
+}
+
+.dashboard-panel-heading .dashboard-panel-link {
+    margin-top: 0;
+}
+
+.dashboard-empty {
+    margin: 16px 0 0;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--gem-field-disabled);
+    color: var(--gem-field-muted);
+}
+
+.dashboard-invoices {
+    margin-top: 12px;
+}
+
+.dashboard-invoices .table {
+    margin-bottom: 0;
+}
+
+.dashboard-invoices th,
+.dashboard-invoices td {
+    vertical-align: middle !important;
+}
+
+.dashboard-invoices a,
+.dashboard-overview a {
+    color: var(--gem-field-focus);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.dashboard-money,
+.dashboard-invoice-date {
+    white-space: nowrap;
+}
+
+.dashboard-invoice-date {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.dashboard-invoice-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: var(--gem-app-gold-soft);
+    color: var(--gem-button-ink);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dashboard-invoice-status.is-paid {
+    background: var(--gem-field-disabled);
+    color: var(--gem-field-text);
+}
+
+.dashboard-overview li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gem-field-disabled);
+}
+
+.dashboard-overview li:last-child {
+    border-bottom: 0;
+}
+
+.dashboard-services ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 10px;
+}
+
+.dashboard-services a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--gem-field-disabled);
+    border-radius: 8px;
+    color: var(--gem-field-text);
+}
+
+.exhibition-dashboard a:focus-visible {
+    outline: 2px solid var(--gem-field-focus);
+    outline-offset: 3px;
+}
+
+.dashboard-services a:hover {
+    background: var(--gem-app-gold-soft);
+}
+
+@media (max-width: 480px) {
+    .dashboard-actions,
+    .dashboard-actions .btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-charts.is-animated .dashboard-fill {
+        animation: none;
+    }
+}

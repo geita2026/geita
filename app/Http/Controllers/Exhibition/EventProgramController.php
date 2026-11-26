@@ -26,8 +26,8 @@ class EventProgramController extends Controller
     public function index(Request $request)
     {
         try {
-            if ($request->user()->cannot('View EventPrograms', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('VIEW_EVENT_PROGRAM_SUBMENU', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('VIEW_EVENT_PROGRAM_SUBMENU'));
             }
             $programs = EventProgram::leftJoin('events', 'event_programs.event', '=', 'events.event_id')
                 ->where('event_status', 1)->get();
@@ -45,8 +45,8 @@ class EventProgramController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Create EventPrograms', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_EVENT_PROGRAM', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_EVENT_PROGRAM'));
         }
     }
 
@@ -58,8 +58,8 @@ class EventProgramController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->user()->cannot('Create EventPrograms', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_EVENT_PROGRAM', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_EVENT_PROGRAM'));
         }
         $request->validate([
             'program_title' => 'required',
@@ -101,8 +101,8 @@ class EventProgramController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('View Event Programs', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_EVENT_PROGRAM', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_EVENT_PROGRAM'));
         }
     }
 
@@ -115,8 +115,8 @@ class EventProgramController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->user()->cannot('Update Event Programs', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('UPDATE_EVENT_PROGRAM', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('UPDATE_EVENT_PROGRAM'));
         }
         $request->validate([
             'program_title' => 'required',
@@ -163,8 +163,8 @@ class EventProgramController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Event Programs', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_EVENT_PROGRAM', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_EVENT_PROGRAM'));
         }
 
         try {

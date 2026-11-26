@@ -29,8 +29,8 @@ class exhibitorsReports extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage ExhibitorReports', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_EXHIBITOR_REPORT', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_EXHIBITOR_REPORT'));
         }
 
         $events = events::orderBy('event_status', 'DESC')->orderBy('event_created_at', 'ASC')->get();

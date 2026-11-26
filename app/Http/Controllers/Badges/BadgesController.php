@@ -43,8 +43,8 @@ class BadgesController extends Controller
         //     'member_image'=>$path,
         //    ]);
         // }
-        if ($request->user()->cannot('View Badges List', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_BADGES_LIST', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
         $companies = companies::orderBy('registrationDate', 'DESC')->where('status', 1)->paginate(config('global.DATA_LIMIT'), ['companyID', 'companyName', 'companyEmail', 'companyPhone', 'registrationID']);
         if (Auth::user()->account_type == 2) {
@@ -63,8 +63,8 @@ class BadgesController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('Create Exhibitors Badges', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('CREATE_EXHIBITORS_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('CREATE_EXHIBITORS_BADGES'));
         }
 
         $exhibitors = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', 'companies.companyID')
@@ -82,8 +82,8 @@ class BadgesController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Create Member Badges', Role::class)) {
-                return response()->json(['status' => 2, 'fail' => 'You dont have permission to perform this Action']);
+            if ($request->user()->cannot('CREATE_MEMBER_BADGES', Role::class)) {
+                return response()->json(['status' => 2, 'fail' => $this->permissionDeniedMessage('CREATE_MEMBER_BADGES')]);
             }
 
             $validator = Validator::make(
@@ -157,8 +157,8 @@ class BadgesController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('View Member Badges', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('VIEW_MEMBER_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_MEMBER_BADGES'));
         }
 
         $events = events::get('event_id', $id); // return all active events
@@ -176,8 +176,8 @@ class BadgesController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('View Member Badges', Role::class)) {
-            return back()->with('fail', config('global.RESTRICTED_ACCESS'));
+        if ($request->user()->cannot('VIEW_MEMBER_BADGES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_MEMBER_BADGES'));
         }
         session(['companyID' => $id]);
         $status = $this->BadgeChecking($id); // Check Badge Availability
@@ -233,8 +233,8 @@ class BadgesController extends Controller
         # ----- CONTROL BADGE OWNERS
         if ($request->source == 1) // block Member
         {
-            if ($request->user()->cannot('Block Member Badges', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('BLOCK_EXHIBITOR_BADGE', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('BLOCK_EXHIBITOR_BADGE'));
             }
             CompanyMember::find($id)->update([
                 'badge_status' => 'BLOCKED',
@@ -243,8 +243,8 @@ class BadgesController extends Controller
             return back()->with('success', 'Member Badge blocked successfully!');
         } elseif ($request->source == 2) // unblock Member
         {
-            if ($request->user()->cannot('UnBlock Member Badges', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('UN_BLOCK_MEMBER_BADGES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('UN_BLOCK_MEMBER_BADGES'));
             }
             CompanyMember::find($id)->update([
                 'badge_status' => 'UNBLOCKED',
@@ -324,8 +324,8 @@ class BadgesController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->user()->cannot('Delete Member Badges', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('DELETE_EXHIBITOR_BADGE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('DELETE_EXHIBITOR_BADGE'));
         }
         try {
             $this->DeleteBadge($id); // delete badge from Allocation

@@ -161,7 +161,7 @@
                                                             </div>
                                                             <div class=" col-md-12 form-group text-right">
                                                                 <button class=" btn btn-warning" data-dismiss="modal"> Close Modal</button>
-                                                                <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner" ><span class="ladda-label">Update Off-Fair Customer</span></button>
+                                                                <button type="submit" class="btn btn-primary btn-ladda btn-ladda-spinner" ><span class="ladda-label">Update Customer</span></button>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -204,7 +204,7 @@
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-right">
 
-                                               @can('Delete Sponsor')
+                                               @can('DELETE_SPONSOR')
                                                 <li>
                                                     <a  data-toggle="modal" data-target="#DeleteSponsor{{ $item->sponsor_id }}" class=" text-danger"><i class="icon-bin"></i> Delete Sponsor</a>
                                                 </li>

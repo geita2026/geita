@@ -19,6 +19,10 @@
     <link href="{{ asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/gif" sizes="16x16">
 
     <style>
@@ -40,10 +44,9 @@
 
     </style>
 
+    @include('layouts.sweet-alerts')
     </head>
-<body>
-    {{-- <div id="loading"></div> --}}
-<img src="{{ asset('images/tz-flag.jpg') }}" style="position:absolute; width:100%; height:100%; opacity:10%;">
+<body class="gememis-app">
 <!-- Page container -->
 <div class="page-container">
     <!-- Page content -->
@@ -82,35 +85,12 @@
  <script type="text/javascript" src="{{ asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
  <script type="text/javascript" src="{{ asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>
  <script type="text/javascript" src="{{ asset('assets/js/pages/form_select2.js') }}"></script>
+ <script src="{{ asset('assets/js/core/gememis-selects.js') }}"></script>
+ <script src="{{ asset('assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
+ <script src="{{ asset('assets/js/pages/datatables_basic.js') }}"></script>
 
 
- <script>
-
-    $(function() {
-        @if(Session::get('success'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'OK',
-            text: '{{ session::get("success") }}',
-            icon: 'icon-check',
-            type: 'success'
-        });
-        });
-    @endif
-
-    @if(Session::get('fail'))
-             $(document).ready(function() {
-        new PNotify({
-            title: 'Ooops!',
-            text: '{{ session::get("fail") }}',
-            icon: 'icon-x',
-            type: 'error',
-        });
-        });
-    @endif
-
-    });
-    </script>
+ @include('layouts.flash-toasts')
     <script type="text/javascript" src="{{ asset('assets/js/plugins/notifications/pnotify.min.js') }}"></script>
 
 

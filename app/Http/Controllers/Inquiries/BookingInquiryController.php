@@ -47,8 +47,8 @@ class BookingInquiryController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->user()->cannot('View Booking Inquiries', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BOOKING_INQUIRIES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BOOKING_INQUIRIES'));
         }
         $eventId = events::where('event_status', 1)->first()->event_id;
         $inquiries = BookingInquiry::orderBy('inquiryStatus', 'ASC')->orderBy('registeredAt', 'ASC')->where('eventId', $eventId)->paginate(10);
@@ -135,8 +135,8 @@ class BookingInquiryController extends Controller
     public function show(Request $request, $id)
     {
         
-        if ($request->user()->cannot('View Booking Inquiries', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BOOKING_INQUIRIES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BOOKING_INQUIRIES'));
         }
         $inquiries = BookingInquiry::where('enquiryId', $id)->get();
         return view('Inquiries.PreviewEnquiry', compact('inquiries'));
@@ -180,8 +180,8 @@ class BookingInquiryController extends Controller
     public function update(Request $request, $id)
     {
         return back()->with('fail','Booking is now closed!');
-        if ($request->user()->cannot('View Booking Inquiries', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_BOOKING_INQUIRIES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_BOOKING_INQUIRIES'));
         }
 
         try {

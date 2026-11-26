@@ -27,32 +27,43 @@ class usersController extends Controller
     }
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Users',User::class))
+        if($request->user()->cannot('VIEW_USER_SUBMENU',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_USER_SUBMENU'));
         }
 
-        $users=User::leftJoin('roles','users.role','=','roles.id')
-        ->orderBy('user_created_at','DESC')
-        ->orderBy('first_name','ASC')
-        ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        $query = User::leftJoin('roles', 'users.role', '=', 'roles.id');
+        $search = trim((string) $request->input('userName', ''));
+        $type = $request->input('user_type');
 
-        if($request->userName!=Null)
-        {
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('email','LIKE','%'.$request->userName.'%')
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if ($search !== '') {
+            $query->where(function ($matches) use ($search) {
+                $term = '%' . $search . '%';
+                $matches->where('users.email', 'like', $term)
+                    ->orWhere('users.name', 'like', $term)
+                    ->orWhere('users.first_name', 'like', $term)
+                    ->orWhere('users.last_name', 'like', $term)
+                    ->orWhere('users.phone_number', 'like', $term);
+            });
         }
 
-        if($request->user_type!=null){
-            $users=User::orderBy('account_status','DESC')->leftJoin('roles','users.role','=','roles.id')
-            ->where('account_type',$request->user_type)
-            ->orderBy('account_status','DESC')->orderBy('first_name','ASC')
-            ->paginate(25,['users.id','first_name','middle_name','last_name','name','email','user_uuid','user_ip_address','role','phone_number','account_status','account_type','myCompany']);
+        if (in_array((string) $type, ['1', '2'], true)) {
+            $query->where('users.account_type', $type);
         }
 
-       
+        if ($search !== '' || $type) {
+            $query->orderByDesc('users.account_status')->orderBy('users.first_name')->orderBy('users.id');
+        } else {
+            $query->orderByDesc('users.id');
+        }
+
+        $users = $query->paginate(25, [
+            'users.id', 'users.first_name', 'users.middle_name', 'users.last_name',
+            'users.name', 'users.email', 'users.user_uuid', 'users.user_ip_address',
+            'users.role', 'users.phone_number', 'users.account_status', 'users.account_type',
+            'users.myCompany', 'roles.name as role_name',
+        ]);
+
         $roles=Role::get();
         $companies=companies::orderBy('companyName','ASC')->where('status',1)->get();
 
@@ -66,9 +77,9 @@ class usersController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
+        if($request->user()->cannot('CREATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_USER'));
         }
         $roles=DB::table('roles')->get();
         return view('users.add_user',compact('roles'));
@@ -82,9 +93,9 @@ class usersController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Users',User::class))
+        if($request->user()->cannot('CREATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_USER'));
         }
 
         #validating user inputs
@@ -171,9 +182,9 @@ class usersController extends Controller
     public function show(Request $request,$id)
     {
         //
-        if($request->user()->cannot('View Users',User::class))
+        if($request->user()->cannot('VIEW_USER_SUBMENU',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_USER_SUBMENU'));
         }
         else
         {
@@ -189,9 +200,9 @@ class usersController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
+        if($request->user()->cannot('UPDATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_USER'));
         }
         // return $id;
         // $users=DB::table('users')->leftJoin('roles','users.role','=','roles.id')->where('user_uuid',$id)->get();
@@ -208,9 +219,9 @@ class usersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->user()->cannot('Update Users',User::class))
+        if($request->user()->cannot('UPDATE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('UPDATE_USER'));
         }
         #validating user inputs
         $request->validate([
@@ -266,9 +277,9 @@ class usersController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Users',User::class))
+        if($request->user()->cannot('DELETE_USER',User::class))
         {
-            return back()->with('fail',config('Messages.401'));
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_USER'));
         }
 
         #------- DISABLE ACCOUNT -----#

@@ -19,9 +19,9 @@ class facialNameController extends Controller
     
     public function index(Request $request)
     {
-        if($request->user()->cannot('View Facial Names',Permission::class))
+        if($request->user()->cannot('VIEW_FACIAL_NAME_COMPANY_SUBMENU',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_FACIAL_NAME_COMPANY_SUBMENU'));
         }
 
         $groups=FacialNameGroup::get();
@@ -37,9 +37,9 @@ class facialNameController extends Controller
      */
     public function create(Request $request)
     {
-        if($request->user()->cannot('View Facial Names',Permission::class))
+        if($request->user()->cannot('VIEW_FACIAL_NAME_COMPANY_SUBMENU',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('VIEW_FACIAL_NAME_COMPANY_SUBMENU'));
         }
         $companies=FacialName::leftJoin('facial_name_groups','facial_name_groups.group_id','=','facial_names.group_id')->get();
         return view('FacialNames.print_facial_name',compact('companies'));
@@ -53,9 +53,9 @@ class facialNameController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->cannot('Create Facial Names',Permission::class))
+        if($request->user()->cannot('CREATE_FACIAL_NAME_COMPANY',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('CREATE_FACIAL_NAME_COMPANY'));
         }
 
         try {
@@ -81,9 +81,9 @@ class facialNameController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->user()->cannot('Delete Facial Names',Permission::class))
+        if($request->user()->cannot('DELETE_FACIAL_NAME_COMPANY',Permission::class))
         {
-            return back()->with('fail','You do not have permission to perform this Action');
+            return back()->with('fail',$this->permissionDeniedMessage('DELETE_FACIAL_NAME_COMPANY'));
         }
         //
         try {

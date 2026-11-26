@@ -371,7 +371,7 @@
                             <ul>
                                 <li><a href="{{ route('About_ditf') }}"><i class="fa fa-info-circle me-2 text-warning"></i> About the exhibition</a></li>
                                 <li><a href="{{ route('preview_programs.index') }}"><i class="fa fa-calendar me-2 text-warning"></i> Programme</a></li>
-                                <li><a href="{{ route('ditf_map') }}"><i class="fa fa-map-marker me-2 text-warning"></i> Site map</a></li>
+                                <li><a href="{{ route('ditf_map') }}"><i class="fa fa-map-marker me-2 text-warning"></i> Map of Geita</a></li>
                                 <li><a href="{{ route('discover_exhibitor.index') }}"><i class="fa fa-search me-2 text-warning"></i> Discover exhibitors</a></li>
                                 <li><a href="{{ route('exhibited_products.index') }}"><i class="fa fa-th-large me-2 text-warning"></i> Exhibited minerals</a></li>
                             </ul>
@@ -428,7 +428,7 @@
     <div class="gem-sidebar-sub" id="subAbout">
         <a href="{{ route('About_ditf') }}" class="gem-sidebar-item">About the exhibition</a>
         <a href="{{ route('preview_programs.index') }}" class="gem-sidebar-item">Programs</a>
-        <a href="{{ route('ditf_map') }}" class="gem-sidebar-item">Site map</a>
+        <a href="{{ route('ditf_map') }}" class="gem-sidebar-item">Map of Geita</a>
         <a href="{{ route('discover_exhibitor.index') }}" class="gem-sidebar-item">Discover exhibitors</a>
         <a href="{{ route('exhibited_products.index') }}" class="gem-sidebar-item">Exhibited minerals</a>
     </div>

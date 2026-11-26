@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="{{ asset('assets/css/core.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/colors.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-dialogs.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/company-registration.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-tables.css') }}">
 
     <!-- ===================== CORE JS ===================== -->
     <script src="{{ asset('assets/js/plugins/loaders/pace.min.js') }}"></script>
@@ -32,7 +37,7 @@
     <script src="{{ asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
 
     <!-- ===================== SWEETALERT2 (MODERN) ===================== -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('layouts.sweet-alerts')
 
     <!-- ===================== INLINE STYLES ===================== -->
     <style>
@@ -81,11 +86,7 @@
     </style>
 </head>
 
-<body class="navbar-top">
-
-    <!-- ===================== BACKGROUND ===================== -->
-    <img src="{{ asset('images/tz-flag.jpg') }}"
-        style="position:absolute;width:100%;height:100%;opacity:10%;z-index:-1;">
+<body class="navbar-top gememis-app">
 
     <!-- ===================== HEADER ===================== -->
     @include('layouts.header')
@@ -131,6 +132,7 @@
 
 <!-- ===================== FORMS ===================== -->
 <script src="{{ asset('assets/js/plugins/forms/selects/bootstrap_select.min.js') }}"></script>
+<script src="{{ asset('assets/js/core/gememis-selects.js') }}"></script>
 
 <!-- ===================== UTILITIES ===================== -->
 <script src="{{ asset('assets/js/core/instascan.min.js') }}"></script>
@@ -141,80 +143,7 @@
 <script src="{{ asset('assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/notifications/pnotify.min.js') }}"></script>
 
-<!-- ===================== LARGE CENTER SWEET ALERTS ===================== -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Operation Successful',
-                html: `<p style="font-size:15px;line-height:1.6">{{ session('success') }}</p>`,
-                width: 520,
-                padding: '2em',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#1e88e5',
-                allowOutsideClick: false
-            });
-        @endif
-
-        @if (session('fail'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Operation Failed',
-                html: `<p style="font-size:15px;line-height:1.6">{{ session('fail') }}</p>`,
-                width: 520,
-                padding: '2em',
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#d32f2f',
-                allowOutsideClick: false
-            });
-        @endif
-
-        @if (session('warning'))
-            Swal.fire({
-                icon: 'warning',
-                title: 'Attention Required',
-                html: `<p style="font-size:15px;line-height:1.6">{{ session('warning') }}</p>`,
-                width: 520,
-                padding: '2em',
-                confirmButtonText: 'Understood',
-                confirmButtonColor: '#f9a825',
-                allowOutsideClick: false
-            });
-        @endif
-
-        @if (session('info'))
-            Swal.fire({
-                icon: 'info',
-                title: 'Information',
-                html: `<p style="font-size:15px;line-height:1.6">{{ session('info') }}</p>`,
-                width: 520,
-                padding: '2em',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#0288d1',
-                allowOutsideClick: false
-            });
-        @endif
-
-    });
-</script>
-
-
-<!-- ===================== COMPANY REGISTRATION MODAL ===================== -->
-<div id="NoCompany" class="modal fade" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-full">
-        <div class="modal-content alert alert-info">
-            <div class="modal-body">
-                <p style="font-size:2vmax"><b>Company Registration</b></p>
-                <p style="font-size:1.8vmin">
-                    GeMEMIS - Geita Mineral Exhibition Management Information System
-                </p>
-            </div>
-            @include('company.NewCompanyRegistration')
-        </div>
-    </div>
-</div>
+@include('layouts.flash-toasts')
 
 @php
     $myCompanies = App\Models\Companies\CompanyAdmin::where('adminId', Auth::user()->user_uuid)->count();
@@ -230,14 +159,55 @@
         ->count();
 @endphp
 
-@if (
-    $myCompanies == 0 &&
-        Auth::user()->account_type == 2 &&
-        !request()->routeIs('companies.*') &&
-        !request()->routeIs('company_profile*'))
+@php
+    $registerFromCompanyList = request()->routeIs('companies.index') && Auth::user()->can('CREATE_COMPANY');
+    $requiresFirstCompany = $myCompanies == 0
+        && !Auth::user()->myCompany
+        && Auth::user()->account_type == 2
+        && !request()->routeIs('companies.*')
+        && !request()->routeIs('company_profile*');
+@endphp
+
+@if ($requiresFirstCompany || $registerFromCompanyList)
+    <div id="NoCompany" class="modal fade gememis-registration-modal" role="dialog" aria-modal="true" tabindex="-1"
+        aria-labelledby="company-registration-title" aria-describedby="company-registration-intro"
+        @if ($requiresFirstCompany) data-backdrop="static" data-keyboard="false" @endif>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="registration-header">
+                    @if ($registerFromCompanyList)
+                        <button type="button" class="close registration-close" data-dismiss="modal"
+                            aria-label="Close registration">&times;</button>
+                    @endif
+                    <p class="registration-brand">GeMEMIS</p>
+                    <h2 id="company-registration-title" class="modal-title" tabindex="-1">Company registration</h2>
+                    <p id="company-registration-intro" class="registration-intro">
+                        Enter your company details to get a GeMEMIS registration ID.
+                    </p>
+                </div>
+                @include('company.first-company-registration', [
+                    'registrationAction' => route($registerFromCompanyList ? 'companies.registration.store' : 'companies.first.store'),
+                    'countries' => App\Models\setting\Country::orderBy('country_name')->get(['country_name', 'country_short_code']),
+                    'sectors' => App\Models\sectors::orderBy('sectorName')->get(['sectorID', 'sectorName']),
+                ])
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('assets/js/core/company-registration.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $("#NoCompany").modal('show');
+        $(function () {
+            const modal = $('#NoCompany');
+            modal.on('shown.bs.modal', function () {
+                setTimeout(() => {
+                    const invalid = this.querySelector('[aria-invalid="true"]');
+                    const target = invalid?.nextElementSibling?.querySelector('.select2-selection')
+                        || invalid || this.querySelector('#company-registration-title');
+                    target.focus();
+                }, 0);
+            });
+            @if ($requiresFirstCompany || $errors->firstCompany->any())
+                modal.modal('show');
+            @endif
         });
     </script>
 @endif

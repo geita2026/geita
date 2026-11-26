@@ -15,8 +15,8 @@ class pavilionInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->cannot('View All Advice Note', Role::class)) {
-            return back()->with('fail', 'You do not have permission to perform this Action');
+        if ($request->user()->cannot('VIEW_ALL_ADVICE_NOTE', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('VIEW_ALL_ADVICE_NOTE'));
         }
         
     }

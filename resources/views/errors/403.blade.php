@@ -26,6 +26,7 @@
 	<!-- Theme JS files -->
 	<script type="text/javascript" src="{{ asset('assets/js/core/app.js') }}"></script>
 	<!-- /theme JS files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/gememis-forms.css') }}">
 </head>
 
 
@@ -46,7 +47,7 @@
 					<!-- Error title -->
 					<div class="text-center content-group">
 						<h1 class="error-title">403</h1>
-						<h5 class=" text-danger">Oops, an error has occurred. Access Fobidden</h5>
+						<h5 class=" text-danger">{{ $exception->getMessage() ?: 'Access forbidden.' }}</h5>
 					</div>
 					<!-- /error title -->
 

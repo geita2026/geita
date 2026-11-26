@@ -32,9 +32,14 @@ $(function() {
 
     // Calculate min height
     function containerHeight() {
-        var availableHeight = $(window).height() - $('.page-container').offset().top - $('.navbar-fixed-bottom').outerHeight();
+        var container = $('.page-container');
+        if (!container.length) {
+            return;
+        }
+        var footerHeight = $('.gememis-footer, .navbar-fixed-bottom').first().outerHeight() || 0;
+        var availableHeight = $(window).height() - container.offset().top - footerHeight;
 
-        $('.page-container').attr('style', 'min-height:' + availableHeight + 'px');
+        container.css('min-height', Math.max(0, availableHeight));
     }
 
     // Initialize

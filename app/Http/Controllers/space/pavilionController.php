@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\space\pavilions;
 use App\Models\space\space_categories;
-use App\Models\space\Street;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
@@ -32,10 +31,11 @@ class pavilionController extends Controller
     }
     public function index(Request $request)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
-        $pavilions = pavilions::orderBy('pavilions.updated_at', 'DESC')
+        $pavilions = pavilions::orderBy('pavilions.pavilionName')
+            ->orderBy('pavilions.pavilionID')
             ->leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
             ->leftJoin('streets', 'pavilions.spaceStreet', '=', 'streets.streetId')
             ->where('space_status', '!=', 'SUNSPENDED')
@@ -64,8 +64,8 @@ class pavilionController extends Controller
     public function create(Request $request)
     {
         $search = $request->get('q');
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         $categories = space_categories::orderBy('category_name', 'ASC')->get(['category_id', 'category_name', 'category_event']);
         if ($search != Null) {
@@ -91,9 +91,8 @@ class pavilionController extends Controller
                 ]);
             return response()->json($data);
         }
-        $streets = Street::get(['streetName', 'streetId']);
         $sectors = sectors::get();
-        return view('space.add-pavilion', compact('categories', 'streets', 'sectors'));
+        return view('space.add-pavilion', compact('categories', 'sectors'));
     }
 
     /**
@@ -105,19 +104,23 @@ class pavilionController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
+            $this->normalizePavilionNumbers($request);
             $validator = Validator::make($request->all(), [
                 'pavilion_name' => 'required',
                 'pavilion_category' => 'required',
                 'pavilion_size' => 'numeric|min:1',
+                'numberOfPartitions' => 'nullable|integer|min:0|max:2147483647',
                 'pavilion_description' => 'max:2000',
                 'floor_plan' => 'mimes:pdf,jpg,png,jpeg,gif',
                 'space_status' => 'required',
+                'participants' => 'nullable|array',
+                'participants.*' => 'exists:sectors,sectorID',
             ]);
             if ($validator->fails()) {
-                return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
+                return back()->withErrors($validator)->withInput();
             }
             $floorPlan = Null;
             if ($request->floorPlan) {
@@ -125,7 +128,7 @@ class pavilionController extends Controller
                     'floorPlan' => 'required|mimes:png,jpg,jpeg'
                 ]);
                 if ($validator->fails()) {
-                    return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
+                    return back()->withErrors($validator)->withInput();
                 }
                 $fileName =  $request->pavilionName . Str::uuid() . '.' . $request->floorPlan->extension();
                 $path = public_path('uploadedFiles/');
@@ -149,7 +152,7 @@ class pavilionController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
-            $sectorName = array();
+            $spaceSectors = [];
             if ($request->participants) {
                 foreach ($request->participants as $data) {
                     AreaDistribution::create([
@@ -178,8 +181,8 @@ class pavilionController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         //
         session(['event_id' => $id]); // save event session.
@@ -216,12 +219,11 @@ class pavilionController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        if ($request->user()->cannot('Manage Spaces', Role::class)) {
-            return back()->with('fail', config('Messages.401'));
+        if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
         }
 
         $pavilions = pavilions::leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
-            ->leftJoin('streets', 'pavilions.spaceStreet', '=', 'streets.streetId')
             ->leftJoin('companies', 'pavilions.whoCanBook', '=', 'companies.companyID')
             ->where('pavilionID', $id)
             ->get([
@@ -235,21 +237,18 @@ class pavilionController extends Controller
                 'pavilionCategory',
                 'pavilionRate',
                 'space_status',
-                'streetName',
-                'spaceStreet',
                 'floor_plan',
                 'whoCanBook',
                 'companyName',
                 'numberOfPartitions',
-                'pavilions.latitude',
-                'pavilions.longitude',
             ]);
+        abort_if($pavilions->isEmpty(), 404);
+
         $categories = space_categories::orderBy('category_name', 'ASC')
             ->get(['category_id', 'category_name', 'category_event']);
-        $streets = Street::get(['streetName', 'streetId']);
         $sectors = sectors::get();
         $selectedSectors = AreaDistribution::where('spaceId', $id)->get(['participants']);
-        return view('space.edit-pavilion', compact('pavilions', 'categories', 'streets', 'sectors', 'selectedSectors'));
+        return view('space.edit-pavilion', compact('pavilions', 'categories', 'sectors', 'selectedSectors'));
     }
 
     /**
@@ -262,18 +261,22 @@ class pavilionController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Manage Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('MANAGE_SPACES', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('MANAGE_SPACES'));
             }
 
+            $this->normalizePavilionNumbers($request);
             $validator = Validator::make($request->all(), [
                 'pavilion_name' => 'required',
                 'pavilion_category' => 'required',
                 'pavilionDescription' => 'max:2000',
                 'pavilion_size' => 'required|numeric|min:1',
+                'numberOfPartitions' => 'nullable|integer|min:0|max:2147483647',
+                'participants' => 'nullable|array',
+                'participants.*' => 'exists:sectors,sectorID',
             ]);
             if ($validator->fails()) {
-                return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
+                return back()->withErrors($validator)->withInput();
             }
             AreaDistribution::where('spaceId', $id)->delete();
             $spaceSectors = array();
@@ -287,9 +290,6 @@ class pavilionController extends Controller
                     $sectorName = sectors::where('sectorID', $data)->first()->sectorName;
                     array_push($spaceSectors, $sectorName);
                 }
-                pavilions::where('pavilionID', $id)->first()->update([
-                    'allowedForBooking' => implode(', ', $spaceSectors)
-                ]);
             }
             $pavilion = pavilions::find($id);
             $floorPlan = $pavilion->floor_plan;
@@ -298,7 +298,7 @@ class pavilionController extends Controller
                     'floorPlan' => 'required|mimes:png,jpg,jpeg'
                 ]);
                 if ($validator->fails()) {
-                    return back()->with('fails', implode(',', $validator->getMessageBag()->all()));
+                    return back()->withErrors($validator)->withInput();
                 }
                 $img = str_replace(env('APP_URL') . '/public/uploadedFiles/', '', $floorPlan);
                 $deletePath = public_path('uploadedFiles/' . $img);
@@ -314,12 +314,13 @@ class pavilionController extends Controller
                 'pavilionDescription' => $request->pavilionDescription,
                 'pavilion_size' => $request->pavilion_size,
                 'space_status' => $request->space_status,
-                'spaceStreet' => $request->streetName,
+                'spaceStreet' => $request->input('streetName', $pavilion->spaceStreet),
                 'floor_plan' => $floorPlan,
                 'whoCanBook' => $request->whoCanBook,
+                'allowedForBooking' => implode(', ', $spaceSectors),
                 'numberOfPartitions' => $request->numberOfPartitions,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
+                'latitude' => $request->input('latitude', $pavilion->latitude),
+                'longitude' => $request->input('longitude', $pavilion->longitude),
             ]);
             return redirect()->route('pavilions.index')->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
@@ -336,8 +337,8 @@ class pavilionController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            if ($request->user()->cannot('Delete Spaces', Role::class)) {
-                return back()->with('fail', config('Messages.401'));
+            if ($request->user()->cannot('DELETE_PAVILION', Role::class)) {
+                return back()->with('fail', $this->permissionDeniedMessage('DELETE_PAVILION'));
             }
             //
             $pavilion = pavilions::find($id);
@@ -350,6 +351,16 @@ class pavilionController extends Controller
             return back()->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
             return back()->with('fail', config('Messages.500'));
+        }
+    }
+
+    private function normalizePavilionNumbers(Request $request): void
+    {
+        foreach (['pavilion_size', 'numberOfPartitions'] as $field) {
+            $value = $request->input($field);
+            if (is_string($value) && preg_match('/^\d{1,3}(?:,\d{3})+(?:\.\d+)?$/D', $value)) {
+                $request->merge([$field => str_replace(',', '', $value)]);
+            }
         }
     }
 }

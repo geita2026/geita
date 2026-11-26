@@ -70,7 +70,7 @@
                                 </li>
 
 
-                                   @can('Delete Advice Note')
+                                   @can('DELETE_ADVICE_NOTE')
                                     <li>
                                         <a  data-toggle="modal" data-target="#deleteAdviceNote{{ $item->advice_note_id }}" class=" text-danger"><i class="icon-bin"></i> Delete Advice Note</a>
                                     </li>
