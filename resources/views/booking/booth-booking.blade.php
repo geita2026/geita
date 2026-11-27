@@ -10,13 +10,7 @@
     @php
         $hasBooths = $number_of_booths > 0;
         $selectedBooths = (array) old('spaceName', []);
-        $floorPlanTemplate = match (strtoupper($pavilion->pavilionName)) {
-            'KARUME HALL' => 'KarumeHall',
-            'MANYARA PAVILION', 'MIKUMI PAVILION' => '40StandPavilions',
-            'KILIMANJARO HALL' => 'KilimanjaroHall',
-            'KIJIJI CHA WIZARA YA UTAMADUNI SANAA NA MICHEZO' => '117Booth',
-            default => 'FourTierFloorMap',
-        };
+        $canInteractWithMap = $hasBooths && $spaceAvailable && $companies->isNotEmpty();
     @endphp
 
     <div class="content">
@@ -60,16 +54,6 @@
                     <p class="alert alert-info">You need an active company linked to your account before you can book this space.</p>
                 @endif
 
-                @if ($hasBooths && $booths->isNotEmpty())
-                    <details class="booking-details">
-                        <summary>View the floor plan</summary>
-                        <p class="text-muted">Use the floor plan to find booth numbers, then select them in the list below.</p>
-                        <div class="table-responsive booking-map" tabindex="0" role="region" aria-label="Pavilion floor plan">
-                            @include('space.FloorPlans.' . $floorPlanTemplate, ['readOnlyBookingMap' => true])
-                        </div>
-                    </details>
-                @endif
-
                 <form id="exhibition-booking-form" action="{{ route('booking.store') }}" method="POST" data-has-booths="{{ $hasBooths ? 'true' : 'false' }}">
                     @csrf
                     <input type="hidden" name="space" value="booth">
@@ -88,6 +72,13 @@
                             </select>
                         </div>
                     @endif
+
+                    <section class="pavilion-blueprint-section" aria-label="Pavilion floor plan">
+                        @include('space.FloorPlans.PavilionBlueprint', [
+                            'interactiveBookingMap' => $canInteractWithMap,
+                            'selectedBooths' => $selectedBooths,
+                        ])
+                    </section>
 
                     @if ($hasBooths && $booths->isNotEmpty())
                         <section class="booking-related" aria-labelledby="booking-booths-title">
@@ -113,7 +104,7 @@
                                                 $booked = $heldSpaceIds->has($booth->boothID) || $heldSpaceIds->has($pavilion->pavilionID);
                                                 $canSelect = !$reserved && !$booked;
                                             @endphp
-                                            <tr>
+                                            <tr data-booth-row="{{ $booth->boothID }}">
                                                 @if ($spaceAvailable && $companies->isNotEmpty())
                                                     <td>
                                                         @if ($canSelect)
