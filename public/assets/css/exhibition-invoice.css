@@ -243,3 +243,10 @@
         display: none;
     }
 }
+
+/* QR ya invoice - ionekane vizuri kwenye PDF */
+.geita-invoice .invoice-footer img[alt*="QR"],
+.geita-invoice .invoice-footer img[alt*="verification"] {
+    width: 90px !important;
+    height: 90px !important;
+}

@@ -38,7 +38,7 @@
                         <img src="{{ $logo }}" height="60" width="200">
                         {{-- <p style="text-align: center">
                             TANZANIA TRADE DEVELOPMENT AUTHORITY (Tan Trade)<br>
-                                P.O. BOX 5402, Dar Es Salaam, Tanzania<br>
+                                P.O. BOX 5402, Geita, Tanzania<br>
                                 Tel: +255 22 2850238, Fax: +255 22 2850539<br>
                                 Email: info@tantrade.go.tz.
                            

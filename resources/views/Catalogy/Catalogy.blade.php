@@ -157,7 +157,7 @@
 
                 <div class=" form-group col-md-12" style="border:1px solid rgb(219, 205, 205);">
                     <h1 class=" text-center text-primary text-bold" style="font-size: 2.5vmin">48<sup>th</sup> DAR ES
-                        SALAAM INTERNATIONAL TRADE FAIR - 2024 EXHIBITOR CATALOGUE.</h1>
+                        GEITA MINERAL EXHIBITION - 2026 EXHIBITOR CATALOGUE.</h1>
                     <h3>TOTAL EXHIBITORS: <b class=" text-primary">{{ $count }}.</b></h3>
                     {{-- <h3>EVENT DATE: <b class=" text-primary">{{ date('M d,',strtotime($event->event_start_date ?? date('M-d'))) }} TO {{ date('M d, Y', strtotime($event->event_end_date)) }}.</b></h3> --}}
                 </div>

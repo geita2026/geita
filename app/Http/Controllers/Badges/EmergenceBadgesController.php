@@ -24,11 +24,9 @@ class EmergenceBadgesController extends Controller
             return back()->with('fail', $this->permissionDeniedMessage('VIEW_BADGES_LIST'));
         }
       
-        $badges = PDF::loadView('Badges.VIP')->setPaper('A4', 'portrait');
-        $badges->render();
-        return $badges->stream("Exhibitor_Badges_" . date('d_m'));
+                $companies = EmergenceBadge::where('eventCode', $this->eventCode)->get();
 
-        return view('Badges.EmegencyBadges.CompaniesList',compact('companies'));
+        return view('Badges.EmegencyBadges.CompaniesList', compact('companies'));
     }
 
     /**

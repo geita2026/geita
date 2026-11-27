@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class BadgesController extends Controller
 {
@@ -86,66 +87,77 @@ class BadgesController extends Controller
                 return response()->json(['status' => 2, 'fail' => $this->permissionDeniedMessage('CREATE_MEMBER_BADGES')]);
             }
 
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    'first_name' => 'required',
-                    'last_name' => 'required',
-                    'phone_number' => 'required',
-                    'member_image' => 'required|mimes:png,jpg,jpeg',
-                ]
-            );
+            $validator = Validator::make($request->all(), [
+                'company_id' => 'required|exists:companies,companyID',
+                'associateCompany' => 'nullable|exists:companies,companyID',
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'phone_number' => 'required',
+                'member_image' => 'required|mimes:png,jpg,jpeg',
+            ]);
+
             if ($validator->fails()) {
                 return back()->with('fail', implode(', ', $validator->getMessageBag()->all()));
             }
-            $badgeId = Str::uuid();
-            $company_id = $request->company_id;
-            $associateCompany = Null;
-            if ($request->associateCompany != null) {
-                $associateCompany = $request->associateCompany;
-                $company_id = companies::where('companyID', $associateCompany)->first()->associate_company;
-            }
-            ############### CHECK BADGE AVAILABILITY ###############
-            $availabeBadges = $this->BadgeChecking($company_id, session('liveEvent')); // Checking Company badge Availability.
-            session(['availabeBadges' => $availabeBadges]);
-            if ($company_id != config('global.COMPANY_EXCEPTION')) {
-                if ($availabeBadges <= 0) {
-                    return back()->with('fail', 'All badges have been used up!!');
+
+            $companyId = $request->company_id;
+            $associateCompany = $request->associateCompany ?: null;
+
+            if ($associateCompany) {
+                $child = companies::where('companyID', $associateCompany)
+                    ->where('associate_company', $companyId)->first();
+                if (!$child) {
+                    return back()->with('fail', 'Selected associate company does not belong to this parent company.');
                 }
             }
-            $image_name = $badgeId . "_" . date('Y') . "." . $request->member_image->extension(); # if available creates new sign name
-            $imageLink = "https://tradefair.tantrade.go.tz". '/public/Members/' . $image_name;
-            CompanyMember::create([
-                'member_id' => $badgeId,
-                'company_id' => $company_id,
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->last_name,
-                'member_group' => $request->member_group,
-                'member_image' => $imageLink,
-                'badge_status' => 'UNPRINTED',
-                'phone_number' => $request->phone_number,
-                'event' => session('liveEvent'), // event ID
-                'scan_count' => 0,
-                'associateCompany' => $associateCompany,
-            ]);
 
-            #---- RESIZE IMAGE -----#
-            @ini_set('memory_limit', '512M'); // large @2x/@4x PNGs need headroom for GD to decode before resize
-            $path = public_path('Members/');
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0755, true);
+            $badgeId = (string) Str::uuid();
+            $imageName = $badgeId . '_' . date('Y') . '.' . $request->member_image->extension();
+            $directory = public_path('Members/');
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0755, true);
             }
-            $image = Image::make($request->member_image)->resize(200, 200);
-            $image->save($path . $image_name);
-            #---- RESIZE IMAGE -----#
+
+            @ini_set('memory_limit', '512M');
+            Image::make($request->member_image)->resize(200, 200)->save($directory . $imageName);
+            $imageLink = rtrim(config('app.url'), '/') . '/public/Members/' . $imageName;
+
+            try {
+                DB::transaction(function () use ($request, $companyId, $associateCompany, $badgeId, $imageLink) {
+                    $available = $this->BadgeChecking($companyId, $associateCompany);
+                    if ($companyId != config('global.COMPANY_EXCEPTION') && $available <= 0) {
+                        throw new \RuntimeException('All badges have been used up!!');
+                    }
+
+                    CompanyMember::create([
+                        'member_id' => $badgeId,
+                        'company_id' => $companyId,
+                        'first_name' => $request->first_name,
+                        'middle_name' => $request->middle_name,
+                        'last_name' => $request->last_name,
+                        'member_group' => $request->member_group,
+                        'member_image' => $imageLink,
+                        'badge_status' => 'UNPRINTED',
+                        'phone_number' => $request->phone_number,
+                        'event' => session('liveEvent'),
+                        'scan_count' => 0,
+                        'associateCompany' => $associateCompany,
+                    ]);
+
+                    $this->UpdateUsedBadges(session('liveEvent'), $companyId, $associateCompany);
+                });
+            } catch (\Throwable $e) {
+                File::delete($directory . $imageName);
+                throw $e;
+            }
+
             return back()->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
             Log::error('Badge image upload (store) failed: ' . $th->getMessage(), [
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
             ]);
-            return back()->with('fail', config('Messages.500'));
+            return back()->with('fail', $th instanceof \RuntimeException ? $th->getMessage() : config('Messages.500'));
         }
     }
 
@@ -230,69 +242,78 @@ class BadgesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        # ----- CONTROL BADGE OWNERS
-        if ($request->source == 1) // block Member
-        {
+        if ($request->source == 1) {
             if ($request->user()->cannot('BLOCK_EXHIBITOR_BADGE', Role::class)) {
                 return back()->with('fail', $this->permissionDeniedMessage('BLOCK_EXHIBITOR_BADGE'));
             }
-            CompanyMember::find($id)->update([
-                'badge_status' => 'BLOCKED',
-                'blocked_by' => Auth::user()->user_uuid,
-            ]);
+            $member = CompanyMember::find($id);
+            if (!$member) return back()->with('fail', config('Messages.404'));
+            $member->update(['badge_status' => 'BLOCKED', 'blocked_by' => Auth::user()->user_uuid]);
             return back()->with('success', 'Member Badge blocked successfully!');
-        } elseif ($request->source == 2) // unblock Member
-        {
+        }
+
+        if ($request->source == 2) {
             if ($request->user()->cannot('UN_BLOCK_MEMBER_BADGES', Role::class)) {
                 return back()->with('fail', $this->permissionDeniedMessage('UN_BLOCK_MEMBER_BADGES'));
             }
-            CompanyMember::find($id)->update([
-                'badge_status' => 'UNBLOCKED',
-                'unblocked_by' => Auth::user()->user_uuid,
-            ]);
-            return back()->with('success', 'Member badges unblocked sucessfully!');
+            $member = CompanyMember::find($id);
+            if (!$member) return back()->with('fail', config('Messages.404'));
+            $member->update(['badge_status' => 'UNBLOCKED', 'unblocked_by' => Auth::user()->user_uuid]);
+            return back()->with('success', 'Member badges unblocked successfully!');
         }
-        # ------ END CONTROL BADGE ----- #
 
-        # --- UPDATE MEMBER BADGE ---- #
-        else {
-            try {
-                $validator = Validator::make($request->all(), [
-                    'first_name' => 'required',
-                    'last_name' => 'required',
-                    'member_image' => 'mimes:png,jpg,jpeg'
-                ]);
-                if ($validator->fails()) {
-                    return back()->with('fail', implode(', ', $validator->getMessageBag()->all()));
-                }
-                $member = CompanyMember::find($id);
-                $imageLink = $member->member_image;
-                if (!empty($request->member_image)) {
-                    $badge = CompanyMember::find($id);
-                    $imageName = str_replace(config('app.url') . '/public/', '', $badge->member_image);
-                    $path = public_path($imageName);
-                    File::delete($path);
-                    $image_name = $id . "." . $request->member_image->extension(); # if available creates new sign name
-                    $imageLink = "https://tradefair.tantrade.go.tz". '/public/Members/' . $image_name;
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'member_image' => 'nullable|mimes:png,jpg,jpeg',
+            'company_id' => 'required|exists:companies,companyID',
+            'associateCompany' => 'nullable|exists:companies,companyID',
+        ]);
+        if ($validator->fails()) {
+            return back()->with('fail', implode(', ', $validator->getMessageBag()->all()));
+        }
 
-                    #---- RESIZE IMAGE -----#
-                    @ini_set('memory_limit', '512M'); // large @2x/@4x PNGs need headroom for GD to decode before resize
-                    $path = public_path('Members/');
-                    if (!File::isDirectory($path)) {
-                        File::makeDirectory($path, 0755, true);
+        $member = CompanyMember::find($id);
+        if (!$member) return back()->with('fail', config('Messages.404'));
+
+        $newCompanyId = $request->company_id;
+        $newAssociate = $request->associateCompany ?: null;
+        if ($newAssociate) {
+            $child = companies::where('companyID', $newAssociate)
+                ->where('associate_company', $newCompanyId)->first();
+            if (!$child) return back()->with('fail', 'Selected associate company does not belong to this parent company.');
+        }
+
+        $newImagePath = null;
+        $oldImagePath = $member->member_image
+            ? public_path(str_replace(rtrim(config('app.url'), '/') . '/public/', '', $member->member_image))
+            : null;
+        $imageLink = $member->member_image;
+        try {
+            if ($request->hasFile('member_image')) {
+                $imageName = $id . '_' . (string) Str::uuid() . '.' . $request->member_image->extension();
+                $directory = public_path('Members/');
+                if (!File::isDirectory($directory)) File::makeDirectory($directory, 0755, true);
+                @ini_set('memory_limit', '512M');
+                Image::make($request->member_image)->resize(200, 200)->save($directory . $imageName);
+                $newImagePath = $directory . $imageName;
+                $imageLink = rtrim(config('app.url'), '/') . '/public/Members/' . $imageName;
+            }
+
+            DB::transaction(function () use ($member, $request, $newCompanyId, $newAssociate, $imageLink) {
+                $oldCompanyId = $member->company_id;
+                $oldAssociate = $member->associateCompany ?: null;
+                $oldEvent = $member->event;
+
+                if ($oldCompanyId != $newCompanyId || $oldAssociate != $newAssociate) {
+                    $available = $this->BadgeChecking($newCompanyId, $newAssociate);
+                    if ($newCompanyId != config('global.COMPANY_EXCEPTION') && $available < 1) {
+                        throw new \RuntimeException('The selected company has no available badge allocation.');
                     }
-                    $image = Image::make($request->member_image)->resize(200, 200);
-                    $image->save($path . $image_name);
-                    #---- RESIZE IMAGE -----#
                 }
-                $associateCompany = Null;
-                $company_id = $request->company_id;
-                if ($request->associateCompany != null) {
-                    $associateCompany = $request->associateCompany;
-                    $company_id = $company_id = companies::where('companyID', $associateCompany)->first()->associate_company;
-                }
+
                 $member->update([
-                    'company_id' => $company_id,
+                    'company_id' => $newCompanyId,
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,
                     'last_name' => $request->last_name,
@@ -300,20 +321,23 @@ class BadgesController extends Controller
                     'member_image' => $imageLink,
                     'phone_number' => $request->phone_number,
                     'badge_status' => 'UNPRINTED',
-                    'associateCompany' => $associateCompany,
+                    'associateCompany' => $newAssociate,
                     'backupStatus' => 0,
                 ]);
-                return back()->with('success', $request->first_name . ' ' . $request->last_name . ' Details updated successfully!');
-            } catch (\Throwable $th) {
-                Log::error('Badge image upload (update) failed: ' . $th->getMessage(), [
-                    'file' => $th->getFile(),
-                    'line' => $th->getLine(),
-                ]);
-                return back()->with('fail', 'Something went wrong!');
-            }
-        }
-        # ----- END BADGE -------- #
 
+                $this->UpdateUsedBadges($oldEvent, $oldCompanyId, $oldAssociate);
+                $this->UpdateUsedBadges($oldEvent, $newCompanyId, $newAssociate);
+            });
+
+            if ($newImagePath && $oldImagePath && $oldImagePath !== $newImagePath && File::exists($oldImagePath)) {
+                File::delete($oldImagePath);
+            }
+            return back()->with('success', $request->first_name . ' ' . $request->last_name . ' Details updated successfully!');
+        } catch (\Throwable $th) {
+            if ($newImagePath && File::exists($newImagePath)) File::delete($newImagePath);
+            Log::error('Badge update failed: ' . $th->getMessage());
+            return back()->with('fail', 'Something went wrong!');
+        }
     }
 
     /**
@@ -327,80 +351,118 @@ class BadgesController extends Controller
         if ($request->user()->cannot('DELETE_EXHIBITOR_BADGE', Role::class)) {
             return back()->with('fail', $this->permissionDeniedMessage('DELETE_EXHIBITOR_BADGE'));
         }
+
         try {
-            $this->DeleteBadge($id); // delete badge from Allocation
             $badge = CompanyMember::find($id);
-            $imageName = str_replace(env('APP_URL') . '/public/', '', $badge->member_image);
-            $path = public_path($imageName);
-            File::delete($path);
-            $badge->delete();
+            if (!$badge) return back()->with('fail', config('Messages.404'));
+
+            $companyId = $badge->company_id;
+            $associateCompany = $badge->associateCompany ?: null;
+            $eventId = $badge->event;
+            $imageName = $badge->member_image
+                ? str_replace(rtrim(config('app.url'), '/') . '/public/', '', $badge->member_image)
+                : null;
+
+            DB::transaction(function () use ($badge, $companyId, $associateCompany, $eventId) {
+                $badge->delete();
+                $this->UpdateUsedBadges($eventId, $companyId, $associateCompany);
+            });
+
+            if ($imageName) {
+                $path = public_path($imageName);
+                if (File::exists($path)) File::delete($path);
+            }
+
             return back()->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
+            Log::error('Badge delete failed: ' . $th->getMessage());
             return back()->with('fail', config('Messages.500'));
         }
     }
 
-    public function BadgeChecking($id)
+    public function BadgeChecking($id, $associateCompany = null)
     {
-        $allocation = BadgesAllocation::where('company_id', $id)->where('event_id', session('liveEvent'))->first();
+        $eventId = session('liveEvent');
+
+        // Child allocation belongs to the child. Parent allocation is not charged again.
+        if ($associateCompany) {
+            $allocation = BadgesAllocation::where('company_id', $associateCompany)
+                ->where('event_id', $eventId)->first();
+
+            if (!$allocation) {
+                return 0;
+            }
+
+            $used = CompanyMember::where('company_id', $id)
+                ->where('associateCompany', $associateCompany)
+                ->where('event', $eventId)
+                ->where('badge_status', '!=', 'ARCHIVED')
+                ->count();
+
+            $allocation->update(['badges_used' => $used]);
+            return (int) $allocation->badges_allocated + (int) $allocation->free_badges - $used;
+        }
+
+        $allocation = BadgesAllocation::where('company_id', $id)
+            ->where('event_id', $eventId)->first();
+
         $totalBookedBadges = particulars::leftJoin('advice_notes', 'particulars.advice_note_id', '=', 'advice_notes.advice_note_id')
-            ->where('event', session('liveEvent'))
-            ->where('particular_name', 'LIKE', '%badges%')->where('advice_note_status', 'APPROVED')
-            ->where('advice_notes.company_id', $id)->sum('particular_quantity');
+            ->where('advice_notes.event', $eventId)
+            ->where('particular_name', 'LIKE', '%badges%')
+            ->where('advice_note_status', 'APPROVED')
+            ->where('advice_notes.company_id', $id)
+            ->sum('particular_quantity');
 
         $companyUsedBadges = CompanyMember::where('company_id', $id)
-            ->where('event', session('liveEvent'))->count(); # consumed by Company
-        $childBadges = BadgesAllocation::whereIn('company_id', companies::where('associate_company', $id)->get(['companyID']))
-            ->where('event_id', session('liveEvent'))->sum('free_badges'); # Given to child Company
-        $totalUsedBadges = $companyUsedBadges + $childBadges; # Total Used Badges
+            ->where('event', $eventId)
+            ->where(function ($query) {
+                $query->whereNull('associateCompany')->orWhere('associateCompany', '');
+            })
+            ->where('badge_status', '!=', 'ARCHIVED')
+            ->count();
+
+        $childIds = companies::where('associate_company', $id)->pluck('companyID');
+        $childAllocatedBadges = BadgesAllocation::whereIn('company_id', $childIds)
+            ->where('event_id', $eventId)->sum('free_badges');
+
+        $totalUsedBadges = $companyUsedBadges + (int) $childAllocatedBadges;
+        $totalAllocatedBadges = (int) $totalBookedBadges + (int) ($allocation->free_badges ?? 0);
+
         if ($allocation) {
-            $totalAllocatedBadges = $totalBookedBadges + $allocation->free_badges; # Calculates total Allocated badges
             $allocation->update([
-                'badges_allocated' => $totalBookedBadges,
+                'badges_allocated' => (int) $totalBookedBadges,
                 'badges_used' => $totalUsedBadges,
             ]);
-        }
-        // If allocation does not exist
-        else {
-            $totalAllocatedBadges = $totalBookedBadges;
-            $allocationId = Str::uuid();
-            BadgesAllocation::create([
-                'badge_allocation_id' => $allocationId,
+        } else {
+            $allocation = BadgesAllocation::create([
+                'badge_allocation_id' => (string) Str::uuid(),
                 'company_id' => $id,
-                'event_id' => session('liveEvent'),
-                'badges_allocated' => $totalAllocatedBadges,
+                'event_id' => $eventId,
+                'badges_allocated' => (int) $totalBookedBadges,
+                'badges_used' => $totalUsedBadges,
+                'free_badges' => 0,
             ]);
-            $allocation = BadgesAllocation::find($allocationId);
         }
-        #*******************END BADGES*********************#
 
-        $balance = advice_notes::where('company_id', $id)->where('event', session('liveEvent'))
-            ->where('advice_note_status', 'APPROVED')->sum('balance');
+        $balance = advice_notes::where('company_id', $id)
+            ->where('event', $eventId)
+            ->where('advice_note_status', 'APPROVED')
+            ->sum('balance');
 
-        session(['balance' => $balance]);
-        session(['companyID' => $id]);
-        session(['usedBadges' => $totalUsedBadges]); // Used Badges
-        session(['totalAllocatedBadges' => $totalAllocatedBadges]); // Total Allocated Badges.
-        session(['availableBadges' => session('totalAllocatedBadges') - session('usedBadges')]);
+        session([
+            'balance' => $balance,
+            'companyID' => $id,
+            'usedBadges' => $totalUsedBadges,
+            'totalAllocatedBadges' => $totalAllocatedBadges,
+            'availableBadges' => $totalAllocatedBadges - $totalUsedBadges,
+        ]);
+
         return session('availableBadges');
     }
 
 
-    private function CheckBadgeAvailability($id)
+    private function CheckBadgeAvailability($id, $associateCompany = null)
     {
-        $availableBadges = 0;
-        $usedBadges = CompanyMember::where('company_id', $id)
-            ->Where('event', session('liveEvent'))->count(); // Total Badges Used
-
-        $allocation = BadgesAllocation::where('company_id', $id)
-            ->where('event_id', session('liveEvent'))->first(); // Get Company Allocations
-
-        if ($allocation) {
-            $totalAllocatedBadges = ($allocation->badges_allocated); // Total Badges Allocated
-            $allocation->update(['used_badges' => $usedBadges]); // Update Badge Allocations
-            $availableBadges = $totalAllocatedBadges - $usedBadges;
-        }
-
-        return $availableBadges;
+        return $this->BadgeChecking($id, $associateCompany);
     }
 }

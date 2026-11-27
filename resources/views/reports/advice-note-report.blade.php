@@ -30,7 +30,7 @@
            <table class="table datatable-button-html5-columns table-responsive table-bordered">
                <thead>
                    <tr style="background-color: rgb(219, 217, 217);">
-                       <th class=" text-bold text-center" colspan="4">DAR ES SALAAM ITERNATIONAL TRADE FAIR (DITF) GENERAL ADVICE NOTE REPORT.</th>
+                       <th class=" text-bold text-center" colspan="4">GEITA MINERAL EXHIBITION GENERAL ADVICE NOTE REPORT.</th>
                        <th colspan="2">
                        <form action="{{ route('adviceNote-reports.index') }}" method="DELETE">
                         <select name="exhibition_year">
@@ -74,7 +74,7 @@
            <table class=" table datatable-button-html5-columns table-responsive table-bordered">
                <thead>
                    <tr style="background-color: rgb(219, 217, 217);">
-                       <th class=" text-bold text-center" colspan="7">DAR ES SALAAM ITERNATIONAL TRADE FAIR (DITF) EXHIBITOR ADVICE NOTES REPORT.</th>
+                       <th class=" text-bold text-center" colspan="7">GEITA MINERAL EXHIBITION EXHIBITOR ADVICE NOTES REPORT.</th>
                    </tr>
                    <tr>
                        <th class=" text-bold text-center">Advice Note ID</th>

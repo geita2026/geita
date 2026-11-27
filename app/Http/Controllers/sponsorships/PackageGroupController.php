@@ -94,4 +94,49 @@ class PackageGroupController extends Controller
     {
         //
     }
+
+    /**
+     * Show the form for creating a new package group.
+     */
+    public function create(Request $request)
+    {
+        if ($request->user()->cannot('MANAGE_PACKAGE_GROUP', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PACKAGE_GROUP'));
+        }
+
+        return view('sponsorship.CreatePackageGroup');
+    }
+
+    /**
+     * Store a newly created package group.
+     */
+    public function store(Request $request)
+    {
+        if ($request->user()->cannot('MANAGE_PACKAGE_GROUP', Role::class)) {
+            return back()->with('fail', $this->permissionDeniedMessage('MANAGE_PACKAGE_GROUP'));
+        }
+
+        $request->validate([
+            'packageGroupName'        => 'required|string|max:255',
+            'packageGroupDescription' => 'required|string',
+            'backgroundColor'         => 'required|string',
+            'textColor'               => 'required|string',
+        ]);
+
+        try {
+            PackageGroup::create([
+                'packageGroupId'          => (string) \Illuminate\Support\Str::uuid(),
+                'packageGroupName'        => $request->packageGroupName,
+                'packageGroupDescription' => $request->packageGroupDescription,
+                'packageGroupStatus'      => 1,
+                'backgroundColor'         => $request->backgroundColor,
+                'textColor'               => $request->textColor,
+            ]);
+
+            return redirect()->route('package_groups.index')
+                             ->with('success', 'Package group created successfully.');
+        } catch (\Throwable $th) {
+            return back()->with('fail', config('Messages.500'))->withInput();
+        }
+    }
 }

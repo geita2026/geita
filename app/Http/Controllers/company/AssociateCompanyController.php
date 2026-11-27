@@ -10,6 +10,7 @@ use App\Models\sectors;
 use App\Models\setting\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -101,63 +102,57 @@ class AssociateCompanyController extends Controller
             return back()->with('fail', $this->permissionDeniedMessage('VIEW_ASSOCIATE_COMPANY_SUBMENU'));
         }
 
-        $sectors = sectors::orderBy('sectorName', 'ASC')
-            ->get(['sectorID', 'sectorName']);
+        $sectors = sectors::orderBy('sectorName', 'ASC')->get(['sectorID', 'sectorName']);
 
-        $usedBadges=CompanyMember::where('event',session('liveEvent'))
-        ->where('company_id',$id)->count();
+        $usedBadges = CompanyMember::where('event', session('liveEvent'))
+            ->where('company_id', $id)
+            ->where(function ($query) {
+                $query->whereNull('associateCompany')->orWhere('associateCompany', '');
+            })
+            ->where('badge_status', '!=', 'ARCHIVED')
+            ->count();
 
         $associates = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
             ->where('associate_company', $id)->where('status', 1)
             ->get([
-                'companies.companyID',
-                'companyName',
-                'companyEmail',
-                'companyPhone',
-                'companyCategory',
-                'companyLocation',
-                'companySector',
-                'sectorName',
-                'registrationNo',
-                'companyTel',
-                'companyAddress',
-                'originality',
-                'registrationID',
-                'associate_company'
+                'companies.companyID', 'companyName', 'companyEmail', 'companyPhone',
+                'companyCategory', 'companyLocation', 'companySector', 'sectorName',
+                'registrationNo', 'companyTel', 'companyAddress', 'originality',
+                'registrationID', 'associate_company',
             ]);
-        $associateWithAllocations =  companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('badges_allocations', 'companies.companyID', '=', 'badges_allocations.company_id')
+
+        $associateWithAllocations = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
+            ->leftJoin('badges_allocations', function ($join) {
+                $join->on('companies.companyID', '=', 'badges_allocations.company_id')
+                    ->where('badges_allocations.event_id', '=', session('liveEvent'));
+            })
             ->where('associate_company', $id)->where('status', 1)
-            ->where('event_id', session('liveEvent'))
-            ->get([
-                'companies.companyID',
-                'event_id',
-                'badges_allocated',
-                'badges_used',
-                'free_badges'
-            ]);
-        $totalChildBadges = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('badges_allocations', 'companies.companyID', '=', 'badges_allocations.company_id')
-            ->where('associate_company', $id)->where('status', 1)
-            ->where('event_id', session('liveEvent'))
-            ->sum('free_badges');
+            ->get(['companies.companyID', 'event_id', 'badges_allocated', 'badges_used', 'free_badges']);
+
+        $childIds = companies::where('associate_company', $id)->pluck('companyID');
+        $totalChildBadges = BadgesAllocation::whereIn('company_id', $childIds)
+            ->where('event_id', session('liveEvent'))->sum('free_badges');
+
+        $parentAllocation = BadgesAllocation::where('company_id', $id)
+            ->where('event_id', session('liveEvent'))->first();
+
+        $allowedAllocation = $parentAllocation
+            ? max(0, (int) $parentAllocation->badges_allocated + (int) $parentAllocation->free_badges
+                - $usedBadges - (int) $totalChildBadges)
+            : 0;
+
+        session([
+            'allowedAllocation' => $allowedAllocation,
+            'companyID' => $id,
+        ]);
 
         $main_company = '';
         $company_id = $id;
-        $motherCompany = companies::leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('badges_allocations', 'companies.companyID', '=', 'badges_allocations.company_id')
-            ->where('event_id', session('liveEvent'))
-            ->where('company_id', $id)
-            ->get(['companyID', 'companyName', 'badges_allocated', 'badges_used','free_badges']);
-        session(['allowedAllocation' => 0]);
-
-        foreach ($motherCompany as $key => $value) {
-            $usedBadges = $totalChildBadges + $usedBadges;
-            session(['allowedAllocation' => $value->badges_allocated - $usedBadges]);
-        }
         $countries = Country::orderBy('country_name')->get(['country_name', 'country_short_code']);
 
-        return view('company.associate_companies', compact('associates', 'main_company', 'company_id', 'countries', 'sectors', 'associateWithAllocations'));
+        return view('company.associate_companies', compact(
+            'associates', 'main_company', 'company_id', 'countries', 'sectors', 'associateWithAllocations'
+        ));
     }
 
     public function update(Request $request, $id)
@@ -166,55 +161,80 @@ class AssociateCompanyController extends Controller
             if ($request->user()->cannot('ALLOCATE_ASSOCIATE_COMPANY', Role::class)) {
                 return back()->with('fail', $this->permissionDeniedMessage('ALLOCATE_ASSOCIATE_COMPANY'));
             }
+
             $validator = Validator::make($request->all(), [
                 'parentCompany' => 'required|exists:companies,companyID',
-                'allocatedBadges' => 'required|numeric|min:1|max:100',
+                'allocatedBadges' => 'required|integer|min:1|max:100',
             ]);
             if ($validator->fails()) {
                 return back()->with('fail', implode(',', $validator->getMessageBag()->all()));
             }
 
-            $parentBadges = BadgesAllocation::where('company_id', $request->parentCompany)
-                ->where('event_id', session('liveEvent'))->first();
+            $eventId = session('liveEvent');
+            $amount = (int) $request->allocatedBadges;
 
-            $allocation = BadgesAllocation::where('company_id', $id)
-                ->where('event_id', session('liveEvent'))->first(); // Get Company Allocations
+            DB::transaction(function () use ($request, $id, $eventId, $amount) {
+                $child = companies::where('companyID', $id)
+                    ->where('associate_company', $request->parentCompany)
+                    ->lockForUpdate()->first();
 
-            $parentUsedBadges = CompanyMember::where('company_id', $request->parentCompany)
-                ->Where('event', session('liveEvent'))->count(); // Total Badges Used
+                if (!$child) {
+                    throw new \RuntimeException('Selected company is not an associate of this parent company.');
+                }
 
-            $childBadges = companies::leftJoin('badges_allocations', 'companies.companyID', '=', 'badges_allocations.company_id')
-                ->where('badges_allocations.event_id', session('liveEvent'))
-                ->where('associate_company', $request->parentCompany)
-                ->sum('free_badges');
+                $parent = BadgesAllocation::where('company_id', $request->parentCompany)
+                    ->where('event_id', $eventId)
+                    ->lockForUpdate()->first();
 
-            $totalUsedBadges = $parentUsedBadges + $childBadges + $request->allocatedBadges;
-            if ($totalUsedBadges > $parentBadges->badges_allocated + $parentBadges->free_badges) {
-                return back()->with('fail', 'The parent company has less or zero badge Allocation!');
-            }
+                if (!$parent) {
+                    throw new \RuntimeException('The parent company has no badge allocation for this event.');
+                }
 
-            if (!$allocation) {
-                $allocationId = Str::uuid();
-                BadgesAllocation::create([
-                    'badge_allocation_id' => $allocationId,
-                    'company_id' => $id,
-                    'event_id' => session('liveEvent'),
-                    'free_badges' => $request->allocatedBadges,
+                $childAllocation = BadgesAllocation::where('company_id', $id)
+                    ->where('event_id', $eventId)
+                    ->lockForUpdate()->first();
+
+                $parentOwnMembers = CompanyMember::where('company_id', $request->parentCompany)
+                    ->where('event', $eventId)
+                    ->where(function ($query) {
+                        $query->whereNull('associateCompany')->orWhere('associateCompany', '');
+                    })
+                    ->where('badge_status', '!=', 'ARCHIVED')
+                    ->count();
+
+                $childIds = companies::where('associate_company', $request->parentCompany)->pluck('companyID');
+                $alreadyReserved = BadgesAllocation::whereIn('company_id', $childIds)
+                    ->where('event_id', $eventId)->sum('free_badges');
+
+                $parentCapacity = (int) $parent->badges_allocated + (int) $parent->free_badges;
+                if ($parentOwnMembers + (int) $alreadyReserved + $amount > $parentCapacity) {
+                    throw new \RuntimeException('The parent company does not have enough unallocated badges.');
+                }
+
+                if (!$childAllocation) {
+                    $childAllocation = BadgesAllocation::create([
+                        'badge_allocation_id' => (string) Str::uuid(),
+                        'company_id' => $id,
+                        'event_id' => $eventId,
+                        'badges_allocated' => 0,
+                        'badges_used' => 0,
+                        'free_badges' => $amount,
+                    ]);
+                } else {
+                    $childAllocation->increment('free_badges', $amount);
+                }
+
+                // Parent badges_used means direct usage + badges reserved for all children.
+                $parent->update([
+                    'badges_used' => $parentOwnMembers + (int) $alreadyReserved + $amount,
                 ]);
-                $parentBadges->update([
-                    'badges_used' => $request->allocatedBadges + $parentBadges->badges_used,
-                ]);
-            } else {
-                $allocation->update([
-                    'free_badges' => ($request->allocatedBadges + $allocation->free_badges),
-                ]);
-                $parentBadges->update([
-                    'badges_used' => $request->allocatedBadges + $parentBadges->badges_used,
-                ]);
-            }
+            });
+
             return back()->with('success', 'New allocation saved successfully!');
         } catch (\Throwable $th) {
-            return back()->with('fail', config('Messages.500'));
+            return back()->with('fail', $th instanceof \RuntimeException
+                ? $th->getMessage()
+                : config('Messages.500'));
         }
     }
 }

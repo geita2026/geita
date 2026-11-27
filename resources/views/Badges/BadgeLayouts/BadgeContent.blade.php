@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <th colspan="3">
-                    <b>THE 47<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR - DITF.</b>
+                    <b>GEITA MINERAL EXHIBITION</b>
                 </th>
             </tr>
             <tr>

@@ -307,12 +307,7 @@ return [
             'Manage Advatisment' => 'MANAGE_ADVATISMENT',
             'Manage Advatisments' => 'MANAGE_ADVATISMENTS',
         ]],
-        'DITF_GUIDELINE' => ['Ditf Guidelines', 'ditf_guidelines.index', [
-            'View Guidelines' => 'VIEW_DITF_GUIDELINE_SUBMENU',
-            'Create Guidelines' => 'CREATE_DITF_GUIDELINE',
-            'Update Guidelines' => 'UPDATE_DITF_GUIDELINE',
-            'Delete Guidelines' => 'DELETE_DITF_GUIDELINE',
-        ]],
+       
     ]],
     'REPORT' => ['Reports', 1, 'icon-stats-growth', [
         'INVOICE_REPORT' => ['Invoice Reports', 'invoice-reports.index', [

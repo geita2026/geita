@@ -60,7 +60,7 @@
                     <thead style="background:#f5f7fa">
                         <tr>
                             <th class="text-center text-bold" style="width:60px">#</th>
-                            <th class="text-bold">TSRN</th>
+                            <th class="text-bold">SRN</th>
                             <th class="text-bold">Company Details</th>
                             <th class="text-center text-bold">Contact</th>
                             <th class="text-center text-bold">Status</th>

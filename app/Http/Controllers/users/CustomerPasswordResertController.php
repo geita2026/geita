@@ -21,15 +21,18 @@ class CustomerPasswordResertController extends Controller
             return back()->with('fail',$this->permissionDeniedMessage('RESET_CUSTOMER_PASSWORD_RESET'));
         }
         $event = events::where('event_status', 1)->first();
+        if (!$event) {
+    return back()->with('fail', 'No active event. Please activate an event first.');
+}
         $users = User::orderBy('users.first_name')
             ->leftJoin('roles', 'users.role', '=', 'roles.id')
-            ->leftJoin('exhibitors', 'users.user_uuid', '=', 'exhibitors.exhibitor_id')
+            ->leftJoin('exhibitors', 'users.myCompany', '=', 'exhibitors.exhibitor_id')
             ->where('exhibitors.exhibitor_event', $event->event_id)
             ->where('roles.name', 'Customer')
             ->where('roles.guard_name', 'web')
             ->get([
                 'users.id', 'users.first_name', 'users.middle_name', 'users.last_name',
-                'users.name', 'users.email', 'users.user_uuid', 'users.user_ip_address',
+                'users.name', 'users.email', 'users.myCompany', 'users.user_ip_address',
                 'users.role', 'users.phone_number', 'users.account_status',
             ]);
 

@@ -42,7 +42,7 @@
                     <table class="table datatable-save-state table-striped table-bordered  table-responsive">
                         <thead>
                             <tr>
-                                <th colspan="3" class=" text-center text-bold">MWL. NYERERE INTERNATIONAL FAIR GROUND STREETS</th>
+                                <th colspan="3" class=" text-center text-bold">GEITA MINERAL EXHIBITION STREETS</th>
                             </tr>
                             <tr>
                                 <th class="text-bold text-center">Street Name</th>
@@ -107,7 +107,7 @@
 
                                                                 <div class=" form-group col-md-12">
                                                                     <label>Street Description</label>
-                                                                    <textarea class="form-control" name="streetDescription" placeholder="street description">{{ $item->STREETDescription }}</textarea>
+                                                                    <textarea class="form-control" name="streetDescription" placeholder="street description">{{ $item->streetDescription }}</textarea>
                                                                 </div>
                                                             </div>
 

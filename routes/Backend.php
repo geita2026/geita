@@ -28,7 +28,6 @@ use App\Http\Controllers\sponsorships\packageContentController;
 use App\Http\Controllers\users\resendPasswordController;
 use App\Http\Controllers\settings\eventController;
 use App\Http\Controllers\space\eventSpaceController;
-use App\Http\Controllers\Guidelines\GuidelinesController;
 use App\Http\Controllers\Logs\ApiLogsController;
 use App\Http\Controllers\Search\SearchController;
 use App\Http\Controllers\users\CustomerPasswordResertController;
@@ -72,7 +71,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('fetch-permissions',[permissionController::class,'fetchPermissions'])->name('fetchPermissions');
     Route::resource('api_requests',RegisterApiRequestController::class);
     Route::resource('api_logs',ApiLogsController::class);
-    Route::resource('ditf_guidelines',GuidelinesController::class);
     
     Route::resource('vistors',VistorsController::class);
     Route::resource('virtual_pavilions',VirtualPavilionController::class);

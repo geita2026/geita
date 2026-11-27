@@ -201,7 +201,7 @@
 
   <!-- Title and Event -->
   <div class="title">TANZANIA TRADE DEVELOPMENT AUTHORITY (TANTRADE)</div>
-  <div class="event">THE 49<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR</div>
+  <div class="event">GEITA MINERAL EXHIBITION</div>
   <div class="event-dates">28<sup>th</sup> June - 13<sup>th</sup> July 2025</div>
 
   <!-- Profile Image -->

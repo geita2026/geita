@@ -24,7 +24,6 @@ $count=0;
     }
 </style>
 <div style="">
-    @while ($count<4)
     @foreach ($badges as $item)
         <div
             style=" font-family:Arial; height: 400px; width: 8cm; justify-content:center; margin-top:70px; padding:20px; align-items: center; border:2px dashed black; display: inline-block;">
@@ -102,9 +101,5 @@ $count=0;
             </table>
         </div>
     @endforeach
-    @php
-    $count++;
-@endphp
-@endwhile
 </div>
 

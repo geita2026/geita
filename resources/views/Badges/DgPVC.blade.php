@@ -177,7 +177,7 @@
 
             <div class="title">
                 <h2 style="font-size:12px">TANZANIA TRADE DEVELOPMENT AUTHORITY (TANTRADE)</h2>
-                <h3 style="font-size:10px">THE 49<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR</h3>
+                <h3 style="font-size:10px">GEITA MINERAL EXHIBITION</h3>
                 <p class="dates">
                     <b>28<sup>th</sup> June – 13<sup>th</sup> July 2025</b>
                 </p>
