@@ -127,7 +127,6 @@ return [
             'View Product Reports' => 'VIEW_EXHIBITION_PRODUCT_REPORT_SUBMENU',
             'Delete Product Reports' => 'DELETE_EXHIBITION_PRODUCT_REPORT',
         ]],
-        'EXHIBITOR_JUDGING' => ['Exhibitor Judging', 'exhibitor_judging.index', []],
     ]],
     'SPACE' => ['Space Allocation', 1, 'icon-map5', [
         'BOOKING' => ['Booking', 'booking.index', [
@@ -148,11 +147,6 @@ return [
         'PAVILION' => ['Pavilions', 'pavilions.index', [
             'Manage Spaces' => 'MANAGE_SPACES',
             'Delete Spaces' => 'DELETE_PAVILION',
-        ]],
-        'BOOTH' => ['Booths', 'booths.index', [
-            'Manage Spaces' => 'MANAGE_SPACES',
-            'Update Booths' => 'UPDATE_BOOTH',
-            'Delete Booths' => 'DELETE_BOOTH',
         ]],
         'BOOTH_CATEGORY' => ['Booth Categories', 'boothCategories.index', [
             'Manage Spaces' => 'MANAGE_SPACES',
@@ -229,17 +223,6 @@ return [
         ]],
         'EMERGENCY_BADGE' => ['Emergency Badges', 'emergency_badges.index', [
             'View Badges List' => 'VIEW_BADGES_LIST',
-        ]],
-        'FACIAL_NAME_COMPANY' => ['Facial Name Companies', 'facial_name_companies.index', [
-            'View Facial Names' => 'VIEW_FACIAL_NAME_COMPANY_SUBMENU',
-            'Create Facial Names' => 'CREATE_FACIAL_NAME_COMPANY',
-            'Delete Facial Names' => 'DELETE_FACIAL_NAME_COMPANY',
-        ]],
-        'FACIAL_NAME_GROUP' => ['Facial Name Groups', 'facial_name_groups.index', [
-            'View Facial Names Group' => 'VIEW_FACIAL_NAME_GROUP_SUBMENU',
-            'Create Facial Names Group' => 'CREATE_FACIAL_NAME_GROUP',
-            'Update Facial Names Group' => 'UPDATE_FACIAL_NAME_GROUP',
-            'Delete Facial Names Group' => 'DELETE_FACIAL_NAME_GROUP',
         ]],
     ]],
     'STICKER' => ['Vehicle Stickers', 1, 'icon-car', [
@@ -328,9 +311,6 @@ return [
             'View Pavilion Reports' => 'VIEW_PAVILION_REPORT_SUBMENU',
         ]],
         'GROUND_VISITOR' => ['Ground Visitors', 'ground_visitors.index', [
-            'View Visitors' => 'VIEW_VISITORS',
-        ]],
-        'SITE_VISITOR' => ['Site Visitors', 'vistors.index', [
             'View Visitors' => 'VIEW_VISITORS',
         ]],
     ]],
