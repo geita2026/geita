@@ -149,3 +149,316 @@
     outline: 2px solid var(--gem-field-focus);
     outline-offset: 3px;
 }
+
+/* =========================================================
+   ARCHITECTURAL PAVILION BLUEPRINT (Martin Shigella CAD Style)
+   ========================================================= */
+.pavilion-blueprint-section {
+    margin: 18px 0 22px;
+}
+
+.pavilion-blueprint-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 4px;
+}
+
+.pavilion-blueprint-sheet {
+    box-sizing: border-box;
+    width: 100%;
+    padding: clamp(24px, 3.6vw, 44px) clamp(26px, 4.5vw, 58px) clamp(26px, 3.8vw, 46px);
+    border: 1.5px solid #222222;
+    background: #ffffff;
+    color: #111111;
+    font-family: "Calibri", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.pavilion-blueprint-title {
+    margin: 0 0 clamp(22px, 3.4vw, 42px);
+    color: #0b0b0b !important;
+    font-size: clamp(20px, 2.3vw, 29px);
+    font-weight: 700;
+    letter-spacing: .02em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.pavilion-blueprint-building {
+    position: relative;
+    width: 100%;
+}
+
+/* Wall = fixed-proportion corner bay | stretchy 5-bay curtain | corner bay.
+   The bays keep their CAD proportions at any hall width; only the curtain
+   between them grows, exactly as the drawings do. */
+.pavilion-wall {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: clamp(54px, 6vw, 78px);
+}
+
+.pavilion-wall-bay {
+    display: block;
+    flex: 0 0 19.2%;
+    height: 100%;
+}
+
+.pavilion-wall-curtain {
+    position: relative;
+    flex: 1 1 auto;
+    align-self: center;
+    height: clamp(24px, 2.7vw, 35px);
+    border-top: 1.4px solid #1a1a1a;
+    border-bottom: 1.4px solid #1a1a1a;
+    background: #ffffff;
+}
+
+/* inner soffit line of the curtain */
+.pavilion-wall-curtain::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 6px;
+    border-top: 1px solid #1a1a1a;
+}
+
+.pavilion-wall-bottom .pavilion-wall-curtain::after {
+    top: auto;
+    bottom: 6px;
+}
+
+/* 4 double-lined structural mullions dividing the curtain into 5 bays */
+.pavilion-wall-mullion {
+    position: absolute;
+    top: -1.4px;
+    bottom: -1.4px;
+    width: 5px;
+    margin-left: -2.5px;
+    border-right: 1.3px solid #1a1a1a;
+    border-left: 1.3px solid #1a1a1a;
+    background: #ffffff;
+}
+
+/* Perimeter hall enclosure between top and bottom stepped walls */
+.pavilion-hall-interior {
+    position: relative;
+    margin: 0 .6%;
+    padding: clamp(20px, 2.8vw, 34px) clamp(14px, 2vw, 26px);
+    border-left: 1.5px solid #222222;
+    border-right: 1.5px solid #222222;
+    background: #ffffff;
+}
+
+/* Central 2-row back-to-back dashed booth island */
+.pavilion-booth-island {
+    display: grid;
+    grid-template-columns: repeat(var(--pavilion-cols, 7), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--pavilion-rows, 2), auto);
+    grid-auto-flow: column;
+    border-top: 1.5px dashed #2b2b2b;
+    border-left: 1.5px dashed #2b2b2b;
+    background: #ffffff;
+}
+
+/* Cells sit at the drawing's proportion: a touch wider than tall (1 : 0.94). */
+.pavilion-booth-island > .pavilion-booth-cell {
+    aspect-ratio: 1 / 0.94;
+}
+
+/* Outdoor plots: one row, solid CAD lines, plots taller than they are wide */
+.pavilion-booth-island.is-open-plots,
+.pavilion-booth-island.is-open-plots > .pavilion-booth-cell {
+    border-style: solid;
+    border-width: 1.2px;
+}
+
+.pavilion-booth-island.is-open-plots > .pavilion-booth-cell {
+    aspect-ratio: 1 / 1.7;
+    border-top: 0;
+    border-left: 0;
+}
+
+/* Cross walkway between stacked islands in a large hall */
+.pavilion-booth-island + .pavilion-booth-island {
+    margin-top: clamp(26px, 3.4vw, 46px);
+}
+
+.pavilion-booth-island.is-whole-space {
+    grid-template-columns: minmax(220px, 1fr);
+    grid-template-rows: minmax(210px, 240px);
+}
+
+.pavilion-booth-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 92px;
+    padding: 8px;
+    border: 0;
+    border-right: 1.5px dashed #2b2b2b;
+    border-bottom: 1.5px dashed #2b2b2b;
+    border-radius: 0 !important;
+    background: #ffffff;
+    color: #111111;
+    overflow: hidden;
+    user-select: none;
+}
+
+button.pavilion-booth-cell {
+    width: 100%;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color .16s ease, box-shadow .16s ease;
+}
+
+button.pavilion-booth-cell:hover {
+    background: #fff9e6;
+}
+
+button.pavilion-booth-cell:focus-visible {
+    outline: 2.5px solid #b8860b;
+    outline-offset: -3px;
+}
+
+.pavilion-booth-cell.is-void {
+    background: repeating-linear-gradient(
+        -45deg,
+        #fafafa,
+        #fafafa 6px,
+        #f1f1f1 6px,
+        #f1f1f1 12px
+    );
+}
+
+/* Subtle corner booth number & m² note */
+.pavilion-booth-no {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .02em;
+}
+
+.pavilion-booth-meta {
+    position: absolute;
+    right: 8px;
+    bottom: 6px;
+    color: #7c756b;
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* Diagonal -45deg CAD stamp inside each booth */
+.pavilion-booth-stamp {
+    display: block;
+    max-width: 141%;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    font-size: clamp(13px, 1.5vw, 20px);
+    font-weight: 400;
+    letter-spacing: .03em;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+.pavilion-booth-stamp.is-long {
+    font-size: clamp(11px, 1.25vw, 16px);
+    letter-spacing: .01em;
+}
+
+.pavilion-booth-stamp.is-xlong {
+    font-size: clamp(8.5px, .95vw, 12.5px);
+    letter-spacing: 0;
+}
+
+.pavilion-booth-cell.is-occupied .pavilion-booth-stamp {
+    color: #111111;
+}
+
+.pavilion-booth-cell.is-empty .pavilion-booth-stamp {
+    color: #e11d24;
+}
+
+/* Active selection state when exhibitor clicks an EMPTY booth */
+.pavilion-booth-cell.is-selected {
+    background: #fff4cc !important;
+    box-shadow: inset 0 0 0 2.5px #d49b00;
+}
+
+.pavilion-booth-cell.is-selected .pavilion-booth-stamp {
+    color: #1f1605;
+    font-weight: 700;
+}
+
+.pavilion-booth-cell.is-selected .pavilion-booth-no {
+    color: #6c4d04;
+    font-weight: 700;
+}
+
+.booking-table tr.is-selected-row > td,
+.booking-table tr.is-selected-row > th {
+    background: #fff8df !important;
+}
+
+/* Compact floor plan legend */
+.pavilion-blueprint-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 22px;
+    margin-top: 10px;
+    color: #575149;
+    font-size: 13px;
+}
+
+.pavilion-blueprint-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.pavilion-blueprint-legend .legend-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1.5px dashed #2b2b2b;
+    background: #ffffff;
+}
+
+.pavilion-blueprint-legend .legend-swatch.is-occupied::after,
+.pavilion-blueprint-legend .legend-swatch.is-empty::after {
+    content: '';
+    display: block;
+    width: 10px;
+    height: 2px;
+    margin: 6px auto 0;
+    transform: rotate(-45deg);
+}
+
+.pavilion-blueprint-legend .legend-swatch.is-occupied::after {
+    background: #111111;
+}
+
+.pavilion-blueprint-legend .legend-swatch.is-empty::after {
+    background: #e11d24;
+}
+
+.pavilion-blueprint-legend .legend-swatch.is-selected {
+    border-style: solid;
+    border-color: #d49b00;
+    background: #fff4cc;
+}

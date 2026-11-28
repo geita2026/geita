@@ -104,7 +104,6 @@ Route::controller(SearchController::class)->group(function(){
     Route::get('search_invoices','searchInvoices')->name('search_invoices');
     Route::get('search_sectors','searchSectors')->name('search_sectors');
 });
-Route::get('search_approved_events',[SearchController::class,'searchApprovedEvents'])->name('search_approved_events');
 Route::get('search-exhibitors',[SearchController::class,'searchExhibitor'])->name('search-exhibitors');
 //
 

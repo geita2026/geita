@@ -95,7 +95,7 @@
                 },
                 cache: true
             },
-            placeholder: 'Search Companies by company name or Tantrade Service Registration Number',
+            placeholder: 'Search Companies by company name or Service Registration Number',
             minimumInputLength: 0,
         });
     });

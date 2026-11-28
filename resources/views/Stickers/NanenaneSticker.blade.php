@@ -20,7 +20,7 @@
         $nanenaneLogo= 'data:image/png;base64,' . base64_encode($image->encode('png'));
         // ***********************
         #Badge Header
-        $badgeHeader=public_path('images/Logo.png');
+        $badgeHeader=public_path('badgeAssets/coat_of_arms.png');
         $image = Image::make($badgeHeader);
         $tantradeLogo= 'data:image/png;base64,' . base64_encode($image->encode('png'));
         // ***********************

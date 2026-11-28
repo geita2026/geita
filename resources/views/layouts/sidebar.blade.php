@@ -43,10 +43,6 @@
                         <li class="@if(request()->is('dashboard')) active  @endif " ><a href="{{ route('dashboard') }}"><i class=" icon-home4" style="font-size:23px" ></i> <span>GeMEMIS Dashboard</span></a></li>
                         @endif
 
-                        @if (session('moduleNo')==2)
-                        <li class="@if(request()->is('ePermit/permitDashboard')) active  @endif " ><a href="{{ route('permitDashboard') }}"><i class=" icon-home4" style="font-size:23px" ></i> <span>ePermit Dashboard</span></a></li>
-                        @endif
-
                         
                         @php
                         $level_one_menu=App\Models\setting\level_one_menus::orderBy('level_one_common_name','ASC')->where('level_one_menu_status',1)->where('moduleNo',session('moduleNo', 1))->get();

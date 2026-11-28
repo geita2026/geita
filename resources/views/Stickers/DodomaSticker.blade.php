@@ -10,7 +10,7 @@
         #end logo
 
         #Badge Header badgeHeader.png
-        $badgeHeader=public_path('images/logo.jpg');
+        $badgeHeader=public_path('badgeAssets/coat_of_arms.png');
         $image = Image::make($badgeHeader);
         $base64_badgeHeader= 'data:image/png;base64,' . base64_encode($image->encode('png'));
         // ***********************

@@ -62,7 +62,7 @@
             </tr>
             <tr>
                 <td colspan="3">
-                   <div style=" font-size:100%;font-family:monospace;"><b>Visit: </b> <i style="color:blue">www.tantrade.go.tz</i></div>
+                   <div style=" font-size:100%;font-family:monospace;"><b>Visit: </b> <i style="color:blue">www.gememis.go.tz</i></div>
                 </td>
             </tr>
         </tr>

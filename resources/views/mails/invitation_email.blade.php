@@ -21,7 +21,7 @@
             <p>Sincerely,</p>
             <p>{{ $officer_name }}</p>
             <p><b>{{ $officer_title }}</b></p>
-            <p>Tanzania Trade Development Authority.</p>
+            <p>Geita Mineral Exhibition Secretariat.</p>
             @include('mails.MailFooterLayout')
     </div>
     </div>

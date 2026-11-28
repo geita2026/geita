@@ -1,6 +1,6 @@
 @php
     #Ditf Logo
-    $image = Image::make(public_path('badgeAssets/ufi.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_DITFlogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     #end Ditf logo
 
@@ -10,12 +10,12 @@
     // ***********************
 
     #Nembo ya taifa
-    $image = Image::make(public_path('images/Logo.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_tantradeLogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     // ***********************
 
     #49DITF ya taifa
-    $image = Image::make(public_path('badgeAssets/49.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_sabasaba = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     // ***********************
 
@@ -45,7 +45,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>TANTRADE ID Card</title>
+    <title>Geita Mineral Exhibition ID Card</title>
     <style>
         .id-card {
             background: white;
@@ -151,16 +151,13 @@
                 <img src="{{ $base64_nembo }}" class="left-logo" alt="Tanzania Coat of Arms" height="40"
                     width="50" />
                     <b></b>
-                <img src="{{ $base64_tantradeLogo }}" class="right-logo" alt="TanTrade Logo" height="40"
+                <img src="{{ $base64_tantradeLogo }}" class="right-logo" alt="Coat of Arms" height="40"
                     width="50" style="margin-left: 50px"/>
             </div>
 
             <div class="title">
-                <h2 style="font-size:12px">TANZANIA TRADE DEVELOPMENT AUTHORITY (TANTRADE)</h2>
-                <h3 style="font-size:10px">THE 49<sup>th</sup> DAR ES SALAAM INTERNATIONAL TRADE FAIR</h3>
-                <p class="dates">
-                    <b>28<sup>th</sup> June – 13<sup>th</sup> July 2025</b>
-                </p>
+                <h2 style="font-size:12px">GEITA MINERAL EXHIBITION SECRETARIAT</h2>
+                <h3 style="font-size:10px">GEITA MINERAL EXHIBITION</h3>
             </div>
 
             <div class="profile">
@@ -182,13 +179,8 @@
                         class="qr" style="border: 1px solid black;">
                     </div>
                 <div style="margin-top: 20px;">
-                    <div class="logos">
-                        <img src="{{ $base64_DITFlogo }}" />
-                        <img src="{{ $base64_sabasaba }}" />
-                        <img src="{{ $six }}" />
-                    </div>
                     <div style="font-size:15px;color:blue">
-                        Maonesho ya Biashara ya Kimataifa (SabaSaba) Fahari ya Tanzania
+                        Maonesho ya Madini ya Geita
                     </div>
                 </div>
             </div>

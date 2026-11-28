@@ -39,7 +39,7 @@
                     The document is sent by a supplier to a customer to inform him that the space or service ordered has been invoiced.
                     The aim of this document is to keep the customer informed about the status of his order, so that he or she can make payment process.
                 </p>
-                <p><b>ON Fair Invoices,</b> This are invoices provided specific for exhibitions and trade fairs such as the Geita Mineral Exhibition.</p>
+                <p><b>ON Fair Invoices,</b> This are invoices provided specific for exhibitions and trade fairs such as, the Geita Mineral Exhibition and Industrial Exhibitions.</p>
             </div>
 
             <div class="row">

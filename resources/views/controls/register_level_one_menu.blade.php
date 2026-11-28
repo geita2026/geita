@@ -76,7 +76,6 @@
                             data-live-search="true" data-width="100%" placehoder="Select menu status">
                             <option>- - - Select System Module - - -</option>
                             <option value="1">GeMEMIS</option>
-                            <option value="2">ePermit</option>
                         </select>
                         <span class="text-danger"> @error('moduleNo')
                                 {{ $message }}

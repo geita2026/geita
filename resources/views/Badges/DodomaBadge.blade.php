@@ -48,7 +48,7 @@
     #end logo
 
     #Badge Header badgeHeader.png
-    $badgeHeader=public_path('images/logo.jpg');
+    $badgeHeader=public_path('badgeAssets/coat_of_arms.png');
     $image = Image::make($badgeHeader);
     $tantradeLogo= 'data:image/png;base64,' . base64_encode($image->encode('png'));
         // ***********************
@@ -160,7 +160,7 @@
                         </td>
                     </tr>
                     {{-- <tr>
-                        <td colspan="3" style="text-align: left;font-size:7px;margin-bottom:-10%;font-family:monospace"><b>POWERED BY <b style="color:green">TANTRADE</b></b></td>
+                        <td colspan="3" style="text-align: left;font-size:7px;margin-bottom:-10%;font-family:monospace"><b>POWERED BY <b style="color:green">GeMEMIS</b></b></td>
                     </tr> --}}
                 </tbody>
             </table>

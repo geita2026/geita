@@ -155,7 +155,7 @@
     <table style="border-top:1px solid black;">
         <tr>
             <td style="text-transform:uppercase">Printed By {{ Auth::user()->first_name }} {{ Auth::user()->last_name }} on {{ date('l M d, Y') }}</td>
-            <td>tradefair.tantrade.go.tz</td>
+            <td>gememis.go.tz</td>
         </tr>
     </table>
 </div>

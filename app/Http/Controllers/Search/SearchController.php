@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\advice_note\advice_notes;
 use App\Models\companies;
 use App\Models\Companies\CompanyAdmin;
-use App\Models\ePermit\ePermitApplication;
 use App\Models\exhibition\exhibitors;
 use App\Models\sectors;
 use App\Models\settings\events;
@@ -164,18 +163,6 @@ class SearchController extends Controller
         }
     }
 
-
-    public function searchApprovedEvents(Request $request)
-    {
-
-        $search = $request->search;
-        $data = ePermitApplication::leftJoin('companies', 'e_permit_applications.companyId', '=', 'companies.companyID')
-            ->leftJoin('trade_promotion_events', 'e_permit_applications.applicationId', '=', 'trade_promotion_events.eventApplicationId')
-            ->leftJoin('promotion_event_types', 'trade_promotion_events.tradeEventType', '=', 'promotion_event_types.eventTypeId')
-            ->where('permitNo', '!=', Null)
-            ->where('applicationStatus', 6)
-            ->limit(config('global.SEARCH_LIMIT'))->get();
-    }
 
     public function searchSectors(Request $request)
     {

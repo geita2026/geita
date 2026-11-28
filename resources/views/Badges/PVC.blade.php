@@ -1,6 +1,6 @@
 @php
     #Ditf Logo
-    $image = Image::make(public_path('images/ditf11.jpeg'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_DITFlogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     #end Ditf logo
 
@@ -10,7 +10,7 @@
     // ***********************
 
     #Nembo ya taifa
-    $image = Image::make(public_path('images/Logo.png'));
+    $image = Image::make(public_path('badgeAssets/coat_of_arms.png'));
     $base64_tantradeLogo = 'data:image/png;base64,' . base64_encode($image->encode('png'));
     // ***********************
 @endphp

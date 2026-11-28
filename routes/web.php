@@ -34,7 +34,6 @@ require __DIR__.'/Advertisement.php';
 require __DIR__.'/Backend.php'; 
 require __DIR__.'/reports.php'; 
 require __DIR__.'/TradePromotion.php'; 
-require __DIR__.'/ePermit.php';
 require __DIR__.'/Company.php';
 require __DIR__.'/spaceManagement.php';
 require __DIR__.'/SpaceAllocation.php';

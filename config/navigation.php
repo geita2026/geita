@@ -314,27 +314,6 @@ return [
             'View Visitors' => 'VIEW_VISITORS',
         ]],
     ]],
-    'PERMIT' => ['Event Permits', 2, 'icon-file-check', [
-        'PERMIT_APPLICATION' => ['Apply Permit', 'apply_permit.index', [
-            'Manage MyApplications' => 'MANAGE_PERMIT_APPLICATION',
-            'Delete MyApplications' => 'DELETE_PERMIT_APPLICATION',
-        ]],
-        'APPLICATION_REVIEW' => ['Review Applications', 'review_applications.index', [
-            'Review Applications' => 'REVIEW_APPLICATIONS',
-            'Review AllApplications' => 'REVIEW_ALL_APPLICATIONS',
-            'Verify Application' => 'VERIFY_APPLICATION_REVIEW',
-            'Review StageTwo' => 'REVIEW_STAGE_TWO',
-            'Review StageThree' => 'REVIEW_STAGE_THREE',
-            'Review StageFour' => 'REVIEW_STAGE_FOUR',
-        ]],
-        'PERMIT_INVOICE' => ['Permit Invoices', 'app_invoices.index', [
-            'Manage Invoices' => 'MANAGE_INVOICES',
-            'Delete Invoices' => 'DELETE_PERMIT_INVOICE',
-        ]],
-        'PERMIT_EVENT_TYPE' => ['Event Types', 'event_types.index', [
-            'Manage EventTypes' => 'MANAGE_PERMIT_EVENT_TYPE',
-        ]],
-    ]],
     'TRADE_PROMOTION' => ['Trade Promotion', 2, 'icon-megaphone', [
         'PROMOTION_EVENT' => ['Promotion Events', 'promotion_events.index', [
             'Manage PromotionEvents' => 'MANAGE_PROMOTION_EVENTS',

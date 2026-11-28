@@ -146,7 +146,7 @@
 								<div class="col-sm-6 content-group">
 									<img src="{{ asset('images/logo.jpg') }}" class="content-group mt-10" alt="" style="width: 120px;">
 		 							<ul class="list-condensed list-unstyled">
-										<li>Tanzania Trade Development Authority (Tantrade)</li>
+										<li>Geita Mineral Exhibition Secretariat</li>
 										<li>Dar es salaam, Tanzania</li>
 										<li>+255 753 427 137</li>
 									</ul>
