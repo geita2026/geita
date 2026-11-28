@@ -80,3 +80,14 @@
         flex: 1 1 auto;
     }
 }
+
+.eligibility-sector-table {
+    max-height: 360px;
+    overflow: auto;
+}
+
+.eligibility-sector-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--gem-field-bg, #fff);
+}

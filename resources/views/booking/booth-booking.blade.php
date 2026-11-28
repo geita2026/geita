@@ -32,10 +32,19 @@
                 @if ($pavilion->pavilionDescription)
                     <p>{{ $pavilion->pavilionDescription }}</p>
                 @endif
-                @if ($pavilion->allowedForBooking)
+                @if ($eligibleSectors->isNotEmpty())
                     <details class="booking-details">
-                        <summary>Eligible exhibitor sectors</summary>
-                        <p>{{ $pavilion->allowedForBooking }}</p>
+                        <summary>Eligible pavilion sectors</summary>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead><tr><th scope="col">Sector</th></tr></thead>
+                                <tbody>
+                                    @foreach ($eligibleSectors as $sectorName)
+                                        <tr><td>{{ $sectorName }}</td></tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </details>
                 @endif
 

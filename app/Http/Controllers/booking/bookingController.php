@@ -11,6 +11,7 @@ use App\Models\space\pavilions;
 use App\Models\space\booths;
 use App\Models\booking\booked_pavilions;
 use App\Models\companies;
+use App\Models\sectors;
 use App\Models\booking\booked_booths;
 use App\Models\advice_note\service_charges;
 use App\Models\exhibition\exhibition_products;
@@ -284,7 +285,6 @@ class bookingController extends Controller
                 'pavilions.floor_plan',
                 'pavilions.pavilion_size',
                 'pavilions.pavilionDescription',
-                'pavilions.allowedForBooking',
                 'pavilions.space_status',
                 'space_categories.category_name',
                 'space_categories.cost_one_msq',
@@ -335,10 +335,12 @@ class bookingController extends Controller
         $spaceAvailable = $pavilionAvailable && ($number_of_booths === 0 || $availableBoothCount > 0);
 
         $mapPavilions = $pavilion->sharedMapPavilions();
+        $eligibleSectors = sectors::whereIn('sectorID', app(SpaceBookingEligibility::class)->sectorIds($pavilion))
+            ->orderBy('sectorName')->pluck('sectorName');
 
         return view('booking.booth-booking', compact(
             'booths', 'companies', 'pavilion', 'number_of_booths',
-            'event', 'heldSpaceIds', 'availableBoothCount', 'spaceAvailable', 'mapPavilions'
+            'event', 'heldSpaceIds', 'availableBoothCount', 'spaceAvailable', 'mapPavilions', 'eligibleSectors'
         ));
     }
 

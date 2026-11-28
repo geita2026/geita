@@ -23,15 +23,15 @@ class BookingEligibilityController extends Controller
         $isBooth = $space instanceof booths;
         $sectorIds = $eligibility->sectorIds($space)->all();
         $companyId = $space->whoCanBook;
-        $companyOnly = $companyId && $companyId !== 'ANY';
+        $hasCompanyRestriction = $companyId && $companyId !== 'ANY';
         $mode = match (true) {
-            $companyOnly && $sectorIds !== [] => 'legacy',
-            (bool) $companyOnly => 'company',
+            $hasCompanyRestriction && $sectorIds !== [] => 'company_and_sectors',
+            (bool) $hasCompanyRestriction => 'company',
             $sectorIds !== [] => 'sectors',
             $isBooth && !$companyId => 'inherit',
             default => 'any',
         };
-        $selectedCompanyId = old('company_id', $companyOnly ? $companyId : null);
+        $selectedCompanyId = old('company_id', $hasCompanyRestriction ? $companyId : null);
         $company = is_string($selectedCompanyId)
             ? companies::find($selectedCompanyId, ['companyID', 'companyName'])
             : null;
@@ -46,15 +46,15 @@ class BookingEligibilityController extends Controller
     public function update(Request $request, string $type, string $id)
     {
         $space = $this->space($request, $type, $id);
-        $modes = ['any', 'company', 'sectors'];
+        $modes = ['any', 'company', 'sectors', 'company_and_sectors'];
         if ($space instanceof booths) {
             $modes[] = 'inherit';
         }
         $data = $request->validate([
             'mode' => ['required', Rule::in($modes)],
-            'company_id' => ['exclude_unless:mode,company', 'required', 'string', 'exists:companies,companyID'],
-            'sector_ids' => ['exclude_unless:mode,sectors', 'required', 'array', 'min:1'],
-            'sector_ids.*' => ['exclude_unless:mode,sectors', 'required', 'string', 'distinct', 'exists:sectors,sectorID'],
+            'company_id' => ['exclude_unless:mode,company,company_and_sectors', 'required', 'string', 'exists:companies,companyID'],
+            'sector_ids' => ['exclude_unless:mode,sectors,company_and_sectors', 'required', 'array', 'min:1'],
+            'sector_ids.*' => ['exclude_unless:mode,sectors,company_and_sectors', 'required', 'string', 'distinct', 'exists:sectors,sectorID'],
         ]);
 
         DB::transaction(function () use ($space, $data) {
@@ -69,7 +69,7 @@ class BookingEligibilityController extends Controller
                 ]);
             }
             $space->whoCanBook = match ($data['mode']) {
-                'company' => $data['company_id'],
+                'company', 'company_and_sectors' => $data['company_id'],
                 'any' => 'ANY',
                 default => null,
             };
