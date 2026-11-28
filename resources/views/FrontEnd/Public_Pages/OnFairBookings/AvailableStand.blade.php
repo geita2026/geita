@@ -53,8 +53,8 @@
                     </div>
                 @endauth
 
-                <div class="pavilion-blueprint-section">
-                    @include('space.FloorPlans.PavilionBlueprint', [
+                <div id="pavilion-floor-plan" class="pavilion-blueprint-section">
+                    @include('space.FloorPlans.PavilionMap', [
                         'interactiveBookingMap' => false,
                     ])
                 </div>

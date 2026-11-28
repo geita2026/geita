@@ -4,8 +4,6 @@ namespace App\Http\Controllers\space;
 
 use App\Http\Controllers\Controller;
 use App\Models\booking\booked_pavilions;
-use App\Models\sectors;
-use App\Models\space\AreaDistribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\space\booths;
@@ -53,8 +51,9 @@ class boothController extends Controller
             //
             $validator = Validator::make($request->all(), [
                 'booth_name' => 'required',
-                'booth_size' => 'required',
+                'booth_size' => 'required|numeric|gt:0',
                 'booth_category' => 'required',
+                'pavilionID' => 'required|exists:pavilions,pavilionID',
                 'booth_description' => 'max:30'
             ]);
             if ($validator->fails()) {
@@ -74,9 +73,8 @@ class boothController extends Controller
 
 
             ############## END CHECKING SPACE SIZE #######
-            $boothId = Str::uuid();
             booths::create([
-                'boothID' => $boothId,
+                'boothID' => Str::uuid(),
                 'pavilionID' => $request->pavilionID,
                 'boothNo' => $request->booth_name,
                 'boothSize' => $request->booth_size,
@@ -87,23 +85,9 @@ class boothController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
-            $spaceSectors = array();
-            if ($request->participants) {
-                foreach ($request->participants as $data) {
-                    AreaDistribution::create([
-                        'distributionId' => Str::uuid(),
-                        'spaceId' => $boothId,
-                        'participants' => $data
-                    ]);
-                    $sectorName = sectors::where('sectorID', $data)->first()->sectorName;
-                    array_push($spaceSectors, $sectorName);
-                }
-                booths::where('boothID', $boothId)->first()->update([
-                    'allowedForBooking' => implode(', ', $spaceSectors)
-                ]);
-            }
             return back()->with('success', config('Messages.200'));
         } catch (\Throwable $th) {
+            report($th);
             return back()->with('fail', config('Messages.500'));
         }
     }
@@ -139,29 +123,15 @@ class boothController extends Controller
                     'boothDescription',
                     'category_cost',
                     'boothID',
-                    'boothDate',
-                    'booths.updated_at',
                     'category_name',
                     'booths.bookingStatus',
                     'type_of_currency',
                     'booths.latitude','booths.longitude'
                 ]);
-            if ($id == '76e4292d-3f79-448a-8785-1e4ca07e0631') {
-                $selectedSectors = sectors::leftJoin('area_distributions', 'sectors.sectorID', '=', 'area_distributions.participants')
-                    ->whereIn('spaceId', booths::where('pavilionID', $id)->get(['boothID']))
-                    ->limit(100)
-                    ->get(['participants', 'spaceId']);
-            } else {
-                $selectedSectors = sectors::leftJoin('area_distributions', 'sectors.sectorID', '=', 'area_distributions.participants')
-                    ->whereIn('spaceId', booths::where('pavilionID', $id)->get(['boothID']))
-                    ->get(['participants', 'spaceId']);
-            }
-
-
-            $sectors = sectors::get(['sectorID', 'sectorName']);
-            return view('space.booths', compact('pavilions', 'id', 'pav', 'booth_categories', 'selectedSectors', 'sectors'));
+            return view('space.booths', compact('pavilions', 'id', 'pav', 'booth_categories'));
         } catch (\Throwable $th) {
-            return back()->with('fail', config('Messages.500') . $th->getMessage());
+            report($th);
+            return back()->with('fail', config('Messages.500'));
         }
     }
 
@@ -183,25 +153,6 @@ class boothController extends Controller
             'booth_size' => 'required',
             'booth_category' => 'required',
         ]);
-
-        #------- SPACE DISTRIBUTION ------#
-        AreaDistribution::where('spaceId', $id)->delete();
-        $spaceSectors = array();
-        if ($request->participants) {
-            foreach ($request->participants as $data) {
-                AreaDistribution::create([
-                    'distributionId' => Str::uuid(),
-                    'spaceId' => $id,
-                    'participants' => $data
-                ]);
-                $sectorName = sectors::where('sectorID', $data)->first()->sectorName;
-                array_push($spaceSectors, $sectorName);
-            }
-            booths::where('boothID', $id)->first()->update([
-                'allowedForBooking' => implode(', ', $spaceSectors)
-            ]);
-        }
-        #----------- END SPACE DISTRIBUTION ------#
 
         ########### UPDATE SPACE SIZE ################ 
         $booth = booths::find($id);

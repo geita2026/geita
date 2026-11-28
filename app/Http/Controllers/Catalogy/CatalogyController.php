@@ -4,141 +4,104 @@ namespace App\Http\Controllers\Catalogy;
 
 use App\Http\Controllers\Controller;
 use App\Models\booking\booked_pavilions;
-use App\Models\exhibition\CatalogueSetting;
-use App\Models\exhibition\exhibition_products;
+use App\Models\companies;
 use App\Models\exhibition\exhibitors;
-use App\Models\exhibition\VirtualFiles;
 use App\Models\exhibition\VirtualService;
 use App\Models\sectors;
 use App\Models\settings\events;
-use App\Models\sponsorships\EventSponsor;
-use App\Models\Vistors\SiteVistor;
 use Illuminate\Http\Request;
-use App\Traits\VistorsTrait;
+use Illuminate\Support\Facades\DB;
 
 class CatalogyController extends Controller
 {
-    use VistorsTrait;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function __construct(){
-
-    //     $this->middleware('auth');
-    // }
     public function index(Request $request)
     {
-        $sectorId = sectors::inRandomOrder()->first()->sectorID;
-        session(['sectorId'=>$sectorId]);
-        if ($request->sectorId) {
-            session(['sectorId'=>$request->sectorId]);
-        }
-        $exhibitors = exhibitors::inRandomOrder()->leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('events','exhibitors.exhibitor_event','=','events.event_id')
-            ->where('event_status', 1)->where('companySector',$sectorId)->paginate();
-
-        $totalExhibitorCount =exhibitors::inRandomOrder()->leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-        ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-        ->leftJoin('events','exhibitors.exhibitor_event','=','events.event_id')
-        ->where('event_status', 1)->where('companySector',$sectorId)->count();
-
-        $event = events::where('event_status', 1)->first();
-        $exhibitedProducts = exhibition_products::where('event', $event->event_id)->get();
-        $sectors = sectors::orderBy('sectorName','ASC')->get();
-        $totalSectors = sectors::count();
-        $totalProducts=exhibition_products::count();
-        $sector=sectors::find($sectorId);
-        return view('FrontEnd.Public_Pages.ExhibitorCategories', compact('exhibitors','totalExhibitorCount', 'exhibitedProducts', 'sectors','event','totalSectors','totalProducts','sector'));
+        return $this->directory($request, $request->query('sectorId'));
     }
 
-   
+    public function edit(Request $request, $id)
+    {
+        return $this->directory($request, $id);
+    }
 
-   
+    private function directory(Request $request, $sectorId)
+    {
+        $event = events::where('event_status', 1)->first();
+        $search = $request->query('q');
+        $search = is_string($search) ? trim($search) : '';
+        $sectorId = is_string($sectorId) ? $sectorId : '';
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+        $exhibitors = companies::query()
+            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
+            ->when($event, function ($query) use ($event) {
+                $participants = exhibitors::where('exhibitor_event', $event->event_id)->select('exhibitor_id');
+                $occupants = $this->publicLocations($event->event_id)->select('booked_pavilions.companyID');
+                $query->where(function ($query) use ($participants, $occupants) {
+                    $query->whereIn('companies.companyID', $participants)
+                        ->orWhereIn('companies.companyID', $occupants);
+                });
+            }, fn ($query) => $query->whereRaw('1 = 0'))
+            ->when($search !== '', fn ($query) => $query->where('companies.companyName', 'like', '%' . $search . '%'))
+            ->when($sectorId !== '', fn ($query) => $query->where('companies.companySector', $sectorId))
+            ->orderBy('companies.companyName')
+            ->orderBy('companies.companyID')
+            ->paginate(24, ['companies.companyID', 'companies.companyName', 'sectors.sectorName'])
+            ->appends(['q' => $search, 'sectorId' => $sectorId]);
+
+        $sectors = sectors::orderBy('sectorName')->get(['sectorID', 'sectorName']);
+
+        return view('FrontEnd.Public_Pages.ExhibitorCategories', compact('event', 'exhibitors', 'sectors', 'sectorId', 'search'));
+    }
+
     public function show(Request $request, $id)
     {
-        // $this->Vistors($ip = $request->ip()); # save new vistor
+        $event = events::where('event_status', 1)->firstOrFail();
+        $participation = exhibitors::where('exhibitor_event', $event->event_id)
+            ->where(function ($query) use ($id) {
+                $query->where('participation_id', $id)->orWhere('exhibitor_id', $id);
+            })->first();
+        $companyId = $participation->exhibitor_id ?? $id;
+        $company = companies::findOrFail($companyId);
 
-        $events = events::get();
-         $exhibitor=exhibitors::find($id);
-         $id=$exhibitor->exhibitor_id;
-        session(['companyID'=>$id]);
-        
-        $exhibitors = exhibitors::leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->leftJoin('company_details', 'exhibitors.exhibitor_id', '=', 'company_details.companyID')
-            ->leftJoin('events', 'exhibitors.exhibitor_event', '=', 'events.event_id')
-            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->where('event_status',1)->where('exhibitor_id',$id)->first();
+        $locations = $this->publicLocations($event->event_id)
+            ->where('booked_pavilions.companyID', $companyId)
+            ->orderBy('pavilions.pavilionName')->orderBy('booths.boothNo')
+            ->distinct()
+            ->get(['pavilions.pavilionID', 'pavilions.pavilionName', 'booths.boothID', 'booths.boothNo']);
 
-        $totalVisitors=exhibitors::where('exhibitor_id',$id)->count();
-        $exhibitorCount=SiteVistor::where('page_visted','LIKE','%'.$id.'%')->count();
+        abort_if(!$participation && $locations->isEmpty(), 404);
+        session(['companyID' => $companyId]);
 
-        $sponsors = EventSponsor::inRandomOrder()->where('sponsorship_category', 1)->get();
+        $myProducts = $participation
+            ? VirtualService::where('participation_id', $participation->participation_id)->get(['service_name'])
+            : collect();
+        $website = $company->website ?: DB::table('company_details')->where('companyID', $companyId)->value('website');
 
-        $catalogueSettings = CatalogueSetting::orderBy('order_number', 'ASC')
-            ->leftJoin('events', 'catalogue_settings.event', '=', 'events.event_id')
-            ->where('event_status', 1)->get();
-
-        $event = events::where('event_status', 1)->first();
-        $exhibitedProducts = exhibition_products::where('event', $event->event_id)->get();
-        
-        $totalProducts=exhibition_products::where('event', $event->event_id)->count();
-
-         $myStand=booked_pavilions::leftJoin('booths','booked_pavilions.pavilionID','=','booths.boothID')
-        ->leftJoin('pavilions','booths.pavilionID','=','pavilions.pavilionID')
-        ->leftJoin('advice_notes','booked_pavilions.advice_note_id','=','advice_notes.advice_note_id')
-        ->where('booked_pavilions.companyID',$id)->where('advice_note_status','!=','CANCELED')
-        ->where('booths.boothID','!=',Null)
-        ->where('exhibition_year',$event->event_id)->get();
-
-         $myPavilion=booked_pavilions::leftJoin('pavilions','booked_pavilions.pavilionID','=','pavilions.pavilionID')
-         ->leftJoin('advice_notes','booked_pavilions.advice_note_id','=','advice_notes.advice_note_id')
-         ->where('booked_pavilions.companyID',$id)->where('advice_note_status','!=','CANCELED')
-         ->where('pavilions.pavilionName','!=',Null)
-        ->where('exhibition_year',$event->event_id)->get();
-
-        $myProducts=VirtualService::leftJoin('exhibitors','virtual_services.participation_id','=','exhibitors.participation_id')
-
-        ->where('exhibitor_id',$id)->get();
-        $pavilionImages=VirtualFiles::where('reference_id',$id)->get(['image_id','reference_id','destination','image_name','image_description']);
-        return view('FrontEnd.Public_Pages.ExhibitorPavilion', compact('exhibitors','myPavilion','myStand', 'sponsors', 'exhibitedProducts','myProducts','totalProducts','pavilionImages','exhibitorCount','totalVisitors','event'));
+        return view('FrontEnd.Public_Pages.ExhibitorPavilion', compact(
+            'company', 'participation', 'locations', 'myProducts', 'website'
+        ));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request,$id)
+    private function publicLocations(string $eventId)
     {
-        $sectorId = $id;
-        
-        $exhibitors = exhibitors::inRandomOrder()->leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->leftJoin('company_details', 'exhibitors.exhibitor_id', '=', 'company_details.companyID')
-            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('events','exhibitors.exhibitor_event','=','events.event_id')
-            ->where('event_status', 1)->where('companySector',$sectorId)->get();
-
-            $totalExhibitorCount = exhibitors::inRandomOrder()->leftJoin('companies', 'exhibitors.exhibitor_id', '=', 'companies.companyID')
-            ->leftJoin('company_details', 'exhibitors.exhibitor_id', '=', 'company_details.companyID')
-            ->leftJoin('sectors', 'companies.companySector', '=', 'sectors.sectorID')
-            ->leftJoin('events','exhibitors.exhibitor_event','=','events.event_id')
-            ->where('event_status', 1)->where('companySector',$sectorId)->count();
-
-        $sectors = sectors::orderBy('sectorName','ASC')->get();
-        $sector=sectors::find($sectorId);
-        return view('FrontEnd.Public_Pages.ExhibitorsList', compact('exhibitors','totalExhibitorCount', 'sectors','sector'));
- 
+        return booked_pavilions::query()
+            ->leftJoin('booths', 'booked_pavilions.pavilionID', '=', 'booths.boothID')
+            ->join('pavilions', 'pavilions.pavilionID', '=', DB::raw('COALESCE(booths.pavilionID, booked_pavilions.pavilionID)'))
+            ->leftJoin('advice_notes', 'booked_pavilions.advice_note_id', '=', 'advice_notes.advice_note_id')
+            ->where('booked_pavilions.exhibition_year', $eventId)
+            ->where(function ($query) {
+                $query->whereNull('pavilions.space_status')->orWhere('pavilions.space_status', '!=', 'SUNSPENDED');
+            })
+            ->where(function ($query) {
+                $query->whereNull('booths.boothID')->orWhere('booths.bookingStatus', '!=', 'SUNSPENDED');
+            })
+            ->where(function ($query) {
+                $query->where('advice_notes.advice_note_status', '!=', 'CANCELED')
+                    ->orWhere(function ($query) {
+                        $query->whereNull('booked_pavilions.advice_note_id')
+                            ->where('booked_pavilions.booking_status', 'ACTIVE');
+                    });
+            });
     }
 
     /**

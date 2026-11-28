@@ -52,47 +52,47 @@ class CustomerSpaceBookingController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $spaceCategories = space_categories::leftJoin('events', 'space_categories.category_event', '=', 'events.event_id')
-            ->orderBy('category_name', 'ASC')
+        $category = space_categories::query()
+            ->join('events', 'space_categories.category_event', '=', 'events.event_id')
+            ->where('events.event_status', 1)
+            ->where('space_categories.category_id', $id)
+            ->firstOrFail(['space_categories.*', 'events.event_name']);
+
+        $spaceCategories = space_categories::where('category_event', $category->category_event)
             ->where('category_id', '!=', $id)
-            ->where('event_status', 1)->get();
+            ->orderBy('category_name')
+            ->get(['category_id', 'category_name']);
 
-        $event = events::where('event_status', 1)->first();
-
-        $spaces = pavilions::leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
+        $spaces = pavilions::where('pavilionCategory', $id)
             ->where('space_status', 'UNRESERVED')
-            ->where('category_event', $event->event_id)
-            ->where('pavilionCategory', $id)->get();
+            ->orderBy('pavilionName')
+            ->get(['pavilionID', 'pavilionName', 'pavilionDescription', 'pavilion_size', 'numberOfPartitions']);
 
-        $spacesList = pavilions::leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
-            ->where('space_status', 'UNRESERVED')
-            ->where('category_event', $event->event_id)
-            ->where('pavilionCategory', $id)->get(['pavilionID']);
+        $booths = booths::whereIn('pavilionID', $spaces->pluck('pavilionID'))
+            ->where('bookingStatus', '!=', 'SUNSPENDED')
+            ->get(['boothID', 'pavilionID', 'bookingStatus']);
+        $heldSpaceIds = booked_pavilions::where('exhibition_year', $category->category_event)
+            ->whereIn('pavilionID', $spaces->pluck('pavilionID')->merge($booths->pluck('boothID')))
+            ->distinct()->pluck('pavilionID')->flip();
+        $boothsByPavilion = $booths->groupBy('pavilionID');
 
-        $booths = booths::leftJoin('booth_categories', 'booths.booth_category', '=', 'booth_categories.booth_category_id')
-            ->whereIn('pavilionID', $spacesList)->get([
-                'pavilionID',
-                'category_cost',
-                'type_of_currency',
-                'boothNo'
-            ]);
-        
-        $category = space_categories::where('category_id', $id)->first();
+        $spaces = $spaces->map(function ($space) use ($boothsByPavilion, $heldSpaceIds) {
+            $registeredBooths = $boothsByPavilion->get($space->pavilionID, collect());
+            $isHeld = $heldSpaceIds->has($space->pavilionID);
+            $available = $isHeld ? 0 : $registeredBooths->filter(fn ($booth) =>
+                $booth->bookingStatus !== 'RESERVED' && !$heldSpaceIds->has($booth->boothID))->count();
+            $hasBooths = $registeredBooths->isNotEmpty() || $space->numberOfPartitions > 0;
 
+            return [
+                'pavilion' => $space,
+                'registeredBoothCount' => $registeredBooths->count(),
+                'availableBoothCount' => $available,
+                'hasBooths' => $hasBooths,
+                'canBook' => !$isHeld && (!$hasBooths || $available > 0),
+            ];
+        })->sortByDesc('canBook')->values();
 
-        $bookedPavilions=pavilions::where('pavilionCategory',$id)
-        ->whereIn('pavilionID',booked_pavilions::where('exhibition_year',session('liveEvent'))->get(['pavilionID']))->get(['pavilionID']);
-        $pavilionCategories=space_categories::where('category_id','!=',$id)
-        ->where('category_event',session('liveEvent'))->get(['category_id','category_name']);
-
-        $bookedBooths=booked_pavilions::leftJoin('booths','booked_pavilions.pavilionID','=','booths.boothID')
-        ->leftJoin('pavilions','booths.pavilionID','=','pavilions.pavilionID')
-        ->where('pavilions.pavilionCategory',$id)
-        ->where('booked_pavilions.exhibition_year',session('liveEvent'))
-        ->where('advice_note_id','!=',Null)
-        ->get('pavilions.pavilionID');
-
-        return view('FrontEnd.Public_Pages.OnFairBookings.ListOfSpace', compact('spaces', 'spaceCategories', 'category', 'booths','bookedPavilions','bookedBooths'));
+        return view('FrontEnd.Public_Pages.OnFairBookings.ListOfSpace', compact('spaces', 'spaceCategories', 'category'));
     }
 
     /**
@@ -103,32 +103,12 @@ class CustomerSpaceBookingController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $pavilion = pavilions::find($id);
-        $booths = booths::orderBy('boothNo', 'asc')
-            ->leftJoin('pavilions', 'booths.pavilionID', '=', 'pavilions.pavilionID')
-            ->leftJoin('booth_categories', 'booths.booth_category', '=', 'booth_categories.booth_category_id')
-            ->where('booths.bookingStatus', '!=', 'SUNSPENDED')
-            // ->where('pavilions.space_status', 'UNRESERVED')
-            ->where('booths.pavilionID', $id)
-            ->get([
-                'booths.boothID',
-                'pavilionName',
-                'boothNo',
-                'category_name',
-                'boothSize',
-                'booths.bookingStatus',
-                'floor_plan',
-                'category_name',
-                'category_cost',
-                'type_of_currency',
-                'booth_category_id',
-            ]);
-        $event = events::where('event_status', 1)->first()->event_id;
+        $pavilion = pavilions::findOrFail($id);
+        $mapPavilions = $pavilion->sharedMapPavilions();
+        $booths = $mapPavilions->isEmpty() ? $pavilion->mapBooths()->get() : collect();
+        $event = events::where('event_status', 1)->first();
 
-        $bookedBooths = booths::where('pavilionID', $id)->whereIn('boothID', booked_pavilions::where('exhibition_year', $event)->get('pavilionID'))->get('boothID');
-        $event = events::where('event_status', 1)->first()->event_id;
-
-        return view('FrontEnd.Public_Pages.OnFairBookings.AvailableStand', compact('booths', 'pavilion', 'bookedBooths'));
+        return view('FrontEnd.Public_Pages.OnFairBookings.AvailableStand', compact('booths', 'pavilion', 'event', 'mapPavilions'));
     }
 
     /**

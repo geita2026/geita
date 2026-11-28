@@ -17,7 +17,7 @@ use App\Models\exhibition\exhibition_products;
 use App\Models\space\additional_services;
 use App\Models\space\space_categories;
 use App\Models\settings\events;
-use App\Models\space\AreaDistribution;
+use App\Services\SpaceBookingEligibility;
 use App\Traits\BookingTrait;
 use App\Traits\VistorsTrait;
 use Illuminate\Support\Carbon;
@@ -143,7 +143,7 @@ class bookingController extends Controller
             try {
                
                 $validator = Validator::make($request->all(), [
-                    'company_name' => 'required',
+                    'company_name' => 'required|string',
                     'spaceName' => 'required|array|min:1',
                     'spaceName.*' => 'required|string|distinct',
                 ]);
@@ -161,6 +161,19 @@ class bookingController extends Controller
                     return redirect()->route('booking.edit', ['booking'])->with('fail', 'Their is another booking in Cart please complete it to proceed');
                 }
 
+                $user = $request->user();
+                $company = companies::where('companies.companyID', $request->company_name)
+                    ->where('companies.status', 1)
+                    ->when($user->account_type != 1, function ($query) use ($user) {
+                        $query->whereIn('companies.companyID', DB::table('company_admins')
+                            ->where('adminId', $user->user_uuid)->select('companyId'));
+                    })->first();
+                if (!$company) {
+                    return back()->with('fail', 'Select an active entity you can book for.');
+                }
+
+                $eligibility = app(SpaceBookingEligibility::class);
+
                 # this calculates booked space size
                 $space_size = 0;
                 $boothCounter = 0;
@@ -171,30 +184,9 @@ class bookingController extends Controller
                     if ($bookedSpaces) {
                         return back()->with('fail', 'This space has been booked by other customer while you was processing your booking, please select other space.');
                     }
-                    $pav = pavilions::where('pavilionID', $data)
-                        ->where('whoCanBook', '!=', 'ANY')->first();
-                    if ($pav) {
-                        if ($pav->whoCanBook != $request->company_name) {
-                            return back()->with('fail', 'This is a self built area can not be booked, please select other area');
-                        }
-                    }
-                    $sector = companies::find($request->company_name);
-                    if ($sector) {
-                        $exists = AreaDistribution::where('spaceId', $data)
-                            ->where('participants', $sector->companySector)->first();
-                        if ($sector->companySector == null) {
-                            return redirect()->route('company_profile', ['companyId' => $sector->registrationID])->with('fail', 'You do not have company sector, Please update your company sector to proceed!');
-                        } elseif (!$exists) {
-                            $booth = booths::find($data);
-                            $space = pavilions::find($data);
-                            if ($booth) {
-                                $allowedSectors = $booth->allowedForBooking;
-                            }
-                            if ($space) {
-                                $allowedSectors = $space->allowedForBooking;
-                            }
-                            return back()->with('fail', 'Your company sector is not allowed in the selected space, allowed sectors are: ' . $allowedSectors);
-                        }
+                    $space = booths::find($data) ?? pavilions::find($data);
+                    if (!$space || !$eligibility->allows($space, $company)) {
+                        return back()->with('fail', 'The selected entity is not eligible to book one or more selected spaces.');
                     }
                     $booths = booths::leftJoin('booth_categories', 'booths.booth_category', '=', 'booth_categories.booth_category_id')->where('boothID', $data)->get();
 
@@ -287,6 +279,7 @@ class bookingController extends Controller
             ->first([
                 'pavilions.pavilionID',
                 'pavilions.pavilionName',
+                'pavilions.pavilionCode',
                 'pavilions.pavilionCategory',
                 'pavilions.floor_plan',
                 'pavilions.pavilion_size',
@@ -341,9 +334,11 @@ class bookingController extends Controller
             : 0;
         $spaceAvailable = $pavilionAvailable && ($number_of_booths === 0 || $availableBoothCount > 0);
 
+        $mapPavilions = $pavilion->sharedMapPavilions();
+
         return view('booking.booth-booking', compact(
             'booths', 'companies', 'pavilion', 'number_of_booths',
-            'event', 'heldSpaceIds', 'availableBoothCount', 'spaceAvailable'
+            'event', 'heldSpaceIds', 'availableBoothCount', 'spaceAvailable', 'mapPavilions'
         ));
     }
 

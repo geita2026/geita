@@ -1,108 +1,64 @@
 <!doctype html>
-<html class="no-js" lang="zxx">
-
+<html lang="en">
 <head>
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="Site keywords here">
-    <meta name="description" content="">
-    <meta name='copyright' content=''>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Title -->
-    <title>Exhibitor Details</title>
+    <title>{{ $company->companyName }} | {{ config('app.name') }}</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
-    <style>
-        .changeColor:hover {
-            background-color: rgb(214, 212, 212);
-        }
-    </style>
 </head>
-
 <body>
-
-    <!-- Preloader -->
     @include('FrontEnd.Public_Pages.Layouts.PageLoader')
-    <!-- End Preloader -->
-
-
-    <!-- Get Pro Button -->
-
-    <!-- Header Area -->
     <header class="header">
-        <!-- Topbar -->
         @include('FrontEnd.Public_Pages.Layouts.TopHeader')
-        <!-- End Topbar -->
-        <!-- Header Inner -->
         @include('FrontEnd.Public_Pages.Layouts.Header')
-        <!--/ End Header Inner -->
     </header>
-    <!-- End Header Area -->
 
-    <div class=" col-md-12">
-        <section class="why-choose section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="section-title">
-                            <h2 class=" text-uppercase">
-								<img src="{{ asset('profile_images/' . $exhibitors->companyLogo) }}" alt="#" style="width: 50px; height: 50px;border-radius:20%">
-								 {{ $exhibitors->companyName }}</h2>
-                            <p>{{ $exhibitors->welcome_word }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 col-12">
-                        <!-- Start Choose Left -->
-                        <div class="choose-left">
-                            <h3>Who We Are</h3>
-                            <p>{{ $exhibitors->pavilion_descriptions }}</p>
-							<p><b>Website: </b><a href="{{ $exhibitors->website }}" target="_newtab">{{ $exhibitors->website }}</a></p>
+    <main class="container py-5">
+        <a class="d-inline-block mb-3" href="{{ route('discover_exhibitor.index') }}">Back to exhibitors</a>
+        <h1>{{ $company->companyName }}</h1>
+        @if ($participation?->welcome_word)
+            <p>{{ $participation->welcome_word }}</p>
+        @endif
 
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <ul class="list">
-                                        @foreach ($myProducts as $item)
-                                            <li><i class="fa fa-caret-right"></i>{{ $item->service_name }} </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-
-                            </div>
-                        </div>
-                        <!-- End Choose Left -->
-                    </div>
-                    <div class="col-lg-6 col-12">
-                        <!-- Start Choose Rights -->
-                        <div class="choose-right">
-                            <div class="video-image">
-                                <!-- Video Animation -->
-                                <div class="promo-video">
-                                    <div class="waves-block">
-                                        @php $i=1; @endphp
-                                        @foreach ($myProducts as $data)
-                                            <div class="waves wave-{{ $i }}"></div>
-                                            @php $i++; @endphp
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <!--/ End Video Animation -->
-                                <a href="https://www.youtube.com/watch?v=or5-mQX2N40"
-                                    class="video video-popup mfp-iframe"><i class="fa fa-play"></i></a>
-                            </div>
-                        </div>
-                        <!-- End Choose Rights -->
-                    </div>
-                </div>
-            </div>
+        <section class="my-4" aria-labelledby="exhibitor-locations">
+            <h2 id="exhibitor-locations">Where to find this exhibitor</h2>
+            <ul class="list-group">
+                @forelse ($locations as $location)
+                    <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span>
+                            <strong>{{ $location->pavilionName }}</strong>
+                            @if ($location->boothNo)
+                                <span class="d-block">Booth {{ $location->boothNo }}</span>
+                            @elseif (!$location->boothID)
+                                <span class="d-block">Whole pavilion</span>
+                            @endif
+                        </span>
+                        <a class="btn btn-outline-primary" href="{{ route('exhibition_space_booking.edit', $location->pavilionID) }}#{{ $location->boothID ? 'floor-plan-booth-' . $location->boothID : 'pavilion-floor-plan' }}">View floor plan</a>
+                    </li>
+                @empty
+                    <li class="list-group-item">A pavilion location has yet to be published.</li>
+                @endforelse
+            </ul>
         </section>
-    </div>
 
-    <!-- Footer Area -->
+        @if ($participation?->pavilion_descriptions || $website || $myProducts->isNotEmpty())
+            <section class="my-4" aria-labelledby="exhibitor-about">
+                <h2 id="exhibitor-about">About the exhibitor</h2>
+                @if ($participation?->pavilion_descriptions)
+                    <p>{{ $participation->pavilion_descriptions }}</p>
+                @endif
+                @if ($website && in_array(parse_url($website, PHP_URL_SCHEME), ['http', 'https'], true))
+                    <p><a href="{{ $website }}">Exhibitor website</a></p>
+                @endif
+                @if ($myProducts->isNotEmpty())
+                    <ul>
+                        @foreach ($myProducts as $product)
+                            <li>{{ $product->service_name }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </section>
+        @endif
+    </main>
+
     @include('FrontEnd.Public_Pages.Layouts.Footer')
-    <!--/ End Footer Area -->
 </body>
-
 </html>

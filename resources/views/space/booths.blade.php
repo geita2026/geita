@@ -95,19 +95,6 @@
                                             <input type="hidden" name="pavilionID" value="{{ $id }}">
                                         </div>
                                         <div class=" row form-group">
-                                            <div class=" col-md-12">
-                                                <label>Specify Exhibitor Sectors under this space</label>
-                                                <select name="participants[]" multiple="multiple"
-                                                    class="form-control listbox">
-                                                    @foreach ($sectors as $data)
-                                                        <option value="{{ $data->sectorID }}">
-                                                            {{ $data->sectorName }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class=" row form-group">
                                             <div class=" text-right col-md-12">
                                                 <button type="button" data-dismiss="modal"
                                                     class=" btn btn-secondary">Close</button>
@@ -174,6 +161,11 @@
                                                         <i class="icon-menu4"></i>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
+                                                        @can('UPDATE_BOOTH', \Spatie\Permission\Models\Role::class)
+                                                            <li><a href="{{ route('space-eligibility.edit', ['booths', $item->boothID]) }}">
+                                                                <i class="icon-users" aria-hidden="true"></i> Set booking eligibility
+                                                            </a></li>
+                                                        @endcan
                                                         <li>
                                                             <a data-toggle="modal" data-target="#e{{ $item->boothID }}"
                                                                 class=" text-primary"> Update Booth <i
@@ -279,20 +271,6 @@
                                                                     value="{{ $id }}">
                                                             </div>
                                                             <div class=" row form-group">
-                                                                <div class=" col-md-12">
-                                                                    <label>Specify Exhibitor Sectors under this space</label>
-                                                                    <select name="participants[]" multiple="multiple"
-                                                                        class="form-control listbox">
-                                                                        @foreach ($sectors as $data)
-                                                                            <option value="{{ $data->sectorID }}"
-                                                                                @foreach ($selectedSectors as $value)  
-                                                                         @if ($data->sectorID == $value->participants && $value->spaceId==$item->boothID) selected="selected"  @endif @endforeach>
-                                                                                {{ $data->sectorName }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class=" row form-group">
                                                                 <div class=" col-md-6">
                                                                     <label>Area Latitude<i class=" text-danger">*</i></label>
                                                                     <input type="text" name="latitude" class=" form-control" value="{{ $item->latitude }}">
@@ -370,5 +348,3 @@
     {{-- //user registration  --}}
 </x-app-layout>
 <!-- Theme JS files -->
-<script type="text/javascript" src="{{ asset('assets/js/plugins/forms/inputs/duallistbox.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/js/pages/form_dual_listboxes.js') }}"></script>

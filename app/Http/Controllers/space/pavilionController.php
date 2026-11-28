@@ -4,9 +4,7 @@ namespace App\Http\Controllers\space;
 
 use App\Http\Controllers\Controller;
 use App\Models\companies;
-use App\Models\sectors;
 use App\Models\settings\events;
-use App\Models\space\AreaDistribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +36,7 @@ class pavilionController extends Controller
             ->paginate(10, [
                 'pavilionID',
                 'pavilionName',
+                'pavilionCode',
                 'category_name',
                 'pavilionRate',
                 'pavilionDescription',
@@ -72,12 +71,14 @@ class pavilionController extends Controller
                 ->where('space_status', '!=', 'SUNSPENDED')
                 ->where(function ($query) use ($search) {
                     $query->orWhere('pavilionName', 'LIKE', '%' . $search . '%');
+                    $query->orWhere('pavilionCode', 'LIKE', '%' . $search . '%');
                     $query->orWhere('category_name', 'LIKE', '%' . $search . '%');
                 })
                 ->limit(10)
                 ->get([
                     'pavilionID',
                     'pavilionName',
+                    'pavilionCode',
                     'category_name',
                     'pavilionRate',
                     'pavilionDescription',
@@ -92,9 +93,7 @@ class pavilionController extends Controller
             return response()->json($data);
         }
 
-        $sectors = sectors::get();
-
-        return view('space.add-pavilion', compact('categories', 'sectors'));
+        return view('space.add-pavilion', compact('categories'));
     }
 
     public function store(Request $request)
@@ -105,17 +104,17 @@ class pavilionController extends Controller
             }
 
             $this->normalizePavilionNumbers($request);
+            $this->normalizePavilionCode($request);
 
             $validator = Validator::make($request->all(), [
                 'pavilion_name' => 'required',
+                'pavilion_code' => 'nullable|string|max:64|regex:/^[A-Z0-9_-]+$/',
                 'pavilion_category' => 'required',
                 'pavilion_size' => 'numeric|min:1',
                 'numberOfPartitions' => 'nullable|integer|min:0|max:2147483647',
                 'pavilion_description' => 'max:2000',
                 'floor_plan' => 'mimes:pdf,jpg,png,jpeg,gif',
                 'space_status' => 'required',
-                'participants' => 'nullable|array',
-                'participants.*' => 'exists:sectors,sectorID',
             ]);
 
             if ($validator->fails()) {
@@ -148,6 +147,7 @@ class pavilionController extends Controller
                 'pavilionID' => $pavilionId,
                 'userID' => Auth::user()->user_uuid,
                 'pavilionName' => $request->pavilion_name,
+                'pavilionCode' => $request->pavilion_code,
                 'pavilionCategory' => $request->pavilion_category,
                 'pavilionDescription' => $request->pavilion_description,
                 'pavilion_size' => $request->pavilion_size,
@@ -159,25 +159,6 @@ class pavilionController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
-
-            $spaceSectors = [];
-
-            if ($request->participants) {
-                foreach ($request->participants as $data) {
-                    AreaDistribution::create([
-                        'distributionId' => Str::uuid(),
-                        'spaceId' => $pavilionId,
-                        'participants' => $data
-                    ]);
-
-                    $sectorName = sectors::where('sectorID', $data)->first()->sectorName;
-                    array_push($spaceSectors, $sectorName);
-                }
-
-                pavilions::where('pavilionID', $pavilionId)->first()->update([
-                    'allowedForBooking' => implode(', ', $spaceSectors)
-                ]);
-            }
 
             return redirect()->route('pavilions.index')->with('success', config('Messages.200'));
 
@@ -200,6 +181,7 @@ class pavilionController extends Controller
             ->get([
                 'pavilionID',
                 'pavilionName',
+                'pavilionCode',
                 'category_name',
                 'pavilionRate',
                 'pavilionDescription',
@@ -228,11 +210,11 @@ class pavilionController extends Controller
         }
 
         $pavilions = pavilions::leftJoin('space_categories', 'pavilions.pavilionCategory', '=', 'space_categories.category_id')
-            ->leftJoin('companies', 'pavilions.whoCanBook', '=', 'companies.companyID')
             ->where('pavilionID', $id)
             ->get([
                 'pavilionID',
                 'pavilionName',
+                'pavilionCode',
                 'TotalBooths',
                 'pavilionDescription',
                 'category_name',
@@ -242,8 +224,6 @@ class pavilionController extends Controller
                 'pavilionRate',
                 'space_status',
                 'floor_plan',
-                'whoCanBook',
-                'companyName',
                 'numberOfPartitions',
             ]);
 
@@ -252,12 +232,7 @@ class pavilionController extends Controller
         $categories = space_categories::orderBy('category_name', 'ASC')
             ->get(['category_id', 'category_name', 'category_event']);
 
-        $sectors = sectors::get();
-
-        $selectedSectors = AreaDistribution::where('spaceId', $id)
-            ->get(['participants']);
-
-        return view('space.edit-pavilion', compact('pavilions', 'categories', 'sectors', 'selectedSectors'));
+        return view('space.edit-pavilion', compact('pavilions', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -268,36 +243,19 @@ class pavilionController extends Controller
             }
 
             $this->normalizePavilionNumbers($request);
+            $this->normalizePavilionCode($request);
 
             $validator = Validator::make($request->all(), [
                 'pavilion_name' => 'required',
+                'pavilion_code' => 'nullable|string|max:64|regex:/^[A-Z0-9_-]+$/',
                 'pavilion_category' => 'required',
                 'pavilionDescription' => 'max:2000',
                 'pavilion_size' => 'required|numeric|min:1',
                 'numberOfPartitions' => 'nullable|integer|min:0|max:2147483647',
-                'participants' => 'nullable|array',
-                'participants.*' => 'exists:sectors,sectorID',
             ]);
 
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
-            }
-
-            AreaDistribution::where('spaceId', $id)->delete();
-
-            $spaceSectors = [];
-
-            if ($request->participants) {
-                foreach ($request->participants as $data) {
-                    AreaDistribution::create([
-                        'distributionId' => Str::uuid(),
-                        'spaceId' => $id,
-                        'participants' => $data
-                    ]);
-
-                    $sectorName = sectors::where('sectorID', $data)->first()->sectorName;
-                    array_push($spaceSectors, $sectorName);
-                }
             }
 
             $pavilion = pavilions::find($id);
@@ -327,14 +285,13 @@ class pavilionController extends Controller
             $pavilion->update([
                 'userID' => Auth::user()->user_uuid,
                 'pavilionName' => $request->pavilion_name,
+                'pavilionCode' => $request->input('pavilion_code', $pavilion->pavilionCode),
                 'pavilionCategory' => $request->pavilion_category,
                 'pavilionDescription' => $request->pavilionDescription,
                 'pavilion_size' => $request->pavilion_size,
                 'space_status' => $request->space_status,
                 'spaceStreet' => $request->input('streetName', $pavilion->spaceStreet),
                 'floor_plan' => $floorPlan,
-                'whoCanBook' => $request->whoCanBook,
-                'allowedForBooking' => implode(', ', $spaceSectors),
                 'numberOfPartitions' => $request->numberOfPartitions,
                 'latitude' => $request->input('latitude', $pavilion->latitude),
                 'longitude' => $request->input('longitude', $pavilion->longitude),
@@ -369,6 +326,14 @@ class pavilionController extends Controller
 
         } catch (\Throwable $th) {
             return back()->with('fail', config('Messages.500'));
+        }
+    }
+
+    private function normalizePavilionCode(Request $request): void
+    {
+        if (is_string($request->pavilion_code)) {
+            $code = Str::upper(trim($request->pavilion_code));
+            $request->merge(['pavilion_code' => $code === '' ? null : $code]);
         }
     }
 

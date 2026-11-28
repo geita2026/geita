@@ -5,7 +5,7 @@
     - Outer architectural sheet border + bold uppercase pavilion title
     - Top & bottom stepped corner bays + recessed 5-bay double-lined curtain wall
     - Perimeter walkway surrounding 2-row back-to-back dashed booth islands
-    - Diagonal (-45deg) company names in black, red EMPTY for available booths
+    - Booth identifiers, sizes, and booked exhibitor names from the database
     - Optional two-way interactive booth selection synced with #exhibition-booking-form
 --}}
 @php
@@ -16,19 +16,20 @@
 
     $boothCollection = collect($booths ?? []);
     $spaceIdsToLookup = $boothCollection->pluck('boothID')
+        ->merge(isset($pavilionById) ? $pavilionById->keys() : [])
         ->push($pavilion->pavilionID ?? null)
         ->filter()
         ->unique()
         ->values();
 
-    $bookedCompanyBySpace = collect();
+    $bookingsBySpace = collect();
     if ($activeEventId && $spaceIdsToLookup->isNotEmpty()) {
-        $bookedCompanyBySpace = \App\Models\booking\booked_pavilions::query()
+        $bookingsBySpace = \App\Models\booking\booked_pavilions::query()
             ->leftJoin('companies', 'companies.companyID', '=', 'booked_pavilions.companyID')
             ->where('booked_pavilions.exhibition_year', $activeEventId)
             ->whereIn('booked_pavilions.pavilionID', $spaceIdsToLookup)
-            ->get(['booked_pavilions.pavilionID', 'companies.companyName'])
-            ->mapWithKeys(fn ($row) => [$row->pavilionID => $row->companyName ?: 'BOOKED']);
+            ->get(['booked_pavilions.pavilionID', 'booked_pavilions.companyID', 'companies.companyName'])
+            ->keyBy('pavilionID');
     }
 
     $heldLookup = isset($heldSpaceIds)
@@ -36,34 +37,11 @@
         : (isset($bookedBooths) ? collect($bookedBooths)->pluck('boothID')->flip() : collect());
 
     $pavilionHeld = $heldLookup->has($pavilion->pavilionID ?? '')
-        || $bookedCompanyBySpace->has($pavilion->pavilionID ?? '');
-    $pavilionCompany = $bookedCompanyBySpace->get($pavilion->pavilionID ?? '');
-
-    $formatStampName = static function (?string $rawName): string {
-        $clean = trim((string) $rawName);
-        if ($clean === '') {
-            return 'BOOKED';
-        }
-        $upper = mb_strtoupper($clean, 'UTF-8');
-        if (mb_strlen($upper, 'UTF-8') <= 13) {
-            return $upper;
-        }
-        $stripped = preg_replace(
-            '/\b(COMPANY|LIMITED|LTD\.?|CO\.?|CORPORATION|CORP\.?|INC\.?|PLC|GROUP|ENTERPRISES|INVESTMENTS?|TANZANIA|\(T\))\b/u',
-            '',
-            $upper
-        );
-        $stripped = trim(preg_replace('/[\s,\-\.]+/u', ' ', (string) $stripped));
-        if ($stripped === '') {
-            $stripped = $upper;
-        }
-        $words = explode(' ', $stripped);
-        $short = $words[0];
-        if (isset($words[1]) && mb_strlen($short . ' ' . $words[1], 'UTF-8') <= 14) {
-            $short .= ' ' . $words[1];
-        }
-        return mb_strlen($short, 'UTF-8') > 15 ? mb_substr($short, 0, 14, 'UTF-8') . '…' : $short;
-    };
+        || $bookingsBySpace->has($pavilion->pavilionID ?? '');
+    $pavilionCompany = $bookingsBySpace->get($pavilion->pavilionID ?? '')?->companyName;
+    $formatArea = static fn ($area) => is_numeric($area)
+        ? rtrim(rtrim(number_format((float) $area, 4, '.', ''), '0'), '.') . ' m²'
+        : null;
 
     $selectedSet = array_flip((array) ($selectedBooths ?? old('spaceName', [])));
     $totalBoothItems = $boothCollection->count();
@@ -92,13 +70,24 @@
         ? $boothCollection->chunk($columnsPerIsland * $islandRows)
         : collect();
 
+    if (isset($blueprintSlots)) {
+        $isOpenPlots = !empty($reversePlotNumbers);
+        $islandRows = $isOpenPlots ? 1 : 2;
+        $columnsPerIsland = intdiv($slotsPerIsland, $islandRows);
+        $boothIslands = collect($blueprintSlots)->chunk($slotsPerIsland);
+        if ($isOpenPlots) {
+            $boothIslands = $boothIslands->map(fn ($island) => $island->reverse());
+        }
+    }
+
     // Wide enough to keep cells square-ish, never wider than it has to be.
-    $hallMinWidth = max(720, $columnsPerIsland * 118 + 190);
+    $hallMinWidth = !empty($reversePlotNumbers) ? 1040 : max(720, $columnsPerIsland * 118 + 190);
+    $blueprintTitle = $blueprintTitle ?? $pavilion->pavilionName ?? 'Pavilion floor plan';
 @endphp
 
-<div class="pavilion-blueprint-scroll" role="region" aria-label="{{ $pavilion->pavilionName }} architectural floor plan" tabindex="0">
-    <div class="pavilion-blueprint-sheet" style="min-width: {{ $hallMinWidth }}px;">
-        <h2 class="pavilion-blueprint-title">{{ mb_strtoupper($pavilion->pavilionName ?? 'PAVILION FLOOR PLAN', 'UTF-8') }}</h2>
+<div class="pavilion-blueprint-scroll" role="region" aria-label="{{ $blueprintTitle }} architectural floor plan" tabindex="0">
+    <div class="pavilion-blueprint-sheet {{ $blueprintClass ?? '' }}" style="min-width: {{ $hallMinWidth }}px;">
+        <h2 class="pavilion-blueprint-title">{{ mb_strtoupper($blueprintTitle, 'UTF-8') }}</h2>
 
         <div class="pavilion-blueprint-building">
             {{-- Top wall: stepped corner bays either side of a recessed 5-bay curtain --}}
@@ -133,66 +122,93 @@
 
             {{-- Interior hall floor & perimeter walkway --}}
             <div class="pavilion-hall-interior">
-                @if ($totalBoothItems > 0)
+                @if ($boothIslands->isNotEmpty())
                     @foreach ($boothIslands as $island)
+                        @php
+                            $pairedLabels = [];
+                            if (!empty($pairOccupantLabels)) {
+                                foreach ($island->values()->chunk(2)->values() as $column => $pair) {
+                                    [$top, $bottom] = array_pad($pair->values()->all(), 2, null);
+                                    if (!$top || !$bottom) {
+                                        continue;
+                                    }
+                                    $topBooking = $bookingsBySpace->get($top->boothID) ?? $bookingsBySpace->get($top->pavilionID);
+                                    $bottomBooking = $bookingsBySpace->get($bottom->boothID) ?? $bookingsBySpace->get($bottom->pavilionID);
+                                    if (!empty($topBooking->companyName) && $topBooking->companyID === $bottomBooking?->companyID) {
+                                        $pairedLabels[$column] = trim($topBooking->companyName);
+                                    }
+                                }
+                            }
+                        @endphp
                         <div class="pavilion-booth-island{{ $isOpenPlots ? ' is-open-plots' : '' }}"
                              style="--pavilion-cols: {{ max(1, (int) ceil($island->count() / $islandRows)) }}; --pavilion-rows: {{ $islandRows }};">
                             @foreach ($island as $booth)
+                                @if ($booth === null)
+                                    <div class="pavilion-booth-cell is-unregistered" title="Booth details are not set">
+                                        <span class="pavilion-booth-stamp">Empty</span>
+                                    </div>
+                                    @continue
+                                @endif
                                 @php
+                                    $boothPavilion = isset($pavilionById)
+                                        ? $pavilionById->get($booth->pavilionID, $pavilion)
+                                        : $pavilion;
+                                    $boothPavilionId = $boothPavilion->pavilionID;
+                                    $canSelectBooth = $interactiveMap && $boothPavilionId === $pavilion->pavilionID;
                                     $isReservedStatus = ($booth->bookingStatus ?? '') === 'RESERVED';
-                                    $bookedCompanyFull = $bookedCompanyBySpace->get($booth->boothID) ?? $pavilionCompany;
-                                    $isBooked = $heldLookup->has($booth->boothID) || $pavilionHeld || $bookedCompanyFull !== null;
-                                    $isAvailable = !$isReservedStatus && !$isBooked && ($pavilion->space_status ?? 'UNRESERVED') === 'UNRESERVED';
-                                    $isSelected = $isAvailable && isset($selectedSet[$booth->boothID]);
+                                    $booking = $bookingsBySpace->get($booth->boothID)
+                                        ?? $bookingsBySpace->get($boothPavilionId);
+                                    $isBooked = $heldLookup->has($booth->boothID) || $heldLookup->has($boothPavilionId) || $booking !== null;
+                                    $isAvailable = !$isReservedStatus && !$isBooked && ($boothPavilion->space_status ?? 'UNRESERVED') === 'UNRESERVED';
+                                    $isSelected = $canSelectBooth && $isAvailable && isset($selectedSet[$booth->boothID]);
+                                    $stateClass = $isAvailable ? 'is-empty' : 'is-occupied';
+                                    $stateClass .= $isSelected ? ' is-selected' : '';
 
-                                    if ($bookedCompanyFull) {
-                                        $stampText = $formatStampName($bookedCompanyFull);
-                                        $stateClass = 'is-occupied';
-                                        $tooltip = $booth->boothNo . ' — ' . $bookedCompanyFull
-                                            . ' (' . number_format((float) ($booth->boothSize ?? 0), 2) . ' m²)';
-                                    } elseif ($isReservedStatus || !$isAvailable) {
-                                        $stampText = 'RESERVED';
-                                        $stateClass = 'is-occupied';
-                                        $tooltip = $booth->boothNo . ' — Reserved';
-                                    } elseif ($isSelected) {
-                                        $stampText = 'SELECTED';
-                                        $stateClass = 'is-empty is-selected';
-                                        $tooltip = $booth->boothNo . ' — Selected (' . number_format((float) ($booth->boothSize ?? 0), 2) . ' m²)';
-                                    } else {
-                                        $stampText = 'EMPTY';
-                                        $stateClass = 'is-empty';
-                                        $rateLabel = ($booth->category_cost ?? null) !== null
-                                            ? ' · ' . ($booth->type_of_currency ?? '') . ' ' . number_format($booth->category_cost, 2) . '/m²'
-                                            : '';
-                                        $tooltip = $booth->boothNo . ' — Available (' . number_format((float) ($booth->boothSize ?? 0), 2) . ' m²' . $rateLabel . ')';
-                                    }
-
-                                    // Longer names step down in size so they never clip the dashed cell edge.
-                                    $stampChars = mb_strlen($stampText, 'UTF-8');
+                                    $boothName = $booth->boothNo;
+                                    $boothArea = $formatArea($booth->boothSize);
+                                    $rate = $booth->category_cost ?? null;
+                                    $currency = trim($booth->type_of_currency ?? '');
+                                    $rateLabel = is_numeric($rate)
+                                        ? trim($currency . ' ' . number_format($rate, 2)) . ' / m²'
+                                        : null;
+                                    $estimatedCost = $boothArea !== null && $rateLabel !== null && $currency !== ''
+                                        ? $booth->boothSize * $rate
+                                        : null;
+                                    $occupant = $booking?->companyName;
+                                    $tooltip = implode(' · ', array_filter([$boothName, $boothArea, $rateLabel, $occupant], fn ($value) => $value !== null && $value !== ''));
+                                    $stampChars = mb_strlen($occupant ?? '', 'UTF-8');
                                     $stampLengthClass = $stampChars > 11 ? ' is-xlong' : ($stampChars > 6 ? ' is-long' : '');
+                                    $paired = isset($pairedLabels[intdiv($loop->index, 2)]);
                                 @endphp
 
-                                @if ($interactiveMap && $isAvailable)
+                                @if ($canSelectBooth && $isAvailable)
+                                    <input type="checkbox" name="spaceName[]" value="{{ $booth->boothID }}"
+                                           class="booking-booth-select" hidden @if ($isSelected) checked @endif>
                                     <button
                                         type="button"
+                                        id="floor-plan-booth-{{ $booth->boothID }}"
                                         class="pavilion-booth-cell {{ $stateClass }}"
                                         data-blueprint-booth="{{ $booth->boothID }}"
                                         data-booth-no="{{ $booth->boothNo }}"
+                                        @if ($estimatedCost !== null)
+                                            data-estimated-cost="{{ $estimatedCost }}"
+                                            data-currency="{{ $currency }}"
+                                        @endif
                                         aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
                                         title="{{ $tooltip }}">
-                                        <span class="pavilion-booth-no">{{ $booth->boothNo }}</span>
-                                        <span class="pavilion-booth-stamp{{ $stampLengthClass }}" data-default-empty="EMPTY">{{ $stampText }}</span>
+                                        @include('space.FloorPlans.BoothLabels')
                                     </button>
                                 @else
-                                    <div
-                                        class="pavilion-booth-cell {{ $stateClass }}"
-                                        title="{{ $tooltip }}">
-                                        <span class="pavilion-booth-no">{{ $booth->boothNo }}</span>
-                                        <span class="pavilion-booth-stamp{{ $stampLengthClass }}">{{ $stampText }}</span>
-                                        @if ($isAvailable)
-                                        @endif
+                                    <div id="floor-plan-booth-{{ $booth->boothID }}"
+                                         class="pavilion-booth-cell {{ $stateClass }}" title="{{ $tooltip }}">
+                                        @include('space.FloorPlans.BoothLabels')
                                     </div>
                                 @endif
+                            @endforeach
+                            @foreach ($pairedLabels as $column => $label)
+                                <div class="pavilion-paired-label" style="grid-column: {{ $column + 1 }}" aria-hidden="true">
+                                    <span class="pavilion-booth-stamp{{ mb_strlen($label, 'UTF-8') > 14 ? ' is-long' : '' }}">{{ $label }}</span>
+                                </div>
                             @endforeach
 
                             {{-- Keep the island a clean rectangle when the last column is half empty --}}
@@ -205,15 +221,17 @@
                     {{-- Whole-pavilion space (no sub-booths) --}}
                     @php
                         $wholeAvailable = ($pavilion->space_status ?? 'UNRESERVED') === 'UNRESERVED' && !$pavilionHeld;
-                        $wholeLabel = $pavilionCompany
-                            ? $formatStampName($pavilionCompany)
-                            : ($wholeAvailable ? 'EMPTY' : 'RESERVED');
+                        $pavilionArea = $formatArea($pavilion->pavilion_size);
                     @endphp
                     <div class="pavilion-booth-island is-whole-space">
                         <div class="pavilion-booth-cell {{ $wholeAvailable ? 'is-empty' : 'is-occupied' }}"
-                             title="{{ $pavilion->pavilionName }} — {{ $wholeAvailable ? 'Available' : 'Occupied' }} ({{ number_format((float) ($pavilion->pavilion_size ?? 0), 2) }} m²)">
-                            <span class="pavilion-booth-no">{{ number_format((float) ($pavilion->pavilion_size ?? 0), 0) }} m²</span>
-                            <span class="pavilion-booth-stamp{{ mb_strlen($wholeLabel, 'UTF-8') > 11 ? ' is-xlong' : (mb_strlen($wholeLabel, 'UTF-8') > 6 ? ' is-long' : '') }}">{{ $wholeLabel }}</span>
+                             title="{{ implode(' · ', array_filter([$pavilion->pavilionName, $pavilionArea, $pavilionCompany])) }}">
+                            @if ($pavilionArea !== null)
+                                <span class="pavilion-booth-meta">{{ $pavilionArea }}</span>
+                            @endif
+                            @if ($pavilionCompany)
+                                <span class="pavilion-booth-stamp">{{ $pavilionCompany }}</span>
+                            @endif
                         </div>
                     </div>
                 @endif
@@ -254,7 +272,7 @@
 
 <div class="pavilion-blueprint-legend" aria-label="Floor plan legend">
     <span><i class="legend-swatch is-occupied" aria-hidden="true"></i> Occupied / Reserved</span>
-    <span><i class="legend-swatch is-empty" aria-hidden="true"></i> EMPTY (Available{{ $interactiveMap ? ' — click to select' : '' }})</span>
+    <span><i class="legend-swatch is-empty" aria-hidden="true"></i> Available{{ $interactiveMap ? ' — click to select' : '' }}</span>
     @if ($interactiveMap)
         <span><i class="legend-swatch is-selected" aria-hidden="true"></i> Selected for booking</span>
     @endif

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\FrontEnd\Booking;
 
 use App\Http\Controllers\Controller;
+use App\Services\SpaceBookingEligibility;
 use Illuminate\Http\Request;
 use App\Models\space\pavilions;
 use App\Models\space\booths;
@@ -70,12 +71,18 @@ class CustomerBookingController extends Controller
 
         if($request->booth)
         {
-            $request->validate(['product'=>'required','booth_name'=>'required']); // validates if products checked
+            $request->validate(['product'=>'required','booth_name'=>'required|array|min:1','booth_name.*'=>'required|string|distinct']); // validates if products checked
 
         try {
               // this calculates booked space size
         $space_size=0;
+        $company = companies::find($user_id);
+        $eligibility = app(SpaceBookingEligibility::class);
         foreach ($request->booth_name as $data) {
+           $booth = booths::find($data);
+           if (!$company || !$booth || !$eligibility->allows($booth, $company)) {
+               return back()->with('fail', 'The selected entity is not eligible to book one or more selected booths.');
+           }
            $booths=booths::leftJoin('booth_categories','booths.booth_category','=','booth_categories.booth_category_id')->where('boothID',$data)->get();
             foreach ($booths as $value) {  $space_size=$space_size+$value->boothSize;
                 session(['currency'=>$value->type_of_currency]);
@@ -124,8 +131,13 @@ class CustomerBookingController extends Controller
          if($request->space=='pavilion'){
             $company_id=Auth::user()->user_uuid; $booked_space=$request->booked_space;
 
-            $request->validate(['product'=>'required','booked_space'=>'required']);
+            $request->validate(['product'=>'required','booked_space'=>'required|string']);
              try {
+                $company = companies::find($company_id);
+                $pavilion = pavilions::find($booked_space);
+                if (!$company || !$pavilion || !app(SpaceBookingEligibility::class)->allows($pavilion, $company)) {
+                    return back()->with('fail', 'The selected entity is not eligible to book this pavilion.');
+                }
                 // check if their is another booking in progress
              $booked_pavilions=booked_pavilions::leftJoin('pavilions','booked_pavilions.pavilionID','=','pavilions.pavilionID')
              ->leftJOin('space_categories','pavilions.pavilionCategory','=','space_categories.category_id')

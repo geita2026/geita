@@ -1,163 +1,93 @@
 <!doctype html>
-<html class="no-js" lang="zxx">
-
+<html lang="en">
 <head>
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="Site keywords here">
-    <meta name="description" content="">
-    <meta name='copyright' content=''>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Title -->
-    <title>{{ env('APP_NAME') }} | Available Spaces</title>
+    <title>{{ $category->category_name }} | {{ config('app.name') }}</title>
     @include('FrontEnd.Public_Pages.Layouts.CssDesigns')
-    <style>
-        .changeColor:hover {
-            background-color: rgb(214, 212, 212);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/exhibition-booking.css') }}">
 </head>
-
 <body>
-
-    <!-- Preloader -->
     @include('FrontEnd.Public_Pages.Layouts.PageLoader')
-    <!-- End Preloader -->
-
-
-    <!-- Get Pro Button -->
-
-    <!-- Header Area -->
     <header class="header">
-        <!-- Topbar -->
         @include('FrontEnd.Public_Pages.Layouts.TopHeader')
-        <!-- End Topbar -->
-        <!-- Header Inner -->
         @include('FrontEnd.Public_Pages.Layouts.Header')
-        <!--/ End Header Inner -->
     </header>
-    <!-- End Header Area -->
 
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs overlay" style="background-image: url({{ asset('images/geita/geita-mine.jpg') }})">
-        <div class="container">
-            <div class="bread-inner">
+    <main class="container py-5 pavilion-listing">
+        <nav aria-label="Breadcrumb" class="mb-3">
+            <a href="{{ route('exhibition_space_booking.index') }}">Exhibition spaces</a>
+        </nav>
 
-                <div class="row">
-                    <div class="col-12">
-                        <h2 class=" text-uppercase">AVAILABLE {{ $category->category_name }}</h2>
-                        <ul class="bread-list">
-                            <li><a href="#"> {{ $category->category_descriptions }}</a></li>
+        <header class="mb-4">
+            <p class="text-muted mb-1">{{ $category->event_name }}</p>
+            <h1>{{ $category->category_name }}</h1>
+            @if ($category->category_descriptions)
+                <p class="mt-2">{{ $category->category_descriptions }}</p>
+            @endif
+        </header>
 
-                        </ul>
+        <div class="pavilion-listing-grid">
+            @forelse ($spaces as $space)
+                @php
+                    $pavilion = $space['pavilion'];
+                    $registered = $space['registeredBoothCount'];
+                    $available = $space['availableBoothCount'];
+                    $mapUrl = route('exhibition_space_booking.edit', $pavilion->pavilionID) . '#pavilion-floor-plan';
+                @endphp
+                <article class="pavilion-listing-card">
+                    <h2><a href="{{ $mapUrl }}">{{ $pavilion->pavilionName }}</a></h2>
+
+                    <div class="pavilion-listing-availability{{ $space['canBook'] ? ' is-open' : '' }}">
+                        @if ($space['hasBooths'])
+                            <strong>{{ number_format($available) }}</strong>
+                            {{ $available === 1 ? 'booth available' : 'booths available' }}
+                            @if ($registered > 0)
+                                <span>of {{ number_format($registered) }} registered</span>
+                            @else
+                                <span>Booths have yet to be listed</span>
+                            @endif
+                        @else
+                            <strong>{{ $space['canBook'] ? 'Whole pavilion available' : 'Whole pavilion booked' }}</strong>
+                        @endif
                     </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-    <!-- End Breadcrumbs -->
-
-    <div class=" col-md-12">
-        <section class="blog section" id="blog">
-            <div class="card-body">
-                <div class="row">
-                    @php $b=0; @endphp
-                    @foreach ($spaces as $item)
-                        <div class="col-lg-4 col-md-6 col-12 ">
-                            <!-- Single Blog -->
-                            <div class="single-news">
-
-                                <div class="news-body">
-                                    <div class="news-content">
-
-                                        {{-- Check for spaces with booths --}}
-                                        @php
-                                            $a = 0; // For booked booth of whole space
-                                        @endphp
-                                        @foreach ($bookedBooths as $booth)
-                                            @if ($booth->pavilionID == $item->pavilionID)
-                                                @php $a++; @endphp
-                                            @endif
-                                        @endforeach
-                                        {{-- End checking --}}
-                                        @php
-                                            $i = 0;
-                                        @endphp
-                                        @foreach ($bookedPavilions as $status)
-                                            @if ($status->pavilionID == $item->pavilionID)
-                                                @php $i++; @endphp
-                                            @endif
-                                        @endforeach
-
-                                       
-
-
-                                        <h2><a href="#">{{ $item->pavilionName }}</a></h2>
-                                        <div>
-                                            @if ($item->cost_one_msq != 0)
-                                                Cost per 1 M<sup>2</sup> / Unit =
-                                                {{ number_format($item->cost_one_msq, 2) }}
-                                                {{ $item->type_of_currency }}
-                                            @else
-                                               <b>Cost:</b> Depends on type of Stand.
-                                            @endif
-                                        </div>
-                                        <p class="text">{{ $item->space_descriptions }}</p>
-
-                                        @if ($item->numberOfPartitions > 0)
-                                        @if ($item->numberOfPartitions == $a)
-                                        <label class=" btn btn-danger">The pavilion is Full booked 100%</label>
-                                        @else
-                                            @if ($i == 0)
-                                                <a href="{{ route('booking.show', ['booking' => $item->pavilionID]) }}"
-                                                    class=" btn bg-success btn-block text-white">Login To
-                                                    Book, {{ number_format((100-($a/$item->numberOfPartitions*100))) }}% of pavilion stands left</a>
-                                            @else
-                                                Space is already Booked
-                                            @endif
-                                        @endif
-                                    @else
-                                        @if ($i == 0)
-                                            <a href="{{ route('booking.show', ['booking' => $item->pavilionID]) }}"
-                                                class=" btn bg-success btn-block text-white">Login To
-                                                Book</a>
-                                        @else
-                                            
-                                                <label class=" btn btn-danger">Space is already booked</label>
-                                            
-                                        @endif
-                                    @endif
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Blog -->
-                        </div>
-                        @php $i++; @endphp
-                    @endforeach
-                    @if ($i == 0)
-                        <div class=" alert alert-warning">
-                            No Space Published under <b>{{ $category->category_name }}</b> category, please select
-                            other
-                            category from the list
-                            @foreach ($spaceCategories as $data)
-                                <a href="{{ route('exhibition_space_booking.show', ['exhibition_space_booking' => $data->category_id]) }}"
-                                    class="ml-1 text-primary"><b>{{ $data->category_name }}</b></a>,
-                            @endforeach
-                        </div>
+                    @if ($pavilion->pavilion_size)
+                        <p>{{ number_format($pavilion->pavilion_size, 2) }} m²</p>
+                    @endif
+                    @if (!$space['hasBooths'] && $category->cost_one_msq !== null && $category->type_of_currency)
+                        <p>{{ $category->type_of_currency }} {{ number_format($category->cost_one_msq, 2) }} / m²</p>
+                    @endif
+                    @if ($pavilion->pavilionDescription)
+                        <p>{{ $pavilion->pavilionDescription }}</p>
                     @endif
 
-                </div>
-            </div>
-        </section>
-    </div>
+                    <div class="pavilion-listing-actions">
+                        @if ($space['canBook'])
+                            <a class="btn btn-primary" href="{{ route('booking.show', $pavilion->pavilionID) }}">
+                                {{ $space['hasBooths'] ? 'Book booths' : 'Book pavilion' }}
+                            </a>
+                        @endif
+                        <a class="btn btn-outline-secondary" href="{{ $mapUrl }}">View floor plan<span class="visually-hidden"> for {{ $pavilion->pavilionName }}</span></a>
+                    </div>
+                </article>
+            @empty
+                <p>No pavilions have been published for this category.</p>
+            @endforelse
+        </div>
 
-    <!-- Footer Area -->
+        @if ($spaceCategories->isNotEmpty())
+            <nav aria-label="Other space categories" class="mt-4">
+                <h2 class="h5">Other space categories</h2>
+                <ul class="list-inline">
+                    @foreach ($spaceCategories as $otherCategory)
+                        <li class="list-inline-item">
+                            <a href="{{ route('exhibition_space_booking.show', $otherCategory->category_id) }}">{{ $otherCategory->category_name }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+        @endif
+    </main>
+
     @include('FrontEnd.Public_Pages.Layouts.Footer')
-    <!--/ End Footer Area -->
 </body>
-
 </html>

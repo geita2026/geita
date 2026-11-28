@@ -107,7 +107,7 @@
         position: relative;
     }
 
-    .nav-desktop a.nav-link-custom {
+    .nav-desktop .nav-link-custom {
         color: rgba(255, 255, 255, 0.85);
         font-weight: 600;
         font-size: 14px;
@@ -120,17 +120,22 @@
         transition: color 0.2s ease;
     }
 
-    .nav-desktop a.nav-link-custom:hover,
-    .nav-desktop li:hover > a.nav-link-custom {
+    .nav-desktop button.nav-link-custom {
+        background: none;
+        border: 0;
+    }
+
+    .nav-desktop .nav-link-custom:hover,
+    .nav-desktop .nav-link-custom[aria-expanded="true"] {
         color: #FFBF00;
     }
 
-    .nav-desktop a.nav-link-custom i {
+    .nav-desktop .nav-link-custom i {
         font-size: 11px;
         transition: transform 0.25s ease;
     }
 
-    .nav-desktop li:hover > a.nav-link-custom i {
+    .nav-desktop .nav-link-custom[aria-expanded="true"] i {
         transform: rotate(180deg);
         color: #FFBF00;
     }
@@ -138,7 +143,7 @@
     /* ===== DROPDOWN ===== */
     .gem-dropdown {
         position: absolute;
-        top: calc(100% + 10px);
+        top: 100%;
         left: 0;
         min-width: 260px;
         background: #0d0a0f;
@@ -148,15 +153,13 @@
         padding: 8px 0;
         opacity: 0;
         visibility: hidden;
-        transform: translateY(10px);
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: opacity 0.15s ease;
         z-index: 3200;
     }
 
-    .nav-desktop li:hover > .gem-dropdown {
+    .nav-desktop .nav-link-custom[aria-expanded="true"] + .gem-dropdown {
         opacity: 1;
         visibility: visible;
-        transform: translateY(0);
     }
 
     .gem-dropdown ul {
@@ -291,6 +294,9 @@
     }
 
     .gem-sidebar-group {
+        width: 100%;
+        background: none;
+        border: 0;
         padding: 13px 20px;
         color: #FFBF00;
         font-weight: 700;
@@ -364,10 +370,10 @@
 
                     <!-- The Exhibition -->
                     <li>
-                        <a href="#" class="nav-link-custom">
+                        <button type="button" class="nav-link-custom" data-public-dropdown aria-expanded="false" aria-controls="desktop-exhibition">
                             The Exhibition <i class="fa fa-chevron-down"></i>
-                        </a>
-                        <div class="gem-dropdown">
+                        </button>
+                        <div class="gem-dropdown" id="desktop-exhibition">
                             <ul>
                                 <li><a href="{{ route('About_ditf') }}"><i class="fa fa-info-circle me-2 text-warning"></i> About the exhibition</a></li>
                                 <li><a href="{{ route('preview_programs.index') }}"><i class="fa fa-calendar me-2 text-warning"></i> Programme</a></li>
@@ -380,10 +386,10 @@
 
                     <!-- Book space -->
                     <li>
-                        <a href="#" class="nav-link-custom">
+                        <button type="button" class="nav-link-custom" data-public-dropdown aria-expanded="false" aria-controls="desktop-booking">
                             Book space <i class="fa fa-chevron-down"></i>
-                        </a>
-                        <div class="gem-dropdown">
+                        </button>
+                        <div class="gem-dropdown" id="desktop-booking">
                             <ul>
                                 <li><a href="{{ route('exhibition_space_booking.index') }}"><i class="fa fa-building-o me-2 text-warning"></i> Exhibition space</a></li>
                                 <li><a href="{{ route('sponsorship_package_groups') }}"><i class="fa fa-trophy me-2 text-warning"></i> Sponsorship packages</a></li>
@@ -421,10 +427,10 @@
     </a>
 
     <!-- The Exhibition Dropdown -->
-    <div class="gem-sidebar-group" onclick="toggleSubmenu('subAbout')">
+    <button type="button" class="gem-sidebar-group" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="subAbout">
         <span><i class="fa fa-bookmark-o me-2"></i> The Exhibition</span>
         <i class="fa fa-chevron-down"></i>
-    </div>
+    </button>
     <div class="gem-sidebar-sub" id="subAbout">
         <a href="{{ route('About_ditf') }}" class="gem-sidebar-item">About the exhibition</a>
         <a href="{{ route('preview_programs.index') }}" class="gem-sidebar-item">Programs</a>
@@ -434,10 +440,10 @@
     </div>
 
     <!-- Book space -->
-    <div class="gem-sidebar-group" onclick="toggleSubmenu('subBooking')">
+    <button type="button" class="gem-sidebar-group" onclick="toggleSubmenu(this)" aria-expanded="false" aria-controls="subBooking">
         <span><i class="fa fa-check-circle me-2"></i> Book space</span>
         <i class="fa fa-chevron-down"></i>
-    </div>
+    </button>
     <div class="gem-sidebar-sub" id="subBooking">
         <a href="{{ route('exhibition_space_booking.index') }}" class="gem-sidebar-item">Exhibition Space</a>
         <a href="{{ route('sponsorship_package_groups') }}" class="gem-sidebar-item">Sponsorship packages</a>
@@ -465,12 +471,59 @@
         document.getElementById('sidebarOverlay').classList.remove('active');
         document.body.style.overflow = '';
     }
-    function toggleSubmenu(id) {
-        const sub = document.getElementById(id);
-        const parent = event.currentTarget;
-        if (sub) {
-            sub.classList.toggle('open');
-            parent.classList.toggle('open');
-        }
+    function toggleSubmenu(button) {
+        const submenu = document.getElementById(button.getAttribute('aria-controls'));
+        const isOpen = submenu.classList.toggle('open');
+        button.classList.toggle('open', isOpen);
+        button.setAttribute('aria-expanded', String(isOpen));
     }
+
+    let closeActivePublicDropdown;
+    document.querySelectorAll('[data-public-dropdown]').forEach(button => {
+        const item = button.parentElement;
+        const submenu = document.getElementById(button.getAttribute('aria-controls'));
+        let pinned = false;
+
+        function close() {
+            button.setAttribute('aria-expanded', 'false');
+            pinned = false;
+            if (closeActivePublicDropdown === close) closeActivePublicDropdown = undefined;
+        }
+
+        function open() {
+            if (closeActivePublicDropdown && closeActivePublicDropdown !== close) closeActivePublicDropdown();
+            closeActivePublicDropdown = close;
+            button.setAttribute('aria-expanded', 'true');
+        }
+
+        item.addEventListener('pointerenter', event => {
+            if (event.pointerType === 'mouse') open();
+        });
+        item.addEventListener('pointerleave', event => {
+            if (event.pointerType === 'mouse' && !pinned && !submenu.contains(document.activeElement)) {
+                close();
+            }
+        });
+        button.addEventListener('click', () => {
+            if (pinned) {
+                close();
+            } else {
+                pinned = true;
+                open();
+            }
+        });
+        item.addEventListener('focusout', event => {
+            if (!item.contains(event.relatedTarget)) close();
+        });
+        item.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+                event.preventDefault();
+                close();
+                button.focus();
+            }
+        });
+        document.addEventListener('click', event => {
+            if (!item.contains(event.target)) close();
+        });
+    });
 </script>

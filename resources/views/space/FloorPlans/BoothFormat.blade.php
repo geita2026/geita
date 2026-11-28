@@ -1,10 +1,18 @@
+@php
+    $legacyBoothArea = is_numeric($stand->boothSize)
+        ? rtrim(rtrim(number_format((float) $stand->boothSize, 4, '.', ''), '0'), '.') . ' m²'
+        : null;
+    $legacyBoothRate = is_numeric($stand->category_cost)
+        ? trim(number_format($stand->category_cost, 2) . ' ' . $stand->type_of_currency) . '/m²'
+        : null;
+@endphp
 @if (!empty($readOnlyBookingMap))
     @php
         $mapBoothUnavailable = $stand->bookingStatus === 'RESERVED'
             || $heldSpaceIds->has($stand->boothID) || $heldSpaceIds->has($pavilion->pavilionID);
     @endphp
     <span class="booking-map-booth {{ $mapBoothUnavailable ? '' : 'is-available' }}">
-        {{ $stand->boothNo }}<span class="sr-only"> {{ $mapBoothUnavailable ? 'Unavailable' : 'Available' }}</span>
+        {{ $stand->boothNo }} {{ $legacyBoothArea }}
     </span>
 @else
 <style>
@@ -31,7 +39,7 @@
     title="{{ $stand->pavilionName }} ({{ $stand->boothNo }}) — ID: {{ $stand->boothID }}"
     data-trigger="hover"
     data-placement="right"
-    data-content="[ {{ $stand->category_name }} {{ number_format($stand->boothSize) }}M² , @1M² {{ number_format($stand->category_cost) }} {{ $stand->type_of_currency }} ]"
+    data-content="{{ implode(' · ', array_filter([$stand->category_name, $legacyBoothArea, $legacyBoothRate])) }}"
     class="booth"
     @php
         $bookedBoothIds = isset($bookedBoothIds)
@@ -41,9 +49,9 @@
             || $stand->bookingStatus == 'RESERVED';
     @endphp
     @if (! $isBooked && $stand->bookingStatus != 'RESERVED')
-        style="background-color:RGB(0, 255, 0)"
+        style="background-color:#e2f3e6"
     @else
-        style="background-color:RGB(211, 211, 211);"
+        style="background-color:#e3e8ef"
     @endif
     >
 
@@ -59,7 +67,7 @@
                 checked disabled
             @endif
         >
-        <b>{{ $stand->boothNo }}</b>
+        <b>{{ $stand->boothNo }}</b> {{ $legacyBoothArea }}
     </label>
 </a>
 

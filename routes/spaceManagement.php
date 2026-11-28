@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\reports\mySpaceController;
 use App\Http\Controllers\space\additionaServiceController;
+use App\Http\Controllers\space\BookingEligibilityController;
 use App\Http\Controllers\space\boothCategoryController;
 use App\Http\Controllers\space\boothController;
 use App\Http\Controllers\space\pavilionController;
@@ -10,6 +11,10 @@ use App\Http\Controllers\space\StreetController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('spaceManagement')->middleware('auth')->group(function() {
+    Route::get('{type}/{id}/booking-eligibility', [BookingEligibilityController::class, 'edit'])
+        ->where('type', 'pavilions|booths')->name('space-eligibility.edit');
+    Route::put('{type}/{id}/booking-eligibility', [BookingEligibilityController::class, 'update'])
+        ->where('type', 'pavilions|booths')->name('space-eligibility.update');
     Route::resource('pavilions',pavilionController::class);
     Route::resource('boothCategories',boothCategoryController::class);
     Route::resource('spaceCategories',spaceCategoryController::class);

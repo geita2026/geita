@@ -72,17 +72,39 @@
     background: var(--gem-field-disabled);
 }
 
-.booking-status.is-available,
-.booking-map-booth.is-available {
+.booking-status.is-available {
     color: var(--gem-button-ink);
     background: var(--gem-app-gold-soft);
 }
 
-.booking-related,
-.booking-footer {
+.booking-related {
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--gem-field-disabled);
+}
+
+.booking-footer {
+    position: sticky;
+    z-index: 5;
+    bottom: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border: 1px solid var(--gem-field-disabled, #d9dfe6);
+    border-radius: 6px 6px 0 0;
+    background: var(--gem-field-bg, #fff);
+    box-shadow: 0 -3px 14px rgb(0 0 0 / 10%);
+}
+
+.booking-footer #booking-selection {
+    font-weight: 600;
+}
+
+.booking-footer .booking-actions {
+    justify-content: flex-end;
+    margin-inline-start: auto;
+}
+
+.booking-with-sticky-footer [data-blueprint-booth] {
+    scroll-margin-bottom: var(--booking-footer-height, 110px);
 }
 
 .booking-details {
@@ -155,6 +177,12 @@
    ========================================================= */
 .pavilion-blueprint-section {
     margin: 18px 0 22px;
+    scroll-margin-top: 90px;
+}
+
+.pavilion-booth-cell:target {
+    box-shadow: inset 0 0 0 3px #a66b00;
+    scroll-margin: 90px 16px 16px;
 }
 
 .pavilion-blueprint-scroll {
@@ -187,6 +215,53 @@
 .pavilion-blueprint-building {
     position: relative;
     width: 100%;
+}
+
+.pavilion-blueprint-downward-labels {
+    --pavilion-stamp-angle: 45deg;
+}
+
+.pavilion-blueprint-vertical-labels {
+    --pavilion-stamp-angle: -90deg;
+}
+
+.pavilion-blueprint-vertical-labels .pavilion-booth-island {
+    position: relative;
+}
+
+.pavilion-paired-label {
+    position: absolute;
+    inset: 0;
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.pavilion-paired-label .pavilion-booth-stamp {
+    max-width: 175px;
+    letter-spacing: .08em;
+}
+
+.pavilion-paired-label .pavilion-booth-stamp.is-long {
+    font-size: 12px;
+    letter-spacing: 0;
+}
+
+.pavilion-blueprint-seven-columns {
+    padding: 4% 5.8% 7.5%;
+}
+
+.pavilion-blueprint-seven-columns .pavilion-blueprint-title {
+    margin-bottom: 6.5%;
+}
+
+.pavilion-blueprint-seven-columns .pavilion-hall-interior {
+    padding: 3.4% 4%;
+}
+
+.pavilion-blueprint-seven-columns .pavilion-booth-island > .pavilion-booth-cell {
+    aspect-ratio: 1;
 }
 
 /* Wall = fixed-proportion corner bay | stretchy 5-bay curtain | corner bay.
@@ -316,10 +391,6 @@ button.pavilion-booth-cell {
     transition: background-color .16s ease, box-shadow .16s ease;
 }
 
-button.pavilion-booth-cell:hover {
-    background: #fff9e6;
-}
-
 button.pavilion-booth-cell:focus-visible {
     outline: 2.5px solid #b8860b;
     outline-offset: -3px;
@@ -357,11 +428,32 @@ button.pavilion-booth-cell:focus-visible {
     line-height: 1;
 }
 
+.pavilion-booth-meta > span {
+    display: block;
+    text-align: right;
+}
+
+.booking-map-booth.is-available,
+.pavilion-booth-cell.is-empty,
+.pavilion-blueprint-legend .legend-swatch.is-empty {
+    background: #e2f3e6;
+}
+
+button.pavilion-booth-cell.is-empty:hover {
+    background: #cdebd5;
+}
+
+.booking-map-booth,
+.pavilion-booth-cell.is-occupied,
+.pavilion-blueprint-legend .legend-swatch.is-occupied {
+    background: #e3e8ef;
+}
+
 /* Diagonal -45deg CAD stamp inside each booth */
 .pavilion-booth-stamp {
     display: block;
     max-width: 141%;
-    transform: rotate(-45deg);
+    transform: rotate(var(--pavilion-stamp-angle, -45deg));
     transform-origin: center;
     font-size: clamp(13px, 1.5vw, 20px);
     font-weight: 400;
@@ -389,11 +481,11 @@ button.pavilion-booth-cell:focus-visible {
     color: #111111;
 }
 
-.pavilion-booth-cell.is-empty .pavilion-booth-stamp {
-    color: #e11d24;
+.pavilion-booth-cell.is-unregistered .pavilion-booth-stamp {
+    color: #c52222;
 }
 
-/* Active selection state when exhibitor clicks an EMPTY booth */
+/* Active selection state when an exhibitor selects an available booth */
 .pavilion-booth-cell.is-selected {
     background: #fff4cc !important;
     box-shadow: inset 0 0 0 2.5px #d49b00;
@@ -407,11 +499,6 @@ button.pavilion-booth-cell:focus-visible {
 .pavilion-booth-cell.is-selected .pavilion-booth-no {
     color: #6c4d04;
     font-weight: 700;
-}
-
-.booking-table tr.is-selected-row > td,
-.booking-table tr.is-selected-row > th {
-    background: #fff8df !important;
 }
 
 /* Compact floor plan legend */
@@ -439,26 +526,86 @@ button.pavilion-booth-cell:focus-visible {
     background: #ffffff;
 }
 
-.pavilion-blueprint-legend .legend-swatch.is-occupied::after,
-.pavilion-blueprint-legend .legend-swatch.is-empty::after {
-    content: '';
-    display: block;
-    width: 10px;
-    height: 2px;
-    margin: 6px auto 0;
-    transform: rotate(-45deg);
-}
-
-.pavilion-blueprint-legend .legend-swatch.is-occupied::after {
-    background: #111111;
-}
-
-.pavilion-blueprint-legend .legend-swatch.is-empty::after {
-    background: #e11d24;
-}
-
 .pavilion-blueprint-legend .legend-swatch.is-selected {
     border-style: solid;
     border-color: #d49b00;
     background: #fff4cc;
+}
+
+.pavilion-blueprint-mezani {
+    --pavilion-stamp-angle: 50deg;
+    padding: 32px 0;
+    border: 0;
+}
+
+.pavilion-blueprint-mezani .pavilion-wall {
+    display: none;
+}
+
+.pavilion-blueprint-mezani .pavilion-hall-interior {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.pavilion-blueprint-mezani .pavilion-booth-no {
+    color: #111;
+}
+
+.pavilion-blueprint-mezani .pavilion-booth-stamp {
+    max-width: 90%;
+    margin-top: 38%;
+    font-size: clamp(9px, 1vw, 15px);
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.pavilion-blueprint-mezani .pavilion-booth-cell.is-occupied .pavilion-booth-stamp {
+    color: #a92718;
+}
+
+.pavilion-listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+    gap: 18px;
+}
+
+.pavilion-listing-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border: 1px solid #d9dfe6;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.pavilion-listing-card h2 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.pavilion-listing-availability {
+    padding: 10px 12px;
+    border-radius: 5px;
+    background: #e3e8ef;
+    color: #263649;
+}
+
+.pavilion-listing-availability.is-open {
+    background: #e2f3e6;
+    color: #164925;
+}
+
+.pavilion-listing-availability span {
+    display: block;
+    font-size: .875em;
+}
+
+.pavilion-listing-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
 }

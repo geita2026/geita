@@ -14,60 +14,50 @@
     );
     const checkboxByBooth = new Map(booths.map(cb => [cb.value, cb]));
     const summary = document.querySelector('#booking-selection');
+    const estimate = document.querySelector('#booking-estimate');
     const clear = document.querySelector('#booking-clear');
+    const footer = form.querySelector('.booking-footer');
     const formatter = new Intl.NumberFormat('en', {useGrouping: true});
+    const money = new Intl.NumberFormat('en', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    function shortenCompanyStamp(raw) {
-        const text = (raw || '').trim().toUpperCase();
-        if (!text) {
-            return 'SELECTED';
-        }
-        if (text.length <= 13) {
-            return text;
-        }
-        const stripped = text
-            .replace(/\b(COMPANY|LIMITED|LTD\.?|CO\.?|CORPORATION|CORP\.?|INC\.?|PLC|GROUP|ENTERPRISES|INVESTMENTS?|TANZANIA|\(T\))\b/g, '')
-            .replace(/[\s,\-.]+/g, ' ')
-            .trim() || text;
-        const words = stripped.split(' ');
-        let short = words[0];
-        if (words[1] && (short + ' ' + words[1]).length <= 14) {
-            short += ' ' + words[1];
-        }
-        return short.length > 15 ? short.slice(0, 14) + '…' : short;
+    function updateFooterHeight() {
+        form.style.setProperty('--booking-footer-height', footer.offsetHeight + 'px');
     }
 
-    function currentSelectedStamp() {
-        const selectedOption = company.options[company.selectedIndex];
-        if (!company.value || !selectedOption) {
-            return 'SELECTED';
-        }
-        return shortenCompanyStamp(selectedOption.textContent);
+    updateFooterHeight();
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(updateFooterHeight).observe(footer);
+    } else {
+        window.addEventListener('resize', updateFooterHeight);
     }
 
     function syncBlueprintVisuals() {
-        const stampLabel = currentSelectedStamp();
         for (const cb of booths) {
             const btn = blueprintButtons.get(cb.value);
-            const row = form.querySelector(`[data-booth-row="${CSS.escape(cb.value)}"]`);
-            if (row) {
-                row.classList.toggle('is-selected-row', cb.checked);
-            }
             if (!btn) {
                 continue;
             }
             btn.classList.toggle('is-selected', cb.checked);
             btn.setAttribute('aria-pressed', cb.checked ? 'true' : 'false');
-            const stamp = btn.querySelector('.pavilion-booth-stamp');
-            if (stamp) {
-                const text = cb.checked ? stampLabel : (stamp.dataset.defaultEmpty || 'EMPTY');
-                stamp.textContent = text;
-                // Match the server-side size tiers so a long company name still
-                // fits the -45deg stamp inside the cell.
-                stamp.classList.toggle('is-long', text.length > 6 && text.length <= 11);
-                stamp.classList.toggle('is-xlong', text.length > 11);
-            }
         }
+    }
+
+    function updateEstimate(selectedBooths) {
+        const totals = new Map();
+        let missingRates = 0;
+        for (const booth of selectedBooths) {
+            const {estimatedCost, currency} = blueprintButtons.get(booth.value).dataset;
+            if (estimatedCost === undefined || !currency) {
+                missingRates++;
+                continue;
+            }
+            totals.set(currency, (totals.get(currency) ?? 0) + Number(estimatedCost));
+        }
+        const amounts = Array.from(totals, ([currency, amount]) => currency + ' ' + money.format(amount));
+        estimate.hidden = selectedBooths.length === 0;
+        estimate.textContent = amounts.length
+            ? 'Estimated booth cost: ' + amounts.join(' + ') + (missingRates ? '. Some booths have no estimate.' : '')
+            : 'Estimated booth cost unavailable.';
     }
 
     function updateSelection() {
@@ -75,18 +65,16 @@
             return;
         }
 
-        const count = booths.filter(booth => booth.checked).length;
+        const selectedBooths = booths.filter(booth => booth.checked);
+        const count = selectedBooths.length;
         summary.textContent = count > 0
             ? formatter.format(count) + (count === 1 ? ' booth selected' : ' booths selected')
             : 'Select at least one available booth.';
         if (clear) {
-            clear.hidden = count === 0;
+            clear.disabled = count === 0;
         }
+        updateEstimate(selectedBooths);
         syncBlueprintVisuals();
-    }
-
-    for (const booth of booths) {
-        booth.addEventListener('change', updateSelection);
     }
 
     for (const [boothId, btn] of blueprintButtons.entries()) {
@@ -101,11 +89,7 @@
     }
 
     if (window.jQuery && window.jQuery.fn.select2) {
-        window.jQuery(company)
-            .select2({width: '100%'})
-            .on('change', syncBlueprintVisuals);
-    } else {
-        company.addEventListener('change', syncBlueprintVisuals);
+        window.jQuery(company).select2({width: '100%'});
     }
 
     if (clear) {
@@ -114,15 +98,14 @@
                 booth.checked = false;
             }
             updateSelection();
-            booths[0]?.focus();
+            blueprintButtons.values().next().value?.focus();
         });
     }
 
     form.addEventListener('submit', event => {
         if (hasBooths && !booths.some(booth => booth.checked)) {
             event.preventDefault();
-            const firstBlueprintBtn = blueprintButtons.values().next().value;
-            (firstBlueprintBtn || booths[0])?.focus();
+            blueprintButtons.values().next().value?.focus();
             return;
         }
 

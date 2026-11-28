@@ -1,1 +1,0 @@
-@include('space.FloorPlans.BoothFormat')

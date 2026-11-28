@@ -7,10 +7,6 @@
     if ($status && !isset($statuses[$status])) {
         $statuses[$status] = $status === 'SUNSPENDED' ? 'Suspended' : $status;
     }
-    $selectedParticipants = old('participants_present')
-        ? old('participants', [])
-        : ($selectedSectors ?? collect())->pluck('participants')->all();
-    $company = old('whoCanBook', $pavilion->whoCanBook ?? 'ANY') ?: 'ANY';
     $descriptionField = $editing ? 'pavilionDescription' : 'pavilion_description';
     $formattedArea = preg_replace_callback('/^\d+/', static fn ($match) =>
         preg_replace('/\B(?=(?:\d{3})+$)/', ',', $match[0]), (string) ($pavilion->pavilion_size ?? ''));
@@ -69,13 +65,19 @@
                 @if ($editing)
                     @method('PUT')
                 @endif
-                <input type="hidden" name="participants_present" value="1">
 
                 <div class="pavilion-fields">
                     <div>
                         <label for="pavilion-name">Space name <span class="text-danger" aria-hidden="true">*</span></label>
                         <input id="pavilion-name" class="form-control" name="pavilion_name" required
                             value="{{ old('pavilion_name', $pavilion->pavilionName ?? '') }}">
+                    </div>
+                    <div>
+                        <label for="pavilion-code">Pavilion code</label>
+                        <input id="pavilion-code" class="form-control" name="pavilion_code" maxlength="64"
+                            pattern="[A-Za-z0-9_\-]+" aria-describedby="pavilion-code-help"
+                            value="{{ old('pavilion_code', $pavilion->pavilionCode ?? '') }}">
+                        <small id="pavilion-code-help">Use the same code for pavilions that share a map. Use letters, numbers, underscores, or hyphens.</small>
                     </div>
                     <div>
                         <label for="pavilion-category">Space category <span class="text-danger" aria-hidden="true">*</span></label>
@@ -113,36 +115,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <div>
-                        <div class="pavilion-sectors-heading">
-                            <label for="pavilion-sectors">Eligible exhibitor sectors</label>
-                            <label for="pavilion-sectors-all">
-                                <input type="checkbox" id="pavilion-sectors-all" aria-controls="pavilion-sectors" disabled>
-                                Select all
-                            </label>
-                        </div>
-                        <select id="pavilion-sectors" name="participants[]" multiple class="form-control">
-                            @foreach ($sectors as $sector)
-                                <option value="{{ $sector->sectorID }}"
-                                    {{ in_array($sector->sectorID, $selectedParticipants) ? 'selected' : '' }}>
-                                    {{ $sector->sectorName }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @if ($editing)
-                        <div>
-                            <label for="pavilion-company">Who can book</label>
-                            <select id="pavilion-company" name="whoCanBook" class="form-control">
-                                <option value="ANY" {{ $company === 'ANY' ? 'selected' : '' }}>Any eligible company</option>
-                                @if ($company !== 'ANY')
-                                    <option value="{{ $company }}" selected>
-                                        {{ $company === $pavilion->whoCanBook ? ($pavilion->companyName ?: $company) : $company }}
-                                    </option>
-                                @endif
-                            </select>
-                        </div>
-                    @endif
                 </div>
 
                 <div class="pavilion-actions">
@@ -197,60 +169,8 @@
             });
         });
 
-        const sectors = document.getElementById('pavilion-sectors');
-        const selectAll = document.getElementById('pavilion-sectors-all');
-        const sectorOptions = Array.from(sectors.options).filter(option => !option.disabled);
-        const hasSelect2 = window.jQuery && jQuery.fn.select2;
-
-        function syncSelectAll() {
-            const selectedCount = sectorOptions.filter(option => option.selected).length;
-            selectAll.checked = sectorOptions.length > 0 && selectedCount === sectorOptions.length;
-            selectAll.indeterminate = selectedCount > 0 && !selectAll.checked;
+        if (window.jQuery && jQuery.fn.select2) {
+            jQuery('#pavilion-category').select2({width: '100%'});
         }
-
-        if (hasSelect2) {
-            jQuery(sectors).select2({width: '100%', placeholder: 'Select sectors'}).on('change', syncSelectAll);
-        } else {
-            sectors.addEventListener('change', syncSelectAll);
-        }
-
-        selectAll.disabled = sectorOptions.length === 0;
-        syncSelectAll();
-        selectAll.addEventListener('change', function () {
-            sectorOptions.forEach(option => { option.selected = selectAll.checked; });
-            if (hasSelect2) {
-                jQuery(sectors).trigger('change');
-            } else {
-                sectors.dispatchEvent(new Event('change', {bubbles: true}));
-            }
-        });
-
-        if (!hasSelect2) return;
-
-        jQuery('#pavilion-category').select2({width: '100%'});
-        @if ($editing)
-            jQuery('#pavilion-company').select2({
-                width: '100%',
-                ajax: {
-                    url: @json(route('search_companies')),
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {q: params.term || ''};
-                    },
-                    processResults: function (data) {
-                        const companies = Array.isArray(data) ? data : [];
-                        return {results: [
-                            {id: 'ANY', text: 'Any eligible company'},
-                            ...companies.map(company => ({
-                                id: company.companyID,
-                                text: [company.companyName, company.registrationID].filter(Boolean).join(' · '),
-                            })),
-                        ]};
-                    },
-                    cache: true,
-                },
-            });
-        @endif
     });
 </script>

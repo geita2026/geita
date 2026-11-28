@@ -27,9 +27,10 @@ class boothCategoryController extends Controller
             return back()->with('fail',$this->permissionDeniedMessage('MANAGE_SPACES'));
         }
         //
-        $boothCategories=booth_categories::orderBy('created_at','DESC')->get(['booth_category_id','category_name','type_of_currency','category_cost','created_at','updated_at','categoryCode']);
+        $boothCategories = booth_categories::orderByDesc('created_at')->get();
         return view('space.booth-category',compact('boothCategories'));
         } catch (\Throwable $th) {
+            report($th);
             return back()->with('fail',config('Messages.500'));
         }
     }

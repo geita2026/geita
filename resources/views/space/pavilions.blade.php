@@ -41,6 +41,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Space name</th>
+                                <th scope="col">Pavilion code</th>
                                 <th scope="col">Category</th>
                                 <th scope="col" class="text-right">Area (m²)</th>
                                 <th scope="col">Status</th>
@@ -51,17 +52,25 @@
                             @forelse ($pavilions as $item)
                                 <tr>
                                     <td class="text-bold">{{ $item->pavilionName }}</td>
+                                    <td>{{ $item->pavilionCode ?? '—' }}</td>
                                     <td>{{ $item->category_name }}</td>
                                     <td class="text-right">{{ number_format($item->pavilion_size, 2) }}</td>
                                     <td>{{ $item->space_status === 'UNRESERVED' ? 'Open for booking' : ucfirst(strtolower($item->space_status)) }}</td>
                                     <td>
-                                        <a href="{{ route('pavilions.edit', ['pavilion' => $item->pavilionID]) }}" class="btn btn-primary">
-                                            View space <i class="icon-arrow-right13" aria-hidden="true"></i>
-                                        </a>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Actions <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a href="{{ route('pavilions.edit', $item->pavilionID) }}">View space</a></li>
+                                                <li><a href="{{ route('exhibition_space_booking.edit', $item->pavilionID) }}">View floor plan</a></li>
+                                                <li><a href="{{ route('space-eligibility.edit', ['pavilions', $item->pavilionID]) }}">Set booking eligibility</a></li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5">No spaces have been registered.</td></tr>
+                                <tr><td colspan="6">No spaces have been registered.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -91,12 +100,12 @@
                     const pavilions = Array.isArray(data) ? data : [];
                     return {results: pavilions.map(pavilion => ({
                         id: editUrl.replace('__PAVILION_ID__', encodeURIComponent(pavilion.pavilionID)),
-                        text: [pavilion.pavilionName, pavilion.category_name].filter(Boolean).join(' · '),
+                        text: [pavilion.pavilionName, pavilion.pavilionCode, pavilion.category_name].filter(Boolean).join(' · '),
                     }))};
                 },
                 cache: true,
             },
-            placeholder: 'Search by space name or category',
+            placeholder: 'Search by space name, code, or category',
             minimumInputLength: 1,
         }).on('select2:select', function () {
             window.location.assign(this.value);

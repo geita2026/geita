@@ -10,7 +10,8 @@
     @php
         $hasBooths = $number_of_booths > 0;
         $selectedBooths = (array) old('spaceName', []);
-        $canInteractWithMap = $hasBooths && $spaceAvailable && $companies->isNotEmpty();
+        $canBook = $spaceAvailable && $companies->isNotEmpty();
+        $canInteractWithMap = $hasBooths && $canBook;
     @endphp
 
     <div class="content">
@@ -54,11 +55,12 @@
                     <p class="alert alert-info">You need an active company linked to your account before you can book this space.</p>
                 @endif
 
-                <form id="exhibition-booking-form" action="{{ route('booking.store') }}" method="POST" data-has-booths="{{ $hasBooths ? 'true' : 'false' }}">
+                <form id="exhibition-booking-form" action="{{ route('booking.store') }}" method="POST"
+                    class="{{ $canBook ? 'booking-with-sticky-footer' : '' }}" data-has-booths="{{ $hasBooths ? 'true' : 'false' }}">
                     @csrf
                     <input type="hidden" name="space" value="booth">
 
-                    @if ($spaceAvailable && $companies->isNotEmpty())
+                    @if ($canBook)
                         <div class="form-group booking-company">
                             <label for="booking-company">Company or institution <span class="text-danger" aria-hidden="true">*</span></label>
                             <select id="booking-company" name="company_name" class="form-control" required>
@@ -74,76 +76,31 @@
                     @endif
 
                     <section class="pavilion-blueprint-section" aria-label="Pavilion floor plan">
-                        @include('space.FloorPlans.PavilionBlueprint', [
+                        @include('space.FloorPlans.PavilionMap', [
                             'interactiveBookingMap' => $canInteractWithMap,
                             'selectedBooths' => $selectedBooths,
+                            'showMapBookingLinks' => true,
                         ])
                     </section>
 
-                    @if ($hasBooths && $booths->isNotEmpty())
-                        <section class="booking-related" aria-labelledby="booking-booths-title">
-                            <h2 id="booking-booths-title">{{ $spaceAvailable && $companies->isNotEmpty() ? 'Select booths' : 'Booths' }}</h2>
-                            <div class="table-responsive booking-table" tabindex="0" role="region" aria-label="Booth availability">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            @if ($spaceAvailable && $companies->isNotEmpty())
-                                                <th scope="col">Select</th>
-                                            @endif
-                                            <th scope="col">Booth</th>
-                                            <th scope="col">Type</th>
-                                            <th scope="col" class="text-right">Area (m²)</th>
-                                            <th scope="col" class="text-right">Rate / m²</th>
-                                            <th scope="col">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($booths as $booth)
-                                            @php
-                                                $reserved = $booth->bookingStatus === 'RESERVED';
-                                                $booked = $heldSpaceIds->has($booth->boothID) || $heldSpaceIds->has($pavilion->pavilionID);
-                                                $canSelect = !$reserved && !$booked;
-                                            @endphp
-                                            <tr data-booth-row="{{ $booth->boothID }}">
-                                                @if ($spaceAvailable && $companies->isNotEmpty())
-                                                    <td>
-                                                        @if ($canSelect)
-                                                            <input type="checkbox" name="spaceName[]" value="{{ $booth->boothID }}"
-                                                                class="booking-booth-select" aria-label="Select booth {{ $booth->boothNo }}"
-                                                                {{ in_array($booth->boothID, $selectedBooths, true) ? 'checked' : '' }}>
-                                                        @endif
-                                                    </td>
-                                                @endif
-                                                <th scope="row">{{ $booth->boothNo }}</th>
-                                                <td>{{ $booth->category_name ?? '—' }}</td>
-                                                <td class="text-right">{{ number_format($booth->boothSize, 2) }}</td>
-                                                <td class="text-right booking-money">
-                                                    {{ $booth->category_cost !== null ? $booth->type_of_currency . ' ' . number_format($booth->category_cost, 2) : '—' }}
-                                                </td>
-                                                <td>
-                                                    <span class="booking-status {{ $canSelect ? 'is-available' : '' }}">
-                                                        {{ $reserved ? 'Reserved' : ($booked ? 'Booked' : 'Available') }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    @elseif ($spaceAvailable && $companies->isNotEmpty())
+                    @if (!$hasBooths && $canBook)
                         <input type="hidden" name="spaceName[]" value="{{ $pavilion->pavilionID }}">
                         @if ($pavilion->cost_one_msq !== null && $pavilion->type_of_currency)
                             <p><strong>{{ $pavilion->type_of_currency }} {{ number_format($pavilion->cost_one_msq, 2) }}</strong> / m²</p>
                         @endif
                     @endif
 
-                    @if ($spaceAvailable && $companies->isNotEmpty())
+                    @if ($canBook)
                         <div class="booking-footer">
-                            <div aria-live="polite" id="booking-selection">{{ $hasBooths ? 'Select at least one available booth.' : 'Whole space selected.' }}</div>
+                            <div aria-live="polite">
+                                <div id="booking-selection">{{ $hasBooths ? 'Select at least one available booth.' : 'Whole space selected.' }}</div>
+                                @if ($hasBooths)
+                                    <div id="booking-estimate" hidden></div>
+                                @endif
+                            </div>
                             <div class="booking-actions">
                                 @if ($hasBooths)
-                                    <button type="button" id="booking-clear" class="btn btn-default" hidden>Clear selection</button>
+                                    <button type="button" id="booking-clear" class="btn btn-default" disabled>Clear selection</button>
                                 @endif
                                 <button type="submit" id="booking-submit" class="btn btn-primary">Add to booking cart</button>
                             </div>
