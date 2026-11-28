@@ -66,10 +66,9 @@ class CustomerSpaceBookingController extends Controller
         $spaces = pavilions::where('pavilionCategory', $id)
             ->where('space_status', 'UNRESERVED')
             ->orderBy('pavilionName')
-            ->get(['pavilionID', 'pavilionName', 'pavilionDescription', 'pavilion_size', 'numberOfPartitions']);
+            ->get(['pavilionID', 'pavilionName', 'pavilionDescription', 'pavilion_size', 'numberOfPartitions', 'pavilionCode']);
 
         $booths = booths::whereIn('pavilionID', $spaces->pluck('pavilionID'))
-            ->where('bookingStatus', '!=', 'SUNSPENDED')
             ->get(['boothID', 'pavilionID', 'bookingStatus']);
         $heldSpaceIds = booked_pavilions::where('exhibition_year', $category->category_event)
             ->whereIn('pavilionID', $spaces->pluck('pavilionID')->merge($booths->pluck('boothID')))
@@ -77,11 +76,17 @@ class CustomerSpaceBookingController extends Controller
         $boothsByPavilion = $booths->groupBy('pavilionID');
 
         $spaces = $spaces->map(function ($space) use ($boothsByPavilion, $heldSpaceIds) {
-            $registeredBooths = $boothsByPavilion->get($space->pavilionID, collect());
-            $isHeld = $heldSpaceIds->has($space->pavilionID);
+            $pavilionBooths = $boothsByPavilion->get($space->pavilionID, collect());
+            $registeredBooths = $pavilionBooths->filter(fn ($booth) =>
+                $booth->bookingStatus !== null && $booth->bookingStatus !== 'SUNSPENDED');
+            $hasBooths = $space->floorPlanBoothCount($registeredBooths->count()) > 0;
+            if (!$hasBooths) {
+                $registeredBooths = collect();
+            }
+            $isHeld = $heldSpaceIds->has($space->pavilionID) || (!$hasBooths && !$space->customFloorPlanView()
+                && $pavilionBooths->contains(fn ($booth) => $heldSpaceIds->has($booth->boothID)));
             $available = $isHeld ? 0 : $registeredBooths->filter(fn ($booth) =>
                 $booth->bookingStatus !== 'RESERVED' && !$heldSpaceIds->has($booth->boothID))->count();
-            $hasBooths = $registeredBooths->isNotEmpty() || $space->numberOfPartitions > 0;
 
             return [
                 'pavilion' => $space,

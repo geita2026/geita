@@ -15,6 +15,12 @@
         ?? \App\Models\settings\events::where('event_status', 1)->value('event_id');
 
     $boothCollection = collect($booths ?? []);
+    if (!empty($usePlannedBoothCount)) {
+        $slotCount = $pavilion->floorPlanBoothCount($boothCollection->count());
+        $boothCollection = $slotCount === 0
+            ? collect()
+            : $boothCollection->values()->pad($slotCount, null);
+    }
     $spaceIdsToLookup = $boothCollection->pluck('boothID')
         ->merge(isset($pavilionById) ? $pavilionById->keys() : [])
         ->push($pavilion->pavilionID ?? null)
@@ -38,6 +44,11 @@
 
     $pavilionHeld = $heldLookup->has($pavilion->pavilionID ?? '')
         || $bookingsBySpace->has($pavilion->pavilionID ?? '');
+    if (!empty($usePlannedBoothCount) && $slotCount === 0 && !$pavilionHeld && $activeEventId) {
+        $pavilionHeld = \App\Models\booking\booked_pavilions::where('exhibition_year', $activeEventId)
+            ->whereIn('pavilionID', \App\Models\space\booths::where('pavilionID', $pavilion->pavilionID)->select('boothID'))
+            ->exists();
+    }
     $pavilionCompany = $bookingsBySpace->get($pavilion->pavilionID ?? '')?->companyName;
     $formatArea = static fn ($area) => is_numeric($area)
         ? rtrim(rtrim(number_format((float) $area, 4, '.', ''), '0'), '.') . ' m²'

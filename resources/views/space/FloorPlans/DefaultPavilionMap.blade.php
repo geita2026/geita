@@ -1,5 +1,5 @@
 @if ($mapPavilions->isEmpty())
-    @include('space.FloorPlans.PavilionBlueprint')
+    @include('space.FloorPlans.PavilionBlueprint', ['usePlannedBoothCount' => true])
 @else
     <section class="pavilion-shared-map" aria-label="Pavilion map {{ $pavilion->pavilionCode }}">
         <h2>Pavilion map {{ $pavilion->pavilionCode }}</h2>
@@ -8,6 +8,7 @@
             @include('space.FloorPlans.PavilionBlueprint', [
                 'pavilion' => $mapPavilion,
                 'booths' => $mapPavilion->mapBooths,
+                'usePlannedBoothCount' => true,
                 'interactiveBookingMap' => $currentPavilion && $interactiveBookingMap,
                 'selectedBooths' => $currentPavilion ? ($selectedBooths ?? []) : [],
             ])

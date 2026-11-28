@@ -1,11 +1,8 @@
 @php
-    $code = $pavilion->pavilionCode;
-    $customMap = is_string($code) && preg_match('/^[A-Z0-9_-]+$/D', $code)
-        ? 'space.FloorPlans.' . $code
-        : null;
+    $customMap = $pavilion->customFloorPlanView();
 @endphp
 
-@if ($customMap && View::exists($customMap))
+@if ($customMap)
     @include($customMap)
 @else
     @include('space.FloorPlans.DefaultPavilionMap')

@@ -62,7 +62,7 @@
                                                 Actions <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a href="{{ route('pavilions.edit', $item->pavilionID) }}">View space</a></li>
+                                                <li><a href="{{ route('pavilions.edit', $item->pavilionID) }}">Manage space</a></li>
                                                 <li><a href="{{ route('exhibition_space_booking.edit', $item->pavilionID) }}">View floor plan</a></li>
                                                 <li><a href="{{ route('space-eligibility.edit', ['pavilions', $item->pavilionID]) }}">Set booking eligibility</a></li>
                                             </ul>

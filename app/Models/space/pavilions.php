@@ -4,6 +4,7 @@ namespace App\Models\space;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\View;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class pavilions extends Model implements Auditable
@@ -19,6 +20,29 @@ class pavilions extends Model implements Auditable
         'pavilionCategory','pavilionRate','pavilionDescription','bookingStatus','pavilion_size','space_status',
         'allowedForBooking','whoCanBook','numberOfPartitions','latitude','longitude','location'
     ];
+
+    public function customFloorPlanView(): ?string
+    {
+        $code = $this->pavilionCode;
+        if (!is_string($code) || !preg_match('/^[A-Z0-9_-]+$/D', $code)) {
+            return null;
+        }
+
+        $view = 'space.FloorPlans.' . $code;
+
+        return View::exists($view) ? $view : null;
+    }
+
+    public function floorPlanBoothCount(int $registeredBooths): int
+    {
+        if ($this->customFloorPlanView() || $this->numberOfPartitions === null) {
+            return $registeredBooths;
+        }
+
+        $planned = (int) $this->numberOfPartitions;
+
+        return $planned === 0 ? 0 : max($planned, $registeredBooths);
+    }
 
     public function mapBooths()
     {

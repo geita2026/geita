@@ -189,6 +189,21 @@ class bookingController extends Controller
                     if (!$space || !$eligibility->allows($space, $company)) {
                         return back()->with('fail', 'The selected entity is not eligible to book one or more selected spaces.');
                     }
+                    if ($space instanceof booths) {
+                        $parent = pavilions::find($space->pavilionID);
+                        if ($parent && $parent->floorPlanBoothCount(1) === 0) {
+                            return back()->with('fail', 'This pavilion is booked as a whole. Select the pavilion to continue.');
+                        }
+                    } elseif (!$space->customFloorPlanView()) {
+                        $registered = $space->mapBooths();
+                        if ($space->floorPlanBoothCount($registered->count()) > 0) {
+                            return back()->with('fail', 'Select an available booth in this pavilion.');
+                        }
+                        if (booked_pavilions::where('exhibition_year', $event)
+                            ->whereIn('pavilionID', booths::where('pavilionID', $data)->select('boothID'))->exists()) {
+                            return back()->with('fail', 'This pavilion has an existing booth booking.');
+                        }
+                    }
                     $booths = booths::leftJoin('booth_categories', 'booths.booth_category', '=', 'booth_categories.booth_category_id')->where('boothID', $data)->get();
 
 
@@ -269,7 +284,7 @@ class bookingController extends Controller
                 ->where('status', 1)->where('adminId', Auth::user()->user_uuid)
                 ->get(['companies.companyID', 'companyName']);
         }
-        $number_of_booths = booths::query()
+        $registeredBoothCount = booths::query()
             ->where('pavilionID', $id)
             ->where('bookingStatus', '!=', 'SUNSPENDED')
             ->count();
@@ -281,6 +296,7 @@ class bookingController extends Controller
                 'pavilions.pavilionID',
                 'pavilions.pavilionName',
                 'pavilions.pavilionCode',
+                'pavilions.numberOfPartitions',
                 'pavilions.pavilionCategory',
                 'pavilions.floor_plan',
                 'pavilions.pavilion_size',
@@ -319,15 +335,25 @@ class bookingController extends Controller
                 'booth_categories.booth_category_id',
             ]);
 
+        $number_of_booths = $pavilion->floorPlanBoothCount($registeredBoothCount);
+        $boothIds = $booths->pluck('boothID');
+        if ($number_of_booths === 0) {
+            $booths = collect();
+            if (!$pavilion->customFloorPlanView()) {
+                $boothIds = booths::where('pavilionID', $id)->pluck('boothID');
+            }
+        }
+
         $event = events::find(session('liveEvent'));
         if (!$event) {
             return redirect()->route('booking.index')->with('fail', 'Select an active exhibition before booking.');
         }
 
         $heldSpaceIds = booked_pavilions::where('exhibition_year', $event->event_id)
-            ->whereIn('pavilionID', $booths->pluck('boothID')->push($id))
+            ->whereIn('pavilionID', $boothIds->concat([$id]))
             ->distinct()->pluck('pavilionID')->flip();
-        $pavilionAvailable = $pavilion->space_status === 'UNRESERVED' && !$heldSpaceIds->has($id);
+        $pavilionAvailable = $pavilion->space_status === 'UNRESERVED' && !$heldSpaceIds->has($id)
+            && ($number_of_booths > 0 || $heldSpaceIds->isEmpty());
         $availableBoothCount = $pavilionAvailable
             ? $booths->filter(fn ($booth) =>
                 $booth->bookingStatus !== 'RESERVED' && !$heldSpaceIds->has($booth->boothID))->count()
